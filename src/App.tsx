@@ -18,7 +18,7 @@ import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
 import EventDetail from "./pages/EventDetail";
 import NotFound from "./pages/NotFound";
-
+import AdminLogin from "./pages/AdminLogin";
 
 function Router() {
   return (
@@ -36,6 +36,7 @@ function Router() {
   <Route path="/santa-paddle" component={SantaPaddle} />
   <Route path="/analytics" component={Analytics} />
   <Route path="/admin" component={Admin} />
+  <Route path="/admin-login" component={AdminLogin} />
   <Route path="/success" component={CheckoutSuccess} />
   <Route path="/404" component={NotFound} />
   <Route component={NotFound} />
