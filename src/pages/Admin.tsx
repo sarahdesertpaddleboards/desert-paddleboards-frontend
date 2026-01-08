@@ -7,7 +7,7 @@ export default function Admin() {
 
   return (
     <div className="p-8 space-y-6">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold">Sarah's Admin Dashboard</h1>
 
       {/* Simple tab switcher */}
       <div className="flex gap-4 border-b pb-2">
