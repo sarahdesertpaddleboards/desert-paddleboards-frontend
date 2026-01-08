@@ -1,54 +1,33 @@
-import { useAdminProducts } from "@/hooks/useAdminProducts";
+import { useState } from "react";
+import ProductsEditor from "@/components/admin/ProductsEditor";
+import OrdersManager from "@/components/admin/OrdersManager"; // empty for now
 
 export default function Admin() {
-  const { data, isLoading, error } = useAdminProducts();
-
-  if (isLoading) {
-    return <div className="p-8">Loading products…</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 text-red-600">
-        Failed to load admin products. Are you logged in?
-      </div>
-    );
-  }
+  const [tab, setTab] = useState<"products" | "orders">("products");
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Admin · Products</h1>
+    <div className="p-8 space-y-6">
+      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
 
-      <div className="space-y-4">
-        {data!.map(product => (
-          <div
-            key={product.productKey}
-            className="border rounded-lg p-4 flex justify-between items-center"
-          >
-            <div>
-              <div className="font-semibold">
-                {product.name}
-              </div>
-              <div className="text-sm text-gray-600">
-                {product.productKey} · {product.type}
-              </div>
-            </div>
+      {/* Simple tab switcher */}
+      <div className="flex gap-4 border-b pb-2">
+        <button
+          onClick={() => setTab("products")}
+          className={`pb-2 ${tab === "products" ? "border-b-2 border-blue-600" : ""}`}
+        >
+          Products
+        </button>
 
-            <div className="text-right">
-              <div className="font-mono">
-                ${(product.price / 100).toFixed(2)} {product.currency.toUpperCase()}
-              </div>
-              <div
-                className={`text-sm ${
-                  product.active ? "text-green-600" : "text-gray-400"
-                }`}
-              >
-                {product.active ? "Active" : "Inactive"}
-              </div>
-            </div>
-          </div>
-        ))}
+        <button
+          onClick={() => setTab("orders")}
+          className={`pb-2 ${tab === "orders" ? "border-b-2 border-blue-600" : ""}`}
+        >
+          Orders
+        </button>
       </div>
+
+      {tab === "products" && <ProductsEditor />}
+      {tab === "orders" && <OrdersManager />}
     </div>
   );
 }
