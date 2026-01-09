@@ -7,16 +7,12 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
-import Events from "./pages/Events";
 import Shop from "./pages/Shop";
 import PrivateEvents from "./pages/PrivateEvents";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import SantaPaddle from "./pages/SantaPaddle";
-import SonoranEchoes from "./pages/SonoranEchoes";
-import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
-import EventDetail from "./pages/EventDetail";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import BuyProductPage from "./pages/BuyProductPage";
@@ -27,10 +23,7 @@ function Router() {
       <Header />
       <Switch>
   <Route path="/" component={Home} />
-  <Route path="/events" component={Events} />
-  <Route path="/events/:id" component={EventDetail} />
   <Route path="/shop" component={Shop} />
-  <Route path="/sonoran-echoes" component={SonoranEchoes} />
   <Route path="/private-events" component={PrivateEvents} />
   <Route path="/about" component={About} />
   <Route path="/faq" component={FAQ} />
