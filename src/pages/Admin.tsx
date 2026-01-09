@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ProductsEditor from "@/components/admin/ProductsEditor";
 import OrdersManager from "@/components/admin/OrdersManager"; // empty for now
+import ClassProductsEditor from "@/components/admin/classes/ClassProductsEditor";
+import ClassSessionsEditor from "@/components/admin/classes/ClassSessionsEditor";
 
 export default function Admin() {
   const [tab, setTab] = useState<"products" | "orders">("products");
