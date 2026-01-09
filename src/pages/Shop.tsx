@@ -1,64 +1,56 @@
 import { useEffect, useState } from "react";
-import { fetchShopProducts, createCheckout, ShopProduct } from "@/lib/shopApi";
-import { toast } from "sonner";
+import { fetchPublicProducts } from "@/lib/publicApi";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useLocation } from "wouter";
 
 export default function Shop() {
-  const [products, setProducts] = useState<ShopProduct[]>([]);
+  const [products, setProducts] = useState([]);
+  const [, navigate] = useLocation();
   const [loading, setLoading] = useState(true);
 
-  async function load() {
-    try {
-      const data = await fetchShopProducts();
-      setProducts(data);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load products");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleBuy(productKey: string) {
-    try {
-      const url = await createCheckout(productKey);
-      window.location.href = url; // redirect to Stripe checkout
-    } catch (err) {
-      console.error(err);
-      toast.error("Unable to start checkout");
-    }
-  }
-
   useEffect(() => {
-    load();
+    fetchPublicProducts()
+      .then(setProducts)
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-8">Loading shop…</div>;
+  if (loading) return <div className="p-8">Loading products…</div>;
 
   return (
-    <div className="p-8 space-y-10 max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8">Shop</h1>
+    <div className="p-8 mx-auto max-w-4xl space-y-6">
+      <h1 className="text-4xl font-bold mb-4">Shop</h1>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        {products.map(p => (
-          <div
-            key={p.productKey}
-            className="border rounded-xl p-6 shadow-sm hover:shadow-md transition"
-          >
-            <h2 className="text-2xl font-semibold">{p.name}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {products.map((product: any) => (
+          <Card key={product.productKey}>
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold">{product.name}</h2>
+              <p>{product.description}</p>
 
-            <p className="text-gray-600 mt-2 mb-4">{p.description}</p>
+              <div className="text-lg font-semibold">
+                ${(product.price / 100).toFixed(2)}
+              </div>
 
-            <div className="text-lg font-mono mb-4">
-              ${(p.price / 100).toFixed(2)} {p.currency.toUpperCase()}
-            </div>
-
-            <button
-              onClick={() => handleBuy(p.productKey)}
-              className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800"
-            >
-              Buy Now
-            </button>
-          </div>
+              {product.type === "class" ? (
+                <Button
+                  onClick={() =>
+                    navigate(`/class/${product.productKey}`)
+                  }
+                >
+                  Book a Session
+                </Button>
+              ) : (
+                <Button
+                  onClick={() =>
+                    navigate(`/buy/${product.productKey}`)
+                  }
+                >
+                  Buy Now
+                </Button>
+              )}
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

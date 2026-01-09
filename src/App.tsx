@@ -38,6 +38,9 @@ function Router() {
   <Route path="/admin" component={Admin} />
   <Route path="/admin-login" component={AdminLogin} />
   <Route path="/success" component={CheckoutSuccess} />
+  <Route path="/buy/:productKey" component={BuyProductPage} />
+<Route path="/class/:productKey" component={ClassBookingPage} />
+
   <Route path="/404" component={NotFound} />
   <Route component={NotFound} />
 </Switch>
