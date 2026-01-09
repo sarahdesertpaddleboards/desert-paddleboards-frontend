@@ -1,0 +1,223 @@
+.
+├── Frontend structure.txt
+├── frontendstructure.txt
+├── index.html
+├── node_modules
+│   ├── @builder.io
+│   │   └── vite-plugin-jsx-loc -> ../.pnpm/@builder.io+vite-plugin-jsx-loc@0.1.1_vite@7.1.9_@types+node@24.7.0_jiti@2.6.1_lightningcss@1.30.2_tsx@4.20.6_/node_modules/@builder.io/vite-plugin-jsx-loc
+│   ├── @hookform
+│   │   └── resolvers -> ../.pnpm/@hookform+resolvers@5.2.2_react-hook-form@7.64.0_react@19.2.0_/node_modules/@hookform/resolvers
+│   ├── @radix-ui
+│   │   ├── react-accordion -> ../.pnpm/@radix-ui+react-accordion@1.2.12_@types+react-dom@19.2.1_@types+react@19.2.2__@types+re_4c7d21082ef55edacf3eee9f189adf5f/node_modules/@radix-ui/react-accordion
+│   │   ├── react-alert-dialog -> ../.pnpm/@radix-ui+react-alert-dialog@1.1.15_@types+react-dom@19.2.1_@types+react@19.2.2__@types_6481dafe719f67a1d8918c968d0870be/node_modules/@radix-ui/react-alert-dialog
+│   │   ├── react-aspect-ratio -> ../.pnpm/@radix-ui+react-aspect-ratio@1.1.7_@types+react-dom@19.2.1_@types+react@19.2.2__@types+_def5b0b63be0639133191e3a1dd222a7/node_modules/@radix-ui/react-aspect-ratio
+│   │   ├── react-avatar -> ../.pnpm/@radix-ui+react-avatar@1.1.10_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react_0a98e36ebb0729b06667d2e185007f88/node_modules/@radix-ui/react-avatar
+│   │   ├── react-checkbox -> ../.pnpm/@radix-ui+react-checkbox@1.3.3_@types+react-dom@19.2.1_@types+react@19.2.2__@types+reac_0904157a213e106383fbb5502f5c4d0c/node_modules/@radix-ui/react-checkbox
+│   │   ├── react-collapsible -> ../.pnpm/@radix-ui+react-collapsible@1.1.12_@types+react-dom@19.2.1_@types+react@19.2.2__@types+_92c51fdfd1ed5fdb5863ce4de64ea042/node_modules/@radix-ui/react-collapsible
+│   │   ├── react-context-menu -> ../.pnpm/@radix-ui+react-context-menu@2.2.16_@types+react-dom@19.2.1_@types+react@19.2.2__@types_4fe21b36195e22bffb36d59f810a4d48/node_modules/@radix-ui/react-context-menu
+│   │   ├── react-dialog -> ../.pnpm/@radix-ui+react-dialog@1.1.15_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react_e9a34637bdaeb01d471a8e5593cb737b/node_modules/@radix-ui/react-dialog
+│   │   ├── react-dropdown-menu -> ../.pnpm/@radix-ui+react-dropdown-menu@2.1.16_@types+react-dom@19.2.1_@types+react@19.2.2__@type_5f7e2d94e61604c3d79fd45406eef678/node_modules/@radix-ui/react-dropdown-menu
+│   │   ├── react-hover-card -> ../.pnpm/@radix-ui+react-hover-card@1.1.15_@types+react-dom@19.2.1_@types+react@19.2.2__@types+r_f5eadd0174988b5ba8cb2aed2c5a0a8a/node_modules/@radix-ui/react-hover-card
+│   │   ├── react-label -> ../.pnpm/@radix-ui+react-label@2.1.7_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@1_8a26fd219bbab5db99e815f8eb4b466a/node_modules/@radix-ui/react-label
+│   │   ├── react-menubar -> ../.pnpm/@radix-ui+react-menubar@1.1.16_@types+react-dom@19.2.1_@types+react@19.2.2__@types+reac_d7a8d2b46a5b25e232eda16c453ed31f/node_modules/@radix-ui/react-menubar
+│   │   ├── react-navigation-menu -> ../.pnpm/@radix-ui+react-navigation-menu@1.2.14_@types+react-dom@19.2.1_@types+react@19.2.2__@ty_93ceb1e0a93b5224c040dec6d02ff3a2/node_modules/@radix-ui/react-navigation-menu
+│   │   ├── react-popover -> ../.pnpm/@radix-ui+react-popover@1.1.15_@types+react-dom@19.2.1_@types+react@19.2.2__@types+reac_c7c9bbf2cbc4b303d5605b98dd103fd4/node_modules/@radix-ui/react-popover
+│   │   ├── react-progress -> ../.pnpm/@radix-ui+react-progress@1.1.7_@types+react-dom@19.2.1_@types+react@19.2.2__@types+reac_3f69925e013d9a8cd4dc8cbaa75df2f5/node_modules/@radix-ui/react-progress
+│   │   ├── react-radio-group -> ../.pnpm/@radix-ui+react-radio-group@1.3.8_@types+react-dom@19.2.1_@types+react@19.2.2__@types+r_3888e2012c3b8fd755880e6419174d00/node_modules/@radix-ui/react-radio-group
+│   │   ├── react-scroll-area -> ../.pnpm/@radix-ui+react-scroll-area@1.2.10_@types+react-dom@19.2.1_@types+react@19.2.2__@types+_64d14c05736586f4d24f5993bf36abee/node_modules/@radix-ui/react-scroll-area
+│   │   ├── react-select -> ../.pnpm/@radix-ui+react-select@2.2.6_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@_6acdc513ee59f97fbbef3713a4bf7bd7/node_modules/@radix-ui/react-select
+│   │   ├── react-separator -> ../.pnpm/@radix-ui+react-separator@1.1.7_@types+react-dom@19.2.1_@types+react@19.2.2__@types+rea_12479d3caf0102f904fc15bd6ed06bc8/node_modules/@radix-ui/react-separator
+│   │   ├── react-slider -> ../.pnpm/@radix-ui+react-slider@1.3.6_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@_d1c1194fd9c155ba7f499d7685209cdc/node_modules/@radix-ui/react-slider
+│   │   ├── react-slot -> ../.pnpm/@radix-ui+react-slot@1.2.3_@types+react@19.2.2_react@19.2.0/node_modules/@radix-ui/react-slot
+│   │   ├── react-switch -> ../.pnpm/@radix-ui+react-switch@1.2.6_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@_dbb24d9997ae8ff9d1582f4663bef902/node_modules/@radix-ui/react-switch
+│   │   ├── react-tabs -> ../.pnpm/@radix-ui+react-tabs@1.1.13_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@1_45a48cb5110c71f54b8c66415c9b2845/node_modules/@radix-ui/react-tabs
+│   │   ├── react-toggle -> ../.pnpm/@radix-ui+react-toggle@1.1.10_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react_554c48ba18d10a9b4e7f470ce6b903f6/node_modules/@radix-ui/react-toggle
+│   │   ├── react-toggle-group -> ../.pnpm/@radix-ui+react-toggle-group@1.1.11_@types+react-dom@19.2.1_@types+react@19.2.2__@types_0e37a86075af82896ba1c5c057f9a5ba/node_modules/@radix-ui/react-toggle-group
+│   │   └── react-tooltip -> ../.pnpm/@radix-ui+react-tooltip@1.2.8_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react_aeedb289edfbbab6cf877f1a96e5dc55/node_modules/@radix-ui/react-tooltip
+│   ├── @tailwindcss
+│   │   ├── postcss -> ../.pnpm/@tailwindcss+postcss@4.1.17/node_modules/@tailwindcss/postcss
+│   │   ├── typography -> ../.pnpm/@tailwindcss+typography@0.5.19_tailwindcss@4.1.14/node_modules/@tailwindcss/typography
+│   │   └── vite -> ../.pnpm/@tailwindcss+vite@4.1.14_vite@7.1.9_@types+node@24.7.0_jiti@2.6.1_lightningcss@1.30.2_tsx@4.20.6_/node_modules/@tailwindcss/vite
+│   ├── @tanstack
+│   │   └── react-query -> ../.pnpm/@tanstack+react-query@5.90.2_react@19.2.0/node_modules/@tanstack/react-query
+│   ├── @trpc
+│   │   ├── client -> ../.pnpm/@trpc+client@11.6.0_@trpc+server@11.6.0_typescript@5.9.3__typescript@5.9.3/node_modules/@trpc/client
+│   │   └── react-query -> ../.pnpm/@trpc+react-query@11.6.0_@tanstack+react-query@5.90.2_react@19.2.0__@trpc+client@11.6.0_9594935bfb52a30da69b6e54d1a605c4/node_modules/@trpc/react-query
+│   ├── @types
+│   │   ├── google.maps -> ../.pnpm/@types+google.maps@3.58.1/node_modules/@types/google.maps
+│   │   ├── node -> ../.pnpm/@types+node@24.7.0/node_modules/@types/node
+│   │   ├── react -> ../.pnpm/@types+react@19.2.2/node_modules/@types/react
+│   │   └── react-dom -> ../.pnpm/@types+react-dom@19.2.1_@types+react@19.2.2/node_modules/@types/react-dom
+│   ├── @vitejs
+│   │   └── plugin-react -> ../.pnpm/@vitejs+plugin-react@5.0.4_vite@7.1.9_@types+node@24.7.0_jiti@2.6.1_lightningcss@1.30.2_tsx@4.20.6_/node_modules/@vitejs/plugin-react
+│   ├── autoprefixer -> .pnpm/autoprefixer@10.4.21_postcss@8.5.6/node_modules/autoprefixer
+│   ├── axios -> .pnpm/axios@1.12.2/node_modules/axios
+│   ├── class-variance-authority -> .pnpm/class-variance-authority@0.7.1/node_modules/class-variance-authority
+│   ├── clsx -> .pnpm/clsx@2.1.1/node_modules/clsx
+│   ├── cmdk -> .pnpm/cmdk@1.1.1_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@19.2.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/cmdk
+│   ├── cookie -> .pnpm/cookie@1.0.2/node_modules/cookie
+│   ├── date-fns -> .pnpm/date-fns@4.1.0/node_modules/date-fns
+│   ├── embla-carousel-react -> .pnpm/embla-carousel-react@8.6.0_react@19.2.0/node_modules/embla-carousel-react
+│   ├── esbuild -> .pnpm/esbuild@0.25.10/node_modules/esbuild
+│   ├── framer-motion -> .pnpm/framer-motion@12.23.22_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/framer-motion
+│   ├── input-otp -> .pnpm/input-otp@1.4.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/input-otp
+│   ├── jose -> .pnpm/jose@6.1.0/node_modules/jose
+│   ├── lucide-react -> .pnpm/lucide-react@0.453.0_react@19.2.0/node_modules/lucide-react
+│   ├── nanoid -> .pnpm/nanoid@5.1.6/node_modules/nanoid
+│   ├── next-themes -> .pnpm/next-themes@0.4.6_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next-themes
+│   ├── path -> .pnpm/path@0.12.7/node_modules/path
+│   ├── postcss -> .pnpm/postcss@8.5.6/node_modules/postcss
+│   ├── prettier -> .pnpm/prettier@3.6.2/node_modules/prettier
+│   ├── react -> .pnpm/react@19.2.0/node_modules/react
+│   ├── react-day-picker -> .pnpm/react-day-picker@9.11.1_react@19.2.0/node_modules/react-day-picker
+│   ├── react-dom -> .pnpm/react-dom@19.2.0_react@19.2.0/node_modules/react-dom
+│   ├── react-hook-form -> .pnpm/react-hook-form@7.64.0_react@19.2.0/node_modules/react-hook-form
+│   ├── react-resizable-panels -> .pnpm/react-resizable-panels@3.0.6_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-resizable-panels
+│   ├── recharts -> .pnpm/recharts@2.15.4_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/recharts
+│   ├── resend -> .pnpm/resend@6.5.2/node_modules/resend
+│   ├── sonner -> .pnpm/sonner@2.0.7_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/sonner
+│   ├── streamdown -> .pnpm/streamdown@1.4.0_@types+react@19.2.2_react@19.2.0/node_modules/streamdown
+│   ├── superjson -> .pnpm/superjson@2.2.6/node_modules/superjson
+│   ├── tailwind-merge -> .pnpm/tailwind-merge@3.3.1/node_modules/tailwind-merge
+│   ├── tailwindcss -> .pnpm/tailwindcss@4.1.14/node_modules/tailwindcss
+│   ├── tailwindcss-animate -> .pnpm/tailwindcss-animate@1.0.7_tailwindcss@4.1.14/node_modules/tailwindcss-animate
+│   ├── typescript -> .pnpm/typescript@5.9.3/node_modules/typescript
+│   ├── vaul -> .pnpm/vaul@1.1.2_@types+react-dom@19.2.1_@types+react@19.2.2__@types+react@19.2.2_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/vaul
+│   ├── vite -> .pnpm/vite@7.1.9_@types+node@24.7.0_jiti@2.6.1_lightningcss@1.30.2_tsx@4.20.6/node_modules/vite
+│   ├── vitest -> .pnpm/vitest@2.1.9_@types+node@24.7.0_lightningcss@1.30.2/node_modules/vitest
+│   ├── wouter -> .pnpm/wouter@3.7.1_react@19.2.0/node_modules/wouter
+│   └── zod -> .pnpm/zod@4.1.12/node_modules/zod
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.js
+├── public
+│   ├── about-sarah-class.jpeg
+│   ├── about-sarah-class.webp
+│   ├── hero-main.jpeg
+│   ├── hero-main.webp
+│   ├── hero-pool-soundbath.jpeg
+│   ├── hero-pool-soundbath.webp
+│   ├── sonoran-echoes-album.jpeg
+│   └── sonoran-echoes-album.webp
+├── shared
+│   ├── _core
+│   │   └── error.ts
+│   ├── const.ts
+│   └── types.ts
+├── src
+│   ├── _core
+│   │   └── hooks
+│   │       └── useAuth.ts
+│   ├── _legacy
+│   │   └── components
+│   │       ├── DashboardLayout.tsx
+│   │       ├── DashboardLayoutSkeleton.tsx
+│   │       └── ManusDialog.tsx
+│   ├── App.tsx
+│   ├── components
+│   │   ├── admin
+│   │   │   ├── BookingsManagement.tsx
+│   │   │   ├── EventsManagement.tsx
+│   │   │   ├── InquiriesManagement.tsx
+│   │   │   ├── OrdersManager.tsx
+│   │   │   └── ProductsEditor.tsx
+│   │   ├── AIChatBox.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── EventCalendar.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   ├── InstagramFeed.tsx
+│   │   ├── Map.tsx
+│   │   └── ui
+│   │       ├── accordion.tsx
+│   │       ├── alert-dialog.tsx
+│   │       ├── alert.tsx
+│   │       ├── aspect-ratio.tsx
+│   │       ├── avatar.tsx
+│   │       ├── badge.tsx
+│   │       ├── breadcrumb.tsx
+│   │       ├── button-group.tsx
+│   │       ├── button.tsx
+│   │       ├── calendar.tsx
+│   │       ├── card.tsx
+│   │       ├── carousel.tsx
+│   │       ├── chart.tsx
+│   │       ├── checkbox.tsx
+│   │       ├── collapsible.tsx
+│   │       ├── command.tsx
+│   │       ├── context-menu.tsx
+│   │       ├── dialog.tsx
+│   │       ├── drawer.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── empty.tsx
+│   │       ├── field.tsx
+│   │       ├── form.tsx
+│   │       ├── hover-card.tsx
+│   │       ├── input-group.tsx
+│   │       ├── input-otp.tsx
+│   │       ├── input.tsx
+│   │       ├── item.tsx
+│   │       ├── kbd.tsx
+│   │       ├── label.tsx
+│   │       ├── menubar.tsx
+│   │       ├── navigation-menu.tsx
+│   │       ├── pagination.tsx
+│   │       ├── popover.tsx
+│   │       ├── progress.tsx
+│   │       ├── radio-group.tsx
+│   │       ├── resizable.tsx
+│   │       ├── scroll-area.tsx
+│   │       ├── select.tsx
+│   │       ├── separator.tsx
+│   │       ├── sheet.tsx
+│   │       ├── sidebar.tsx
+│   │       ├── skeleton.tsx
+│   │       ├── slider.tsx
+│   │       ├── sonner.tsx
+│   │       ├── spinner.tsx
+│   │       ├── switch.tsx
+│   │       ├── table.tsx
+│   │       ├── tabs.tsx
+│   │       ├── textarea.tsx
+│   │       ├── toggle-group.tsx
+│   │       ├── toggle.tsx
+│   │       └── tooltip.tsx
+│   ├── const.ts
+│   ├── contexts
+│   │   └── ThemeContext.tsx
+│   ├── hooks
+│   │   ├── useAdminProducts.ts
+│   │   ├── useComposition.ts
+│   │   ├── useMobile.tsx
+│   │   └── usePersistFn.ts
+│   ├── index.css
+│   ├── lib
+│   │   ├── adminApi.ts
+│   │   ├── adminOrdersApi.ts
+│   │   ├── shopApi.ts
+│   │   ├── trpc.ts
+│   │   └── utils.ts
+│   ├── main.tsx
+│   └── pages
+│       ├── About.tsx
+│       ├── Admin.tsx
+│       ├── AdminLogin.tsx
+│       ├── Analytics.tsx
+│       ├── CheckoutSuccess.tsx
+│       ├── ComponentShowcase.tsx
+│       ├── EventDetail.tsx
+│       ├── Events.tsx
+│       ├── FAQ.tsx
+│       ├── Home.tsx
+│       ├── NotFound.tsx
+│       ├── PrivateEvents.tsx
+│       ├── SantaPaddle.tsx
+│       ├── Shop.tsx
+│       ├── SonoranEchoes.tsx
+│       └── Success.tsx
+├── tailwind.config.js
+├── tsconfig.json
+├── vercel.json
+└── vite.config.ts
+
+101 directories, 120 files

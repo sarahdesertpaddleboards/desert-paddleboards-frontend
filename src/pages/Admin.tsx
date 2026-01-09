@@ -24,10 +24,31 @@ export default function Admin() {
         >
           Orders
         </button>
+
+        <button
+  onClick={() => setTab("classProducts")}
+  className={`pb-2 ${tab === "classProducts" ? "border-b-2 border-blue-600" : ""}`}
+>
+  Class Products
+</button>
+
+<button
+  onClick={() => setTab("classSessions")}
+  className={`pb-2 ${tab === "classSessions" ? "border-b-2 border-blue-600" : ""}`}
+>
+  Sessions
+</button>
+
+
       </div>
 
       {tab === "products" && <ProductsEditor />}
       {tab === "orders" && <OrdersManager />}
+      {tab === "classProducts" && <ClassProductsEditor />}
+{tab === "classSessions" && (
+  <ClassSessionsEditor classProductId={1} /> // Later we make this selectable
+)}
+
     </div>
   );
 }
