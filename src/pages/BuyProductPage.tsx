@@ -10,8 +10,8 @@ export default function BuyProductPage() {
   const [product, setProduct] = useState<any>(null);
 
   useEffect(() => {
-    fetchPublicProducts().then(products =>
-      setProduct(products.find(p => p.productKey === productKey))
+    fetchPublicProducts().then((products) =>
+      setProduct(products.find((p) => p.productKey === productKey))
     );
   }, [productKey]);
 

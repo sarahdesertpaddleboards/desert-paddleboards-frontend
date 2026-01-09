@@ -19,6 +19,7 @@ import Admin from "./pages/Admin";
 import EventDetail from "./pages/EventDetail";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
+import BuyProductPage from "./pages/BuyProductPage";
 
 function Router() {
   return (
@@ -39,7 +40,6 @@ function Router() {
   <Route path="/admin-login" component={AdminLogin} />
   <Route path="/success" component={CheckoutSuccess} />
   <Route path="/buy/:productKey" component={BuyProductPage} />
-<Route path="/class/:productKey" component={ClassBookingPage} />
 
   <Route path="/404" component={NotFound} />
   <Route component={NotFound} />
