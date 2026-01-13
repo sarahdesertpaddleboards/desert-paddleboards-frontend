@@ -1,18 +1,30 @@
-import axios from "axios";
+// src/lib/shopApi.ts
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL;
+import { apiGet, apiPost } from "./publicApi";
 
-export type ShopProduct = {
-  productKey: string;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  type: string;
-};
-
-export async function fetchShopProducts(): Promise<ShopProduct[]> {
-  const res = await axios.get(`${API_BASE}/products`);
-  return res.data;
+// Fetch all public products (same endpoint used by Shop page)
+export function fetchPublicProducts() {
+  return apiGet("/products/public");
 }
 
+// Fetch a single product by ID (used in BuyProductPage)
+export function fetchPublicProduct(id: number) {
+  return apiGet(`/products/public/${id}`);
+}
+
+// Submit checkout (USED IN BuyProductPage.tsx)
+export function submitCheckout(payload: {
+  productId: number;
+  quantity: number;
+  email: string;
+  name: string;
+}) {
+  return apiPost("/checkout/create", payload);
+}
+
+// Optionally used by old code (safe to keep)
+export default {
+  fetchPublicProducts,
+  fetchPublicProduct,
+  submitCheckout,
+};
