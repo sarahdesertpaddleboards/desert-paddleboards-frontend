@@ -29,9 +29,10 @@ import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 // Class system pages (NEW)
-import ClassesPage from "./pages/classes/ClassesPage";
-import ClassDetailPage from "./pages/classes/ClassDetailPage";
-import SessionDetailPage from "./pages/classes/SessionDetailPage";
+
+import ClassesPage from "./pages/classes/index";
+import ClassDetailPage from "./pages/classes/[id]";
+import SessionDetailPage from "./pages/sessions/[id]";
 
 function Router() {
   return (
