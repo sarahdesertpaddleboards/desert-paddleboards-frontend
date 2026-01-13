@@ -107,21 +107,15 @@
 ├── src
 │   ├── _core
 │   │   └── hooks
-│   │       └── useAuth.ts
-│   ├── _legacy
-│   │   └── components
-│   │       ├── DashboardLayout.tsx
-│   │       ├── DashboardLayoutSkeleton.tsx
-│   │       └── ManusDialog.tsx
 │   ├── App.tsx
 │   ├── components
 │   │   ├── admin
 │   │   │   ├── BookingsManagement.tsx
-│   │   │   ├── EventsManagement.tsx
-│   │   │   ├── InquiriesManagement.tsx
+│   │   │   ├── classes
+│   │   │   │   ├── ClassProductsEditor.tsx
+│   │   │   │   └── ClassSessionsEditor.tsx
 │   │   │   ├── OrdersManager.tsx
 │   │   │   └── ProductsEditor.tsx
-│   │   ├── AIChatBox.tsx
 │   │   ├── ErrorBoundary.tsx
 │   │   ├── EventCalendar.tsx
 │   │   ├── Footer.tsx
@@ -188,36 +182,33 @@
 │   ├── hooks
 │   │   ├── useAdminProducts.ts
 │   │   ├── useComposition.ts
-│   │   ├── useMobile.tsx
+│   │   ├── useMobile.ts
 │   │   └── usePersistFn.ts
 │   ├── index.css
 │   ├── lib
 │   │   ├── adminApi.ts
 │   │   ├── adminOrdersApi.ts
+│   │   ├── publicApi.ts
 │   │   ├── shopApi.ts
-│   │   ├── trpc.ts
+│   │   ├── submitCheckout.ts
 │   │   └── utils.ts
 │   ├── main.tsx
 │   └── pages
 │       ├── About.tsx
 │       ├── Admin.tsx
 │       ├── AdminLogin.tsx
-│       ├── Analytics.tsx
+│       ├── BuyProductPage.tsx
 │       ├── CheckoutSuccess.tsx
-│       ├── ComponentShowcase.tsx
-│       ├── EventDetail.tsx
-│       ├── Events.tsx
 │       ├── FAQ.tsx
 │       ├── Home.tsx
 │       ├── NotFound.tsx
 │       ├── PrivateEvents.tsx
 │       ├── SantaPaddle.tsx
 │       ├── Shop.tsx
-│       ├── SonoranEchoes.tsx
 │       └── Success.tsx
 ├── tailwind.config.js
 ├── tsconfig.json
 ├── vercel.json
 └── vite.config.ts
 
-101 directories, 120 files
+100 directories, 112 files

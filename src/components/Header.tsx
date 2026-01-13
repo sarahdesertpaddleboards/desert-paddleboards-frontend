@@ -8,7 +8,7 @@ export default function Header() {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Classes & Events", href: "/events" },
+    { name: "Classes", href: "/classes" },
     { name: "Shop", href: "/shop" },
     { name: "Private Events", href: "/private-events" },
     { name: "About", href: "/about" },
