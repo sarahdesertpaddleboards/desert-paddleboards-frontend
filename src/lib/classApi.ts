@@ -1,37 +1,37 @@
 // src/lib/classApi.ts
+import { apiGet } from "./publicApi";
 
-// ---------------------------------------------------------
-// PUBLIC API WRAPPER
-// ---------------------------------------------------------
-
-import { publicApi } from "./publicApi";
-
-// ---------------------------------------------------------
+// ---------------------------------------
 // CLASS PRODUCTS
-// ---------------------------------------------------------
+// ---------------------------------------
 
-// List all class products
+// GET /classes/products
 export function fetchClassProducts() {
-  return publicApi.get("/class-products").then((r) => r.data);
+  return apiGet("/classes/products");
 }
 
-// Get a single class product
+// GET /classes/products/:id
 export function fetchClassProduct(id: number) {
-  return publicApi.get(`/class-products/${id}`).then((r) => r.data);
+  return apiGet(`/classes/products/${id}`);
 }
 
-// ---------------------------------------------------------
+// ---------------------------------------
 // CLASS SESSIONS
-// ---------------------------------------------------------
+// ---------------------------------------
 
-// Get all sessions for a class product
+// GET /classes/products/:id/sessions
 export function fetchSessionsForClass(classProductId: number) {
-  return publicApi
-    .get(`/class-products/${classProductId}/sessions`)
-    .then((r) => r.data);
+  return apiGet(`/classes/products/${classProductId}/sessions`);
 }
 
-// Get a single class session
-export function fetchSession(id: number) {
-  return publicApi.get(`/class-sessions/${id}`).then((r) => r.data);
+// GET /classes/sessions/:sessionId
+export function fetchSession(sessionId: number) {
+  return apiGet(`/classes/sessions/${sessionId}`);
 }
+
+export default {
+  fetchClassProducts,
+  fetchClassProduct,
+  fetchSessionsForClass,
+  fetchSession
+};

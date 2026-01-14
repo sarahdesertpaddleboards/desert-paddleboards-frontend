@@ -1,18 +1,20 @@
 // src/lib/shopApi.ts
-
 import { apiGet, apiPost } from "./publicApi";
 
-// Fetch all public products (same endpoint used by Shop page)
-export function fetchPublicProducts() {
-  return apiGet("/products/public");
+// Fetch unified public store products
+// GET /store/products
+export function fetchStoreProducts() {
+  return apiGet("/store/products");
 }
 
-// Fetch a single product by ID (used in BuyProductPage)
-export function fetchPublicProduct(id: number) {
-  return apiGet(`/products/public/${id}`);
+// Fetch single store product by its productKey
+// (Frontend uses productKey, backend uses id, no problem)
+export function fetchStoreProduct(productKey: string) {
+  return apiGet(`/store/products?key=${productKey}`);
+  // We can refine this later if needed.
 }
 
-// Submit checkout (USED IN BuyProductPage.tsx)
+// Checkout
 export function submitCheckout(payload: {
   productId: number;
   quantity: number;
@@ -22,9 +24,8 @@ export function submitCheckout(payload: {
   return apiPost("/checkout/create", payload);
 }
 
-// Optionally used by old code (safe to keep)
 export default {
-  fetchPublicProducts,
-  fetchPublicProduct,
-  submitCheckout,
+  fetchStoreProducts,
+  fetchStoreProduct,
+  submitCheckout
 };
