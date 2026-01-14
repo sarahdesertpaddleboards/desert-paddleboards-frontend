@@ -1,44 +1,61 @@
-// src/pages/admin/classes/[id].tsx
+// src/pages/classes/[id].tsx
 
 import { useEffect, useState } from "react";
-
-// FIXED: useParams, not useRoute
-import { useParams } from "wouter";
-
-// FIXED: correct absolute imports for APIs
 import { fetchClassProduct, fetchSessionsForClass } from "@/lib/classApi";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useRoute, useLocation } from "wouter";
 
-// FIXED: correct path to SessionCard
-import SessionCard from "@/components/classes/SessionCard";
+export default function ClassesDetailPage() {
+  const [match, params] = useRoute("/classes/:id");
+  const classId = Number(params?.id);
 
-export default function AdminClassDetailPage() {
-  // Dynamic route param
-  const { id } = useParams();
-  const classId = Number(id);
+  const [classItem, setClassItem] = useState<any>(null);
+  const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [item, setItem] = useState<any>(null);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [, navigate] = useLocation();
 
   // Load class + sessions
   useEffect(() => {
-    fetchClassProduct(classId).then(setItem);
-    fetchSessionsForClass(classId).then(setSessions);
+    if (!classId) return;
+
+    Promise.all([
+      fetchClassProduct(classId),
+      fetchSessionsForClass(classId)
+    ])
+      .then(([cls, sess]) => {
+        setClassItem(cls);
+        setSessions(sess);
+      })
+      .finally(() => setLoading(false));
   }, [classId]);
 
-  if (!item) {
-    return <div className="p-8">Loading…</div>;
-  }
+  if (loading) return <div className="p-8">Loading class…</div>;
+  if (!classItem) return <div className="p-8">Class not found</div>;
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">{item.name}</h1>
-      <p className="text-gray-600 mb-8">{item.description}</p>
+    <div className="p-8 mx-auto max-w-3xl space-y-6">
+      <h1 className="text-4xl font-bold">{classItem.name}</h1>
+      <p>{classItem.description}</p>
 
-      <h2 className="text-xl font-semibold mb-3">Available Sessions</h2>
+      <h2 className="text-2xl font-bold mt-8 mb-4">Upcoming Sessions</h2>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      {sessions.length === 0 && <p>No upcoming sessions.</p>}
+
+      <div className="space-y-4">
         {sessions.map((s: any) => (
-          <SessionCard key={s.id} session={s} />
+          <Card key={s.id}>
+            <CardContent className="p-6 space-y-3">
+              <div className="font-semibold">
+                {new Date(s.startTime).toLocaleString()}
+              </div>
+
+              <Button onClick={() => navigate(`/sessions/${s.id}`)}>
+                Book This Session
+              </Button>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

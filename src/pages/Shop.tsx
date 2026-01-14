@@ -1,17 +1,22 @@
+// src/pages/Shop.tsx
+
 import { useEffect, useState } from "react";
-import { fetchPublicProducts } from "@/lib/publicApi";
+import { fetchStoreProducts } from "@/lib/shopApi";   // NEW store API
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLocation } from "wouter";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
-  const [, navigate] = useLocation();
   const [loading, setLoading] = useState(true);
+  const [, navigate] = useLocation();
 
+  // Load unified store products (gift cards, merch, downloads)
   useEffect(() => {
-    fetchPublicProducts()
-      .then(setProducts)
+    fetchStoreProducts()
+      .then((res) => {
+        setProducts(res.products || []);   // backend returns { products: [...] }
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -32,23 +37,9 @@ export default function Shop() {
                 ${(product.price / 100).toFixed(2)}
               </div>
 
-              {product.type === "class" ? (
-                <Button
-                  onClick={() =>
-                    navigate(`/class/${product.productKey}`)
-                  }
-                >
-                  Book a Session
-                </Button>
-              ) : (
-                <Button
-                  onClick={() =>
-                    navigate(`/buy/${product.productKey}`)
-                  }
-                >
-                  Buy Now
-                </Button>
-              )}
+              <Button onClick={() => navigate(`/buy/${product.productKey}`)}>
+                Buy Now
+              </Button>
             </CardContent>
           </Card>
         ))}
