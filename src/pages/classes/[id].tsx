@@ -1,63 +1,40 @@
-// src/pages/classes/[id].tsx
-
 import { useEffect, useState } from "react";
-import { fetchClassProduct, fetchSessionsForClass } from "@/lib/classApi";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { fetchClassProduct, fetchSessions } from "@/lib/classApi";
 import { useRoute, useLocation } from "wouter";
 
-export default function ClassesDetailPage() {
+export default function ClassDetail() {
   const [match, params] = useRoute("/classes/:id");
   const classId = Number(params?.id);
-
-  const [classItem, setClassItem] = useState<any>(null);
-  const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [, navigate] = useLocation();
 
-  // Load class + sessions
-  useEffect(() => {
-    if (!classId) return;
+  const [item, setItem] = useState<any>(null);
+  const [sessions, setSessions] = useState([]);
 
-    Promise.all([
-      fetchClassProduct(classId),
-      fetchSessionsForClass(classId)
-    ])
-      .then(([cls, sess]) => {
-        setClassItem(cls);
-        setSessions(sess);
-      })
-      .finally(() => setLoading(false));
+  useEffect(() => {
+    fetchClassProduct(classId).then(setItem);
+    fetchSessions().then(list =>
+      setSessions(list.filter(s => s.classId === classId))
+    );
   }, [classId]);
 
-  if (loading) return <div className="p-8">Loading class…</div>;
-  if (!classItem) return <div className="p-8">Class not found</div>;
+  if (!item) return <div className="p-6">Loading…</div>;
 
   return (
-    <div className="p-8 mx-auto max-w-3xl space-y-6">
-      <h1 className="text-4xl font-bold">{classItem.name}</h1>
-      <p>{classItem.description}</p>
+    <div className="p-8 max-w-3xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold">{item.name}</h1>
+      <p>{item.description}</p>
 
-      <h2 className="text-2xl font-bold mt-8 mb-4">Upcoming Sessions</h2>
+      <h2 className="text-xl font-semibold mt-6">Upcoming Sessions</h2>
 
-      {sessions.length === 0 && <p>No upcoming sessions.</p>}
-
-      <div className="space-y-4">
-        {sessions.map((s: any) => (
-          <Card key={s.id}>
-            <CardContent className="p-6 space-y-3">
-              <div className="font-semibold">
-                {new Date(s.startTime).toLocaleString()}
-              </div>
-
-              <Button onClick={() => navigate(`/sessions/${s.id}`)}>
-                Book This Session
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {sessions.map(s => (
+        <div
+          key={s.id}
+          className="p-4 border rounded cursor-pointer"
+          onClick={() => navigate(`/sessions/${s.id}`)}
+        >
+          {new Date(s.date).toLocaleString()}
+        </div>
+      ))}
     </div>
   );
 }
