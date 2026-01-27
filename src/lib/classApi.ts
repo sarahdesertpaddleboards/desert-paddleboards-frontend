@@ -1,37 +1,41 @@
 // src/lib/classApi.ts
 // Centralised API helpers for class products and sessions.
-// These names MUST match what pages import.
+// IMPORTANT: We export BOTH `getX` and `fetchX` names because the codebase
+// currently imports both styles in different pages/components.
 
 import { apiGet } from "./publicApi";
 
 /**
- * Get all class products
- * Backend: GET /classes/products
+ * Core implementations (single source of truth)
  */
-export function getClassProducts() {
+function _getClassProducts() {
   return apiGet("/classes/products");
 }
 
-/**
- * Get one class product by ID
- * Backend: GET /classes/products/:id
- */
-export function getClassProduct(id: number) {
+function _getClassProduct(id: number) {
   return apiGet(`/classes/products/${id}`);
 }
 
-/**
- * Get all class sessions
- * Backend: GET /classes/sessions
- */
-export function getClassSessions() {
+function _getClassSessions() {
   return apiGet("/classes/sessions");
 }
 
-/**
- * Get one session by ID
- * Backend: GET /classes/sessions/:id
- */
-export function getClassSession(id: number) {
+function _getClassSession(id: number) {
   return apiGet(`/classes/sessions/${id}`);
 }
+
+/**
+ * Preferred names (new convention)
+ */
+export const getClassProducts = _getClassProducts;
+export const getClassProduct = _getClassProduct;
+export const getClassSessions = _getClassSessions;
+export const getClassSession = _getClassSession;
+
+/**
+ * Backwards-compatible names (old convention used in some pages)
+ */
+export const fetchClassProducts = _getClassProducts;
+export const fetchClassProduct = _getClassProduct;
+export const fetchSessions = _getClassSessions;
+export const fetchSession = _getClassSession;
