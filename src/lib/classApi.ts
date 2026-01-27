@@ -1,27 +1,11 @@
 // src/lib/classApi.ts
-// Small helper wrapper around our backend class endpoints.
-// IMPORTANT: This file must export getClassSessions because Home.tsx imports it.
+// Centralised API helpers for class products and sessions.
+// These names MUST match what pages import.
 
-const API_BASE =
-  (import.meta as any).env?.VITE_API_BASE_URL ||
-  "https://desert-paddleboards-railway.up.railway.app"; // sensible default for prod
-
-async function apiGet(path: string) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "GET",
-    credentials: "include", // keep cookies if you use admin auth
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`GET ${path} failed: ${res.status} ${text}`);
-  }
-
-  return res.json();
-}
+import { apiGet } from "./publicApi";
 
 /**
- * Fetch all class products.
+ * Get all class products
  * Backend: GET /classes/products
  */
 export function getClassProducts() {
@@ -29,7 +13,15 @@ export function getClassProducts() {
 }
 
 /**
- * Fetch all class sessions.
+ * Get one class product by ID
+ * Backend: GET /classes/products/:id
+ */
+export function getClassProduct(id: number) {
+  return apiGet(`/classes/products/${id}`);
+}
+
+/**
+ * Get all class sessions
  * Backend: GET /classes/sessions
  */
 export function getClassSessions() {
@@ -37,9 +29,9 @@ export function getClassSessions() {
 }
 
 /**
- * Fetch one class session by id (if your backend supports it).
+ * Get one session by ID
  * Backend: GET /classes/sessions/:id
  */
-export function getClassSessionById(id: number | string) {
+export function getClassSession(id: number) {
   return apiGet(`/classes/sessions/${id}`);
 }
