@@ -1,113 +1,112 @@
-import { useEffect, useState } from "react";
+// src/pages/Home.tsx
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { getClassSessions } from "../lib/classApi";
 
-// Home page shows upcoming sessions list
+type Session = {
+  id: number;
+  classProductId: number;
+  startTime: string; // ISO string
+  endTime: string;   // ISO string
+  seatsTotal: number;
+  seatsAvailable: number;
+};
+
 export default function Home() {
   const [, navigate] = useLocation();
-
-  // NOTE: Backend returns sessions with startTime/endTime (ISO strings), NOT "date"
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Small helper: safe Date parsing
-  function toDateSafe(value: unknown): Date | null {
-    if (typeof value !== "string") return null;
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? null : d;
-  }
-
-  // Small helper: format a session nicely
-  function formatSessionTime(session: any): string {
-    const start = toDateSafe(session?.startTime);
-    const end = toDateSafe(session?.endTime);
-
-    if (!start) return "TBA";
-
-    // If end exists, show range. Otherwise show start only.
-    if (end) {
-      return `${start.toLocaleString()} - ${end.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    }
-
-    return start.toLocaleString();
-  }
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    let isMounted = true;
+    let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
 
-        // This calls GET /classes/sessions
+        // Fetch sessions from backend
         const data = await getClassSessions();
 
-        // Filter to future sessions (optional but nice)
-        const now = new Date();
-        const cleaned = (Array.isArray(data) ? data : [])
-          .filter((s) => {
-            const start = toDateSafe(s?.startTime);
-            return start ? start.getTime() >= now.getTime() : true;
-          })
-          .sort((a, b) => {
-            const aStart = toDateSafe(a?.startTime)?.getTime() ?? 0;
-            const bStart = toDateSafe(b?.startTime)?.getTime() ?? 0;
-            return aStart - bStart;
-          });
+        // Defensive: ensure array
+        const list = Array.isArray(data) ? data : [];
 
-        if (isMounted) setSessions(cleaned);
+        if (!cancelled) {
+          setSessions(list);
+        }
       } catch (err) {
         console.error("HOME: failed to load sessions", err);
-        if (isMounted) setSessions([]);
+        if (!cancelled) setSessions([]);
       } finally {
-        if (isMounted) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     load();
-
     return () => {
-      isMounted = false;
+      cancelled = true;
     };
   }, []);
 
-  return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">Desert Paddleboards</h1>
-      <p className="text-gray-600 mb-6">Book a class and get on the water.</p>
+  const upcoming = useMemo(() => {
+    const now = Date.now();
 
-      <h2 className="text-xl font-semibold mb-3">Upcoming sessions</h2>
+    return sessions
+      .filter((s) => {
+        // Parse startTime safely
+        const t = new Date(s.startTime).getTime();
+        // Keep only valid dates in the future
+        return Number.isFinite(t) && t >= now;
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      )
+      .slice(0, 6); // show first 6 upcoming
+  }, [sessions]);
+
+  return (
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 16px" }}>
+      <h1 style={{ fontSize: 28, marginBottom: 6 }}>Desert Paddleboards</h1>
+      <p style={{ marginTop: 0, opacity: 0.8 }}>Book a class and get on the water.</p>
+
+      <h2 style={{ marginTop: 28, fontSize: 20 }}>Upcoming sessions</h2>
 
       {loading ? (
-        <p>Loading sessions...</p>
-      ) : sessions.length === 0 ? (
+        <p>Loading…</p>
+      ) : upcoming.length === 0 ? (
         <p>No sessions available.</p>
       ) : (
-        <div className="space-y-3">
-          {sessions.map((s: any) => (
-            <button
-              key={s.id}
-              className="w-full text-left border rounded-lg p-4 hover:bg-gray-50"
-              onClick={() => navigate(`/sessions/${s.id}`)}
-            >
-              <div className="font-semibold">
-                {s.className ?? s.name ?? "Class session"}
-              </div>
+        <div style={{ display: "grid", gap: 12 }}>
+          {upcoming.map((s) => {
+            const start = new Date(s.startTime);
+            const end = new Date(s.endTime);
 
-              {/* IMPORTANT: use startTime/endTime, not date */}
-              <div className="text-sm text-gray-600">{formatSessionTime(s)}</div>
+            return (
+              <button
+                key={s.id}
+                onClick={() => navigate(`/sessions/${s.id}`)}
+                style={{
+                  textAlign: "left",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 12,
+                  padding: 16,
+                  background: "white",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ fontWeight: 700 }}>
+                  {start.toLocaleDateString()}{" "}
+                  {start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  {" – "}
+                  {end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </div>
 
-              {/* Useful debug-ish info, but harmless */}
-              {typeof s.seatsAvailable === "number" && typeof s.seatsTotal === "number" ? (
-                <div className="text-sm text-gray-600">
+                <div style={{ marginTop: 6, opacity: 0.8 }}>
                   Seats: {s.seatsAvailable}/{s.seatsTotal}
                 </div>
-              ) : null}
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
