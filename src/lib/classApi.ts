@@ -31,6 +31,7 @@ export const getClassProducts = _getClassProducts;
 export const getClassProduct = _getClassProduct;
 export const getClassSessions = _getClassSessions;
 export const getClassSession = _getClassSession;
+export const getClassSessionById = _getClassSession;
 
 /**
  * Backwards-compatible names (old convention used in some pages)
