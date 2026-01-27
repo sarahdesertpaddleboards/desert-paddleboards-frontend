@@ -281,13 +281,13 @@ export default function EventCalendar({ events }: EventCalendarProps) {
                               </a>
                             </Button>
                           ) : (
-                            <Link href={`/events/${event.id}`}>
+                            <Link href={`/classes`}>
                               <Button size="sm" disabled={isSoldOut}>
                                 {isSoldOut ? 'Sold Out' : 'Book Now'}
                               </Button>
                             </Link>
                           )}
-                          <Link href={`/events/${event.id}`}>
+                          <Link href={`/classes`}>
                             <Button variant="outline" size="sm">
                               Details
                             </Button>

@@ -45,7 +45,7 @@ export default function Header() {
             <span>480.201.9520</span>
           </a>
           <Button asChild size="lg">
-            <Link href="/events">Book Now</Link>
+            <Link href="/classes">Book Now</Link>
           </Button>
         </div>
 
@@ -86,7 +86,7 @@ export default function Header() {
                 <span>480.201.9520</span>
               </a>
               <Button asChild size="lg" className="w-full">
-                <Link href="/events">Book Now</Link>
+                <Link href="/classes">Book Now</Link>
               </Button>
             </div>
           </div>

@@ -1,42 +1,31 @@
 // src/lib/classApi.ts
-// Centralised API helpers for class products and sessions.
-// IMPORTANT: We export BOTH `getX` and `fetchX` names because the codebase
-// currently imports both styles in different pages/components.
-
 import { apiGet } from "./publicApi";
 
 /**
- * Core implementations (single source of truth)
+ * Canonical (newer) function names
  */
-function _getClassProducts() {
+export function fetchClassProducts() {
   return apiGet("/classes/products");
 }
 
-function _getClassProduct(id: number) {
+export function fetchClassProduct(id: number | string) {
   return apiGet(`/classes/products/${id}`);
 }
 
-function _getClassSessions() {
+export function fetchSessions() {
   return apiGet("/classes/sessions");
 }
 
-function _getClassSession(id: number) {
+export function fetchSession(id: number | string) {
   return apiGet(`/classes/sessions/${id}`);
 }
 
 /**
- * Preferred names (new convention)
+ * Backwards-compatible aliases (older names used around the app)
+ * This stops Vercel build failures without having to edit every page right now.
  */
-export const getClassProducts = _getClassProducts;
-export const getClassProduct = _getClassProduct;
-export const getClassSessions = _getClassSessions;
-export const getClassSession = _getClassSession;
-export const getClassSessionById = _getClassSession;
+export const getClassProducts = fetchClassProducts;
+export const getClassProductById = fetchClassProduct;
 
-/**
- * Backwards-compatible names (old convention used in some pages)
- */
-export const fetchClassProducts = _getClassProducts;
-export const fetchClassProduct = _getClassProduct;
-export const fetchSessions = _getClassSessions;
-export const fetchSession = _getClassSession;
+export const getClassSessions = fetchSessions;
+export const getClassSessionById = fetchSession;
