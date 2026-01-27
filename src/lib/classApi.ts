@@ -1,14 +1,12 @@
 // src/lib/classApi.ts
 import { apiGet } from "./publicApi";
 
-/**
- * Canonical (newer) function names
- */
+// New "fetch*" names (nice + consistent)
 export function fetchClassProducts() {
   return apiGet("/classes/products");
 }
 
-export function fetchClassProduct(id: number | string) {
+export function fetchClassProduct(id: number) {
   return apiGet(`/classes/products/${id}`);
 }
 
@@ -16,14 +14,11 @@ export function fetchSessions() {
   return apiGet("/classes/sessions");
 }
 
-export function fetchSession(id: number | string) {
+export function fetchSession(id: number) {
   return apiGet(`/classes/sessions/${id}`);
 }
 
-/**
- * Backwards-compatible aliases (older names used around the app)
- * This stops Vercel build failures without having to edit every page right now.
- */
+// Backwards-compatible aliases (so older pages still compile)
 export const getClassProducts = fetchClassProducts;
 export const getClassProductById = fetchClassProduct;
 
