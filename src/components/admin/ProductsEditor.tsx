@@ -5,7 +5,7 @@ import { toast } from "sonner";
 axios.defaults.withCredentials = true;
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-export default function ClassProductsEditor() {
+export default function ProductsEditor() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
