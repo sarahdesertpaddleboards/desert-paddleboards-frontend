@@ -6,10 +6,16 @@ import { getClassSessions } from "../lib/classApi";
 type Session = {
   id: number;
   classProductId: number;
-  startTime: string; // ISO
-  endTime: string;   // ISO
+  startTime: string;
+  endTime: string;
   seatsTotal: number;
   seatsAvailable: number;
+
+  venueId: number | null;
+  venueName: string | null;
+  venueCity: string | null;
+  venueState: string | null;
+  venueSlug: string | null;
 };
 
 function unwrapArray(maybe: any): any[] {
@@ -42,14 +48,18 @@ export default function Home() {
 
         // Super explicit debug so we can see what the frontend *really* got
         const sample = list?.[0]
-          ? {
-              id: list[0].id,
-              startTime: list[0].startTime,
-              endTime: list[0].endTime,
-              seatsAvailable: list[0].seatsAvailable,
-              seatsTotal: list[0].seatsTotal,
-            }
-          : null;
+        ? {
+            id: list[0].id,
+            startTime: list[0].startTime,
+            endTime: list[0].endTime,
+            venueName: list[0].venueName,
+            venueCity: list[0].venueCity,
+            venueState: list[0].venueState,
+            seatsAvailable: list[0].seatsAvailable,
+            seatsTotal: list[0].seatsTotal,
+          }
+        : null;
+      
 
         console.log("HOME getClassSessions raw:", raw);
         console.log("HOME sessions list:", list);
@@ -148,6 +158,22 @@ export default function Home() {
                   {" – "}
                   {end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </div>
+
+<div style={{ marginTop: 6, opacity: 0.8 }}>
+  {s.venueName ? (
+    <>
+      {s.venueName}
+      {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
+    </>
+  ) : s.venueCity ? (
+    <>
+      {s.venueCity}
+      {s.venueState ? `, ${s.venueState}` : ""}
+    </>
+  ) : (
+    "Venue TBD"
+  )}
+</div>
 
                 <div style={{ marginTop: 6, opacity: 0.8 }}>
                   Seats: {s.seatsAvailable}/{s.seatsTotal}

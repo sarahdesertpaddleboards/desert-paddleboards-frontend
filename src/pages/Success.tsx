@@ -29,7 +29,7 @@ export default function Success() {
     if (!sessionId) return;
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/checkout/success/${sessionId}`
+      `${import.meta.env.VITE_BACKEND_URL}/checkout/success/${sessionId}`
     )
       .then(res => res.json())
       .then(setData)

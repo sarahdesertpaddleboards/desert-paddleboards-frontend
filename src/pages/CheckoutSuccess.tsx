@@ -25,25 +25,32 @@ export default function CheckoutSuccess() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
+
     if (!sessionId) {
       setLoading(false);
       return;
     }
 
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/checkout/success/${sessionId}`
-    )
-      .then(res => res.json())
-      .then(setData)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/checkout/success/${sessionId}`)
+      .then(async (res) => {
+        // ✅ Only accept valid responses as "data"
+        if (!res.ok) return null;
+
+        const json = (await res.json()) as CheckoutSuccessResponse;
+
+        // ✅ Guard against malformed responses
+        if (!json?.sessionId || !Array.isArray(json.deliveries)) return null;
+
+        return json;
+      })
+      .then((parsed) => setData(parsed))
       .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
-    return <div className="p-8">Loading your order…</div>;
+  if (loading) return <div className="p-8">Loading your order…</div>;
 
-  if (!data)
-    return <div className="p-8">Order not found</div>;
+  if (!data) return <div className="p-8">Order not found</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-teal-50 py-16">
@@ -61,18 +68,22 @@ export default function CheckoutSuccess() {
         </div>
 
         <div className="space-y-6">
-          {data.deliveries.map(delivery => {
+          {data.deliveries.map((delivery) => {
             switch (delivery.type) {
               case "digital":
                 return (
-                  <Card key={delivery.purchaseId}>
+                  <Card key={`${delivery.productKey}-${delivery.purchaseId}`}>
                     <CardContent className="p-6 flex justify-between items-center">
                       <div>
                         <h3 className="text-xl font-bold">Your digital download</h3>
                         <p className="text-gray-600">Your file is ready</p>
                       </div>
                       <Button
-                        onClick={() => (window.location.href = `/downloads/${delivery.purchaseId}`)}
+                        disabled={!delivery.purchaseId}
+                        onClick={() => {
+                          // ✅ Only navigate if we have a valid purchaseId
+                          window.location.href = `/downloads/${delivery.purchaseId}`;
+                        }}
                       >
                         <Download className="w-4 h-4 mr-2" />
                         Download
@@ -83,7 +94,7 @@ export default function CheckoutSuccess() {
 
               case "gift":
                 return (
-                  <Card key={delivery.purchaseId}>
+                  <Card key={`${delivery.productKey}-${delivery.purchaseId}`}>
                     <CardContent className="p-6 flex gap-4 items-center">
                       <Gift className="w-8 h-8 text-amber-600" />
                       <div>
@@ -96,7 +107,7 @@ export default function CheckoutSuccess() {
 
               case "merch":
                 return (
-                  <Card key={delivery.purchaseId}>
+                  <Card key={`${delivery.productKey}-${delivery.purchaseId}`}>
                     <CardContent className="p-6 flex gap-4 items-center">
                       <Package className="w-8 h-8 text-blue-600" />
                       <div>
@@ -109,7 +120,7 @@ export default function CheckoutSuccess() {
 
               case "booking":
                 return (
-                  <Card key={delivery.purchaseId}>
+                  <Card key={`${delivery.productKey}-${delivery.purchaseId}`}>
                     <CardContent className="p-6 flex gap-4 items-center">
                       <Calendar className="w-8 h-8 text-teal-600" />
                       <div>
