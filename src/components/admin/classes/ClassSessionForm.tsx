@@ -2,7 +2,10 @@
 // Modal form for creating or editing class sessions
 
 import { useState } from "react";
-import { publicApi } from "@/lib/publicApi";
+import {
+  createAdminClassSession,
+  updateAdminClassSession,
+} from "@/lib/adminApi";
 import { Button } from "@/components/ui/button";
 
 export default function ClassSessionForm({
@@ -29,7 +32,7 @@ export default function ClassSessionForm({
 
     setForm({
       ...form,
-      [name]: name === "seatsTotal" ? Number(value) : value,
+      [name]: name === "seatsTotal" || name === "classProductId" ? Number(value) : value,
       ...(name === "seatsTotal"
         ? { seatsAvailable: Number(value) }
         : {}),
@@ -39,9 +42,15 @@ export default function ClassSessionForm({
   async function save() {
     try {
       if (session) {
-        await publicApi.patch(`/class-sessions/${session.id}`, form);
+        await updateAdminClassSession(session.id, form);
       } else {
-        await publicApi.post("/class-sessions", form);
+        await createAdminClassSession({
+          classProductId: Number(form.classProductId),
+          startTime: form.startTime,
+          endTime: form.endTime,
+          seatsTotal: Number(form.seatsTotal),
+          seatsAvailable: Number(form.seatsAvailable),
+        });
       }
 
       onSaved();
@@ -57,7 +66,6 @@ export default function ClassSessionForm({
           {session ? "Edit Session" : "Create Session"}
         </h2>
 
-        {/* CLASS PRODUCT SELECTOR */}
         <label className="block mb-2">Class</label>
         <select
           name="classProductId"
@@ -73,7 +81,6 @@ export default function ClassSessionForm({
           ))}
         </select>
 
-        {/* START TIME */}
         <label className="block mb-2">Start Time</label>
         <input
           type="datetime-local"
@@ -83,7 +90,6 @@ export default function ClassSessionForm({
           className="border p-2 w-full mb-4"
         />
 
-        {/* END TIME */}
         <label className="block mb-2">End Time</label>
         <input
           type="datetime-local"
@@ -93,7 +99,6 @@ export default function ClassSessionForm({
           className="border p-2 w-full mb-4"
         />
 
-        {/* CAPACITY */}
         <label className="block mb-2">Total Seats</label>
         <input
           type="number"
@@ -104,7 +109,6 @@ export default function ClassSessionForm({
           className="border p-2 w-full mb-4"
         />
 
-        {/* AUTO seatsAvailable */}
         <label className="block mb-2 text-gray-600 text-sm">
           Seats Available (auto set)
         </label>
@@ -115,7 +119,6 @@ export default function ClassSessionForm({
           className="border p-2 w-full mb-4 bg-gray-100"
         />
 
-        {/* ACTION BUTTONS */}
         <div className="flex gap-3 mt-6">
           <Button onClick={save}>{session ? "Save Changes" : "Create"}</Button>
           <Button variant="secondary" onClick={onClose}>

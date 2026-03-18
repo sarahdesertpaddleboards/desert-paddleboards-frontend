@@ -1,63 +1,79 @@
 // src/lib/adminApi.ts
 import axios from "axios";
 
-export type AdminProduct = {
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_BACKEND_URL ||
+  "https://desert-paddleboards-railway.up.railway.app";
+
+const adminApi = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+export type AdminClassProduct = {
+  id: number;
   productKey: string;
   name: string;
   description: string;
-  price: number;      // cents
-  currency: string;   // "usd"
+  capacity: number;
+  price: number;
+  currency: string;
+  imageUrl?: string;
   active: boolean;
-  type: string;
-  hasOverride: boolean;
 };
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+export type AdminClassSession = {
+  id: number;
+  classProductId: number;
+  startTime: string;
+  endTime: string;
+  seatsTotal: number;
+  seatsAvailable: number;
+};
 
-if (!API_BASE_URL) {
-  throw new Error("VITE_BACKEND_URL is not defined in environment variables");
+export function fetchAdminClassProducts(): Promise<AdminClassProduct[]> {
+  return adminApi.get("/admin/classes/products").then((res) => res.data);
 }
 
-/**
- * Fetch all admin products
- */
-export async function fetchAdminProducts(): Promise<AdminProduct[]> {
-  const res = await axios.get(`${API_BASE_URL}/admin/products`, {
-    withCredentials: true,
-  });
-  return res.data;
+export function createAdminClassProduct(
+  payload: Omit<AdminClassProduct, "id">
+): Promise<AdminClassProduct> {
+  return adminApi.post("/admin/classes/products", payload).then((res) => res.data);
 }
 
-/**
- * Update a single product by productKey
- */
-export async function updateAdminProduct(
-  productKey: string,
-  payload: Partial<
-    Pick<
-      AdminProduct,
-      "name" | "description" | "price" | "currency" | "active" | "type"
-    >
-  >
-): Promise<AdminProduct> {
-  const res = await axios.patch(
-    `${API_BASE_URL}/admin/products/${productKey}`,
-    payload,
-    { withCredentials: true }
-  );
-  return res.data;
+export function updateAdminClassProduct(
+  id: number,
+  payload: Partial<Omit<AdminClassProduct, "id">>
+): Promise<AdminClassProduct> {
+  return adminApi
+    .patch(`/admin/classes/products/${id}`, payload)
+    .then((res) => res.data);
 }
 
-/**
- * Create a new product
- */
-export async function createAdminProduct(
-  payload: Omit<AdminProduct, "hasOverride">
-): Promise<AdminProduct> {
-  const res = await axios.post(
-    `${API_BASE_URL}/admin/products`,
-    payload,
-    { withCredentials: true }
-  );
-  return res.data;
+export function deleteAdminClassProduct(id: number): Promise<{ ok: true }> {
+  return adminApi.delete(`/admin/classes/products/${id}`).then((res) => res.data);
+}
+
+export function fetchAdminClassSessions(): Promise<AdminClassSession[]> {
+  return adminApi.get("/admin/classes/sessions").then((res) => res.data);
+}
+
+export function createAdminClassSession(
+  payload: Omit<AdminClassSession, "id">
+): Promise<AdminClassSession> {
+  return adminApi.post("/admin/classes/sessions", payload).then((res) => res.data);
+}
+
+export function updateAdminClassSession(
+  id: number,
+  payload: Partial<Omit<AdminClassSession, "id">>
+): Promise<AdminClassSession> {
+  return adminApi
+    .patch(`/admin/classes/sessions/${id}`, payload)
+    .then((res) => res.data);
+}
+
+export function deleteAdminClassSession(id: number): Promise<{ ok: true }> {
+  return adminApi.delete(`/admin/classes/sessions/${id}`).then((res) => res.data);
 }

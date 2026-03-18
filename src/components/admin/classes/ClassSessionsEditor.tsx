@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_BACKEND_URL;
+import {
+  createAdminClassSession,
+  fetchAdminClassSessions,
+  type AdminClassSession,
+} from "@/lib/adminApi";
 
 export default function ClassSessionsEditor({ classProductId }: { classProductId: number }) {
-  const [sessions, setSessions] = useState([]);
+  const [sessions, setSessions] = useState<AdminClassSession[]>([]);
   const [form, setForm] = useState({
     startTime: "",
     endTime: "",
@@ -12,11 +14,12 @@ export default function ClassSessionsEditor({ classProductId }: { classProductId
   });
 
   async function load() {
-    const res = await axios.get(
-      `${API_BASE}/admin/class-sessions/${classProductId}`,
-      { withCredentials: true }
+    const all = await fetchAdminClassSessions();
+    setSessions(
+      (Array.isArray(all) ? all : []).filter(
+        (s) => Number(s.classProductId) === Number(classProductId)
+      )
     );
-    setSessions(res.data);
   }
 
   useEffect(() => {
@@ -24,15 +27,14 @@ export default function ClassSessionsEditor({ classProductId }: { classProductId
   }, [classProductId]);
 
   async function create() {
-    await axios.post(
-      `${API_BASE}/admin/class-sessions`,
-      {
-        classProductId,
-        ...form,
-        seatsAvailable: form.seatsTotal,
-      },
-      { withCredentials: true }
-    );
+    await createAdminClassSession({
+      classProductId,
+      startTime: form.startTime,
+      endTime: form.endTime,
+      seatsTotal: Number(form.seatsTotal || 0),
+      seatsAvailable: Number(form.seatsTotal || 0),
+    });
+    setForm({ startTime: "", endTime: "", seatsTotal: "" });
     load();
   }
 
@@ -68,7 +70,7 @@ export default function ClassSessionsEditor({ classProductId }: { classProductId
       </div>
 
       <div className="space-y-3">
-        {sessions.map((s: any) => (
+        {sessions.map((s) => (
           <div key={s.id} className="border p-3 rounded">
             <div>
               <strong>{s.startTime}</strong>
