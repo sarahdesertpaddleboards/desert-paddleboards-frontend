@@ -74,19 +74,20 @@ export default function SessionDetailPage() {
             {session.className ?? session.name ?? "Session"}
           </h1>
 
-          {/* IMPORTANT: use startTime/endTime, not session.date */}
           <div className="text-gray-700 mb-4">{formatRange(session)}</div>
+
+          {(session.venueName || session.venueCity) && (
+            <div className="text-gray-700 mb-4">
+              {session.venueName ?? "Venue"}
+              {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
+            </div>
+          )}
 
           {typeof session.seatsAvailable === "number" && typeof session.seatsTotal === "number" ? (
             <div className="text-gray-700 mb-4">
               Seats available: {session.seatsAvailable}/{session.seatsTotal}
             </div>
           ) : null}
-
-          {/* Optional: show IDs for sanity while you debug */}
-          <div className="text-xs text-gray-400">
-            Session ID: {session.id} {session.classProductId ? `| Class ID: ${session.classProductId}` : ""}
-          </div>
         </>
       )}
     </div>

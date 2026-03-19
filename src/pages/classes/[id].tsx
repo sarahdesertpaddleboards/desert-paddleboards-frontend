@@ -95,8 +95,14 @@ export default function ClassDetailPage() {
                   className="w-full text-left border rounded-lg p-4 hover:bg-gray-50"
                   onClick={() => navigate(`/sessions/${s.id}`)}
                 >
-                  {/* IMPORTANT: use startTime, not date */}
                   <div className="font-semibold">{formatStart(s)}</div>
+
+                  {s.venueName ? (
+                    <div className="text-sm text-gray-600">
+                      {s.venueName}
+                      {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
+                    </div>
+                  ) : null}
 
                   {typeof s.seatsAvailable === "number" && typeof s.seatsTotal === "number" ? (
                     <div className="text-sm text-gray-600">

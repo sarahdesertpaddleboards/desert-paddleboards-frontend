@@ -54,7 +54,7 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/events">
+                <Link href="/classes">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     Classes & Events
                   </span>
