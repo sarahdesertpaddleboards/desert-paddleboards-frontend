@@ -1,35 +1,38 @@
 import { useEffect, useState } from "react";
 import { fetchStoreProduct } from "@/lib/storeApi";
-import { submitCheckout } from "@/lib/shopApi"; // unchanged
+import { submitCheckout } from "@/lib/shopApi";
 import { Button } from "@/components/ui/button";
 import { useRoute } from "wouter";
 
 export default function BuyProductPage() {
-  const [match, params] = useRoute("/buy/:key");
-  const productKey = params?.key;
+  const [match, params] = useRoute("/buy/:productKey");
+  const productKey = params?.productKey;
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!productKey) return;
+    if (!match || !productKey) return;
 
     fetchStoreProduct(productKey)
       .then(setProduct)
       .finally(() => setLoading(false));
-  }, [productKey]);
+  }, [match, productKey]);
 
   if (loading) return <div className="p-6">Loading…</div>;
   if (!product) return <div className="p-6">Product not found.</div>;
 
   async function handleBuy() {
-    const res = await submitCheckout({
+    const checkout = await submitCheckout({
       productId: product.id,
       quantity: 1,
       email: "test@example.com",
       name: product.name,
     });
 
-    window.location.href = res.url;
+    const url = typeof checkout === "string" ? checkout : checkout?.url;
+    if (url) {
+      window.location.href = url;
+    }
   }
 
   return (

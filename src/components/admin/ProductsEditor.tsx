@@ -3,18 +3,21 @@ import axios from "axios";
 import { toast } from "sonner";
 
 axios.defaults.withCredentials = true;
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_BACKEND_URL ||
+  "https://desert-paddleboards-railway.up.railway.app";
 
 export default function ProductsEditor() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState<string | null>(null);
+  const [saving, setSaving] = useState<number | null>(null);
 
   async function loadProducts() {
-    const res = await axios.get(`${API_BASE_URL}/admin/products`, {
+    const res = await axios.get(`${API_BASE_URL}/admin/store/products`, {
       withCredentials: true,
     });
-    setProducts(res.data);
+    setProducts(Array.isArray(res.data) ? res.data : []);
     setLoading(false);
   }
 
@@ -22,15 +25,13 @@ export default function ProductsEditor() {
     loadProducts();
   }, []);
 
-  async function updateProduct(productKey: string, updates: any) {
+  async function updateProduct(id: number, updates: any) {
     try {
-      setSaving(productKey);
+      setSaving(id);
 
-      await axios.post(
-        `${API_BASE_URL}/admin/products/${productKey}`,
-        updates,
-        { withCredentials: true }
-      );
+      await axios.patch(`${API_BASE_URL}/admin/store/products/${id}`, updates, {
+        withCredentials: true,
+      });
 
       toast.success("Product updated!");
       await loadProducts();
@@ -51,60 +52,40 @@ export default function ProductsEditor() {
       <div className="space-y-4">
         {products.map((p) => (
           <div
-            key={p.productKey}
+            key={p.id}
             className="border rounded p-4 space-y-2 bg-white shadow-sm"
           >
-            <div className="font-semibold text-lg">{p.name}</div>
-            <div className="text-sm text-gray-600">{p.productKey}</div>
+            <div className="font-semibold text-lg">{p.overrideName ?? p.name ?? `Product ${p.id}`}</div>
+            <div className="text-sm text-gray-600">Override ID: {p.id}</div>
+            <div className="text-sm text-gray-600">Product ID: {p.productId}</div>
 
-            {/* ACTIVE TOGGLE */}
-            <label className="flex items-center gap-2 mt-2">
-              <input
-                type="checkbox"
-                checked={p.active}
-                onChange={(e) =>
-                  updateProduct(p.productKey, { active: e.target.checked })
-                }
-                disabled={saving === p.productKey}
-              />
-              <span>{p.active ? "Active" : "Inactive"}</span>
-            </label>
-
-            {/* PRICE EDITOR */}
             <div className="flex items-center gap-2">
-              <span className="text-sm">Price:</span>
+              <span className="text-sm">Override price:</span>
               <input
                 type="number"
                 className="border p-1 rounded w-32"
-                defaultValue={p.price / 100}
+                defaultValue={typeof p.overridePrice === "number" ? p.overridePrice / 100 : ""}
                 onBlur={(e) =>
-                  updateProduct(p.productKey, {
-                    price: Math.round(parseFloat(e.target.value) * 100),
+                  updateProduct(p.id, {
+                    overridePrice: e.target.value === "" ? null : Math.round(parseFloat(e.target.value) * 100),
                   })
                 }
-                disabled={saving === p.productKey}
+                disabled={saving === p.id}
               />
-              <span className="text-sm">{p.currency.toUpperCase()}</span>
             </div>
 
-            {/* TYPE SELECTOR */}
             <div className="flex items-center gap-2">
-              <span className="text-sm">Type:</span>
-              <select
-                className="border p-1 rounded"
-                defaultValue={p.type}
-                onChange={(e) =>
-                  updateProduct(p.productKey, { type: e.target.value })
-                }
-                disabled={saving === p.productKey}
-              >
-                <option value="class">class</option>
-                <option value="physical">physical</option>
-                <option value="digital">digital</option>
-              </select>
+              <span className="text-sm">Override name:</span>
+              <input
+                type="text"
+                className="border p-1 rounded w-64"
+                defaultValue={p.overrideName ?? ""}
+                onBlur={(e) => updateProduct(p.id, { overrideName: e.target.value || null })}
+                disabled={saving === p.id}
+              />
             </div>
 
-            {saving === p.productKey && (
+            {saving === p.id && (
               <div className="text-blue-600 text-sm">Saving...</div>
             )}
           </div>
