@@ -23,7 +23,7 @@ export default function BuyProductPage() {
 
   async function handleBuy() {
     const checkout = await submitCheckout({
-      productId: product.id,
+      productKey: product.productKey,
       quantity: 1,
       email: "test@example.com",
       name: product.name,
