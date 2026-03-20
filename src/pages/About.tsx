@@ -285,7 +285,7 @@ export default function About() {
           </div>
           <div className="text-center mt-12">
             <Button asChild size="lg" className="text-lg px-8 py-6">
-              <Link href="/events">Book Your Transformative Experience</Link>
+              <Link href="/classes">Book Your Transformative Experience</Link>
             </Button>
             <p className="text-sm text-muted-foreground mt-4">
               Join hundreds of satisfied customers who've found their zen on the water
