@@ -199,7 +199,7 @@ export default function FAQ() {
               Call Us: 480.201.9520
             </a>
             <a
-              href="/events"
+              href="/classes"
               className="inline-flex items-center justify-center px-8 py-3 bg-background border-2 border-primary text-primary rounded-md font-medium hover:bg-primary/10 transition-colors"
             >
               Browse Classes

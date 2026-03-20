@@ -192,7 +192,7 @@ export default function SantaPaddle() {
                 Get Directions
               </a>
               <a
-                href="/events"
+                href="/classes"
                 className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors inline-flex items-center justify-center"
               >
                 <Calendar className="w-5 h-5 mr-2" />

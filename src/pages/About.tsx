@@ -311,7 +311,7 @@ export default function About() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/events">Book a Class</Link>
+              <Link href="/classes">Book a Class</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/private-events">Plan Your Event</Link>
