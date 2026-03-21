@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { getClassProducts, getClassSessions } from "../../lib/classApi";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-// Class details page for /classes/:id
 export default function ClassDetailPage() {
   const [match, params] = useRoute("/classes/:id");
   const [, navigate] = useLocation();
@@ -19,9 +20,16 @@ export default function ClassDetailPage() {
     return Number.isNaN(d.getTime()) ? null : d;
   }
 
-  function formatStart(s: any): string {
-    const start = toDateSafe(s?.startTime);
-    return start ? start.toLocaleString() : "TBA";
+  function formatStart(value: string): string {
+    const start = toDateSafe(value);
+    if (!start) return "TBA";
+    return start.toLocaleString([], {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
   useEffect(() => {
@@ -33,11 +41,11 @@ export default function ClassDetailPage() {
       try {
         setLoading(true);
 
-        // Load class products and find the one for this id
         const products = await getClassProducts();
-        const found = (Array.isArray(products) ? products : []).find((p) => Number(p.id) === classId);
+        const found = (Array.isArray(products) ? products : []).find(
+          (p) => Number(p.id) === classId
+        );
 
-        // Load sessions and filter to this class product id
         const allSessions = await getClassSessions();
 
         const filtered = (Array.isArray(allSessions) ? allSessions : [])
@@ -73,46 +81,79 @@ export default function ClassDetailPage() {
   if (!match) return null;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
       {loading ? (
-        <p>Loading...</p>
+        <p>Loading class…</p>
       ) : !classProduct ? (
         <p>Class not found.</p>
       ) : (
         <>
-          <h1 className="text-2xl font-bold mb-2">{classProduct.name}</h1>
-          <p className="text-gray-700 mb-6">{classProduct.description}</p>
-
-          <h2 className="text-xl font-semibold mb-3">Upcoming sessions</h2>
-
-          {sessions.length === 0 ? (
-            <div>No upcoming sessions for this class.</div>
-          ) : (
-            <div className="space-y-3">
-              {sessions.map((s: any) => (
-                <button
-                  key={s.id}
-                  className="w-full text-left border rounded-lg p-4 hover:bg-gray-50"
-                  onClick={() => navigate(`/sessions/${s.id}`)}
-                >
-                  <div className="font-semibold">{formatStart(s)}</div>
-
-                  {s.venueName ? (
-                    <div className="text-sm text-gray-600">
-                      {s.venueName}
-                      {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
-                    </div>
-                  ) : null}
-
-                  {typeof s.seatsAvailable === "number" && typeof s.seatsTotal === "number" ? (
-                    <div className="text-sm text-gray-600">
-                      Seats: {s.seatsAvailable}/{s.seatsTotal}
-                    </div>
-                  ) : null}
-                </button>
-              ))}
+          <div className="space-y-2">
+            <div className="text-sm uppercase tracking-wide text-muted-foreground">
+              Choose your session
             </div>
-          )}
+            <h1 className="text-3xl font-bold">{classProduct.name}</h1>
+            <p className="text-muted-foreground max-w-3xl">{classProduct.description}</p>
+          </div>
+
+          <Card>
+            <CardContent className="p-6 space-y-2">
+              <div className="font-medium">
+                {sessions.length} upcoming session{sessions.length === 1 ? "" : "s"}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Pick the date, venue, and availability that works best for you.
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-4">
+            {sessions.length === 0 ? (
+              <Card>
+                <CardContent className="p-6 text-muted-foreground">
+                  No upcoming sessions for this class right now.
+                </CardContent>
+              </Card>
+            ) : (
+              sessions.map((s: any) => (
+                <Card key={s.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-5 space-y-3">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="font-semibold text-lg">{formatStart(s.startTime)}</div>
+
+                        {s.venueName ? (
+                          <div className="text-sm text-muted-foreground">
+                            {s.venueName}
+                            {s.venueCity && s.venueState
+                              ? ` • ${s.venueCity}, ${s.venueState}`
+                              : ""}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-muted-foreground">Venue TBD</div>
+                        )}
+                      </div>
+
+                      {typeof s.seatsAvailable === "number" && typeof s.seatsTotal === "number" ? (
+                        <div className="text-sm text-muted-foreground md:text-right">
+                          <div className="font-medium text-foreground">
+                            {s.seatsAvailable} of {s.seatsTotal} seats left
+                          </div>
+                          {s.seatsAvailable <= 0 ? "Sold out" : "Available now"}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button onClick={() => navigate(`/sessions/${s.id}`)}>
+                        View details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
         </>
       )}
     </div>
