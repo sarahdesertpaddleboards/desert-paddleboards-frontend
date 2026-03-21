@@ -17,6 +17,7 @@ type CheckoutSuccessResponse = {
   order: CheckoutOrder | null;
   downloadToken: string | null;
   pending?: boolean;
+  sessionId?: string | null;
 };
 
 function inferDeliveryType(productKey: string): "digital" | "gift" | "booking" | "merch" {
@@ -151,7 +152,11 @@ export default function CheckoutSuccess() {
                 <Calendar className="w-8 h-8 text-teal-600" />
                 <div>
                   <h3 className="text-xl font-bold">Experience booking</h3>
-                  <p className="text-gray-600">We’ll be in touch to confirm your session.</p>
+                  <p className="text-gray-600">
+                    {data.sessionId
+                      ? `Your selected session has been recorded (session ${data.sessionId}). We’ll be in touch to confirm the details.`
+                      : "We’ll be in touch to confirm your session."}
+                  </p>
                 </div>
               </CardContent>
             </Card>
