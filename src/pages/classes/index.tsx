@@ -26,6 +26,17 @@ function normalizeCity(value: string) {
   return value.trim().toLowerCase();
 }
 
+function formatSessionStart(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "TBA";
+  return date.toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function ClassesPage() {
   const [items, setItems] = useState<ClassProduct[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -84,17 +95,38 @@ export default function ClassesPage() {
     return items.filter((item) => matchingClassIds.has(Number(item.id)));
   }, [items, sessions, cityFilter]);
 
-  const sessionCountByClass = useMemo(() => {
-    const filteredSessions = cityFilter
+  const filteredSessions = useMemo(() => {
+    return cityFilter
       ? sessions.filter((s) => normalizeCity(s.venueCity || "") === cityFilter)
       : sessions;
+  }, [sessions, cityFilter]);
 
+  const sessionCountByClass = useMemo(() => {
     const map = new Map<number, number>();
     for (const session of filteredSessions) {
       map.set(session.classProductId, (map.get(session.classProductId) || 0) + 1);
     }
     return map;
-  }, [sessions, cityFilter]);
+  }, [filteredSessions]);
+
+  const nextSessionByClass = useMemo(() => {
+    const now = Date.now();
+    const map = new Map<number, Session>();
+
+    const sorted = [...filteredSessions].sort(
+      (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+    );
+
+    for (const session of sorted) {
+      const startMs = new Date(session.startTime).getTime();
+      if (!Number.isFinite(startMs) || startMs < now) continue;
+      if (!map.has(session.classProductId)) {
+        map.set(session.classProductId, session);
+      }
+    }
+
+    return map;
+  }, [filteredSessions]);
 
   function setCity(city?: string) {
     if (!city) {
@@ -149,17 +181,69 @@ export default function ClassesPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredItems.map((c) => (
-            <Card key={c.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/classes/${c.id}`)}>
-              <CardContent className="p-4 space-y-2">
-                <h2 className="text-xl font-bold">{c.name}</h2>
-                <p>{c.description}</p>
-                <div className="text-sm text-muted-foreground">
-                  {sessionCountByClass.get(c.id) || 0} upcoming session{(sessionCountByClass.get(c.id) || 0) === 1 ? "" : "s"}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {filteredItems.map((c) => {
+            const nextSession = nextSessionByClass.get(c.id);
+            const sessionCount = sessionCountByClass.get(c.id) || 0;
+
+            return (
+              <Card
+                key={c.id}
+                className="cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => navigate(`/classes/${c.id}`)}
+              >
+                <CardContent className="p-4 space-y-3">
+                  <div className="space-y-2">
+                    <h2 className="text-xl font-bold">{c.name}</h2>
+                    <p>{c.description}</p>
+                    <div className="text-sm text-muted-foreground">
+                      {sessionCount} upcoming session{sessionCount === 1 ? "" : "s"}
+                    </div>
+                  </div>
+
+                  {nextSession ? (
+                    <div className="rounded-lg border bg-muted/30 p-3 space-y-1">
+                      <div className="text-sm font-semibold">Next session</div>
+                      <div className="text-sm">{formatSessionStart(nextSession.startTime)}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {nextSession.venueName ?? "Venue TBD"}
+                        {nextSession.venueCity && nextSession.venueState
+                          ? ` • ${nextSession.venueCity}, ${nextSession.venueState}`
+                          : ""}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {nextSession.seatsAvailable} of {nextSession.seatsTotal} seats available
+                      </div>
+                      <div className="pt-2 flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/sessions/${nextSession.id}`);
+                          }}
+                        >
+                          View next session
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/classes/${c.id}`);
+                          }}
+                        >
+                          View all sessions
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-lg border bg-muted/20 p-3 text-sm text-muted-foreground">
+                      No upcoming sessions found for this class in the current filter.
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
