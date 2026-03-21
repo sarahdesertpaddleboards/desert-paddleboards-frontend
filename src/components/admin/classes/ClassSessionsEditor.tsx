@@ -2,11 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import {
   createAdminClassSession,
   fetchAdminClassSessions,
+  updateAdminClassSession,
   type AdminClassSession,
   type AdminClassProduct,
 } from "@/lib/adminApi";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 function formatDateTime(value: string) {
   const date = new Date(value);
@@ -43,6 +45,8 @@ export default function ClassSessionsEditor({
     endTime: "",
     seatsTotal: "",
   });
+  const [draftSeats, setDraftSeats] = useState<Record<number, { seatsTotal: string; seatsAvailable: string }>>({});
+  const [savingId, setSavingId] = useState<number | null>(null);
 
   const selectedClassProduct = useMemo(
     () => classProducts.find((p) => p.id === classProductId) ?? null,
@@ -51,16 +55,29 @@ export default function ClassSessionsEditor({
 
   async function load() {
     const all = await fetchAdminClassSessions();
-    setSessions(
-      (Array.isArray(all) ? all : []).filter(
-        (s) => Number(s.classProductId) === Number(classProductId)
+    const filtered = (Array.isArray(all) ? all : []).filter(
+      (s) => Number(s.classProductId) === Number(classProductId)
+    );
+    setSessions(filtered);
+    setDraftSeats(
+      Object.fromEntries(
+        filtered.map((s) => [
+          s.id,
+          {
+            seatsTotal: String(s.seatsTotal ?? ""),
+            seatsAvailable: String(s.seatsAvailable ?? ""),
+          },
+        ])
       )
     );
   }
 
   useEffect(() => {
     if (classProductId) load();
-    else setSessions([]);
+    else {
+      setSessions([]);
+      setDraftSeats({});
+    }
   }, [classProductId]);
 
   async function create() {
@@ -75,6 +92,22 @@ export default function ClassSessionsEditor({
     });
     setForm({ startTime: "", endTime: "", seatsTotal: "" });
     load();
+  }
+
+  async function saveCapacity(sessionId: number) {
+    const draft = draftSeats[sessionId];
+    if (!draft) return;
+
+    try {
+      setSavingId(sessionId);
+      await updateAdminClassSession(sessionId, {
+        seatsTotal: Number(draft.seatsTotal || 0),
+        seatsAvailable: Number(draft.seatsAvailable || 0),
+      });
+      await load();
+    } finally {
+      setSavingId(null);
+    }
   }
 
   return (
@@ -143,9 +176,14 @@ export default function ClassSessionsEditor({
           <div className="space-y-3">
             {sessions.map((s) => {
               const tone = availabilityTone(s.seatsAvailable, s.seatsTotal);
+              const draft = draftSeats[s.id] ?? {
+                seatsTotal: String(s.seatsTotal ?? ""),
+                seatsAvailable: String(s.seatsAvailable ?? ""),
+              };
+
               return (
                 <Card key={s.id}>
-                  <CardContent className="p-4 space-y-2">
+                  <CardContent className="p-4 space-y-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
                         <div className="font-semibold">{formatDateTime(s.startTime)}</div>
@@ -156,12 +194,47 @@ export default function ClassSessionsEditor({
                       <Badge variant={tone.variant}>{tone.label}</Badge>
                     </div>
 
-                    <div className="text-sm text-muted-foreground">
-                      Seats: {s.seatsAvailable}/{s.seatsTotal}
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Seats total</label>
+                        <input
+                          className="border rounded p-2 w-full"
+                          value={draft.seatsTotal}
+                          onChange={(e) =>
+                            setDraftSeats((prev) => ({
+                              ...prev,
+                              [s.id]: { ...draft, seatsTotal: e.target.value },
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Seats available</label>
+                        <input
+                          className="border rounded p-2 w-full"
+                          value={draft.seatsAvailable}
+                          onChange={(e) =>
+                            setDraftSeats((prev) => ({
+                              ...prev,
+                              [s.id]: { ...draft, seatsAvailable: e.target.value },
+                            }))
+                          }
+                        />
+                      </div>
                     </div>
 
                     <div className="text-xs text-muted-foreground">
                       Session ID: {s.id}
+                    </div>
+
+                    <div>
+                      <Button
+                        size="sm"
+                        onClick={() => saveCapacity(s.id)}
+                        disabled={savingId === s.id}
+                      >
+                        {savingId === s.id ? "Saving…" : "Save capacity"}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
