@@ -23,6 +23,13 @@ function formatDateTime(value: string) {
   });
 }
 
+function toDatetimeLocalValue(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 function availabilityTone(seatsAvailable: number, seatsTotal: number) {
   if (seatsAvailable <= 0) return { label: "Sold out", variant: "destructive" as const };
   if (seatsAvailable <= Math.max(2, Math.ceil(seatsTotal * 0.2))) {
@@ -30,6 +37,13 @@ function availabilityTone(seatsAvailable: number, seatsTotal: number) {
   }
   return { label: "Available", variant: "outline" as const };
 }
+
+type SessionDraft = {
+  startTime: string;
+  endTime: string;
+  seatsTotal: string;
+  seatsAvailable: string;
+};
 
 export default function ClassSessionsEditor({
   classProductId,
@@ -46,7 +60,7 @@ export default function ClassSessionsEditor({
     endTime: "",
     seatsTotal: "",
   });
-  const [draftSeats, setDraftSeats] = useState<Record<number, { seatsTotal: string; seatsAvailable: string }>>({});
+  const [drafts, setDrafts] = useState<Record<number, SessionDraft>>({});
   const [savingId, setSavingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -61,11 +75,13 @@ export default function ClassSessionsEditor({
       (s) => Number(s.classProductId) === Number(classProductId)
     );
     setSessions(filtered);
-    setDraftSeats(
+    setDrafts(
       Object.fromEntries(
         filtered.map((s) => [
           s.id,
           {
+            startTime: toDatetimeLocalValue(s.startTime),
+            endTime: toDatetimeLocalValue(s.endTime),
             seatsTotal: String(s.seatsTotal ?? ""),
             seatsAvailable: String(s.seatsAvailable ?? ""),
           },
@@ -78,7 +94,7 @@ export default function ClassSessionsEditor({
     if (classProductId) load();
     else {
       setSessions([]);
-      setDraftSeats({});
+      setDrafts({});
     }
   }, [classProductId]);
 
@@ -96,13 +112,15 @@ export default function ClassSessionsEditor({
     load();
   }
 
-  async function saveCapacity(sessionId: number) {
-    const draft = draftSeats[sessionId];
+  async function saveSession(sessionId: number) {
+    const draft = drafts[sessionId];
     if (!draft) return;
 
     try {
       setSavingId(sessionId);
       await updateAdminClassSession(sessionId, {
+        startTime: draft.startTime,
+        endTime: draft.endTime,
         seatsTotal: Number(draft.seatsTotal || 0),
         seatsAvailable: Number(draft.seatsAvailable || 0),
       });
@@ -193,7 +211,9 @@ export default function ClassSessionsEditor({
           <div className="space-y-3">
             {sessions.map((s) => {
               const tone = availabilityTone(s.seatsAvailable, s.seatsTotal);
-              const draft = draftSeats[s.id] ?? {
+              const draft = drafts[s.id] ?? {
+                startTime: toDatetimeLocalValue(s.startTime),
+                endTime: toDatetimeLocalValue(s.endTime),
                 seatsTotal: String(s.seatsTotal ?? ""),
                 seatsAvailable: String(s.seatsAvailable ?? ""),
               };
@@ -213,12 +233,40 @@ export default function ClassSessionsEditor({
 
                     <div className="grid md:grid-cols-2 gap-3">
                       <div>
+                        <label className="block text-sm font-medium mb-1">Start time</label>
+                        <input
+                          type="datetime-local"
+                          className="border rounded p-2 w-full"
+                          value={draft.startTime}
+                          onChange={(e) =>
+                            setDrafts((prev) => ({
+                              ...prev,
+                              [s.id]: { ...draft, startTime: e.target.value },
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">End time</label>
+                        <input
+                          type="datetime-local"
+                          className="border rounded p-2 w-full"
+                          value={draft.endTime}
+                          onChange={(e) =>
+                            setDrafts((prev) => ({
+                              ...prev,
+                              [s.id]: { ...draft, endTime: e.target.value },
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium mb-1">Seats total</label>
                         <input
                           className="border rounded p-2 w-full"
                           value={draft.seatsTotal}
                           onChange={(e) =>
-                            setDraftSeats((prev) => ({
+                            setDrafts((prev) => ({
                               ...prev,
                               [s.id]: { ...draft, seatsTotal: e.target.value },
                             }))
@@ -231,7 +279,7 @@ export default function ClassSessionsEditor({
                           className="border rounded p-2 w-full"
                           value={draft.seatsAvailable}
                           onChange={(e) =>
-                            setDraftSeats((prev) => ({
+                            setDrafts((prev) => ({
                               ...prev,
                               [s.id]: { ...draft, seatsAvailable: e.target.value },
                             }))
@@ -247,10 +295,10 @@ export default function ClassSessionsEditor({
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        onClick={() => saveCapacity(s.id)}
+                        onClick={() => saveSession(s.id)}
                         disabled={savingId === s.id || deletingId === s.id}
                       >
-                        {savingId === s.id ? "Saving…" : "Save capacity"}
+                        {savingId === s.id ? "Saving…" : "Save session"}
                       </Button>
                       <Button
                         size="sm"
