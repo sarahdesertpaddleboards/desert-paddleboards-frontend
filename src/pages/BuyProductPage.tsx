@@ -2,13 +2,37 @@ import { useEffect, useState } from "react";
 import { fetchStoreProduct } from "@/lib/storeApi";
 import { submitCheckout } from "@/lib/shopApi";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { useRoute } from "wouter";
+
+type StoreProduct = {
+  productKey: string;
+  name: string;
+  description: string;
+  price: number;
+  type?: string;
+};
+
+function labelForType(type?: string) {
+  switch ((type || "").toLowerCase()) {
+    case "digital":
+      return "Digital product";
+    case "gift":
+      return "Gift certificate";
+    case "physical":
+      return "Merchandise";
+    default:
+      return "Store item";
+  }
+}
 
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<StoreProduct | null>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -22,27 +46,57 @@ export default function BuyProductPage() {
   if (!product) return <div className="p-6">Product not found.</div>;
 
   async function handleBuy() {
-    const checkout = await submitCheckout({
-      productKey: product.productKey,
-      quantity: 1,
-      email: "test@example.com",
-      name: product.name,
-    });
+    try {
+      setSubmitting(true);
+      const checkout = await submitCheckout({
+        productKey: product.productKey,
+        quantity: 1,
+        email: "test@example.com",
+        name: product.name,
+      });
 
-    const url = typeof checkout === "string" ? checkout : checkout?.url;
-    if (url) {
-      window.location.href = url;
+      const url = typeof checkout === "string" ? checkout : checkout?.url;
+      if (url) {
+        window.location.href = url;
+      }
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <div className="p-8 max-w-2xl mx-auto space-y-4">
-      <h1 className="text-3xl font-bold">{product.name}</h1>
-      <p>{product.description}</p>
-      <div className="text-xl font-semibold">
-        ${(product.price / 100).toFixed(2)}
+    <div className="p-8 max-w-3xl mx-auto space-y-6">
+      <div className="space-y-2">
+        <Badge variant="secondary">{labelForType(product.type)}</Badge>
+        <h1 className="text-3xl font-bold">Complete your purchase</h1>
+        <p className="text-muted-foreground">
+          Review your selection and continue to secure checkout.
+        </p>
       </div>
-      <Button onClick={handleBuy}>Checkout</Button>
+
+      <Card>
+        <CardContent className="p-6 space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold">{product.name}</h2>
+              <p className="text-muted-foreground">{product.description}</p>
+            </div>
+            <div className="text-2xl font-semibold whitespace-nowrap">
+              ${(product.price / 100).toFixed(2)}
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
+            You’ll be redirected to checkout to complete this purchase securely.
+          </div>
+
+          <div className="flex gap-3">
+            <Button size="lg" onClick={handleBuy} disabled={submitting}>
+              {submitting ? "Redirecting…" : "Continue to checkout"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
