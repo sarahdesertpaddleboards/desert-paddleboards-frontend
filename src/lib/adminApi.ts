@@ -1,4 +1,3 @@
-// src/lib/adminApi.ts
 import axios from "axios";
 
 const API_BASE_URL =
@@ -36,6 +35,15 @@ export type AdminClassSession = {
   seatsAvailable: number;
 };
 
+export type AdminVenue = {
+  id: number;
+  slug: string;
+  name: string;
+  city: string;
+  state: string;
+  active: boolean;
+};
+
 export function fetchAdminClassProducts(): Promise<AdminClassProduct[]> {
   return adminApi.get("/admin/classes/products").then((res) => res.data);
 }
@@ -50,9 +58,7 @@ export function updateAdminClassProduct(
   id: number,
   payload: Partial<Omit<AdminClassProduct, "id">>
 ): Promise<AdminClassProduct> {
-  return adminApi
-    .patch(`/admin/classes/products/${id}`, payload)
-    .then((res) => res.data);
+  return adminApi.patch(`/admin/classes/products/${id}`, payload).then((res) => res.data);
 }
 
 export function deleteAdminClassProduct(id: number): Promise<{ ok: true }> {
@@ -61,6 +67,10 @@ export function deleteAdminClassProduct(id: number): Promise<{ ok: true }> {
 
 export function fetchAdminClassSessions(): Promise<AdminClassSession[]> {
   return adminApi.get("/admin/classes/sessions").then((res) => res.data);
+}
+
+export function fetchAdminVenues(): Promise<AdminVenue[]> {
+  return adminApi.get("/admin/venues").then((res) => res.data);
 }
 
 export function createAdminClassSession(
@@ -73,9 +83,7 @@ export function updateAdminClassSession(
   id: number,
   payload: Partial<Omit<AdminClassSession, "id">>
 ): Promise<AdminClassSession> {
-  return adminApi
-    .patch(`/admin/classes/sessions/${id}`, payload)
-    .then((res) => res.data);
+  return adminApi.patch(`/admin/classes/sessions/${id}`, payload).then((res) => res.data);
 }
 
 export function deleteAdminClassSession(id: number): Promise<{ ok: true }> {

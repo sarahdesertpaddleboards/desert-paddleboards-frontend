@@ -4,8 +4,10 @@ import {
   fetchAdminClassSessions,
   updateAdminClassSession,
   deleteAdminClassSession,
+  fetchAdminVenues,
   type AdminClassSession,
   type AdminClassProduct,
+  type AdminVenue,
 } from "@/lib/adminApi";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,6 +41,7 @@ function availabilityTone(seatsAvailable: number, seatsTotal: number) {
 }
 
 type SessionDraft = {
+  venueId: string;
   startTime: string;
   endTime: string;
   seatsTotal: string;
@@ -55,7 +58,9 @@ export default function ClassSessionsEditor({
   onSelectClassProduct: (id: number) => void;
 }) {
   const [sessions, setSessions] = useState<AdminClassSession[]>([]);
+  const [venues, setVenues] = useState<AdminVenue[]>([]);
   const [form, setForm] = useState({
+    venueId: "",
     startTime: "",
     endTime: "",
     seatsTotal: "",
@@ -69,6 +74,10 @@ export default function ClassSessionsEditor({
     [classProducts, classProductId]
   );
 
+  useEffect(() => {
+    fetchAdminVenues().then((rows) => setVenues(Array.isArray(rows) ? rows : []));
+  }, []);
+
   async function load() {
     const all = await fetchAdminClassSessions();
     const filtered = (Array.isArray(all) ? all : []).filter(
@@ -80,6 +89,7 @@ export default function ClassSessionsEditor({
         filtered.map((s) => [
           s.id,
           {
+            venueId: s.venueId ? String(s.venueId) : "",
             startTime: toDatetimeLocalValue(s.startTime),
             endTime: toDatetimeLocalValue(s.endTime),
             seatsTotal: String(s.seatsTotal ?? ""),
@@ -103,12 +113,13 @@ export default function ClassSessionsEditor({
 
     await createAdminClassSession({
       classProductId,
+      venueId: form.venueId ? Number(form.venueId) : null,
       startTime: form.startTime,
       endTime: form.endTime,
       seatsTotal: Number(form.seatsTotal || 0),
       seatsAvailable: Number(form.seatsTotal || 0),
     });
-    setForm({ startTime: "", endTime: "", seatsTotal: "" });
+    setForm({ venueId: "", startTime: "", endTime: "", seatsTotal: "" });
     load();
   }
 
@@ -119,6 +130,7 @@ export default function ClassSessionsEditor({
     try {
       setSavingId(sessionId);
       await updateAdminClassSession(sessionId, {
+        venueId: draft.venueId ? Number(draft.venueId) : null,
         startTime: draft.startTime,
         endTime: draft.endTime,
         seatsTotal: Number(draft.seatsTotal || 0),
@@ -182,15 +194,27 @@ export default function ClassSessionsEditor({
           </Card>
 
           <div className="border p-3 rounded space-y-2">
+            <select
+              className="border w-full p-2 rounded"
+              value={form.venueId}
+              onChange={(e) => setForm({ ...form, venueId: e.target.value })}
+            >
+              <option value="">Select venue</option>
+              {venues.map((venue) => (
+                <option key={venue.id} value={venue.id}>
+                  {venue.name} — {venue.city}, {venue.state}
+                </option>
+              ))}
+            </select>
             <input
+              type="datetime-local"
               className="border w-full p-2"
-              placeholder="Start time: 2026-01-30T10:00"
               value={form.startTime}
               onChange={(e) => setForm({ ...form, startTime: e.target.value })}
             />
             <input
+              type="datetime-local"
               className="border w-full p-2"
-              placeholder="End time"
               value={form.endTime}
               onChange={(e) => setForm({ ...form, endTime: e.target.value })}
             />
@@ -212,6 +236,7 @@ export default function ClassSessionsEditor({
             {sessions.map((s) => {
               const tone = availabilityTone(s.seatsAvailable, s.seatsTotal);
               const draft = drafts[s.id] ?? {
+                venueId: s.venueId ? String(s.venueId) : "",
                 startTime: toDatetimeLocalValue(s.startTime),
                 endTime: toDatetimeLocalValue(s.endTime),
                 seatsTotal: String(s.seatsTotal ?? ""),
@@ -227,11 +252,37 @@ export default function ClassSessionsEditor({
                         <div className="text-sm text-muted-foreground">
                           Ends: {formatDateTime(s.endTime)}
                         </div>
+                        {(s.venueName || s.venueCity) && (
+                          <div className="text-sm text-muted-foreground">
+                            {s.venueName ?? "Venue TBD"}
+                            {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
+                          </div>
+                        )}
                       </div>
                       <Badge variant={tone.variant}>{tone.label}</Badge>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Venue</label>
+                        <select
+                          className="border rounded p-2 w-full"
+                          value={draft.venueId}
+                          onChange={(e) =>
+                            setDrafts((prev) => ({
+                              ...prev,
+                              [s.id]: { ...draft, venueId: e.target.value },
+                            }))
+                          }
+                        >
+                          <option value="">Select venue</option>
+                          {venues.map((venue) => (
+                            <option key={venue.id} value={venue.id}>
+                              {venue.name} — {venue.city}, {venue.state}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                       <div>
                         <label className="block text-sm font-medium mb-1">Start time</label>
                         <input
