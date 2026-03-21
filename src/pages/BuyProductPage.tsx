@@ -5,6 +5,7 @@ import { fetchSession } from "@/lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useRoute } from "wouter";
 
 type StoreProduct = {
@@ -58,6 +59,10 @@ function formatSessionRange(session: SelectedSession | null) {
   return start.toLocaleString();
 }
 
+function looksLikeEmail(value: string) {
+  return /.+@.+\..+/.test(value.trim());
+}
+
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
@@ -65,6 +70,8 @@ export default function BuyProductPage() {
   const [session, setSession] = useState<SelectedSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [email, setEmail] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const sessionId = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
@@ -72,6 +79,8 @@ export default function BuyProductPage() {
     const parsed = raw ? Number(raw) : null;
     return parsed && Number.isFinite(parsed) ? parsed : null;
   }, [window.location.search]);
+
+  const emailValid = looksLikeEmail(email);
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -105,13 +114,18 @@ export default function BuyProductPage() {
   if (!product) return <div className="p-6">Product not found.</div>;
 
   async function handleBuy() {
+    if (!emailValid) {
+      setTouched(true);
+      return;
+    }
+
     try {
       setSubmitting(true);
       const checkout = await submitCheckout({
         productKey: product.productKey,
         sessionId: session?.id,
         quantity: 1,
-        email: "test@example.com",
+        email,
         name: product.name,
       });
 
@@ -160,12 +174,29 @@ export default function BuyProductPage() {
             </div>
           )}
 
+          <div className="space-y-2">
+            <label htmlFor="checkout-email" className="text-sm font-medium">
+              Email address
+            </label>
+            <Input
+              id="checkout-email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setTouched(true)}
+            />
+            {touched && !emailValid && (
+              <div className="text-sm text-red-600">Please enter a valid email address.</div>
+            )}
+          </div>
+
           <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
             You’ll be redirected to checkout to complete this purchase securely.
           </div>
 
           <div className="flex gap-3">
-            <Button size="lg" onClick={handleBuy} disabled={submitting}>
+            <Button size="lg" onClick={handleBuy} disabled={submitting || !emailValid}>
               {submitting ? "Redirecting…" : "Continue to checkout"}
             </Button>
           </div>
