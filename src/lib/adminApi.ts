@@ -27,6 +27,9 @@ export type AdminClassSession = {
   id: number;
   classProductId: number;
   venueId?: number | null;
+  venueName?: string | null;
+  venueCity?: string | null;
+  venueState?: string | null;
   startTime: string;
   endTime: string;
   seatsTotal: number;

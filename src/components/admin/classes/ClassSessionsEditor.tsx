@@ -290,6 +290,7 @@ export default function ClassSessionsEditor({
 
                     <div className="text-xs text-muted-foreground">
                       Session ID: {s.id}
+                      {typeof s.venueId === "number" ? ` • Venue ID: ${s.venueId}` : ""}
                     </div>
 
                     <div className="flex gap-2">
