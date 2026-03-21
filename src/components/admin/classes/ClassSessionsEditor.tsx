@@ -3,6 +3,7 @@ import {
   createAdminClassSession,
   fetchAdminClassSessions,
   updateAdminClassSession,
+  deleteAdminClassSession,
   type AdminClassSession,
   type AdminClassProduct,
 } from "@/lib/adminApi";
@@ -47,6 +48,7 @@ export default function ClassSessionsEditor({
   });
   const [draftSeats, setDraftSeats] = useState<Record<number, { seatsTotal: string; seatsAvailable: string }>>({});
   const [savingId, setSavingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const selectedClassProduct = useMemo(
     () => classProducts.find((p) => p.id === classProductId) ?? null,
@@ -107,6 +109,21 @@ export default function ClassSessionsEditor({
       await load();
     } finally {
       setSavingId(null);
+    }
+  }
+
+  async function removeSession(sessionId: number) {
+    const confirmed = window.confirm(
+      "Remove this session? This cannot be undone from the dashboard."
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(sessionId);
+      await deleteAdminClassSession(sessionId);
+      await load();
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -227,13 +244,21 @@ export default function ClassSessionsEditor({
                       Session ID: {s.id}
                     </div>
 
-                    <div>
+                    <div className="flex gap-2">
                       <Button
                         size="sm"
                         onClick={() => saveCapacity(s.id)}
-                        disabled={savingId === s.id}
+                        disabled={savingId === s.id || deletingId === s.id}
                       >
                         {savingId === s.id ? "Saving…" : "Save capacity"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => removeSession(s.id)}
+                        disabled={deletingId === s.id || savingId === s.id}
+                      >
+                        {deletingId === s.id ? "Removing…" : "Remove session"}
                       </Button>
                     </div>
                   </CardContent>
