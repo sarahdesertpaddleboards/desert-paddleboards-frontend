@@ -26,6 +26,7 @@ export type AdminClassProduct = {
 export type AdminClassSession = {
   id: number;
   classProductId: number;
+  venueId?: number | null;
   startTime: string;
   endTime: string;
   seatsTotal: number;

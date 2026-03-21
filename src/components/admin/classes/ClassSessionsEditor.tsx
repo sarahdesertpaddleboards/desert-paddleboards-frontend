@@ -1,10 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   createAdminClassSession,
   fetchAdminClassSessions,
   type AdminClassSession,
   type AdminClassProduct,
 } from "@/lib/adminApi";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+
+function formatDateTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function availabilityTone(seatsAvailable: number, seatsTotal: number) {
+  if (seatsAvailable <= 0) return { label: "Sold out", variant: "destructive" as const };
+  if (seatsAvailable <= Math.max(2, Math.ceil(seatsTotal * 0.2))) {
+    return { label: "Nearly full", variant: "secondary" as const };
+  }
+  return { label: "Available", variant: "outline" as const };
+}
 
 export default function ClassSessionsEditor({
   classProductId,
@@ -21,6 +43,11 @@ export default function ClassSessionsEditor({
     endTime: "",
     seatsTotal: "",
   });
+
+  const selectedClassProduct = useMemo(
+    () => classProducts.find((p) => p.id === classProductId) ?? null,
+    [classProducts, classProductId]
+  );
 
   async function load() {
     const all = await fetchAdminClassSessions();
@@ -77,6 +104,15 @@ export default function ClassSessionsEditor({
         </div>
       ) : (
         <>
+          <Card>
+            <CardContent className="p-4 space-y-1">
+              <div className="font-medium">{selectedClassProduct?.name ?? "Selected class"}</div>
+              <div className="text-sm text-muted-foreground">
+                {sessions.length} session{sessions.length === 1 ? "" : "s"} currently listed
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="border p-3 rounded space-y-2">
             <input
               className="border w-full p-2"
@@ -105,16 +141,32 @@ export default function ClassSessionsEditor({
           </div>
 
           <div className="space-y-3">
-            {sessions.map((s) => (
-              <div key={s.id} className="border p-3 rounded">
-                <div>
-                  <strong>{s.startTime}</strong>
-                </div>
-                <div>
-                  Seats: {s.seatsAvailable}/{s.seatsTotal}
-                </div>
-              </div>
-            ))}
+            {sessions.map((s) => {
+              const tone = availabilityTone(s.seatsAvailable, s.seatsTotal);
+              return (
+                <Card key={s.id}>
+                  <CardContent className="p-4 space-y-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="font-semibold">{formatDateTime(s.startTime)}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Ends: {formatDateTime(s.endTime)}
+                        </div>
+                      </div>
+                      <Badge variant={tone.variant}>{tone.label}</Badge>
+                    </div>
+
+                    <div className="text-sm text-muted-foreground">
+                      Seats: {s.seatsAvailable}/{s.seatsTotal}
+                    </div>
+
+                    <div className="text-xs text-muted-foreground">
+                      Session ID: {s.id}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </>
       )}
