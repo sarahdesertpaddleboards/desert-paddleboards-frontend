@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchStoreProduct } from "@/lib/storeApi";
 import { submitCheckout } from "@/lib/shopApi";
+import { fetchSession } from "@/lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,16 @@ type StoreProduct = {
   description: string;
   price: number;
   type?: string;
+};
+
+type SelectedSession = {
+  id: number;
+  startTime: string;
+  endTime?: string;
+  venueName?: string | null;
+  venueCity?: string | null;
+  venueState?: string | null;
+  className?: string | null;
 };
 
 function labelForType(type?: string) {
@@ -27,20 +38,68 @@ function labelForType(type?: string) {
   }
 }
 
+function formatSessionRange(session: SelectedSession | null) {
+  if (!session?.startTime) return "";
+  const start = new Date(session.startTime);
+  const end = session.endTime ? new Date(session.endTime) : null;
+  if (Number.isNaN(start.getTime())) return "";
+  if (end && !Number.isNaN(end.getTime())) {
+    return `${start.toLocaleString([], {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })} – ${end.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
+  return start.toLocaleString();
+}
+
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
   const [product, setProduct] = useState<StoreProduct | null>(null);
+  const [session, setSession] = useState<SelectedSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  const sessionId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("sessionId");
+    const parsed = raw ? Number(raw) : null;
+    return parsed && Number.isFinite(parsed) ? parsed : null;
+  }, [window.location.search]);
 
   useEffect(() => {
     if (!match || !productKey) return;
 
-    fetchStoreProduct(productKey)
-      .then(setProduct)
-      .finally(() => setLoading(false));
-  }, [match, productKey]);
+    let cancelled = false;
+
+    async function load() {
+      try {
+        setLoading(true);
+        const [productData, sessionData] = await Promise.all([
+          fetchStoreProduct(productKey),
+          sessionId ? fetchSession(sessionId) : Promise.resolve(null),
+        ]);
+
+        if (!cancelled) {
+          setProduct(productData ?? null);
+          setSession(sessionData ?? null);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [match, productKey, sessionId]);
 
   if (loading) return <div className="p-6">Loading…</div>;
   if (!product) return <div className="p-6">Product not found.</div>;
@@ -50,6 +109,7 @@ export default function BuyProductPage() {
       setSubmitting(true);
       const checkout = await submitCheckout({
         productKey: product.productKey,
+        sessionId: session?.id,
         quantity: 1,
         email: "test@example.com",
         name: product.name,
@@ -85,6 +145,20 @@ export default function BuyProductPage() {
               ${(product.price / 100).toFixed(2)}
             </div>
           </div>
+
+          {session && (
+            <div className="rounded-lg border bg-muted/20 p-4 space-y-1">
+              <div className="text-sm font-semibold">Selected session</div>
+              <div className="text-sm">{session.className ?? product.name}</div>
+              <div className="text-sm text-muted-foreground">{formatSessionRange(session)}</div>
+              <div className="text-sm text-muted-foreground">
+                {session.venueName ?? "Venue TBD"}
+                {session.venueCity && session.venueState
+                  ? ` • ${session.venueCity}, ${session.venueState}`
+                  : ""}
+              </div>
+            </div>
+          )}
 
           <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
             You’ll be redirected to checkout to complete this purchase securely.

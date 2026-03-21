@@ -128,7 +128,7 @@ export default function SessionDetailPage() {
         <Button
           size="lg"
           disabled={soldOut || !session.productKey}
-          onClick={() => navigate(`/buy/${session.productKey}`)}
+          onClick={() => navigate(`/buy/${session.productKey}?sessionId=${session.id}`)}
         >
           {soldOut ? "Sold out" : "Book this session"}
         </Button>

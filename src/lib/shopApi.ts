@@ -12,6 +12,7 @@ export function fetchStoreProduct(productKey: string) {
 export function submitCheckout(payload: {
   productId?: number;
   productKey?: string;
+  sessionId?: number;
   quantity?: number;
   email: string;
   name?: string;
