@@ -53,15 +53,15 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true);
   const [location, navigate] = useLocation();
 
+  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
+
   const cityFilter = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-    return normalize(params.get("city") || "");
-  }, [location]);
+    return normalize(searchParams.get("city") || "");
+  }, [searchParams]);
 
   const venueFilter = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-    return normalize(params.get("venue") || "");
-  }, [location]);
+    return normalize(searchParams.get("venue") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -128,12 +128,30 @@ export default function SessionsPage() {
     return Array.from(groups.entries());
   }, [filteredSessions]);
 
+  const currentFilterQuery = useMemo(() => {
+    const params = new URLSearchParams();
+    if (cityFilter) params.set("city", cityFilter);
+    if (venueFilter) params.set("venue", venueFilter);
+    return params.toString();
+  }, [cityFilter, venueFilter]);
+
   function setFilters(nextCity?: string, nextVenue?: string) {
     const params = new URLSearchParams();
     if (nextCity) params.set("city", nextCity);
     if (nextVenue) params.set("venue", nextVenue);
     const query = params.toString();
     navigate(query ? `/sessions?${query}` : "/sessions");
+  }
+
+  function detailHref(sessionId: number) {
+    return currentFilterQuery ? `/sessions/${sessionId}?${currentFilterQuery}` : `/sessions/${sessionId}`;
+  }
+
+  function buyHref(session: Session) {
+    const params = new URLSearchParams();
+    params.set("sessionId", String(session.id));
+    if (currentFilterQuery) params.set("from", `/sessions?${currentFilterQuery}`);
+    return `/buy/${session.productKey}?${params.toString()}`;
   }
 
   return (
@@ -215,39 +233,67 @@ export default function SessionsPage() {
             <section key={heading} className="space-y-3">
               <h2 className="text-xl font-bold">{heading}</h2>
               <div className="grid gap-4">
-                {items.map((session) => (
-                  <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/sessions/${session.id}`)}>
-                    <CardContent className="p-5 space-y-2">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                        <div className="space-y-1">
-                          <div className="font-semibold text-lg">
-                            {session.className ?? "Session"}
+                {items.map((session) => {
+                  const soldOut = session.seatsAvailable <= 0;
+                  const canBook = Boolean(session.productKey) && !soldOut;
+
+                  return (
+                    <Card
+                      key={session.id}
+                      className="hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => navigate(detailHref(session.id))}
+                    >
+                      <CardContent className="p-5 space-y-3">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                          <div className="space-y-1">
+                            <div className="font-semibold text-lg">
+                              {session.className ?? "Session"}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {formatTimeRange(session.startTime, session.endTime)}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {session.venueName ?? "Venue TBD"}
+                              {session.venueCity && session.venueState
+                                ? ` • ${session.venueCity}, ${session.venueState}`
+                                : ""}
+                            </div>
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            {formatTimeRange(session.startTime, session.endTime)}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {session.venueName ?? "Venue TBD"}
-                            {session.venueCity && session.venueState
-                              ? ` • ${session.venueCity}, ${session.venueState}`
-                              : ""}
+
+                          <div className="text-sm text-muted-foreground md:text-right">
+                            <div className="font-medium text-foreground">
+                              {session.seatsAvailable} of {session.seatsTotal} seats left
+                            </div>
+                            {soldOut ? "Sold out" : "Available now"}
                           </div>
                         </div>
 
-                        <div className="text-sm text-muted-foreground md:text-right">
-                          <div className="font-medium text-foreground">
-                            {session.seatsAvailable} of {session.seatsTotal} seats left
-                          </div>
-                          {session.seatsAvailable <= 0 ? "Sold out" : "Available now"}
+                        <div className="flex gap-2 flex-wrap">
+                          <Button
+                            size="sm"
+                            disabled={!canBook}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (canBook) navigate(buyHref(session));
+                            }}
+                          >
+                            {soldOut ? "Sold out" : "Book this session"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(detailHref(session.id));
+                            }}
+                          >
+                            View details
+                          </Button>
                         </div>
-                      </div>
-
-                      <div>
-                        <Button size="sm">View session</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </section>
           ))}

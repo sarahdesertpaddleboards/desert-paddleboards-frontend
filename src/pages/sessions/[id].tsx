@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useRoute } from "wouter";
 import { getClassSessionById } from "../../lib/classApi";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,22 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function SessionDetailPage() {
   const [match, params] = useRoute("/sessions/:id");
   const sessionId = params?.id;
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
 
   const [session, setSession] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
+  const cityFilter = searchParams.get("city") || "";
+  const venueFilter = searchParams.get("venue") || "";
+
+  const backToSessionsHref = useMemo(() => {
+    const params = new URLSearchParams();
+    if (cityFilter) params.set("city", cityFilter);
+    if (venueFilter) params.set("venue", venueFilter);
+    const query = params.toString();
+    return query ? `/sessions?${query}` : "/sessions";
+  }, [cityFilter, venueFilter]);
 
   function toDateSafe(value: unknown): Date | null {
     if (typeof value !== "string") return null;
@@ -82,16 +94,21 @@ export default function SessionDetailPage() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
-      <div className="space-y-2">
-        <div className="text-sm uppercase tracking-wide text-muted-foreground">
-          Session details
+      <div className="space-y-3">
+        <Button variant="outline" size="sm" onClick={() => navigate(backToSessionsHref)}>
+          Back to sessions
+        </Button>
+        <div className="space-y-2">
+          <div className="text-sm uppercase tracking-wide text-muted-foreground">
+            Session details
+          </div>
+          <h1 className="text-3xl font-bold">
+            {session.className ?? session.name ?? "Session"}
+          </h1>
+          <p className="text-muted-foreground">
+            Review this session and continue into the booking flow when you’re ready.
+          </p>
         </div>
-        <h1 className="text-3xl font-bold">
-          {session.className ?? session.name ?? "Session"}
-        </h1>
-        <p className="text-muted-foreground">
-          Reserve a space in this upcoming floating soundbath experience.
-        </p>
       </div>
 
       <Card>
@@ -142,7 +159,7 @@ export default function SessionDetailPage() {
       </div>
 
       <div className="text-sm text-muted-foreground">
-        Booking currently continues through the product checkout flow for this experience.
+        This booking continues through the same secure checkout flow as the rest of the store, with your selected session attached.
       </div>
     </div>
   );
