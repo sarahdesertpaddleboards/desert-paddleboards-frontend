@@ -32,6 +32,36 @@ function inferDeliveryType(productKey: string): "digital" | "gift" | "booking" |
   return "merch";
 }
 
+function successHeadline(deliveryType: "digital" | "gift" | "booking" | "merch") {
+  switch (deliveryType) {
+    case "booking":
+      return "Your booking is confirmed";
+    case "digital":
+      return "Your digital purchase is ready";
+    case "gift":
+      return "Your gift purchase is confirmed";
+    case "merch":
+      return "Your order is confirmed";
+    default:
+      return "Thank you for your purchase";
+  }
+}
+
+function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch") {
+  switch (deliveryType) {
+    case "booking":
+      return "Your session request has been received and your details have been recorded.";
+    case "digital":
+      return "Your payment was successful and your digital item is being prepared.";
+    case "gift":
+      return "Your payment was successful and your gift certificate will be sent shortly.";
+    case "merch":
+      return "Your payment was successful and your order is being processed.";
+    default:
+      return "Your payment was successful.";
+  }
+}
+
 export default function CheckoutSuccess() {
   const [, setLocation] = useLocation();
   const [data, setData] = useState<CheckoutSuccessResponse | null>(null);
@@ -59,13 +89,10 @@ export default function CheckoutSuccess() {
   }, []);
 
   if (loading) return <div className="p-8">Loading your order…</div>;
-
   if (!data) return <div className="p-8">Order not found</div>;
-
   if (data.pending) {
     return <div className="p-8">Your order is still being processed. Please refresh in a moment.</div>;
   }
-
   if (!data.order) return <div className="p-8">Order not found</div>;
 
   const deliveryType = inferDeliveryType(data.order.productKey);
@@ -78,8 +105,8 @@ export default function CheckoutSuccess() {
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
 
-          <h1 className="text-4xl font-bold mb-3">Thank you for your purchase</h1>
-          <p className="text-gray-600">Your payment was successful</p>
+          <h1 className="text-4xl font-bold mb-3">{successHeadline(deliveryType)}</h1>
+          <p className="text-gray-600">{successSubcopy(deliveryType)}</p>
           <p className="text-sm text-gray-400 mt-2">
             Order ID: {data.order.id.slice(-12).toUpperCase()}
           </p>
@@ -110,7 +137,7 @@ export default function CheckoutSuccess() {
                   <h3 className="text-xl font-bold">Your digital download</h3>
                   <p className="text-gray-600">
                     {data.downloadToken
-                      ? "Your file is ready."
+                      ? "Your file is ready now."
                       : "Your download is being prepared. Please check back shortly."}
                   </p>
                 </div>
@@ -127,8 +154,10 @@ export default function CheckoutSuccess() {
               <CardContent className="p-6 flex gap-4 items-center">
                 <Gift className="w-8 h-8 text-amber-600" />
                 <div>
-                  <h3 className="text-xl font-bold">Gift Certificate</h3>
-                  <p className="text-gray-600">Your gift certificate will be emailed shortly.</p>
+                  <h3 className="text-xl font-bold">Gift certificate purchased</h3>
+                  <p className="text-gray-600">
+                    Your gift certificate is queued for delivery and should arrive by email shortly.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -139,8 +168,10 @@ export default function CheckoutSuccess() {
               <CardContent className="p-6 flex gap-4 items-center">
                 <Package className="w-8 h-8 text-blue-600" />
                 <div>
-                  <h3 className="text-xl font-bold">Your merchandise order</h3>
-                  <p className="text-gray-600">We will ship it to your provided address.</p>
+                  <h3 className="text-xl font-bold">Merchandise order received</h3>
+                  <p className="text-gray-600">
+                    Your order has been received and will be processed for fulfillment.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -151,11 +182,11 @@ export default function CheckoutSuccess() {
               <CardContent className="p-6 flex gap-4 items-center">
                 <Calendar className="w-8 h-8 text-teal-600" />
                 <div>
-                  <h3 className="text-xl font-bold">Experience booking</h3>
+                  <h3 className="text-xl font-bold">Session booking received</h3>
                   <p className="text-gray-600">
                     {data.sessionId
-                      ? `Your selected session has been recorded (session ${data.sessionId}). We’ll be in touch to confirm the details.`
-                      : "We’ll be in touch to confirm your session."}
+                      ? `We’ve recorded your selected session (session ${data.sessionId}) and will follow up with any final details.`
+                      : "We’ve recorded your booking and will follow up with any final details."}
                   </p>
                 </div>
               </CardContent>
