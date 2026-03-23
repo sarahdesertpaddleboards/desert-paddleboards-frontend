@@ -63,6 +63,12 @@ function looksLikeEmail(value: string) {
   return /.+@.+\..+/.test(value.trim());
 }
 
+function isBookingFlow(product: StoreProduct | null, session: SelectedSession | null) {
+  if (session) return true;
+  const type = (product?.type || "").toLowerCase();
+  return type === "class" || type === "private-event" || type === "booking";
+}
+
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
@@ -81,6 +87,7 @@ export default function BuyProductPage() {
   }, [window.location.search]);
 
   const emailValid = looksLikeEmail(email);
+  const bookingFlow = isBookingFlow(product, session);
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -141,10 +148,16 @@ export default function BuyProductPage() {
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-6">
       <div className="space-y-2">
-        <Badge variant="secondary">{labelForType(product.type)}</Badge>
-        <h1 className="text-3xl font-bold">Complete your purchase</h1>
+        <Badge variant="secondary">
+          {bookingFlow ? "Booking" : labelForType(product.type)}
+        </Badge>
+        <h1 className="text-3xl font-bold">
+          {bookingFlow ? "Complete your booking" : "Complete your purchase"}
+        </h1>
         <p className="text-muted-foreground">
-          Review your selection and continue to secure checkout.
+          {bookingFlow
+            ? "Review your selected session and continue to secure checkout."
+            : "Review your selection and continue to secure checkout."}
         </p>
       </div>
 
@@ -160,7 +173,7 @@ export default function BuyProductPage() {
             </div>
           </div>
 
-          {session && (
+          {session ? (
             <div className="rounded-lg border bg-muted/20 p-4 space-y-1">
               <div className="text-sm font-semibold">Selected session</div>
               <div className="text-sm">{session.className ?? product.name}</div>
@@ -171,6 +184,14 @@ export default function BuyProductPage() {
                   ? ` • ${session.venueCity}, ${session.venueState}`
                   : ""}
               </div>
+            </div>
+          ) : bookingFlow ? (
+            <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
+              You are booking this experience. Session selection will be confirmed as part of checkout.
+            </div>
+          ) : (
+            <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
+              You’re purchasing a store item and will be redirected to secure checkout.
             </div>
           )}
 
@@ -192,12 +213,18 @@ export default function BuyProductPage() {
           </div>
 
           <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
-            You’ll be redirected to checkout to complete this purchase securely.
+            {bookingFlow
+              ? "You’ll be redirected to checkout to reserve this booking securely."
+              : "You’ll be redirected to checkout to complete this purchase securely."}
           </div>
 
           <div className="flex gap-3">
             <Button size="lg" onClick={handleBuy} disabled={submitting || !emailValid}>
-              {submitting ? "Redirecting…" : "Continue to checkout"}
+              {submitting
+                ? "Redirecting…"
+                : bookingFlow
+                ? "Continue to booking checkout"
+                : "Continue to checkout"}
             </Button>
           </div>
         </CardContent>
