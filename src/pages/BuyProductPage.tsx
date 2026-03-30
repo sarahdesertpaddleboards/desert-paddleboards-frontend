@@ -1,19 +1,30 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchStoreProduct } from "@/lib/storeApi";
 import { submitCheckout } from "@/lib/shopApi";
-import { fetchSession } from "@/lib/classApi";
+import { fetchSession, fetchClassProducts } from "@/lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRoute } from "wouter";
 
-type StoreProduct = {
+type BuyableProduct = {
   productKey: string;
   name: string;
   description: string;
   price: number;
   type?: string;
+  productType?: string;
+};
+
+type ClassProduct = {
+  id: number;
+  productKey: string;
+  productType: string;
+  name: string;
+  description: string;
+  price: number;
+  currency?: string;
 };
 
 type SelectedSession = {
@@ -34,6 +45,10 @@ function labelForType(type?: string) {
       return "Gift certificate";
     case "physical":
       return "Merchandise";
+    case "class":
+    case "private-event":
+    case "booking":
+      return "Booking";
     default:
       return "Store item";
   }
@@ -63,16 +78,45 @@ function looksLikeEmail(value: string) {
   return /.+@.+\..+/.test(value.trim());
 }
 
-function isBookingFlow(product: StoreProduct | null, session: SelectedSession | null) {
+function isBookingFlow(product: BuyableProduct | null, session: SelectedSession | null) {
   if (session) return true;
-  const type = (product?.type || "").toLowerCase();
+  const type = (product?.type || product?.productType || "").toLowerCase();
   return type === "class" || type === "private-event" || type === "booking";
+}
+
+async function fetchBuyableProduct(productKey: string): Promise<BuyableProduct | null> {
+  try {
+    const storeProduct = await fetchStoreProduct(productKey);
+    if (storeProduct) return storeProduct;
+  } catch {
+    // fall through to class product lookup
+  }
+
+  try {
+    const classProducts = (await fetchClassProducts()) as ClassProduct[];
+    const matched = Array.isArray(classProducts)
+      ? classProducts.find((item) => item.productKey === productKey)
+      : null;
+
+    if (!matched) return null;
+
+    return {
+      productKey: matched.productKey,
+      name: matched.name,
+      description: matched.description,
+      price: matched.price,
+      type: matched.productType,
+      productType: matched.productType,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
-  const [product, setProduct] = useState<StoreProduct | null>(null);
+  const [product, setProduct] = useState<BuyableProduct | null>(null);
   const [session, setSession] = useState<SelectedSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -98,7 +142,7 @@ export default function BuyProductPage() {
       try {
         setLoading(true);
         const [productData, sessionData] = await Promise.all([
-          fetchStoreProduct(productKey),
+          fetchBuyableProduct(productKey),
           sessionId ? fetchSession(sessionId) : Promise.resolve(null),
         ]);
 
@@ -149,7 +193,7 @@ export default function BuyProductPage() {
     <div className="p-8 max-w-3xl mx-auto space-y-6">
       <div className="space-y-2">
         <Badge variant="secondary">
-          {bookingFlow ? "Booking" : labelForType(product.type)}
+          {bookingFlow ? "Booking" : labelForType(product.type || product.productType)}
         </Badge>
         <h1 className="text-3xl font-bold">
           {bookingFlow ? "Complete your booking" : "Complete your purchase"}
