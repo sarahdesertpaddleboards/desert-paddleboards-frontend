@@ -37,21 +37,27 @@ function formatSessionStart(value: string) {
   });
 }
 
+function filtersFromSearch(search: string) {
+  const params = new URLSearchParams(search);
+  return {
+    city: normalize(params.get("city") || ""),
+    venue: normalize(params.get("venue") || ""),
+  };
+}
+
 export default function ClassesPage() {
   const [items, setItems] = useState<ClassProduct[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [location, navigate] = useLocation();
+  const [cityFilter, setCityFilter] = useState("");
+  const [venueFilter, setVenueFilter] = useState("");
 
-  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
-
-  const cityFilter = useMemo(() => {
-    return normalize(searchParams.get("city") || "");
-  }, [searchParams]);
-
-  const venueFilter = useMemo(() => {
-    return normalize(searchParams.get("venue") || "");
-  }, [searchParams]);
+  useEffect(() => {
+    const { city, venue } = filtersFromSearch(window.location.search);
+    setCityFilter(city);
+    setVenueFilter(venue);
+  }, [location]);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,7 +140,6 @@ export default function ClassesPage() {
 
   const nextSessionByClass = useMemo(() => {
     const map = new Map<number, Session>();
-
     const sorted = [...filteredSessions].sort(
       (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
     );
@@ -148,7 +153,10 @@ export default function ClassesPage() {
     return map;
   }, [filteredSessions]);
 
-  function setFilters(nextCity?: string, nextVenue?: string) {
+  function applyFilters(nextCity = "", nextVenue = "") {
+    setCityFilter(normalize(nextCity));
+    setVenueFilter(normalize(nextVenue));
+
     const params = new URLSearchParams();
     if (nextCity) params.set("city", nextCity);
     if (nextVenue) params.set("venue", nextVenue);
@@ -170,7 +178,7 @@ export default function ClassesPage() {
           <Button
             variant={!cityFilter ? "default" : "outline"}
             size="sm"
-            onClick={() => setFilters(undefined, undefined)}
+            onClick={() => applyFilters("", "")}
           >
             All cities
           </Button>
@@ -179,7 +187,7 @@ export default function ClassesPage() {
               key={city}
               variant={normalize(city) === cityFilter ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilters(city, undefined)}
+              onClick={() => applyFilters(city, "")}
             >
               {city}
             </Button>
@@ -191,7 +199,7 @@ export default function ClassesPage() {
             <Button
               variant={!venueFilter ? "secondary" : "outline"}
               size="sm"
-              onClick={() => setFilters(cityFilter || undefined, undefined)}
+              onClick={() => applyFilters(cityFilter, "")}
             >
               All venues
             </Button>
@@ -200,7 +208,7 @@ export default function ClassesPage() {
                 key={venue}
                 variant={normalize(venue) === venueFilter ? "secondary" : "outline"}
                 size="sm"
-                onClick={() => setFilters(cityFilter || undefined, venue)}
+                onClick={() => applyFilters(cityFilter, venue)}
               >
                 {venue}
               </Button>
