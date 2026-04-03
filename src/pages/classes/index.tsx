@@ -153,6 +153,13 @@ export default function ClassesPage() {
     return map;
   }, [filteredSessions]);
 
+  const currentFilterQuery = useMemo(() => {
+    const params = new URLSearchParams();
+    if (cityFilter) params.set("city", cityFilter);
+    if (venueFilter) params.set("venue", venueFilter);
+    return params.toString();
+  }, [cityFilter, venueFilter]);
+
   function applyFilters(nextCity = "", nextVenue = "") {
     setCityFilter(normalize(nextCity));
     setVenueFilter(normalize(nextVenue));
@@ -162,6 +169,10 @@ export default function ClassesPage() {
     if (nextVenue) params.set("venue", nextVenue);
     const query = params.toString();
     navigate(query ? `/classes?${query}` : "/classes");
+  }
+
+  function classDetailHref(classId: number) {
+    return currentFilterQuery ? `/classes/${classId}?${currentFilterQuery}` : `/classes/${classId}`;
   }
 
   return (
@@ -245,7 +256,7 @@ export default function ClassesPage() {
               <Card
                 key={c.id}
                 className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => navigate(`/classes/${c.id}`)}
+                onClick={() => navigate(classDetailHref(c.id))}
               >
                 <CardContent className="p-4 space-y-3">
                   <div className="space-y-2">
@@ -284,7 +295,7 @@ export default function ClassesPage() {
                           variant="outline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/classes/${c.id}`);
+                            navigate(classDetailHref(c.id));
                           }}
                         >
                           View all sessions

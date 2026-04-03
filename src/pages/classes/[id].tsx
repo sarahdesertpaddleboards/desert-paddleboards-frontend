@@ -1,18 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { getClassProducts, getClassSessions } from "../../lib/classApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+function normalize(value: string) {
+  return value.trim().toLowerCase();
+}
+
 export default function ClassDetailPage() {
   const [match, params] = useRoute("/classes/:id");
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
 
   const classId = Number(params?.id);
 
   const [classProduct, setClassProduct] = useState<any | null>(null);
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
+  const cityFilter = normalize(searchParams.get("city") || "");
+  const venueFilter = normalize(searchParams.get("venue") || "");
+
+  const backToClassesHref = useMemo(() => {
+    const params = new URLSearchParams();
+    if (cityFilter) params.set("city", cityFilter);
+    if (venueFilter) params.set("venue", venueFilter);
+    const query = params.toString();
+    return query ? `/classes?${query}` : "/classes";
+  }, [cityFilter, venueFilter]);
 
   function toDateSafe(value: unknown): Date | null {
     if (typeof value !== "string") return null;
@@ -50,6 +66,11 @@ export default function ClassDetailPage() {
 
         const filtered = (Array.isArray(allSessions) ? allSessions : [])
           .filter((s) => Number(s.classProductId) === classId)
+          .filter((s) => {
+            if (cityFilter && normalize(s.venueCity || "") !== cityFilter) return false;
+            if (venueFilter && normalize(s.venueName || "") !== venueFilter) return false;
+            return true;
+          })
           .sort((a, b) => {
             const aStart = toDateSafe(a?.startTime)?.getTime() ?? 0;
             const bStart = toDateSafe(b?.startTime)?.getTime() ?? 0;
@@ -76,7 +97,7 @@ export default function ClassDetailPage() {
     return () => {
       isMounted = false;
     };
-  }, [match, classId]);
+  }, [match, classId, cityFilter, venueFilter]);
 
   if (!match) return null;
 
@@ -88,13 +109,29 @@ export default function ClassDetailPage() {
         <p>Class not found.</p>
       ) : (
         <>
-          <div className="space-y-2">
-            <div className="text-sm uppercase tracking-wide text-muted-foreground">
-              Choose your session
+          <div className="space-y-3">
+            <Button variant="outline" size="sm" onClick={() => navigate(backToClassesHref)}>
+              Back to classes
+            </Button>
+            <div className="space-y-2">
+              <div className="text-sm uppercase tracking-wide text-muted-foreground">
+                Choose your session
+              </div>
+              <h1 className="text-3xl font-bold">{classProduct.name}</h1>
+              <p className="text-muted-foreground max-w-3xl">{classProduct.description}</p>
             </div>
-            <h1 className="text-3xl font-bold">{classProduct.name}</h1>
-            <p className="text-muted-foreground max-w-3xl">{classProduct.description}</p>
           </div>
+
+          {(cityFilter || venueFilter) && (
+            <Card>
+              <CardContent className="p-4 text-sm text-muted-foreground">
+                Showing sessions
+                {cityFilter ? <span className="font-medium text-foreground"> in {cityFilter}</span> : null}
+                {venueFilter ? <span className="font-medium text-foreground"> at {venueFilter}</span> : null}
+                .
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardContent className="p-6 space-y-2">
@@ -111,7 +148,7 @@ export default function ClassDetailPage() {
             {sessions.length === 0 ? (
               <Card>
                 <CardContent className="p-6 text-muted-foreground">
-                  No upcoming sessions for this class right now.
+                  No upcoming sessions for this class right now in the current filter.
                 </CardContent>
               </Card>
             ) : (
