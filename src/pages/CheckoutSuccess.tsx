@@ -244,6 +244,17 @@ export default function CheckoutSuccess() {
                           : ""}
                       </span>
                     </div>
+                    <div className="pt-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          const apiBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_BACKEND_URL;
+                          window.location.href = `${apiBase}/checkout/calendar/${data.order?.id}.ics`;
+                        }}
+                      >
+                        Add to calendar (.ics)
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
