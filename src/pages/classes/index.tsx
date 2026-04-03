@@ -22,7 +22,7 @@ type Session = {
   venueState?: string | null;
 };
 
-function normalizeCity(value: string) {
+function normalize(value: string) {
   return value.trim().toLowerCase();
 }
 
@@ -43,10 +43,15 @@ export default function ClassesPage() {
   const [loading, setLoading] = useState(true);
   const [location, navigate] = useLocation();
 
+  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
+
   const cityFilter = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-    return normalizeCity(params.get("city") || "");
-  }, [location]);
+    return normalize(searchParams.get("city") || "");
+  }, [searchParams]);
+
+  const venueFilter = useMemo(() => {
+    return normalize(searchParams.get("venue") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,32 +79,50 @@ export default function ClassesPage() {
     };
   }, []);
 
+  const upcomingSessions = useMemo(() => {
+    const now = Date.now();
+    return sessions.filter((s) => {
+      const startMs = new Date(s.startTime).getTime();
+      return Number.isFinite(startMs) && startMs >= now;
+    });
+  }, [sessions]);
+
   const availableCities = useMemo(() => {
     return [...new Set(
-      sessions
+      upcomingSessions
         .map((s) => s.venueCity)
         .filter((city): city is string => Boolean(city))
         .map((city) => city.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [sessions]);
+  }, [upcomingSessions]);
 
-  const filteredItems = useMemo(() => {
-    if (!cityFilter) return items;
-
-    const matchingClassIds = new Set(
-      sessions
-        .filter((s) => normalizeCity(s.venueCity || "") === cityFilter)
-        .map((s) => Number(s.classProductId))
-    );
-
-    return items.filter((item) => matchingClassIds.has(Number(item.id)));
-  }, [items, sessions, cityFilter]);
+  const availableVenues = useMemo(() => {
+    return [...new Set(
+      upcomingSessions
+        .filter((s) => {
+          if (!cityFilter) return true;
+          return normalize(s.venueCity || "") === cityFilter;
+        })
+        .map((s) => s.venueName)
+        .filter((venue): venue is string => Boolean(venue))
+        .map((venue) => venue.trim())
+    )].sort((a, b) => a.localeCompare(b));
+  }, [upcomingSessions, cityFilter]);
 
   const filteredSessions = useMemo(() => {
-    return cityFilter
-      ? sessions.filter((s) => normalizeCity(s.venueCity || "") === cityFilter)
-      : sessions;
-  }, [sessions, cityFilter]);
+    return upcomingSessions.filter((s) => {
+      if (cityFilter && normalize(s.venueCity || "") !== cityFilter) return false;
+      if (venueFilter && normalize(s.venueName || "") !== venueFilter) return false;
+      return true;
+    });
+  }, [upcomingSessions, cityFilter, venueFilter]);
+
+  const filteredItems = useMemo(() => {
+    if (!cityFilter && !venueFilter) return items;
+
+    const matchingClassIds = new Set(filteredSessions.map((s) => Number(s.classProductId)));
+    return items.filter((item) => matchingClassIds.has(Number(item.id)));
+  }, [items, filteredSessions, cityFilter, venueFilter]);
 
   const sessionCountByClass = useMemo(() => {
     const map = new Map<number, number>();
@@ -110,7 +133,6 @@ export default function ClassesPage() {
   }, [filteredSessions]);
 
   const nextSessionByClass = useMemo(() => {
-    const now = Date.now();
     const map = new Map<number, Session>();
 
     const sorted = [...filteredSessions].sort(
@@ -118,8 +140,6 @@ export default function ClassesPage() {
     );
 
     for (const session of sorted) {
-      const startMs = new Date(session.startTime).getTime();
-      if (!Number.isFinite(startMs) || startMs < now) continue;
       if (!map.has(session.classProductId)) {
         map.set(session.classProductId, session);
       }
@@ -128,12 +148,12 @@ export default function ClassesPage() {
     return map;
   }, [filteredSessions]);
 
-  function setCity(city?: string) {
-    if (!city) {
-      navigate("/classes");
-      return;
-    }
-    navigate(`/classes?city=${encodeURIComponent(city)}`);
+  function setFilters(nextCity?: string, nextVenue?: string) {
+    const params = new URLSearchParams();
+    if (nextCity) params.set("city", nextCity);
+    if (nextVenue) params.set("venue", nextVenue);
+    const query = params.toString();
+    navigate(query ? `/classes?${query}` : "/classes");
   }
 
   return (
@@ -141,33 +161,61 @@ export default function ClassesPage() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Classes</h1>
         <p className="text-muted-foreground">
-          Browse upcoming floating soundbath experiences by city.
+          Browse floating soundbath experiences by city and venue, then choose the class that fits.
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 items-center">
-        <Button
-          variant={!cityFilter ? "default" : "outline"}
-          size="sm"
-          onClick={() => setCity()}
-        >
-          All cities
-        </Button>
-        {availableCities.map((city) => (
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-2 items-center">
           <Button
-            key={city}
-            variant={normalizeCity(city) === cityFilter ? "default" : "outline"}
+            variant={!cityFilter ? "default" : "outline"}
             size="sm"
-            onClick={() => setCity(city)}
+            onClick={() => setFilters(undefined, undefined)}
           >
-            {city}
+            All cities
           </Button>
-        ))}
+          {availableCities.map((city) => (
+            <Button
+              key={city}
+              variant={normalize(city) === cityFilter ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilters(city, undefined)}
+            >
+              {city}
+            </Button>
+          ))}
+        </div>
+
+        {availableVenues.length > 0 && (
+          <div className="flex flex-wrap gap-2 items-center">
+            <Button
+              variant={!venueFilter ? "secondary" : "outline"}
+              size="sm"
+              onClick={() => setFilters(cityFilter || undefined, undefined)}
+            >
+              All venues
+            </Button>
+            {availableVenues.map((venue) => (
+              <Button
+                key={venue}
+                variant={normalize(venue) === venueFilter ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => setFilters(cityFilter || undefined, venue)}
+              >
+                {venue}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {cityFilter && (
-        <div className="text-sm text-muted-foreground">
-          Filtering classes for city: <span className="font-medium text-foreground">{cityFilter}</span>
+      {(cityFilter || venueFilter) && (
+        <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
+          Showing <span className="font-medium text-foreground">{filteredItems.length}</span> class
+          {filteredItems.length === 1 ? "" : "es"} matching
+          {cityFilter ? <span className="font-medium text-foreground"> city={cityFilter}</span> : null}
+          {venueFilter ? <span className="font-medium text-foreground"> venue={venueFilter}</span> : null}
+          .
         </div>
       )}
 
@@ -176,7 +224,7 @@ export default function ClassesPage() {
       ) : filteredItems.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-muted-foreground">
-            No classes found for this city yet.
+            No classes found for this filter yet.
           </CardContent>
         </Card>
       ) : (
