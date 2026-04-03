@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { CheckCircle, Download, Gift, Calendar, Package } from "lucide-react";
+import { CheckCircle, Download, Gift, Calendar, Package, MapPin, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -13,11 +13,24 @@ type CheckoutOrder = {
   customerEmail?: string | null;
 };
 
+type BookedSession = {
+  id: number;
+  classProductId: number;
+  startTime: string;
+  endTime?: string | null;
+  venueName?: string | null;
+  venueCity?: string | null;
+  venueState?: string | null;
+  className?: string | null;
+  productKey?: string | null;
+};
+
 type CheckoutSuccessResponse = {
   order: CheckoutOrder | null;
   downloadToken: string | null;
   pending?: boolean;
   sessionId?: string | null;
+  bookedSession?: BookedSession | null;
 };
 
 function inferDeliveryType(productKey: string): "digital" | "gift" | "booking" | "merch" {
@@ -47,10 +60,12 @@ function successHeadline(deliveryType: "digital" | "gift" | "booking" | "merch")
   }
 }
 
-function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch") {
+function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch", bookedSession?: BookedSession | null) {
   switch (deliveryType) {
     case "booking":
-      return "Your session request has been received and your details have been recorded.";
+      return bookedSession
+        ? "Your session has been booked successfully. Here are the details for your upcoming experience."
+        : "Your session request has been received and your details have been recorded.";
     case "digital":
       return "Your payment was successful and your digital item is being prepared.";
     case "gift":
@@ -60,6 +75,25 @@ function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch") 
     default:
       return "Your payment was successful.";
   }
+}
+
+function formatSessionRange(session: BookedSession) {
+  const start = new Date(session.startTime);
+  const end = session.endTime ? new Date(session.endTime) : null;
+  if (Number.isNaN(start.getTime())) return "TBA";
+  if (end && !Number.isNaN(end.getTime())) {
+    return `${start.toLocaleString([], {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })} – ${end.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
+  return start.toLocaleString();
 }
 
 export default function CheckoutSuccess() {
@@ -106,7 +140,7 @@ export default function CheckoutSuccess() {
           </div>
 
           <h1 className="text-4xl font-bold mb-3">{successHeadline(deliveryType)}</h1>
-          <p className="text-gray-600">{successSubcopy(deliveryType)}</p>
+          <p className="text-gray-600">{successSubcopy(deliveryType, data.bookedSession)}</p>
           <p className="text-sm text-gray-400 mt-2">
             Order ID: {data.order.id.slice(-12).toUpperCase()}
           </p>
@@ -179,16 +213,39 @@ export default function CheckoutSuccess() {
 
           {deliveryType === "booking" && (
             <Card>
-              <CardContent className="p-6 flex gap-4 items-center">
-                <Calendar className="w-8 h-8 text-teal-600" />
-                <div>
-                  <h3 className="text-xl font-bold">Session booking received</h3>
-                  <p className="text-gray-600">
-                    {data.sessionId
-                      ? `We’ve recorded your selected session (session ${data.sessionId}) and will follow up with any final details.`
-                      : "We’ve recorded your booking and will follow up with any final details."}
-                  </p>
+              <CardContent className="p-6 space-y-4">
+                <div className="flex gap-4 items-center">
+                  <Calendar className="w-8 h-8 text-teal-600" />
+                  <div>
+                    <h3 className="text-xl font-bold">Session booking confirmed</h3>
+                    <p className="text-gray-600">
+                      {data.bookedSession
+                        ? "Your place is reserved. Here are your booked session details."
+                        : "We’ve recorded your booking and will follow up with any final details."}
+                    </p>
+                  </div>
                 </div>
+
+                {data.bookedSession && (
+                  <div className="rounded-lg border bg-muted/20 p-4 space-y-3">
+                    <div className="font-semibold text-lg">
+                      {data.bookedSession.className ?? "Booked session"}
+                    </div>
+                    <div className="flex gap-2 items-start text-sm text-gray-700">
+                      <Clock className="w-4 h-4 mt-0.5" />
+                      <span>{formatSessionRange(data.bookedSession)}</span>
+                    </div>
+                    <div className="flex gap-2 items-start text-sm text-gray-700">
+                      <MapPin className="w-4 h-4 mt-0.5" />
+                      <span>
+                        {data.bookedSession.venueName ?? "Venue TBD"}
+                        {data.bookedSession.venueCity && data.bookedSession.venueState
+                          ? ` • ${data.bookedSession.venueCity}, ${data.bookedSession.venueState}`
+                          : ""}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
