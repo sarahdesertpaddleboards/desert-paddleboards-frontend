@@ -32,6 +32,7 @@ type SelectedSession = {
   id: number;
   startTime: string;
   endTime?: string;
+  seatsAvailable?: number | null;
   venueName?: string | null;
   venueCity?: string | null;
   venueState?: string | null;
@@ -124,7 +125,16 @@ export default function BuyProductPage() {
 
   const emailValid = looksLikeEmail(email);
   const bookingFlow = isBookingFlow(product, session);
+  const maxQuantity = bookingFlow && typeof session?.seatsAvailable === "number"
+    ? Math.max(1, Math.min(10, session.seatsAvailable))
+    : 10;
   const totalPrice = product ? product.price * quantity : 0;
+
+  useEffect(() => {
+    if (quantity > maxQuantity) {
+      setQuantity(maxQuantity);
+    }
+  }, [quantity, maxQuantity]);
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -235,21 +245,33 @@ export default function BuyProductPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="checkout-quantity" className="text-sm font-medium">
+              <label className="text-sm font-medium">
                 {bookingFlow ? "Number of spots" : "Quantity"}
               </label>
-              <select
-                id="checkout-quantity"
-                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                >
+                  −
+                </Button>
+                <div className="min-w-[3rem] text-center text-lg font-semibold">{quantity}</div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
+                  disabled={quantity >= maxQuantity}
+                >
+                  +
+                </Button>
+              </div>
+              {bookingFlow && typeof session?.seatsAvailable === "number" && (
+                <div className="text-sm text-muted-foreground">
+                  {session.seatsAvailable} {session.seatsAvailable === 1 ? "spot" : "spots"} remaining
+                </div>
+              )}
             </div>
 
             <div className="rounded-lg border bg-muted/20 p-4">
