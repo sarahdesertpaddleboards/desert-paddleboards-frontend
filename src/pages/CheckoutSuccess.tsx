@@ -32,6 +32,7 @@ type CheckoutSuccessResponse = {
   downloadToken: string | null;
   pending?: boolean;
   sessionId?: string | null;
+  bookedQuantity?: number;
   bookedSession?: BookedSession | null;
 };
 
@@ -218,9 +219,14 @@ export default function CheckoutSuccess() {
                 </div>
 
                 {data.bookedSession && (
-                  <div className="rounded-lg border bg-muted/20 p-4 space-y-3">
-                    <div className="font-semibold text-lg">
-                      {data.bookedSession.className ?? "Booked session"}
+                  <div className="rounded-lg border bg-muted/20 p-4 space-y-4">
+                    <div className="space-y-1">
+                      <div className="font-semibold text-lg">
+                        {data.bookedSession.className ?? "Booked session"}
+                      </div>
+                      <div className="text-sm font-medium text-teal-700">
+                        {data.bookedQuantity || 1} {(data.bookedQuantity || 1) === 1 ? "spot" : "spots"} booked
+                      </div>
                     </div>
                     <div className="flex gap-2 items-start text-sm text-gray-700">
                       <Clock className="w-4 h-4 mt-0.5" />
@@ -235,7 +241,7 @@ export default function CheckoutSuccess() {
                           : ""}
                       </span>
                     </div>
-                    <div className="pt-2">
+                    <div className="pt-2 flex gap-3 flex-wrap">
                       <Button
                         variant="outline"
                         onClick={() => {
@@ -246,6 +252,35 @@ export default function CheckoutSuccess() {
                         Add to calendar (.ics)
                       </Button>
                     </div>
+
+                    {(data.bookedQuantity || 1) > 1 && (
+                      <div className="rounded-lg border bg-white p-4 space-y-3">
+                        <div className="space-y-1">
+                          <div className="font-semibold">Help us out by providing more information on who will be joining you</div>
+                          <div className="text-sm text-muted-foreground">
+                            Optional for now — useful if you’re booking on behalf of a group.
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          {Array.from({ length: data.bookedQuantity || 1 }, (_, i) => i + 1).map((slot) => (
+                            <div key={slot} className="rounded-lg border p-3 space-y-3">
+                              <div className="font-medium text-sm">Participant {slot}</div>
+                              <div className="grid gap-3 md:grid-cols-2">
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="First name (optional)" />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Last name (optional)" />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Age (optional)" />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Email address (optional)" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="text-sm text-muted-foreground">
+                          We can wire this into saved participant records next so these details are stored against the booking.
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
