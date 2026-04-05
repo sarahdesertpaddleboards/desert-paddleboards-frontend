@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { CheckCircle, Download, Gift, Calendar, Package, MapPin, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,13 @@ type BookedSession = {
   venueTimezone?: string | null;
   className?: string | null;
   productKey?: string | null;
+};
+
+type Participant = {
+  firstName?: string;
+  lastName?: string;
+  age?: string;
+  email?: string;
 };
 
 type CheckoutSuccessResponse = {
@@ -92,10 +99,18 @@ export default function CheckoutSuccess() {
   const [, setLocation] = useLocation();
   const [data, setData] = useState<CheckoutSuccessResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [specialRequests, setSpecialRequests] = useState("");
+  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  const bookingSessionId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("session_id");
+  }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
+    const sessionId = bookingSessionId;
 
     if (!sessionId) {
       setLoading(false);
@@ -112,7 +127,35 @@ export default function CheckoutSuccess() {
       .then((parsed) => setData(parsed))
       .catch(() => setData(null))
       .finally(() => setLoading(false));
-  }, []);
+  }, [bookingSessionId]);
+
+  useEffect(() => {
+    if (!bookingSessionId) return;
+    const apiBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_BACKEND_URL;
+
+    fetch(`${apiBase}/checkout/booking-details/${bookingSessionId}`)
+      .then(async (res) => {
+        if (!res.ok) return null;
+        return await res.json();
+      })
+      .then((payload) => {
+        if (!payload) return;
+        setSpecialRequests(payload.specialRequests || "");
+        if (Array.isArray(payload.participants)) {
+          setParticipants(payload.participants);
+        }
+      })
+      .catch(() => undefined);
+  }, [bookingSessionId]);
+
+  useEffect(() => {
+    const count = data?.bookedQuantity || 1;
+    setParticipants((prev) => {
+      const next = [...prev];
+      while (next.length < count) next.push({ firstName: "", lastName: "", age: "", email: "" });
+      return next.slice(0, count);
+    });
+  }, [data?.bookedQuantity]);
 
   if (loading) return <div className="p-8">Loading your order…</div>;
   if (!data) return <div className="p-8">Order not found</div>;
@@ -122,6 +165,23 @@ export default function CheckoutSuccess() {
   if (!data.order) return <div className="p-8">Order not found</div>;
 
   const deliveryType = inferDeliveryType(data.order.productKey);
+
+  async function saveBookingDetails() {
+    if (!bookingSessionId) return;
+    try {
+      setSaving(true);
+      setSaved(false);
+      const apiBase = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_BACKEND_URL;
+      const res = await fetch(`${apiBase}/checkout/booking-details/${bookingSessionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ specialRequests, participants }),
+      });
+      if (res.ok) setSaved(true);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-teal-50 py-16">
@@ -212,7 +272,7 @@ export default function CheckoutSuccess() {
                     <h3 className="text-xl font-bold">Session booking confirmed</h3>
                     <p className="text-gray-600">
                       {data.bookedSession
-                        ? "Your place is reserved. Here are your booked session details."
+                        ? "Your place is reserved. Here are the details for your upcoming experience."
                         : "We’ve recorded your booking and will follow up with any final details."}
                     </p>
                   </div>
@@ -254,30 +314,43 @@ export default function CheckoutSuccess() {
                     </div>
 
                     {(data.bookedQuantity || 1) > 1 && (
-                      <div className="rounded-lg border bg-white p-4 space-y-3">
+                      <div className="rounded-lg border bg-white p-4 space-y-4">
                         <div className="space-y-1">
                           <div className="font-semibold">Help us out by providing more information on who will be joining you</div>
                           <div className="text-sm text-muted-foreground">
-                            Optional for now — useful if you’re booking on behalf of a group.
+                            Optional — useful if you’re booking on behalf of a group.
                           </div>
                         </div>
 
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Any special requests?</label>
+                          <textarea
+                            className="w-full min-h-[96px] rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            placeholder="Anything we should know before your group arrives?"
+                            value={specialRequests}
+                            onChange={(e) => setSpecialRequests(e.target.value)}
+                          />
+                        </div>
+
                         <div className="space-y-4">
-                          {Array.from({ length: data.bookedQuantity || 1 }, (_, i) => i + 1).map((slot) => (
-                            <div key={slot} className="rounded-lg border p-3 space-y-3">
-                              <div className="font-medium text-sm">Participant {slot}</div>
+                          {participants.map((participant, i) => (
+                            <div key={i} className="rounded-lg border p-3 space-y-3">
+                              <div className="font-medium text-sm">Participant {i + 1}</div>
                               <div className="grid gap-3 md:grid-cols-2">
-                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="First name (optional)" />
-                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Last name (optional)" />
-                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Age (optional)" />
-                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Email address (optional)" />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="First name (optional)" value={participant.firstName || ""} onChange={(e) => setParticipants((prev) => prev.map((p, idx) => idx === i ? { ...p, firstName: e.target.value } : p))} />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Last name (optional)" value={participant.lastName || ""} onChange={(e) => setParticipants((prev) => prev.map((p, idx) => idx === i ? { ...p, lastName: e.target.value } : p))} />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Age (optional)" value={participant.age || ""} onChange={(e) => setParticipants((prev) => prev.map((p, idx) => idx === i ? { ...p, age: e.target.value } : p))} />
+                                <input className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Email address (optional)" value={participant.email || ""} onChange={(e) => setParticipants((prev) => prev.map((p, idx) => idx === i ? { ...p, email: e.target.value } : p))} />
                               </div>
                             </div>
                           ))}
                         </div>
 
-                        <div className="text-sm text-muted-foreground">
-                          We can wire this into saved participant records next so these details are stored against the booking.
+                        <div className="flex items-center gap-3">
+                          <Button onClick={saveBookingDetails} disabled={saving}>
+                            {saving ? "Saving…" : "Save details"}
+                          </Button>
+                          {saved && <span className="text-sm text-green-700">Details saved</span>}
                         </div>
                       </div>
                     )}
