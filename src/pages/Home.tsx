@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatInTimeZone } from "@/lib/sessionTime";
 
 type Session = {
   id: number;
@@ -17,6 +18,7 @@ type Session = {
   venueCity: string | null;
   venueState: string | null;
   venueSlug: string | null;
+  venueTimezone?: string | null;
 };
 
 function unwrapArray(maybe: any): any[] {
@@ -24,6 +26,25 @@ function unwrapArray(maybe: any): any[] {
   if (maybe && Array.isArray(maybe.data)) return maybe.data;
   if (maybe && Array.isArray(maybe.sessions)) return maybe.sessions;
   return [];
+}
+
+function formatHomeSessionRange(session: Session) {
+  const timeZone = session.venueTimezone || undefined;
+  const start = formatInTimeZone(session.startTime, timeZone, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const endDate = new Date(session.endTime);
+  const end = Number.isNaN(endDate.getTime())
+    ? "TBA"
+    : endDate.toLocaleTimeString([], {
+        timeZone,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+  return `${start} – ${end}`;
 }
 
 export default function Home() {
@@ -94,42 +115,33 @@ export default function Home() {
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            {upcoming.map((s) => {
-              const start = new Date(s.startTime);
-              const end = new Date(s.endTime);
+            {upcoming.map((s) => (
+              <Card key={s.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
+                <CardContent className="p-5 space-y-2">
+                  <div className="font-semibold text-lg">{formatHomeSessionRange(s)}</div>
 
-              return (
-                <Card key={s.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
-                  <CardContent className="p-5 space-y-2">
-                    <div className="font-semibold text-lg">
-                      {start.toLocaleDateString()} · {start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      {" – "}
-                      {end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                    </div>
+                  <div className="text-muted-foreground">
+                    {s.venueName ? (
+                      <>
+                        {s.venueName}
+                        {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
+                      </>
+                    ) : s.venueCity ? (
+                      <>
+                        {s.venueCity}
+                        {s.venueState ? `, ${s.venueState}` : ""}
+                      </>
+                    ) : (
+                      "Venue TBD"
+                    )}
+                  </div>
 
-                    <div className="text-muted-foreground">
-                      {s.venueName ? (
-                        <>
-                          {s.venueName}
-                          {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
-                        </>
-                      ) : s.venueCity ? (
-                        <>
-                          {s.venueCity}
-                          {s.venueState ? `, ${s.venueState}` : ""}
-                        </>
-                      ) : (
-                        "Venue TBD"
-                      )}
-                    </div>
-
-                    <div className="text-sm text-muted-foreground">
-                      {s.seatsAvailable} of {s.seatsTotal} seats available
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  <div className="text-sm text-muted-foreground">
+                    {s.seatsAvailable} of {s.seatsTotal} seats available
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </section>

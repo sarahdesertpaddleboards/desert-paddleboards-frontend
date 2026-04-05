@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRoute } from "wouter";
+import { formatSessionTimeRange } from "@/lib/sessionTime";
 
 type BuyableProduct = {
   productKey: string;
@@ -34,6 +35,7 @@ type SelectedSession = {
   venueName?: string | null;
   venueCity?: string | null;
   venueState?: string | null;
+  venueTimezone?: string | null;
   className?: string | null;
 };
 
@@ -56,22 +58,11 @@ function labelForType(type?: string) {
 
 function formatSessionRange(session: SelectedSession | null) {
   if (!session?.startTime) return "";
-  const start = new Date(session.startTime);
-  const end = session.endTime ? new Date(session.endTime) : null;
-  if (Number.isNaN(start.getTime())) return "";
-  if (end && !Number.isNaN(end.getTime())) {
-    return `${start.toLocaleString([], {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })} – ${end.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  }
-  return start.toLocaleString();
+  return formatSessionTimeRange(
+    session.startTime,
+    session.endTime || session.startTime,
+    session.venueTimezone || undefined
+  );
 }
 
 function looksLikeEmail(value: string) {
