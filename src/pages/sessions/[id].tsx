@@ -3,6 +3,7 @@ import { useLocation, useRoute } from "wouter";
 import { getClassSessionById } from "../../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatInTimeZone } from "@/lib/sessionTime";
 
 export default function SessionDetailPage() {
   const [match, params] = useRoute("/sessions/:id");
@@ -33,23 +34,31 @@ export default function SessionDetailPage() {
   function formatRange(s: any): string {
     const start = toDateSafe(s?.startTime);
     const end = toDateSafe(s?.endTime);
+    const timeZone = s?.venueTimezone;
 
     if (!start) return "TBA";
 
     if (end) {
-      return `${start.toLocaleString([], {
+      return `${formatInTimeZone(s.startTime, timeZone, {
         weekday: "short",
         month: "short",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      })} – ${end.toLocaleTimeString([], {
+      })} – ${new Date(s.endTime).toLocaleTimeString([], {
+        timeZone: timeZone || undefined,
         hour: "2-digit",
         minute: "2-digit",
       })}`;
     }
 
-    return start.toLocaleString();
+    return formatInTimeZone(s.startTime, timeZone, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
   useEffect(() => {
@@ -87,8 +96,7 @@ export default function SessionDetailPage() {
     return <div className="p-6 max-w-3xl mx-auto">Session not found.</div>;
   }
 
-  const seatsAvailable =
-    typeof session.seatsAvailable === "number" ? session.seatsAvailable : null;
+  const seatsAvailable = typeof session.seatsAvailable === "number" ? session.seatsAvailable : null;
   const seatsTotal = typeof session.seatsTotal === "number" ? session.seatsTotal : null;
   const soldOut = seatsAvailable !== null && seatsAvailable <= 0;
 
@@ -99,15 +107,9 @@ export default function SessionDetailPage() {
           Back to sessions
         </Button>
         <div className="space-y-2">
-          <div className="text-sm uppercase tracking-wide text-muted-foreground">
-            Session details
-          </div>
-          <h1 className="text-3xl font-bold">
-            {session.className ?? session.name ?? "Session"}
-          </h1>
-          <p className="text-muted-foreground">
-            Review this session and continue into the booking flow when you’re ready.
-          </p>
+          <div className="text-sm uppercase tracking-wide text-muted-foreground">Session details</div>
+          <h1 className="text-3xl font-bold">{session.className ?? session.name ?? "Session"}</h1>
+          <p className="text-muted-foreground">Review this session and continue into the booking flow when you’re ready.</p>
         </div>
       </div>
 
@@ -123,9 +125,7 @@ export default function SessionDetailPage() {
               <div className="text-sm text-muted-foreground">Venue</div>
               <div className="font-medium">
                 {session.venueName ?? "Venue TBD"}
-                {session.venueCity && session.venueState
-                  ? ` • ${session.venueCity}, ${session.venueState}`
-                  : ""}
+                {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
               </div>
             </div>
           )}
@@ -133,27 +133,17 @@ export default function SessionDetailPage() {
           {seatsAvailable !== null && seatsTotal !== null && (
             <div>
               <div className="text-sm text-muted-foreground">Availability</div>
-              <div className="font-medium">
-                {seatsAvailable} of {seatsTotal} seats available
-              </div>
+              <div className="font-medium">{seatsAvailable} of {seatsTotal} seats available</div>
             </div>
           )}
         </CardContent>
       </Card>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button
-          size="lg"
-          disabled={soldOut || !session.productKey}
-          onClick={() => navigate(`/buy/${session.productKey}?sessionId=${session.id}`)}
-        >
+        <Button size="lg" disabled={soldOut || !session.productKey} onClick={() => navigate(`/buy/${session.productKey}?sessionId=${session.id}`)}>
           {soldOut ? "Sold out" : "Book this session"}
         </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          onClick={() => navigate(`/classes/${session.classProductId}`)}
-        >
+        <Button size="lg" variant="outline" onClick={() => navigate(`/classes/${session.classProductId}`)}>
           View all sessions for this class
         </Button>
       </div>

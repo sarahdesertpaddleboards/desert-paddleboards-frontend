@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { fetchSessions } from "@/lib/classApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatSessionDateHeading, formatSessionTimeRange } from "@/lib/sessionTime";
 
 type Session = {
   id: number;
@@ -16,36 +17,11 @@ type Session = {
   venueName?: string | null;
   venueCity?: string | null;
   venueState?: string | null;
+  venueTimezone?: string | null;
 };
 
 function normalize(value: string) {
   return value.trim().toLowerCase();
-}
-
-function formatDateHeading(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Upcoming sessions";
-  return date.toLocaleDateString([], {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatTimeRange(startValue: string, endValue: string) {
-  const start = new Date(startValue);
-  const end = new Date(endValue);
-  if (Number.isNaN(start.getTime())) return "TBA";
-  if (Number.isNaN(end.getTime())) {
-    return start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  }
-  return `${start.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })} – ${end.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
 }
 
 export default function SessionsPage() {
@@ -55,13 +31,8 @@ export default function SessionsPage() {
 
   const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
 
-  const cityFilter = useMemo(() => {
-    return normalize(searchParams.get("city") || "");
-  }, [searchParams]);
-
-  const venueFilter = useMemo(() => {
-    return normalize(searchParams.get("venue") || "");
-  }, [searchParams]);
+  const cityFilter = useMemo(() => normalize(searchParams.get("city") || ""), [searchParams]);
+  const venueFilter = useMemo(() => normalize(searchParams.get("venue") || ""), [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -120,7 +91,7 @@ export default function SessionsPage() {
   const groupedSessions = useMemo(() => {
     const groups = new Map<string, Session[]>();
     for (const session of filteredSessions) {
-      const key = formatDateHeading(session.startTime);
+      const key = formatSessionDateHeading(session.startTime, session.venueTimezone || undefined);
       const list = groups.get(key) || [];
       list.push(session);
       groups.set(key, list);
@@ -165,11 +136,7 @@ export default function SessionsPage() {
 
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2 items-center">
-          <Button
-            variant={!cityFilter ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilters(undefined, undefined)}
-          >
+          <Button variant={!cityFilter ? "default" : "outline"} size="sm" onClick={() => setFilters(undefined, undefined)}>
             All cities
           </Button>
           {availableCities.map((city) => (
@@ -210,12 +177,8 @@ export default function SessionsPage() {
       {(cityFilter || venueFilter) && (
         <div className="text-sm text-muted-foreground">
           Active filters:
-          {cityFilter ? (
-            <span className="font-medium text-foreground"> city={cityFilter}</span>
-          ) : null}
-          {venueFilter ? (
-            <span className="font-medium text-foreground"> venue={venueFilter}</span>
-          ) : null}
+          {cityFilter ? <span className="font-medium text-foreground"> city={cityFilter}</span> : null}
+          {venueFilter ? <span className="font-medium text-foreground"> venue={venueFilter}</span> : null}
         </div>
       )}
 
@@ -223,9 +186,7 @@ export default function SessionsPage() {
         <p>Loading sessions…</p>
       ) : groupedSessions.length === 0 ? (
         <Card>
-          <CardContent className="p-6 text-muted-foreground">
-            No upcoming sessions found for this filter.
-          </CardContent>
+          <CardContent className="p-6 text-muted-foreground">No upcoming sessions found for this filter.</CardContent>
         </Card>
       ) : (
         <div className="space-y-8">
@@ -238,25 +199,17 @@ export default function SessionsPage() {
                   const canBook = Boolean(session.productKey) && !soldOut;
 
                   return (
-                    <Card
-                      key={session.id}
-                      className="hover:shadow-md transition-shadow cursor-pointer"
-                      onClick={() => navigate(detailHref(session.id))}
-                    >
+                    <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(detailHref(session.id))}>
                       <CardContent className="p-5 space-y-3">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                           <div className="space-y-1">
-                            <div className="font-semibold text-lg">
-                              {session.className ?? "Session"}
-                            </div>
+                            <div className="font-semibold text-lg">{session.className ?? "Session"}</div>
                             <div className="text-sm text-muted-foreground">
-                              {formatTimeRange(session.startTime, session.endTime)}
+                              {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
                             </div>
                             <div className="text-sm text-muted-foreground">
                               {session.venueName ?? "Venue TBD"}
-                              {session.venueCity && session.venueState
-                                ? ` • ${session.venueCity}, ${session.venueState}`
-                                : ""}
+                              {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
                             </div>
                           </div>
 

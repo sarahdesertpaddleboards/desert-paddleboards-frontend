@@ -3,6 +3,7 @@ import { useRoute, useLocation } from "wouter";
 import { getClassProducts, getClassSessions } from "../../lib/classApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatInTimeZone } from "@/lib/sessionTime";
 
 function normalize(value: string) {
   return value.trim().toLowerCase();
@@ -36,10 +37,8 @@ export default function ClassDetailPage() {
     return Number.isNaN(d.getTime()) ? null : d;
   }
 
-  function formatStart(value: string): string {
-    const start = toDateSafe(value);
-    if (!start) return "TBA";
-    return start.toLocaleString([], {
+  function formatStart(value: string, timeZone?: string): string {
+    return formatInTimeZone(value, timeZone, {
       weekday: "short",
       month: "short",
       day: "numeric",
@@ -58,9 +57,7 @@ export default function ClassDetailPage() {
         setLoading(true);
 
         const products = await getClassProducts();
-        const found = (Array.isArray(products) ? products : []).find(
-          (p) => Number(p.id) === classId
-        );
+        const found = (Array.isArray(products) ? products : []).find((p) => Number(p.id) === classId);
 
         const allSessions = await getClassSessions();
 
@@ -114,9 +111,7 @@ export default function ClassDetailPage() {
               Back to classes
             </Button>
             <div className="space-y-2">
-              <div className="text-sm uppercase tracking-wide text-muted-foreground">
-                Choose your session
-              </div>
+              <div className="text-sm uppercase tracking-wide text-muted-foreground">Choose your session</div>
               <h1 className="text-3xl font-bold">{classProduct.name}</h1>
               <p className="text-muted-foreground max-w-3xl">{classProduct.description}</p>
             </div>
@@ -135,21 +130,15 @@ export default function ClassDetailPage() {
 
           <Card>
             <CardContent className="p-6 space-y-2">
-              <div className="font-medium">
-                {sessions.length} upcoming session{sessions.length === 1 ? "" : "s"}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Pick the date, venue, and availability that works best for you.
-              </div>
+              <div className="font-medium">{sessions.length} upcoming session{sessions.length === 1 ? "" : "s"}</div>
+              <div className="text-sm text-muted-foreground">Pick the date, venue, and availability that works best for you.</div>
             </CardContent>
           </Card>
 
           <div className="space-y-4">
             {sessions.length === 0 ? (
               <Card>
-                <CardContent className="p-6 text-muted-foreground">
-                  No upcoming sessions for this class right now in the current filter.
-                </CardContent>
+                <CardContent className="p-6 text-muted-foreground">No upcoming sessions for this class right now in the current filter.</CardContent>
               </Card>
             ) : (
               sessions.map((s: any) => (
@@ -157,14 +146,12 @@ export default function ClassDetailPage() {
                   <CardContent className="p-5 space-y-3">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                       <div className="space-y-1">
-                        <div className="font-semibold text-lg">{formatStart(s.startTime)}</div>
+                        <div className="font-semibold text-lg">{formatStart(s.startTime, s.venueTimezone)}</div>
 
                         {s.venueName ? (
                           <div className="text-sm text-muted-foreground">
                             {s.venueName}
-                            {s.venueCity && s.venueState
-                              ? ` • ${s.venueCity}, ${s.venueState}`
-                              : ""}
+                            {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
                           </div>
                         ) : (
                           <div className="text-sm text-muted-foreground">Venue TBD</div>
@@ -173,18 +160,14 @@ export default function ClassDetailPage() {
 
                       {typeof s.seatsAvailable === "number" && typeof s.seatsTotal === "number" ? (
                         <div className="text-sm text-muted-foreground md:text-right">
-                          <div className="font-medium text-foreground">
-                            {s.seatsAvailable} of {s.seatsTotal} seats left
-                          </div>
+                          <div className="font-medium text-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
                           {s.seatsAvailable <= 0 ? "Sold out" : "Available now"}
                         </div>
                       ) : null}
                     </div>
 
                     <div className="flex gap-2">
-                      <Button onClick={() => navigate(`/sessions/${s.id}`)}>
-                        View details
-                      </Button>
+                      <Button onClick={() => navigate(`/sessions/${s.id}`)}>View details</Button>
                     </div>
                   </CardContent>
                 </Card>
