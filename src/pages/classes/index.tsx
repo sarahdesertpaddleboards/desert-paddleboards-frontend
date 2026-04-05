@@ -3,6 +3,7 @@ import { fetchClassProducts, fetchSessions } from "@/lib/classApi";
 import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatInTimeZone } from "@/lib/sessionTime";
 
 type ClassProduct = {
   id: number;
@@ -20,16 +21,15 @@ type Session = {
   venueName?: string | null;
   venueCity?: string | null;
   venueState?: string | null;
+  venueTimezone?: string | null;
 };
 
 function normalize(value: string) {
   return value.trim().toLowerCase();
 }
 
-function formatSessionStart(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "TBA";
-  return date.toLocaleString([], {
+function formatSessionStart(value: string, timeZone?: string) {
+  return formatInTimeZone(value, timeZone, {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -65,10 +65,7 @@ export default function ClassesPage() {
     async function load() {
       try {
         setLoading(true);
-        const [products, allSessions] = await Promise.all([
-          fetchClassProducts(),
-          fetchSessions(),
-        ]);
+        const [products, allSessions] = await Promise.all([fetchClassProducts(), fetchSessions()]);
 
         if (!cancelled) {
           setItems(Array.isArray(products) ? products : []);
@@ -125,7 +122,6 @@ export default function ClassesPage() {
 
   const filteredItems = useMemo(() => {
     if (!cityFilter && !venueFilter) return items;
-
     const matchingClassIds = new Set(filteredSessions.map((s) => Number(s.classProductId)));
     return items.filter((item) => matchingClassIds.has(Number(item.id)));
   }, [items, filteredSessions, cityFilter, venueFilter]);
@@ -140,9 +136,7 @@ export default function ClassesPage() {
 
   const nextSessionByClass = useMemo(() => {
     const map = new Map<number, Session>();
-    const sorted = [...filteredSessions].sort(
-      (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    );
+    const sorted = [...filteredSessions].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
     for (const session of sorted) {
       if (!map.has(session.classProductId)) {
@@ -186,65 +180,27 @@ export default function ClassesPage() {
 
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2 items-center">
-          <Button
-            variant={!cityFilter ? "default" : "outline"}
-            size="sm"
-            onClick={() => applyFilters("", "")}
-          >
-            All cities
-          </Button>
+          <Button variant={!cityFilter ? "default" : "outline"} size="sm" onClick={() => applyFilters("", "")}>All cities</Button>
           {availableCities.map((city) => (
-            <Button
-              key={city}
-              variant={normalize(city) === cityFilter ? "default" : "outline"}
-              size="sm"
-              onClick={() => applyFilters(city, "")}
-            >
-              {city}
-            </Button>
+            <Button key={city} variant={normalize(city) === cityFilter ? "default" : "outline"} size="sm" onClick={() => applyFilters(city, "")}>{city}</Button>
           ))}
         </div>
 
         {availableVenues.length > 0 && (
           <div className="flex flex-wrap gap-2 items-center">
-            <Button
-              variant={!venueFilter ? "secondary" : "outline"}
-              size="sm"
-              onClick={() => applyFilters(cityFilter, "")}
-            >
-              All venues
-            </Button>
+            <Button variant={!venueFilter ? "secondary" : "outline"} size="sm" onClick={() => applyFilters(cityFilter, "")}>All venues</Button>
             {availableVenues.map((venue) => (
-              <Button
-                key={venue}
-                variant={normalize(venue) === venueFilter ? "secondary" : "outline"}
-                size="sm"
-                onClick={() => applyFilters(cityFilter, venue)}
-              >
-                {venue}
-              </Button>
+              <Button key={venue} variant={normalize(venue) === venueFilter ? "secondary" : "outline"} size="sm" onClick={() => applyFilters(cityFilter, venue)}>{venue}</Button>
             ))}
           </div>
         )}
       </div>
 
-      {(cityFilter || venueFilter) && (
-        <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
-          Showing <span className="font-medium text-foreground">{filteredItems.length}</span> class
-          {filteredItems.length === 1 ? "" : "es"} matching
-          {cityFilter ? <span className="font-medium text-foreground"> city={cityFilter}</span> : null}
-          {venueFilter ? <span className="font-medium text-foreground"> venue={venueFilter}</span> : null}
-          .
-        </div>
-      )}
-
       {loading ? (
         <p>Loading classes…</p>
       ) : filteredItems.length === 0 ? (
         <Card>
-          <CardContent className="p-6 text-muted-foreground">
-            No classes found for this filter yet.
-          </CardContent>
+          <CardContent className="p-6 text-muted-foreground">No classes found for this filter yet.</CardContent>
         </Card>
       ) : (
         <div className="grid gap-4">
@@ -253,51 +209,34 @@ export default function ClassesPage() {
             const sessionCount = sessionCountByClass.get(c.id) || 0;
 
             return (
-              <Card
-                key={c.id}
-                className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => navigate(classDetailHref(c.id))}
-              >
+              <Card key={c.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(classDetailHref(c.id))}>
                 <CardContent className="p-4 space-y-3">
                   <div className="space-y-2">
                     <h2 className="text-xl font-bold">{c.name}</h2>
                     <p>{c.description}</p>
-                    <div className="text-sm text-muted-foreground">
-                      {sessionCount} upcoming session{sessionCount === 1 ? "" : "s"}
-                    </div>
+                    <div className="text-sm text-muted-foreground">{sessionCount} upcoming session{sessionCount === 1 ? "" : "s"}</div>
                   </div>
 
                   {nextSession ? (
                     <div className="rounded-lg border bg-muted/30 p-3 space-y-1">
                       <div className="text-sm font-semibold">Next session</div>
-                      <div className="text-sm">{formatSessionStart(nextSession.startTime)}</div>
+                      <div className="text-sm">{formatSessionStart(nextSession.startTime, nextSession.venueTimezone)}</div>
                       <div className="text-sm text-muted-foreground">
                         {nextSession.venueName ?? "Venue TBD"}
-                        {nextSession.venueCity && nextSession.venueState
-                          ? ` • ${nextSession.venueCity}, ${nextSession.venueState}`
-                          : ""}
+                        {nextSession.venueCity && nextSession.venueState ? ` • ${nextSession.venueCity}, ${nextSession.venueState}` : ""}
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {nextSession.seatsAvailable} of {nextSession.seatsTotal} seats available
-                      </div>
+                      <div className="text-sm text-muted-foreground">{nextSession.seatsAvailable} of {nextSession.seatsTotal} seats available</div>
                       <div className="pt-2 flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/sessions/${nextSession.id}`);
-                          }}
-                        >
+                        <Button size="sm" onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/sessions/${nextSession.id}`);
+                        }}>
                           View next session
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(classDetailHref(c.id));
-                          }}
-                        >
+                        <Button size="sm" variant="outline" onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(classDetailHref(c.id));
+                        }}>
                           View all sessions
                         </Button>
                       </div>

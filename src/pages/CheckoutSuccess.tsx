@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { CheckCircle, Download, Gift, Calendar, Package, MapPin, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatSessionTimeRange } from "@/lib/sessionTime";
 
 type CheckoutOrder = {
   id: string;
@@ -21,6 +22,7 @@ type BookedSession = {
   venueName?: string | null;
   venueCity?: string | null;
   venueState?: string | null;
+  venueTimezone?: string | null;
   className?: string | null;
   productKey?: string | null;
 };
@@ -78,22 +80,11 @@ function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch", 
 }
 
 function formatSessionRange(session: BookedSession) {
-  const start = new Date(session.startTime);
-  const end = session.endTime ? new Date(session.endTime) : null;
-  if (Number.isNaN(start.getTime())) return "TBA";
-  if (end && !Number.isNaN(end.getTime())) {
-    return `${start.toLocaleString([], {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })} – ${end.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  }
-  return start.toLocaleString();
+  return formatSessionTimeRange(
+    session.startTime,
+    session.endTime || session.startTime,
+    session.venueTimezone || undefined
+  );
 }
 
 export default function CheckoutSuccess() {
