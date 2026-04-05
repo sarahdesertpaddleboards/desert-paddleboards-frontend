@@ -19,10 +19,9 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import BuyProductPage from "./pages/BuyProductPage";
-
-// NEW CLASS ROUTES (Wouter)
 import ClassesPage from "./pages/classes/index";
 import ClassDetailPage from "./pages/classes/[id]";
+import SessionsPage from "./pages/Sessions";
 import SessionDetailPage from "./pages/sessions/[id]";
 
 function Router() {
@@ -41,15 +40,14 @@ function Router() {
         <Route path="/admin" component={Admin} />
         <Route path="/admin-login" component={AdminLogin} />
 
-        {/* NEW CALENDAR ROUTES */}
         <Route path="/classes" component={ClassesPage} />
         <Route path="/classes/:id" component={ClassDetailPage} />
+        <Route path="/sessions" component={SessionsPage} />
         <Route path="/sessions/:id" component={SessionDetailPage} />
 
         <Route path="/success" component={CheckoutSuccess} />
         <Route path="/buy/:productKey" component={BuyProductPage} />
 
-        {/* fallback */}
         <Route component={NotFound} />
       </Switch>
 

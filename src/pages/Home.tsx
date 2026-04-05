@@ -96,7 +96,7 @@ export default function Home() {
           Desert Paddleboards brings meditation, breathwork, and immersive sound healing onto the water for a deeply calming experience.
         </p>
         <div className="flex gap-3 justify-center">
-          <Button onClick={() => navigate("/classes")}>Browse Classes</Button>
+          <Button onClick={() => navigate("/sessions")}>Browse Sessions</Button>
           <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
         </div>
       </section>
@@ -104,7 +104,7 @@ export default function Home() {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Upcoming sessions</h2>
-          <Button variant="outline" onClick={() => navigate("/classes")}>View all classes</Button>
+          <Button variant="outline" onClick={() => navigate("/sessions")}>View all sessions</Button>
         </div>
 
         {loading ? (
