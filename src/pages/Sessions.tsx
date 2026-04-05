@@ -131,9 +131,10 @@ export default function SessionsPage() {
     )].sort((a, b) => a.localeCompare(b));
   }, [futureSessions, cityFilter]);
 
-  const dateChips = useMemo(() => {
+  const dateChips = useMemo<DateChip[]>(() => {
     const seen = new Set<string>();
     const chips: DateChip[] = [];
+
     for (const session of futureSessions) {
       const key = dayKey(session.startTime, session.venueTimezone);
       if (seen.has(key)) continue;
@@ -145,6 +146,7 @@ export default function SessionsPage() {
       });
       if (chips.length >= 10) break;
     }
+
     return chips;
   }, [futureSessions]);
 
