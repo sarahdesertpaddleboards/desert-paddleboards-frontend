@@ -112,6 +112,7 @@ export default function BuyProductPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [email, setEmail] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [touched, setTouched] = useState(false);
 
   const sessionId = useMemo(() => {
@@ -123,6 +124,7 @@ export default function BuyProductPage() {
 
   const emailValid = looksLikeEmail(email);
   const bookingFlow = isBookingFlow(product, session);
+  const totalPrice = product ? product.price * quantity : 0;
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -166,7 +168,7 @@ export default function BuyProductPage() {
       const checkout = await submitCheckout({
         productKey: product.productKey,
         sessionId: session?.id,
-        quantity: 1,
+        quantity,
         email,
         name: product.name,
       });
@@ -203,8 +205,9 @@ export default function BuyProductPage() {
               <h2 className="text-2xl font-bold">{product.name}</h2>
               <p className="text-muted-foreground">{product.description}</p>
             </div>
-            <div className="text-2xl font-semibold whitespace-nowrap">
-              ${(product.price / 100).toFixed(2)}
+            <div className="text-right whitespace-nowrap">
+              <div className="text-sm text-muted-foreground">Per spot</div>
+              <div className="text-2xl font-semibold">${(product.price / 100).toFixed(2)}</div>
             </div>
           </div>
 
@@ -230,6 +233,36 @@ export default function BuyProductPage() {
             </div>
           )}
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label htmlFor="checkout-quantity" className="text-sm font-medium">
+                {bookingFlow ? "Number of spots" : "Quantity"}
+              </label>
+              <select
+                id="checkout-quantity"
+                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+              >
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="rounded-lg border bg-muted/20 p-4">
+              <div className="text-sm text-muted-foreground">Total</div>
+              <div className="text-2xl font-semibold">${(totalPrice / 100).toFixed(2)}</div>
+              {bookingFlow && (
+                <div className="text-sm text-muted-foreground mt-1">
+                  {quantity} {quantity === 1 ? "spot" : "spots"} reserved
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="checkout-email" className="text-sm font-medium">
               Email address
@@ -249,7 +282,7 @@ export default function BuyProductPage() {
 
           <div className="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground">
             {bookingFlow
-              ? "You’ll be redirected to checkout to reserve this booking securely."
+              ? "You’ll be redirected to checkout to reserve these spots securely."
               : "You’ll be redirected to checkout to complete this purchase securely."}
           </div>
 
