@@ -332,6 +332,13 @@ export default function CheckoutSuccess() {
                           />
                         </div>
 
+                        <div className="flex items-center gap-3">
+                          <Button onClick={saveBookingDetails} disabled={saving}>
+                            {saving ? "Saving…" : "Save details"}
+                          </Button>
+                          {saved && <span className="text-sm text-green-700">Details saved</span>}
+                        </div>
+
                         <div className="space-y-4">
                           {participants.map((participant, i) => (
                             <div key={i} className="rounded-lg border p-3 space-y-3">
@@ -344,13 +351,6 @@ export default function CheckoutSuccess() {
                               </div>
                             </div>
                           ))}
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <Button onClick={saveBookingDetails} disabled={saving}>
-                            {saving ? "Saving…" : "Save details"}
-                          </Button>
-                          {saved && <span className="text-sm text-green-700">Details saved</span>}
                         </div>
                       </div>
                     )}
