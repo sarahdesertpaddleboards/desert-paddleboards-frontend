@@ -53,17 +53,32 @@ function dayChipLabel(value: string, timeZone?: string | null) {
   });
 }
 
+function filtersFromSearch(search: string) {
+  const params = new URLSearchParams(search);
+  return {
+    city: normalize(params.get("city") || ""),
+    venue: normalize(params.get("venue") || ""),
+    date: params.get("date") || "",
+    window: params.get("window") || "",
+  };
+}
+
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [location, navigate] = useLocation();
+  const [cityFilter, setCityFilter] = useState("");
+  const [venueFilter, setVenueFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [windowFilter, setWindowFilter] = useState("");
 
-  const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
-
-  const cityFilter = useMemo(() => normalize(searchParams.get("city") || ""), [searchParams]);
-  const venueFilter = useMemo(() => normalize(searchParams.get("venue") || ""), [searchParams]);
-  const dateFilter = useMemo(() => searchParams.get("date") || "", [searchParams]);
-  const windowFilter = useMemo(() => searchParams.get("window") || "", [searchParams]);
+  useEffect(() => {
+    const { city, venue, date, window } = filtersFromSearch(window.location.search);
+    setCityFilter(city);
+    setVenueFilter(venue);
+    setDateFilter(date);
+    setWindowFilter(window);
+  }, [location]);
 
   useEffect(() => {
     let cancelled = false;
@@ -173,11 +188,21 @@ export default function SessionsPage() {
   }, [cityFilter, venueFilter, dateFilter, windowFilter]);
 
   function setFilters(next: { city?: string; venue?: string; date?: string; window?: string }) {
+    const nextCity = next.city ?? "";
+    const nextVenue = next.venue ?? "";
+    const nextDate = next.date ?? "";
+    const nextWindow = next.window ?? "";
+
+    setCityFilter(nextCity);
+    setVenueFilter(nextVenue);
+    setDateFilter(nextDate);
+    setWindowFilter(nextWindow);
+
     const params = new URLSearchParams();
-    if (next.city) params.set("city", next.city);
-    if (next.venue) params.set("venue", next.venue);
-    if (next.date) params.set("date", next.date);
-    if (next.window) params.set("window", next.window);
+    if (nextCity) params.set("city", nextCity);
+    if (nextVenue) params.set("venue", nextVenue);
+    if (nextDate) params.set("date", nextDate);
+    if (nextWindow) params.set("window", nextWindow);
     const query = params.toString();
     navigate(query ? `/sessions?${query}` : "/sessions");
   }
