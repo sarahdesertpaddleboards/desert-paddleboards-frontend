@@ -73,6 +73,17 @@ function getDateChipLabel(value: string, timeZone?: string | null) {
   });
 }
 
+function withinWindow(startTime: string, windowFilter: string) {
+  if (!windowFilter) return true;
+  const start = new Date(startTime).getTime();
+  if (!Number.isFinite(start)) return false;
+  const diffDays = (start - Date.now()) / (1000 * 60 * 60 * 24);
+  if (windowFilter === "7d") return diffDays <= 7;
+  if (windowFilter === "14d") return diffDays <= 14;
+  if (windowFilter === "30d") return diffDays <= 30;
+  return true;
+}
+
 export default function SessionsPage() {
   const [location, navigate] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -112,29 +123,46 @@ export default function SessionsPage() {
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   }, [sessions]);
 
+  const windowedSessions = useMemo(() => {
+    return futureSessions.filter((s) => withinWindow(s.startTime, filters.window));
+  }, [futureSessions, filters.window]);
+
   const availableCities = useMemo(() => {
     return [...new Set(
-      futureSessions
+      windowedSessions
         .map((s) => s.venueCity)
         .filter((city): city is string => Boolean(city))
         .map((city) => city.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [futureSessions]);
+  }, [windowedSessions]);
+
+  const cityScopedSessions = useMemo(() => {
+    return windowedSessions.filter((s) => {
+      if (!filters.city) return true;
+      return normalize(s.venueCity || "") === filters.city;
+    });
+  }, [windowedSessions, filters.city]);
 
   const availableVenues = useMemo(() => {
     return [...new Set(
-      futureSessions
-        .filter((s) => !filters.city || normalize(s.venueCity || "") === filters.city)
+      cityScopedSessions
         .map((s) => s.venueName)
         .filter((venue): venue is string => Boolean(venue))
         .map((venue) => venue.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [futureSessions, filters.city]);
+  }, [cityScopedSessions]);
+
+  const venueScopedSessions = useMemo(() => {
+    return cityScopedSessions.filter((s) => {
+      if (!filters.venue) return true;
+      return normalize(s.venueName || "") === filters.venue;
+    });
+  }, [cityScopedSessions, filters.venue]);
 
   const dateChips = useMemo(() => {
     const seen = new Set<string>();
     const chips: { key: string; label: string }[] = [];
-    for (const session of futureSessions) {
+    for (const session of venueScopedSessions) {
       const key = getDayKey(session.startTime, session.venueTimezone);
       if (seen.has(key)) continue;
       seen.add(key);
@@ -145,23 +173,14 @@ export default function SessionsPage() {
       if (chips.length >= 10) break;
     }
     return chips;
-  }, [futureSessions]);
+  }, [venueScopedSessions]);
 
   const filteredSessions = useMemo(() => {
-    return futureSessions.filter((s) => {
-      if (filters.city && normalize(s.venueCity || "") !== filters.city) return false;
-      if (filters.venue && normalize(s.venueName || "") !== filters.venue) return false;
+    return venueScopedSessions.filter((s) => {
       if (filters.date && getDayKey(s.startTime, s.venueTimezone) !== filters.date) return false;
-      if (filters.window) {
-        const start = new Date(s.startTime).getTime();
-        const diffDays = (start - Date.now()) / (1000 * 60 * 60 * 24);
-        if (filters.window === "7d" && diffDays > 7) return false;
-        if (filters.window === "14d" && diffDays > 14) return false;
-        if (filters.window === "30d" && diffDays > 30) return false;
-      }
       return true;
     });
-  }, [futureSessions, filters]);
+  }, [venueScopedSessions, filters.date]);
 
   const groupedSessions = useMemo(() => {
     const groups = new Map<string, Session[]>();
@@ -186,10 +205,6 @@ export default function SessionsPage() {
     setFilters(merged);
     const query = buildQuery(merged);
     navigate(query ? `/sessions?${query}` : "/sessions");
-  }
-
-  function resetVenue() {
-    applyFilters({ venue: "" });
   }
 
   function detailHref(sessionId: number) {
@@ -217,7 +232,7 @@ export default function SessionsPage() {
           <div className="space-y-2">
             <div className="text-sm font-medium">Time window</div>
             <div className="flex flex-wrap gap-2">
-              <Button variant={!filters.window ? "default" : "outline"} size="sm" onClick={() => applyFilters({ window: "" })}>All upcoming</Button>
+              <Button variant={!filters.window ? "default" : "outline"} size="sm" onClick={() => applyFilters({ window: "", date: "" })}>All upcoming</Button>
               <Button variant={filters.window === "7d" ? "default" : "outline"} size="sm" onClick={() => applyFilters({ window: "7d", date: "" })}>Next 7 days</Button>
               <Button variant={filters.window === "14d" ? "default" : "outline"} size="sm" onClick={() => applyFilters({ window: "14d", date: "" })}>Next 14 days</Button>
               <Button variant={filters.window === "30d" ? "default" : "outline"} size="sm" onClick={() => applyFilters({ window: "30d", date: "" })}>Next 30 days</Button>
@@ -241,9 +256,9 @@ export default function SessionsPage() {
           <div className="space-y-2">
             <div className="text-sm font-medium">City</div>
             <div className="flex flex-wrap gap-2">
-              <Button variant={!filters.city ? "default" : "outline"} size="sm" onClick={() => applyFilters({ city: "", venue: "" })}>All cities</Button>
+              <Button variant={!filters.city ? "default" : "outline"} size="sm" onClick={() => applyFilters({ city: "", venue: "", date: "" })}>All cities</Button>
               {availableCities.map((city) => (
-                <Button key={city} variant={normalize(city) === filters.city ? "default" : "outline"} size="sm" onClick={() => applyFilters({ city, venue: "" })}>
+                <Button key={city} variant={normalize(city) === filters.city ? "default" : "outline"} size="sm" onClick={() => applyFilters({ city, venue: "", date: "" })}>
                   {city}
                 </Button>
               ))}
@@ -254,9 +269,9 @@ export default function SessionsPage() {
             <div className="space-y-2">
               <div className="text-sm font-medium">Venue</div>
               <div className="flex flex-wrap gap-2">
-                <Button variant={!filters.venue ? "secondary" : "outline"} size="sm" onClick={resetVenue}>All venues</Button>
+                <Button variant={!filters.venue ? "secondary" : "outline"} size="sm" onClick={() => applyFilters({ venue: "", date: "" })}>All venues</Button>
                 {availableVenues.map((venue) => (
-                  <Button key={venue} variant={normalize(venue) === filters.venue ? "secondary" : "outline"} size="sm" onClick={() => applyFilters({ venue })}>
+                  <Button key={venue} variant={normalize(venue) === filters.venue ? "secondary" : "outline"} size="sm" onClick={() => applyFilters({ venue, date: "" })}>
                     {venue}
                   </Button>
                 ))}
