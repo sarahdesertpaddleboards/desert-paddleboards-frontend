@@ -322,16 +322,6 @@ export default function SessionsPage() {
         </CardContent>
       </Card>
 
-      {(filters.window || filters.city || filters.venue || filters.date) && (
-        <div className="text-sm text-muted-foreground">
-          Active filters:
-          {filters.window ? <span className="font-medium text-foreground"> window={filters.window}</span> : null}
-          {filters.city ? <span className="font-medium text-foreground"> city={filters.city}</span> : null}
-          {filters.venue ? <span className="font-medium text-foreground"> venue={filters.venue}</span> : null}
-          {filters.date ? <span className="font-medium text-foreground"> date={filters.date}</span> : null}
-        </div>
-      )}
-
       {loading ? (
         <p>Loading sessions…</p>
       ) : groupedSessions.length === 0 ? (
