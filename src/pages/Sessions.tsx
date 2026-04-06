@@ -100,14 +100,10 @@ function withinWindow(startTime: string, windowFilter: string, timeZone?: string
 }
 
 export default function SessionsPage() {
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Filters>(() => parseFilters(window.location.search));
-
-  useEffect(() => {
-    setFilters(parseFilters(window.location.search));
-  }, [location]);
 
   useEffect(() => {
     let cancelled = false;
@@ -142,6 +138,27 @@ export default function SessionsPage() {
     return futureSessions.filter((s) => withinWindow(s.startTime, filters.window, s.venueTimezone));
   }, [futureSessions, filters.window]);
 
+  const cityScopedSessions = useMemo(() => {
+    return windowedSessions.filter((s) => {
+      if (!filters.city) return true;
+      return normalize(s.venueCity || "") === filters.city;
+    });
+  }, [windowedSessions, filters.city]);
+
+  const venueScopedSessions = useMemo(() => {
+    return cityScopedSessions.filter((s) => {
+      if (!filters.venue) return true;
+      return normalize(s.venueName || "") === filters.venue;
+    });
+  }, [cityScopedSessions, filters.venue]);
+
+  const filteredSessions = useMemo(() => {
+    return venueScopedSessions.filter((s) => {
+      if (filters.date && getDayKey(s.startTime, s.venueTimezone) !== filters.date) return false;
+      return true;
+    });
+  }, [venueScopedSessions, filters.date]);
+
   const availableCities = useMemo(() => {
     return [...new Set(
       windowedSessions
@@ -151,75 +168,83 @@ export default function SessionsPage() {
     )].sort((a, b) => a.localeCompare(b));
   }, [windowedSessions]);
 
-  const cityScopedSessions = useMemo(() => {
-    return windowedSessions.filter((s) => {
-      if (!filters.city) return true;
-      return normalize(s.venueCity || "") === filters.city;
-    });
-  }, [windowedSessions, filters.city]);
-
   const availableVenues = useMemo(() => {
+    const source = filters.city ? cityScopedSessions : windowedSessions;
     return [...new Set(
-      cityScopedSessions
+      source
         .map((s) => s.venueName)
         .filter((venue): venue is string => Boolean(venue))
         .map((venue) => venue.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [cityScopedSessions]);
-
-  const venueScopedSessions = useMemo(() => {
-    return cityScopedSessions.filter((s) => {
-      if (!filters.venue) return true;
-      return normalize(s.venueName || "") === filters.venue;
-    });
-  }, [cityScopedSessions, filters.venue]);
+  }, [windowedSessions, cityScopedSessions, filters.city]);
 
   const dateChips = useMemo(() => {
+    const source = venueScopedSessions;
     const seen = new Set<string>();
     const chips: { key: string; label: string }[] = [];
-    for (const session of venueScopedSessions) {
+    for (const session of source) {
       const key = getDayKey(session.startTime, session.venueTimezone);
       if (seen.has(key)) continue;
       seen.add(key);
-      chips.push({
-        key,
-        label: getDateChipLabel(session.startTime, session.venueTimezone),
-      });
+      chips.push({ key, label: getDateChipLabel(session.startTime, session.venueTimezone) });
       if (chips.length >= 10) break;
     }
     return chips;
   }, [venueScopedSessions]);
 
-  const filteredSessions = useMemo(() => {
-    return venueScopedSessions.filter((s) => {
-      if (filters.date && getDayKey(s.startTime, s.venueTimezone) !== filters.date) return false;
-      return true;
+  useEffect(() => {
+    setFilters((prev) => {
+      const next = { ...prev };
+      let changed = false;
+
+      if (next.city && !availableCities.some((city) => normalize(city) === next.city)) {
+        next.city = "";
+        next.venue = "";
+        changed = true;
+      }
+
+      if (next.venue && !availableVenues.some((venue) => normalize(venue) === next.venue)) {
+        next.venue = "";
+        changed = true;
+      }
+
+      if (next.date && !dateChips.some((chip) => chip.key === next.date)) {
+        next.date = "";
+        changed = true;
+      }
+
+      return changed ? next : prev;
     });
-  }, [venueScopedSessions, filters.date]);
+  }, [availableCities, availableVenues, dateChips]);
 
   const groupedSessions = useMemo(() => {
     const groups = new Map<string, Session[]>();
     for (const session of filteredSessions) {
       const key = formatSessionDateHeading(session.startTime, session.venueTimezone || undefined);
-      const existing = groups.get(key) || [];
-      existing.push(session);
-      groups.set(key, existing);
+      const list = groups.get(key) || [];
+      list.push(session);
+      groups.set(key, list);
     }
     return Array.from(groups.entries());
   }, [filteredSessions]);
 
+  useEffect(() => {
+    const query = buildQuery(filters);
+    const target = query ? `/sessions?${query}` : "/sessions";
+    if (`/sessions${window.location.search}` !== target) {
+      navigate(target);
+    }
+  }, [filters, navigate]);
+
   const currentQuery = useMemo(() => buildQuery(filters), [filters]);
 
   function applyFilters(next: Partial<Filters>) {
-    const merged: Filters = {
-      city: next.city ?? filters.city,
-      venue: next.venue ?? filters.venue,
-      date: next.date ?? filters.date,
-      window: next.window ?? filters.window,
-    };
-    setFilters(merged);
-    const query = buildQuery(merged);
-    navigate(query ? `/sessions?${query}` : "/sessions");
+    setFilters((prev) => ({
+      city: next.city ?? prev.city,
+      venue: next.venue ?? prev.venue,
+      date: next.date ?? prev.date,
+      window: next.window ?? prev.window,
+    }));
   }
 
   function detailHref(sessionId: number) {
@@ -237,9 +262,7 @@ export default function SessionsPage() {
     <div className="p-8 max-w-6xl mx-auto space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Availability browser</h1>
-        <p className="text-muted-foreground">
-          Browse bookable sessions by time window, date, city, and venue.
-        </p>
+        <p className="text-muted-foreground">Browse bookable sessions by time window, date, city, and venue.</p>
       </div>
 
       <Card>
