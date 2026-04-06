@@ -73,11 +73,26 @@ function getDateChipLabel(value: string, timeZone?: string | null) {
   });
 }
 
-function withinWindow(startTime: string, windowFilter: string) {
+function dayNumberInZone(value: string | Date, timeZone?: string | null) {
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) return Number.NaN;
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: timeZone || undefined,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? "0");
+  return Math.floor(Date.UTC(get("year"), get("month") - 1, get("day")) / 86400000);
+}
+
+function withinWindow(startTime: string, windowFilter: string, timeZone?: string | null) {
   if (!windowFilter) return true;
-  const start = new Date(startTime).getTime();
-  if (!Number.isFinite(start)) return false;
-  const diffDays = (start - Date.now()) / (1000 * 60 * 60 * 24);
+  const startDay = dayNumberInZone(startTime, timeZone);
+  const todayDay = dayNumberInZone(new Date(), timeZone);
+  if (!Number.isFinite(startDay) || !Number.isFinite(todayDay)) return false;
+  const diffDays = startDay - todayDay;
+  if (diffDays < 0) return false;
   if (windowFilter === "7d") return diffDays <= 7;
   if (windowFilter === "14d") return diffDays <= 14;
   if (windowFilter === "30d") return diffDays <= 30;
@@ -124,7 +139,7 @@ export default function SessionsPage() {
   }, [sessions]);
 
   const windowedSessions = useMemo(() => {
-    return futureSessions.filter((s) => withinWindow(s.startTime, filters.window));
+    return futureSessions.filter((s) => withinWindow(s.startTime, filters.window, s.venueTimezone));
   }, [futureSessions, filters.window]);
 
   const availableCities = useMemo(() => {
