@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { fetchSessions } from "@/lib/classApi";
 import { Card, CardContent } from "@/components/ui/card";
@@ -100,10 +100,11 @@ function withinWindow(startTime: string, windowFilter: string, timeZone?: string
 }
 
 export default function SessionsPage() {
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Filters>(() => parseFilters(window.location.search));
+  const lastPushedQuery = useRef(buildQuery(parseFilters(window.location.search)));
 
   useEffect(() => {
     let cancelled = false;
@@ -124,6 +125,14 @@ export default function SessionsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const next = parseFilters(window.location.search);
+    const nextQuery = buildQuery(next);
+    if (nextQuery !== lastPushedQuery.current) {
+      setFilters(next);
+    }
+  }, [location]);
+
   const futureSessions = useMemo(() => {
     const now = Date.now();
     return sessions
@@ -134,52 +143,47 @@ export default function SessionsPage() {
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   }, [sessions]);
 
-  const windowedSessions = useMemo(() => {
-    return futureSessions.filter((s) => withinWindow(s.startTime, filters.window, s.venueTimezone));
-  }, [futureSessions, filters.window]);
-
-  const cityScopedSessions = useMemo(() => {
-    return windowedSessions.filter((s) => {
-      if (!filters.city) return true;
-      return normalize(s.venueCity || "") === filters.city;
-    });
-  }, [windowedSessions, filters.city]);
-
-  const venueScopedSessions = useMemo(() => {
-    return cityScopedSessions.filter((s) => {
-      if (!filters.venue) return true;
-      return normalize(s.venueName || "") === filters.venue;
-    });
-  }, [cityScopedSessions, filters.venue]);
-
   const filteredSessions = useMemo(() => {
-    return venueScopedSessions.filter((s) => {
+    return futureSessions.filter((s) => {
+      if (!withinWindow(s.startTime, filters.window, s.venueTimezone)) return false;
+      if (filters.city && normalize(s.venueCity || "") !== filters.city) return false;
+      if (filters.venue && normalize(s.venueName || "") !== filters.venue) return false;
       if (filters.date && getDayKey(s.startTime, s.venueTimezone) !== filters.date) return false;
       return true;
     });
-  }, [venueScopedSessions, filters.date]);
+  }, [futureSessions, filters]);
 
   const availableCities = useMemo(() => {
+    const source = futureSessions.filter((s) => withinWindow(s.startTime, filters.window, s.venueTimezone));
     return [...new Set(
-      windowedSessions
+      source
         .map((s) => s.venueCity)
         .filter((city): city is string => Boolean(city))
         .map((city) => city.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [windowedSessions]);
+  }, [futureSessions, filters.window]);
 
   const availableVenues = useMemo(() => {
-    const source = filters.city ? cityScopedSessions : windowedSessions;
+    const source = futureSessions.filter((s) => {
+      if (!withinWindow(s.startTime, filters.window, s.venueTimezone)) return false;
+      if (filters.city && normalize(s.venueCity || "") !== filters.city) return false;
+      return true;
+    });
     return [...new Set(
       source
         .map((s) => s.venueName)
         .filter((venue): venue is string => Boolean(venue))
         .map((venue) => venue.trim())
     )].sort((a, b) => a.localeCompare(b));
-  }, [windowedSessions, cityScopedSessions, filters.city]);
+  }, [futureSessions, filters.window, filters.city]);
 
   const dateChips = useMemo(() => {
-    const source = venueScopedSessions;
+    const source = futureSessions.filter((s) => {
+      if (!withinWindow(s.startTime, filters.window, s.venueTimezone)) return false;
+      if (filters.city && normalize(s.venueCity || "") !== filters.city) return false;
+      if (filters.venue && normalize(s.venueName || "") !== filters.venue) return false;
+      return true;
+    });
     const seen = new Set<string>();
     const chips: { key: string; label: string }[] = [];
     for (const session of source) {
@@ -190,48 +194,32 @@ export default function SessionsPage() {
       if (chips.length >= 10) break;
     }
     return chips;
-  }, [venueScopedSessions]);
+  }, [futureSessions, filters.window, filters.city, filters.venue]);
 
   useEffect(() => {
     setFilters((prev) => {
-      const next = { ...prev };
-      let changed = false;
+      let next = prev;
 
-      if (next.city && !availableCities.some((city) => normalize(city) === next.city)) {
-        next.city = "";
-        next.venue = "";
-        changed = true;
+      if (prev.city && !availableCities.some((city) => normalize(city) === prev.city)) {
+        next = { ...next, city: "", venue: "", date: "" };
       }
-
       if (next.venue && !availableVenues.some((venue) => normalize(venue) === next.venue)) {
-        next.venue = "";
-        changed = true;
+        next = { ...next, venue: "", date: "" };
       }
-
       if (next.date && !dateChips.some((chip) => chip.key === next.date)) {
-        next.date = "";
-        changed = true;
+        next = { ...next, date: "" };
       }
 
-      return changed ? next : prev;
+      return next;
     });
   }, [availableCities, availableVenues, dateChips]);
 
-  const groupedSessions = useMemo(() => {
-    const groups = new Map<string, Session[]>();
-    for (const session of filteredSessions) {
-      const key = formatSessionDateHeading(session.startTime, session.venueTimezone || undefined);
-      const list = groups.get(key) || [];
-      list.push(session);
-      groups.set(key, list);
-    }
-    return Array.from(groups.entries());
-  }, [filteredSessions]);
-
   useEffect(() => {
     const query = buildQuery(filters);
+    lastPushedQuery.current = query;
     const target = query ? `/sessions?${query}` : "/sessions";
-    if (`/sessions${window.location.search}` !== target) {
+    const current = `${window.location.pathname}${window.location.search}`;
+    if (current !== target) {
       navigate(target);
     }
   }, [filters, navigate]);
@@ -257,6 +245,17 @@ export default function SessionsPage() {
     if (currentQuery) params.set("from", `/sessions?${currentQuery}`);
     return `/buy/${session.productKey}?${params.toString()}`;
   }
+
+  const groupedSessions = useMemo(() => {
+    const groups = new Map<string, Session[]>();
+    for (const session of filteredSessions) {
+      const key = formatSessionDateHeading(session.startTime, session.venueTimezone || undefined);
+      const list = groups.get(key) || [];
+      list.push(session);
+      groups.set(key, list);
+    }
+    return Array.from(groups.entries());
+  }, [filteredSessions]);
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
