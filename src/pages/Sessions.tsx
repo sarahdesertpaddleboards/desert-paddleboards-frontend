@@ -183,19 +183,32 @@ export default function SessionsPage() {
 
   const dateOptions = useMemo(() => {
     const seen = new Set<string>();
-    const dates: { key: string; label: string }[] = [];
+    const dates: { key: string; label: string; count: number }[] = [];
+    const counts = new Map<string, number>();
+
     for (const session of venueSessions) {
       const key = getDayKey(session.startTime, session.venueTimezone);
+      counts.set(key, (counts.get(key) || 0) + 1);
       if (seen.has(key)) continue;
       seen.add(key);
       dates.push({
         key,
         label: getDateChipLabel(session.startTime, session.venueTimezone),
+        count: 0,
       });
-      if (dates.length >= 10) break;
+      if (dates.length >= 14) break;
     }
-    return dates;
+
+    return dates.map((date) => ({ ...date, count: counts.get(date.key) || 0 }));
   }, [venueSessions]);
+
+  const selectedDateIndex = useMemo(() => {
+    if (!filters.date) return -1;
+    return dateOptions.findIndex((date) => date.key === filters.date);
+  }, [dateOptions, filters.date]);
+
+  const previousDate = selectedDateIndex > 0 ? dateOptions[selectedDateIndex - 1] : null;
+  const nextDate = selectedDateIndex >= 0 && selectedDateIndex < dateOptions.length - 1 ? dateOptions[selectedDateIndex + 1] : null;
 
   const resultSessions = useMemo(() => {
     if (!filters.date) return venueSessions;
@@ -281,13 +294,25 @@ export default function SessionsPage() {
           </div>
 
           {dateOptions.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-sm font-medium">Jump to date</div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="text-sm font-medium">Jump to date</div>
+                {filters.date && (
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" disabled={!previousDate} onClick={() => previousDate && updateFilters({ date: previousDate.key })}>
+                      Previous date
+                    </Button>
+                    <Button size="sm" variant="outline" disabled={!nextDate} onClick={() => nextDate && updateFilters({ date: nextDate.key })}>
+                      Next date
+                    </Button>
+                  </div>
+                )}
+              </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant={!filters.date ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: "" })}>All dates</Button>
                 {dateOptions.map((date) => (
                   <Button key={date.key} variant={filters.date === date.key ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: date.key })}>
-                    {date.label}
+                    {date.label} ({date.count})
                   </Button>
                 ))}
               </div>
