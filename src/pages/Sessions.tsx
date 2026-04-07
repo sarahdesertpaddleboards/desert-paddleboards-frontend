@@ -73,6 +73,15 @@ function getDateChipLabel(value: string, timeZone?: string | null) {
   });
 }
 
+function getDateChipWeekday(value: string, timeZone?: string | null) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Day";
+  return date.toLocaleDateString([], {
+    timeZone: timeZone || undefined,
+    weekday: "short",
+  });
+}
+
 function dayNumberInZone(value: string | Date, timeZone?: string | null) {
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return Number.NaN;
@@ -183,7 +192,7 @@ export default function SessionsPage() {
 
   const dateOptions = useMemo(() => {
     const seen = new Set<string>();
-    const dates: { key: string; label: string; count: number }[] = [];
+    const dates: { key: string; label: string; weekday: string; count: number }[] = [];
     const counts = new Map<string, number>();
 
     for (const session of venueSessions) {
@@ -194,6 +203,7 @@ export default function SessionsPage() {
       dates.push({
         key,
         label: getDateChipLabel(session.startTime, session.venueTimezone),
+        weekday: getDateChipWeekday(session.startTime, session.venueTimezone),
         count: 0,
       });
       if (dates.length >= 14) break;
@@ -310,11 +320,24 @@ export default function SessionsPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant={!filters.date ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: "" })}>All dates</Button>
-                {dateOptions.map((date) => (
-                  <Button key={date.key} variant={filters.date === date.key ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: date.key })}>
-                    {date.label} ({date.count})
-                  </Button>
-                ))}
+                {dateOptions.map((date) => {
+                  const selected = filters.date === date.key;
+                  return (
+                    <button
+                      key={date.key}
+                      type="button"
+                      onClick={() => updateFilters({ date: date.key })}
+                      className={selected
+                        ? "min-w-[88px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-2 text-left shadow-sm"
+                        : "min-w-[88px] rounded-xl border bg-background px-3 py-2 text-left hover:bg-muted transition-colors"
+                      }
+                    >
+                      <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
+                      <div className="text-sm font-semibold">{date.label}</div>
+                      <div className="text-xs opacity-80">{date.count} session{date.count === 1 ? "" : "s"}</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
