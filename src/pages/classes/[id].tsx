@@ -9,13 +9,13 @@ function normalize(value: string) {
   return value.trim().toLowerCase();
 }
 
-export default function ClassDetailPage() {
+export default function ExperienceDetailFallbackPage() {
   const [match, params] = useRoute("/classes/:id");
   const [location, navigate] = useLocation();
 
-  const classId = Number(params?.id);
+  const experienceId = Number(params?.id);
 
-  const [classProduct, setClassProduct] = useState<any | null>(null);
+  const [experience, setExperience] = useState<any | null>(null);
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,13 +23,10 @@ export default function ClassDetailPage() {
   const cityFilter = normalize(searchParams.get("city") || "");
   const venueFilter = normalize(searchParams.get("venue") || "");
 
-  const backToClassesHref = useMemo(() => {
-    const params = new URLSearchParams();
-    if (cityFilter) params.set("city", cityFilter);
-    if (venueFilter) params.set("venue", venueFilter);
-    const query = params.toString();
-    return query ? `/classes?${query}` : "/classes";
-  }, [cityFilter, venueFilter]);
+  const backToSessionsHref = useMemo(() => {
+    const query = searchParams.toString();
+    return query ? `/sessions?${query}` : "/sessions";
+  }, [searchParams]);
 
   function toDateSafe(value: unknown): Date | null {
     if (typeof value !== "string") return null;
@@ -48,7 +45,7 @@ export default function ClassDetailPage() {
   }
 
   useEffect(() => {
-    if (!match || !Number.isFinite(classId)) return;
+    if (!match || !Number.isFinite(experienceId)) return;
 
     let isMounted = true;
 
@@ -57,12 +54,12 @@ export default function ClassDetailPage() {
         setLoading(true);
 
         const products = await getClassProducts();
-        const found = (Array.isArray(products) ? products : []).find((p) => Number(p.id) === classId);
+        const found = (Array.isArray(products) ? products : []).find((p) => Number(p.id) === experienceId);
 
         const allSessions = await getClassSessions();
 
         const filtered = (Array.isArray(allSessions) ? allSessions : [])
-          .filter((s) => Number(s.classProductId) === classId)
+          .filter((s) => Number(s.classProductId) === experienceId)
           .filter((s) => {
             if (cityFilter && normalize(s.venueCity || "") !== cityFilter) return false;
             if (venueFilter && normalize(s.venueName || "") !== venueFilter) return false;
@@ -75,13 +72,13 @@ export default function ClassDetailPage() {
           });
 
         if (isMounted) {
-          setClassProduct(found ?? null);
+          setExperience(found ?? null);
           setSessions(filtered);
         }
       } catch (err) {
-        console.error("CLASS DETAIL: failed to load", err);
+        console.error("EXPERIENCE DETAIL FALLBACK: failed to load", err);
         if (isMounted) {
-          setClassProduct(null);
+          setExperience(null);
           setSessions([]);
         }
       } finally {
@@ -94,33 +91,33 @@ export default function ClassDetailPage() {
     return () => {
       isMounted = false;
     };
-  }, [match, classId, cityFilter, venueFilter]);
+  }, [match, experienceId, cityFilter, venueFilter]);
 
   if (!match) return null;
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       {loading ? (
-        <p>Loading class…</p>
-      ) : !classProduct ? (
-        <p>Class not found.</p>
+        <p>Loading experience…</p>
+      ) : !experience ? (
+        <p>Experience not found.</p>
       ) : (
         <>
           <div className="space-y-3">
-            <Button variant="outline" size="sm" onClick={() => navigate(backToClassesHref)}>
-              Back to classes
+            <Button variant="outline" size="sm" onClick={() => navigate(backToSessionsHref)}>
+              Back to sessions
             </Button>
             <div className="space-y-2">
-              <div className="text-sm uppercase tracking-wide text-muted-foreground">Choose your session</div>
-              <h1 className="text-3xl font-bold">{classProduct.name}</h1>
-              <p className="text-muted-foreground max-w-3xl">{classProduct.description}</p>
+              <div className="text-sm uppercase tracking-wide text-muted-foreground">Experience overview</div>
+              <h1 className="text-3xl font-bold">{experience.name}</h1>
+              <p className="text-muted-foreground max-w-3xl">{experience.description}</p>
             </div>
           </div>
 
           {(cityFilter || venueFilter) && (
             <Card>
               <CardContent className="p-4 text-sm text-muted-foreground">
-                Showing sessions
+                Showing matching sessions
                 {cityFilter ? <span className="font-medium text-foreground"> in {cityFilter}</span> : null}
                 {venueFilter ? <span className="font-medium text-foreground"> at {venueFilter}</span> : null}
                 .
@@ -138,7 +135,7 @@ export default function ClassDetailPage() {
           <div className="space-y-4">
             {sessions.length === 0 ? (
               <Card>
-                <CardContent className="p-6 text-muted-foreground">No upcoming sessions for this class right now in the current filter.</CardContent>
+                <CardContent className="p-6 text-muted-foreground">No upcoming sessions for this experience right now in the current filter.</CardContent>
               </Card>
             ) : (
               sessions.map((s: any) => (
@@ -167,7 +164,7 @@ export default function ClassDetailPage() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button onClick={() => navigate(`/sessions/${s.id}`)}>View details</Button>
+                      <Button onClick={() => navigate(`/sessions/${s.id}`)}>View session details</Button>
                     </div>
                   </CardContent>
                 </Card>
