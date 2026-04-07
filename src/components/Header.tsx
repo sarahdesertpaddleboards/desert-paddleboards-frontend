@@ -8,7 +8,7 @@ export default function Header() {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Classes", href: "/classes" },
+    { name: "Experiences", href: "/sessions" },
     { name: "Shop", href: "/shop" },
     { name: "Private Events", href: "/private-events" },
     { name: "About", href: "/about" },
@@ -45,7 +45,7 @@ export default function Header() {
             <span>480.201.9520</span>
           </a>
           <Button asChild size="lg">
-            <Link href="/classes">Book Now</Link>
+            <Link href="/sessions">Browse Sessions</Link>
           </Button>
         </div>
 
@@ -86,7 +86,7 @@ export default function Header() {
                 <span>480.201.9520</span>
               </a>
               <Button asChild size="lg" className="w-full">
-                <Link href="/classes">Book Now</Link>
+                <Link href="/sessions">Browse Sessions</Link>
               </Button>
             </div>
           </div>
