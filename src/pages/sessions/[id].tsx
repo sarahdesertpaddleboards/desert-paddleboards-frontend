@@ -3,7 +3,7 @@ import { useLocation, useRoute } from "wouter";
 import { getClassSessionById } from "../../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatInTimeZone } from "@/lib/sessionTime";
+import { formatInTimeZone, formatSessionTimeRange } from "@/lib/sessionTime";
 
 export default function SessionDetailPage() {
   const [match, params] = useRoute("/sessions/:id");
@@ -14,16 +14,11 @@ export default function SessionDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const searchParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
-  const cityFilter = searchParams.get("city") || "";
-  const venueFilter = searchParams.get("venue") || "";
+  const backQuery = searchParams.toString();
 
   const backToSessionsHref = useMemo(() => {
-    const params = new URLSearchParams();
-    if (cityFilter) params.set("city", cityFilter);
-    if (venueFilter) params.set("venue", venueFilter);
-    const query = params.toString();
-    return query ? `/sessions?${query}` : "/sessions";
-  }, [cityFilter, venueFilter]);
+    return backQuery ? `/sessions?${backQuery}` : "/sessions";
+  }, [backQuery]);
 
   function toDateSafe(value: unknown): Date | null {
     if (typeof value !== "string") return null;
@@ -31,34 +26,20 @@ export default function SessionDetailPage() {
     return Number.isNaN(d.getTime()) ? null : d;
   }
 
-  function formatRange(s: any): string {
+  function formatDateLine(s: any): string {
     const start = toDateSafe(s?.startTime);
-    const end = toDateSafe(s?.endTime);
-    const timeZone = s?.venueTimezone;
-
     if (!start) return "TBA";
-
-    if (end) {
-      return `${formatInTimeZone(s.startTime, timeZone, {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })} – ${new Date(s.endTime).toLocaleTimeString([], {
-        timeZone: timeZone || undefined,
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    }
-
-    return formatInTimeZone(s.startTime, timeZone, {
-      weekday: "short",
-      month: "short",
+    return formatInTimeZone(s.startTime, s?.venueTimezone, {
+      weekday: "long",
+      month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
+  }
+
+  function formatTimeLine(s: any): string {
+    const start = toDateSafe(s?.startTime);
+    if (!start) return "TBA";
+    return formatSessionTimeRange(s.startTime, s.endTime, s?.venueTimezone);
   }
 
   useEffect(() => {
@@ -89,67 +70,96 @@ export default function SessionDetailPage() {
   if (!match) return null;
 
   if (loading) {
-    return <div className="p-6 max-w-3xl mx-auto">Loading session…</div>;
+    return <div className="p-6 max-w-4xl mx-auto">Loading session…</div>;
   }
 
   if (!session) {
-    return <div className="p-6 max-w-3xl mx-auto">Session not found.</div>;
+    return <div className="p-6 max-w-4xl mx-auto">Session not found.</div>;
   }
 
   const seatsAvailable = typeof session.seatsAvailable === "number" ? session.seatsAvailable : null;
   const seatsTotal = typeof session.seatsTotal === "number" ? session.seatsTotal : null;
   const soldOut = seatsAvailable !== null && seatsAvailable <= 0;
+  const lowAvailability = seatsAvailable !== null && seatsAvailable > 0 && seatsAvailable <= 3;
+  const venueLine = session.venueName ?? "Venue TBD";
+  const locationLine = session.venueCity && session.venueState ? `${session.venueCity}, ${session.venueState}` : "";
+  const buyHref = session.productKey ? `/buy/${session.productKey}?sessionId=${session.id}` : "";
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
-      <div className="space-y-3">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <div className="space-y-4">
         <Button variant="outline" size="sm" onClick={() => navigate(backToSessionsHref)}>
           Back to sessions
         </Button>
-        <div className="space-y-2">
-          <div className="text-sm uppercase tracking-wide text-muted-foreground">Session details</div>
-          <h1 className="text-3xl font-bold">{session.className ?? session.name ?? "Session"}</h1>
-          <p className="text-muted-foreground">Review this session and continue into the booking flow when you’re ready.</p>
+
+        <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-sm">
+          <div className="space-y-2">
+            <div className="text-sm uppercase tracking-wide text-muted-foreground">Session details</div>
+            <h1 className="text-3xl font-bold leading-tight">{session.className ?? session.name ?? "Session"}</h1>
+            <p className="text-muted-foreground max-w-2xl">
+              Review the session details, check availability, and continue into booking when you’re ready.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {soldOut ? (
+              <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-medium">Sold out</span>
+            ) : lowAvailability ? (
+              <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-3 py-1 text-sm font-medium">Few spots left</span>
+            ) : (
+              <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-3 py-1 text-sm font-medium">Available now</span>
+            )}
+            {seatsAvailable !== null && seatsTotal !== null && (
+              <span className="inline-flex rounded-full bg-muted text-foreground px-3 py-1 text-sm font-medium">
+                {seatsAvailable} of {seatsTotal} seats available
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <div>
-            <div className="text-sm text-muted-foreground">Date & time</div>
-            <div className="font-medium">{formatRange(session)}</div>
-          </div>
+      <div className="grid gap-4 md:grid-cols-[1.4fr_0.9fr]">
+        <Card>
+          <CardContent className="p-6 space-y-5">
+            <div className="space-y-1">
+              <div className="text-sm text-muted-foreground">Date</div>
+              <div className="text-lg font-semibold">{formatDateLine(session)}</div>
+            </div>
 
-          {(session.venueName || session.venueCity) && (
-            <div>
+            <div className="space-y-1">
+              <div className="text-sm text-muted-foreground">Time</div>
+              <div className="text-lg font-semibold">{formatTimeLine(session)}</div>
+            </div>
+
+            <div className="space-y-1">
               <div className="text-sm text-muted-foreground">Venue</div>
-              <div className="font-medium">
-                {session.venueName ?? "Venue TBD"}
-                {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
-              </div>
+              <div className="text-lg font-semibold">{venueLine}</div>
+              {locationLine ? <div className="text-sm text-muted-foreground">{locationLine}</div> : null}
             </div>
-          )}
+          </CardContent>
+        </Card>
 
-          {seatsAvailable !== null && seatsTotal !== null && (
-            <div>
-              <div className="text-sm text-muted-foreground">Availability</div>
-              <div className="font-medium">{seatsAvailable} of {seatsTotal} seats available</div>
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <div className="space-y-1">
+              <div className="text-sm text-muted-foreground">Ready to book?</div>
+              <div className="text-lg font-semibold">Reserve your spot</div>
             </div>
-          )}
-        </CardContent>
-      </Card>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Button size="lg" disabled={soldOut || !session.productKey} onClick={() => navigate(`/buy/${session.productKey}?sessionId=${session.id}`)}>
-          {soldOut ? "Sold out" : "Book this session"}
-        </Button>
-        <Button size="lg" variant="outline" onClick={() => navigate(`/classes/${session.classProductId}`)}>
-          View all sessions for this class
-        </Button>
-      </div>
+            <div className="text-sm text-muted-foreground">
+              You’ll continue through the same secure checkout flow, with this session already attached.
+            </div>
 
-      <div className="text-sm text-muted-foreground">
-        This booking continues through the same secure checkout flow as the rest of the store, with your selected session attached.
+            <div className="space-y-2">
+              <Button size="lg" className="w-full" disabled={soldOut || !session.productKey} onClick={() => buyHref && navigate(buyHref)}>
+                {soldOut ? "Sold out" : "Book this session"}
+              </Button>
+              <Button size="lg" variant="outline" className="w-full" onClick={() => navigate(`/classes/${session.classProductId}`)}>
+                View all sessions for this class
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
