@@ -48,7 +48,7 @@ export default function Shop() {
       <div className="space-y-2 max-w-2xl">
         <h1 className="text-4xl font-bold">Shop</h1>
         <p className="text-muted-foreground text-lg">
-          Browse gift certificates, digital sound journeys, and signature Desert Paddleboards products.
+          Browse gift certificates, digital sound journeys, and signature Blue Wave Experiences products.
         </p>
       </div>
 

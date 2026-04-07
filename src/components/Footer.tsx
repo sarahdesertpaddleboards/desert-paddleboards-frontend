@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-foreground">
-              Desert Paddleboards
+              Blue Wave Experiences
             </h3>
             <p className="text-sm text-muted-foreground">
               Transformative water-based wellness experiences in Arizona and California.
@@ -54,9 +54,9 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/classes">
+                <Link href="/sessions">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Classes & Events
+                    Experiences
                   </span>
                 </Link>
               </li>
@@ -131,7 +131,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© {currentYear} Desert Paddleboards. All rights reserved.</p>
+            <p>© {currentYear} Blue Wave Experiences. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/privacy">
                 <span className="hover:text-primary transition-colors cursor-pointer">

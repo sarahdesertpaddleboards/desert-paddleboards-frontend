@@ -22,7 +22,7 @@ export default function Header() {
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer">
             <div className="text-2xl font-bold text-primary">
-              <span>Desert Paddleboards</span>
+              <span>Blue Wave Experiences</span>
             </div>
           </div>
         </Link>

@@ -93,7 +93,7 @@ export default function Home() {
       <section className="space-y-4 text-center py-10">
         <h1 className="text-4xl md:text-5xl font-bold">Floating soundbath experiences in Arizona</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Desert Paddleboards brings meditation, breathwork, and immersive sound healing onto the water for a deeply calming experience.
+          Blue Wave Experiences brings meditation, breathwork, and immersive sound healing onto the water for a deeply calming experience.
         </p>
         <div className="flex gap-3 justify-center">
           <Button onClick={() => navigate("/sessions")}>Browse Sessions</Button>

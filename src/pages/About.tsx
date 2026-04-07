@@ -43,12 +43,12 @@ export default function About() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
           src="/about-sarah-class.webp"
-          alt="Desert Paddleboards"
+          alt="Blue Wave Experiences"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl  font-bold mb-4">
-            About Desert Paddleboards
+            About Blue Wave Experiences
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
             Bringing transformative wellness experiences to the water since 2011
@@ -97,16 +97,16 @@ export default function About() {
               </p>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Sarah Williams is the visionary behind Desert Paddleboards, bringing over 25 years of fitness industry experience to create unique water-based wellness experiences. Based in Mesa, Arizona, Sarah has transformed the way people experience relaxation and mindfulness through her innovative floating soundbaths and paddleboard classes.
+                  Sarah Williams is the visionary behind Blue Wave Experiences, bringing over 25 years of fitness industry experience to create unique water-based wellness experiences. Based in Mesa, Arizona, Sarah has transformed the way people experience relaxation and mindfulness through her innovative floating soundbaths and paddleboard experiences.
                 </p>
                 <p>
-                  Her journey began in 2011 when she founded Desert Paddleboards as a way to connect people with nature through stand-up paddleboarding. With more than 50 rental boards and several kayaks, she can accommodate groups of any size for unforgettable outdoor adventures.
+                  Her journey began in 2011 when she founded Desert Paddleboards as a way to connect people with nature through stand-up paddleboarding. Today, Blue Wave Experiences carries that spirit forward through unforgettable outdoor wellness experiences.
                 </p>
                 <p>
                   Sarah's passion for aquatic wellness stems from her extensive background in synchronized swimming, where she competed and coached at national-level competitions. She has facilitated various swimming programs throughout Arizona and even swam around Alcatraz Island and completed the Hudson River 10K in NYC.
                 </p>
                 <p>
-                  Her latest venture, Floating Soundbaths, has become wildly popular on social media, with classes selling out regularly. These unique experiences combine the calming effects of floating on water with the healing vibrations of live gongs, singing bowls, and Native American flutes, creating a truly transformative meditation practice.
+                  Her latest venture, Floating Soundbaths, has become wildly popular on social media, with sessions selling out regularly. These unique experiences combine the calming effects of floating on water with the healing vibrations of live gongs, singing bowls, and Native American flutes, creating a truly transformative meditation practice.
                 </p>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function About() {
               <CardContent className="p-6">
                 <h3 className="font-bold text-xl mb-2">Local Media Coverage</h3>
                 <p className="text-muted-foreground">
-                  Desert Paddleboards is featured regularly on various local news programs showcasing paddleboard fitness classes, the annual Witches Regatta, inline skating adventures, and was even featured on the cover of Phoenix Magazine.
+                  Blue Wave Experiences is featured regularly on various local news programs showcasing paddleboard fitness experiences, the annual Witches Regatta, inline skating adventures, and was even featured on the cover of Phoenix Magazine.
                 </p>
               </CardContent>
             </Card>
@@ -285,7 +285,7 @@ export default function About() {
           </div>
           <div className="text-center mt-12">
             <Button asChild size="lg" className="text-lg px-8 py-6">
-              <Link href="/classes">Book Your Transformative Experience</Link>
+              <Link href="/sessions">Book Your Transformative Experience</Link>
             </Button>
             <p className="text-sm text-muted-foreground mt-4">
               Join hundreds of satisfied customers who've found their zen on the water
@@ -307,11 +307,11 @@ export default function About() {
             "Life is better on the water!"
           </blockquote>
           <p className="text-muted-foreground mb-8">
-            Sarah truly is an inspiration and encourages everyone to try new things and live life to the fullest. Whether you're seeking stress relief, a unique meditation practice, or simply a peaceful escape, Desert Paddleboards offers a journey into total relaxation.
+            Sarah truly is an inspiration and encourages everyone to try new things and live life to the fullest. Whether you're seeking stress relief, a unique meditation practice, or simply a peaceful escape, Blue Wave Experiences offers a journey into total relaxation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/classes">Book a Class</Link>
+              <Link href="/sessions">Browse Sessions</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/private-events">Plan Your Event</Link>
