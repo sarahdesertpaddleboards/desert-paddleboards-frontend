@@ -266,6 +266,9 @@ export default function SessionsPage() {
   }, [resultSessions]);
 
   const currentQuery = useMemo(() => buildQuery(filters), [filters]);
+  const totalVisibleSessions = resultSessions.length;
+  const soldOutVisibleSessions = resultSessions.filter((session) => session.seatsAvailable <= 0).length;
+  const lowAvailabilityVisibleSessions = resultSessions.filter((session) => session.seatsAvailable > 0 && session.seatsAvailable <= 3).length;
 
   function updateFilters(next: Partial<Filters>) {
     setFilters((prev) => ({ ...prev, ...next }));
@@ -377,6 +380,26 @@ export default function SessionsPage() {
           <CardContent className="p-6 text-muted-foreground">No upcoming sessions found for this availability window.</CardContent>
         </Card>
       ) : (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">{totalVisibleSessions} session{totalVisibleSessions === 1 ? "" : "s"} shown</span>
+            {lowAvailabilityVisibleSessions > 0 && (
+              <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">
+                {lowAvailabilityVisibleSessions} with few spots left
+              </span>
+            )}
+            {soldOutVisibleSessions > 0 && (
+              <span className="rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">
+                {soldOutVisibleSessions} sold out
+              </span>
+            )}
+          </div>
+
+          <div className="space-y-8">
+        <Card>
+          <CardContent className="p-6 text-muted-foreground">No upcoming sessions found for this availability window.</CardContent>
+        </Card>
+      ) : (
         <div className="space-y-8">
           {groupedSessions.map(([heading, items]) => (
             <section key={heading} className="space-y-3">
@@ -399,9 +422,17 @@ export default function SessionsPage() {
                               {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
                             </div>
                           </div>
-                          <div className="text-sm text-muted-foreground md:text-right">
+                          <div className="text-sm text-muted-foreground md:text-right space-y-1">
                             <div className="font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
-                            {soldOut ? "Sold out" : "Available now"}
+                            <div>
+                              {soldOut ? (
+                                <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
+                              ) : session.seatsAvailable <= 3 ? (
+                                <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">Few spots left</span>
+                              ) : (
+                                <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">Available now</span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
