@@ -34,6 +34,17 @@ type Participant = {
   email?: string;
 };
 
+type GiftCertificate = {
+  code?: string | null;
+  originalAmount?: number | null;
+  remainingAmount?: number | null;
+  currency?: string | null;
+  recipientName?: string | null;
+  recipientEmail?: string | null;
+  message?: string | null;
+  status?: string | null;
+};
+
 type CheckoutSuccessResponse = {
   order: CheckoutOrder | null;
   downloadToken: string | null;
@@ -41,6 +52,7 @@ type CheckoutSuccessResponse = {
   sessionId?: string | null;
   bookedQuantity?: number;
   bookedSession?: BookedSession | null;
+  giftCertificate?: GiftCertificate | null;
 };
 
 function inferDeliveryType(productKey: string): "digital" | "gift" | "booking" | "merch" {
@@ -79,7 +91,7 @@ function successSubcopy(deliveryType: "digital" | "gift" | "booking" | "merch", 
     case "digital":
       return "Your payment was successful and your digital item is being prepared.";
     case "gift":
-      return "Your payment was successful and your gift certificate will be sent shortly.";
+      return "Your payment was successful and your gift certificate is ready to share.";
     case "merch":
       return "Your payment was successful and your order is being processed.";
     default:
@@ -216,6 +228,28 @@ export default function CheckoutSuccess() {
         </Card>
 
         <div className="space-y-6 mt-6">
+          {deliveryType === "gift" && data.giftCertificate?.code && (
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <Gift className="w-5 h-5 text-primary" />
+                  <h3 className="text-xl font-bold">Your gift certificate code</h3>
+                </div>
+                <div className="rounded-xl border bg-muted/40 px-4 py-4 space-y-2">
+                  <p className="text-sm text-gray-600">
+                    Share this code with the recipient so they can redeem it later.
+                  </p>
+                  <div className="text-2xl font-bold tracking-wide">{data.giftCertificate.code}</div>
+                  {typeof data.giftCertificate.remainingAmount === "number" && (
+                    <p className="text-sm text-gray-600">
+                      Value: ${(data.giftCertificate.remainingAmount / 100).toFixed(2)} {String(data.giftCertificate.currency || "usd").toUpperCase()}
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {deliveryType === "digital" && (
             <Card>
               <CardContent className="p-6 flex justify-between items-center">
