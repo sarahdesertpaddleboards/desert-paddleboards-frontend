@@ -321,26 +321,28 @@ export default function SessionsPage() {
                   </div>
                 )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button variant={!filters.date ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: "" })}>All dates</Button>
-                {dateOptions.map((date) => {
-                  const selected = filters.date === date.key;
-                  return (
-                    <button
-                      key={date.key}
-                      type="button"
-                      onClick={() => updateFilters({ date: date.key })}
-                      className={selected
-                        ? "min-w-[88px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-2 text-left shadow-sm"
-                        : "min-w-[88px] rounded-xl border bg-background px-3 py-2 text-left hover:bg-muted transition-colors"
-                      }
-                    >
-                      <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
-                      <div className="text-sm font-semibold">{date.label}</div>
-                      <div className="text-xs opacity-80">{date.count} session{date.count === 1 ? "" : "s"}</div>
-                    </button>
-                  );
-                })}
+              <div className="overflow-x-auto pb-1">
+                <div className="flex gap-2 min-w-max">
+                  <Button variant={!filters.date ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: "" })}>All dates</Button>
+                  {dateOptions.map((date) => {
+                    const selected = filters.date === date.key;
+                    return (
+                      <button
+                        key={date.key}
+                        type="button"
+                        onClick={() => updateFilters({ date: date.key })}
+                        className={selected
+                          ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
+                          : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
+                        }
+                      >
+                        <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
+                        <div className="text-sm font-semibold">{date.label}</div>
+                        <div className="text-xs opacity-80">{date.count} session{date.count === 1 ? "" : "s"}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )}
@@ -396,67 +398,63 @@ export default function SessionsPage() {
           </div>
 
           <div className="space-y-8">
-        <Card>
-          <CardContent className="p-6 text-muted-foreground">No upcoming sessions found for this availability window.</CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-8">
-          {groupedSessions.map(([heading, items]) => (
-            <section key={heading} className="space-y-3">
-              <h2 className="text-xl font-bold">{heading}</h2>
-              <div className="grid gap-4">
-                {items.map((session) => {
-                  const soldOut = session.seatsAvailable <= 0;
-                  const canBook = Boolean(session.productKey) && !soldOut;
-                  return (
-                    <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(detailHref(session.id))}>
-                      <CardContent className="p-5 space-y-3">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                          <div className="space-y-1">
-                            <div className="font-semibold text-lg">{session.className ?? "Session"}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+            {groupedSessions.map(([heading, items]) => (
+              <section key={heading} className="space-y-3">
+                <h2 className="text-xl font-bold">{heading}</h2>
+                <div className="grid gap-4">
+                  {items.map((session) => {
+                    const soldOut = session.seatsAvailable <= 0;
+                    const canBook = Boolean(session.productKey) && !soldOut;
+                    return (
+                      <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(detailHref(session.id))}>
+                        <CardContent className="p-5 space-y-3">
+                          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                            <div className="space-y-1">
+                              <div className="font-semibold text-lg">{session.className ?? "Session"}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {session.venueName ?? "Venue TBD"}
+                                {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
+                              </div>
                             </div>
-                            <div className="text-sm text-muted-foreground">
-                              {session.venueName ?? "Venue TBD"}
-                              {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
-                            </div>
-                          </div>
-                          <div className="text-sm text-muted-foreground md:text-right space-y-1">
-                            <div className="font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
-                            <div>
-                              {soldOut ? (
-                                <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
-                              ) : session.seatsAvailable <= 3 ? (
-                                <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">Few spots left</span>
-                              ) : (
-                                <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">Available now</span>
-                              )}
+                            <div className="text-sm text-muted-foreground md:text-right space-y-1">
+                              <div className="font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
+                              <div>
+                                {soldOut ? (
+                                  <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
+                                ) : session.seatsAvailable <= 3 ? (
+                                  <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">Few spots left</span>
+                                ) : (
+                                  <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">Available now</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="flex gap-2 flex-wrap">
-                          <Button size="sm" disabled={!canBook} onClick={(e) => {
-                            e.stopPropagation();
-                            if (canBook) navigate(buyHref(session));
-                          }}>
-                            {soldOut ? "Sold out" : "Book this session"}
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(detailHref(session.id));
-                          }}>
-                            View details
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+                          <div className="flex gap-2 flex-wrap">
+                            <Button size="sm" disabled={!canBook} onClick={(e) => {
+                              e.stopPropagation();
+                              if (canBook) navigate(buyHref(session));
+                            }}>
+                              {soldOut ? "Sold out" : "Book this session"}
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(detailHref(session.id));
+                            }}>
+                              View details
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       )}
     </div>
