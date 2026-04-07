@@ -283,7 +283,7 @@ export default function PrivateEvents() {
       <section className="bg-primary text-primary-foreground py-16">
         <div className="container max-w-3xl text-center">
           <blockquote className="text-2xl md:text-3xl italic mb-6">
-            "Desert Paddleboards made our bachelorette party absolutely unforgettable! The floating soundbath was the perfect way to relax and bond before the big day."
+            "Blue Wave Experiences made our bachelorette party absolutely unforgettable! The floating soundbath was the perfect way to relax and bond before the big day."
           </blockquote>
           <p className="text-lg opacity-90">— Jessica M., Scottsdale</p>
         </div>

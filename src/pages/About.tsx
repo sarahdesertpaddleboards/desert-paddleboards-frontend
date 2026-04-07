@@ -100,7 +100,7 @@ export default function About() {
                   Sarah Williams is the visionary behind Blue Wave Experiences, bringing over 25 years of fitness industry experience to create unique water-based wellness experiences. Based in Mesa, Arizona, Sarah has transformed the way people experience relaxation and mindfulness through her innovative floating soundbaths and paddleboard experiences.
                 </p>
                 <p>
-                  Her journey began in 2011 when she founded Desert Paddleboards as a way to connect people with nature through stand-up paddleboarding. Today, Blue Wave Experiences carries that spirit forward through unforgettable outdoor wellness experiences.
+                  Her journey began in 2011 when she built this business as a way to connect people with nature through stand-up paddleboarding. Today, Blue Wave Experiences carries that spirit forward through unforgettable outdoor wellness experiences.
                 </p>
                 <p>
                   Sarah's passion for aquatic wellness stems from her extensive background in synchronized swimming, where she competed and coached at national-level competitions. She has facilitated various swimming programs throughout Arizona and even swam around Alcatraz Island and completed the Hudson River 10K in NYC.
