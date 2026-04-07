@@ -406,21 +406,41 @@ export default function SessionsPage() {
                     const soldOut = session.seatsAvailable <= 0;
                     const canBook = Boolean(session.productKey) && !soldOut;
                     return (
-                      <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(detailHref(session.id))}>
-                        <CardContent className="p-5 space-y-3">
-                          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                            <div className="space-y-1">
-                              <div className="font-semibold text-lg">{session.className ?? "Session"}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+                      <Card key={session.id} className="cursor-pointer border-border/70 hover:shadow-lg hover:-translate-y-0.5 transition-all" onClick={() => navigate(detailHref(session.id))}>
+                        <CardContent className="p-5 space-y-4">
+                          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div className="space-y-3">
+                              <div className="space-y-1">
+                                <div className="text-lg font-semibold leading-tight">{session.className ?? "Session"}</div>
+                                <div className="text-sm font-medium text-foreground">
+                                  {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+                                </div>
                               </div>
-                              <div className="text-sm text-muted-foreground">
-                                {session.venueName ?? "Venue TBD"}
-                                {session.venueCity && session.venueState ? ` • ${session.venueCity}, ${session.venueState}` : ""}
+
+                              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                <span>{session.venueName ?? "Venue TBD"}</span>
+                                {session.venueCity && session.venueState ? (
+                                  <>
+                                    <span>•</span>
+                                    <span>{session.venueCity}, {session.venueState}</span>
+                                  </>
+                                ) : null}
                               </div>
                             </div>
-                            <div className="text-sm text-muted-foreground md:text-right space-y-1">
-                              <div className="font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
+
+                            <div className="lg:text-right space-y-2">
+                              <div className="text-sm font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
+                              <div className="h-2 w-full lg:w-36 rounded-full bg-muted overflow-hidden">
+                                <div
+                                  className={soldOut
+                                    ? "h-full w-full bg-slate-300"
+                                    : session.seatsAvailable <= 3
+                                      ? "h-full bg-amber-400"
+                                      : "h-full bg-emerald-400"
+                                  }
+                                  style={{ width: `${Math.max(8, Math.min(100, (session.seatsAvailable / Math.max(1, session.seatsTotal)) * 100))}%` }}
+                                />
+                              </div>
                               <div>
                                 {soldOut ? (
                                   <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
@@ -433,7 +453,7 @@ export default function SessionsPage() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2 flex-wrap">
+                          <div className="flex gap-2 flex-wrap pt-1">
                             <Button size="sm" disabled={!canBook} onClick={(e) => {
                               e.stopPropagation();
                               if (canBook) navigate(buyHref(session));
