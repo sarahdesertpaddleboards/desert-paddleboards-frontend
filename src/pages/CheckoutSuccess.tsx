@@ -269,14 +269,14 @@ export default function CheckoutSuccess() {
             </Card>
           )}
 
-          {deliveryType === "gift" && (
+          {deliveryType === "gift" && !data.giftCertificate?.code && (
             <Card>
               <CardContent className="p-6 flex gap-4 items-center">
                 <Gift className="w-8 h-8 text-amber-600" />
                 <div>
                   <h3 className="text-xl font-bold">Gift certificate purchased</h3>
                   <p className="text-gray-600">
-                    Your gift certificate is queued for delivery and should arrive by email shortly.
+                    Your gift certificate is being prepared and should arrive by email shortly.
                   </p>
                 </div>
               </CardContent>
