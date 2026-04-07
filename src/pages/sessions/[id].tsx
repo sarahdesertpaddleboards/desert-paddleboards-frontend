@@ -154,8 +154,8 @@ export default function SessionDetailPage() {
               <Button size="lg" className="w-full" disabled={soldOut || !session.productKey} onClick={() => buyHref && navigate(buyHref)}>
                 {soldOut ? "Sold out" : "Book this session"}
               </Button>
-              <Button size="lg" variant="outline" className="w-full" onClick={() => navigate(`/classes/${session.classProductId}`)}>
-                View all sessions for this class
+              <Button size="lg" variant="outline" className="w-full" onClick={() => navigate(backToSessionsHref)}>
+                Back to all matching sessions
               </Button>
             </div>
           </CardContent>
