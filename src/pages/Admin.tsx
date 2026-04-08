@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import ProductsEditor from "@/components/admin/ProductsEditor";
 import OrdersManager from "@/components/admin/OrdersManager";
+import GiftCertificatesManager from "@/components/admin/GiftCertificatesManager";
 import ClassProductsEditor from "@/components/admin/classes/ClassProductsEditor";
 import ClassSessionsEditor from "@/components/admin/classes/ClassSessionsEditor";
 import { fetchAdminClassProducts, type AdminClassProduct } from "@/lib/adminApi";
 
-type AdminTab = "products" | "orders" | "classProducts" | "classSessions";
+type AdminTab = "products" | "orders" | "giftCertificates" | "classProducts" | "classSessions";
 
 export default function Admin() {
   const [tab, setTab] = useState<AdminTab>("products");
@@ -29,7 +30,7 @@ export default function Admin() {
 
   return (
     <div className="p-8 space-y-6">
-      <h1 className="text-3xl font-bold">Sarah's Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold">Blue Wave Experiences Admin</h1>
 
       <div className="flex gap-4 border-b pb-2 flex-wrap">
         <button
@@ -47,10 +48,17 @@ export default function Admin() {
         </button>
 
         <button
+          onClick={() => setTab("giftCertificates")}
+          className={`pb-2 ${tab === "giftCertificates" ? "border-b-2 border-blue-600" : ""}`}
+        >
+          Gift Certificates
+        </button>
+
+        <button
           onClick={() => setTab("classProducts")}
           className={`pb-2 ${tab === "classProducts" ? "border-b-2 border-blue-600" : ""}`}
         >
-          Class Products
+          Experience Products
         </button>
 
         <button
@@ -63,6 +71,7 @@ export default function Admin() {
 
       {tab === "products" && <ProductsEditor />}
       {tab === "orders" && <OrdersManager />}
+      {tab === "giftCertificates" && <GiftCertificatesManager />}
       {tab === "classProducts" && <ClassProductsEditor />}
       {tab === "classSessions" && (
         <ClassSessionsEditor
