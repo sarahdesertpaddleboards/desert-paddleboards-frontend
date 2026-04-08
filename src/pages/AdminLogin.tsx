@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+import { ADMIN_API_BASE } from "@/lib/adminBase";
 
 axios.defaults.withCredentials = true;
-
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -16,7 +15,7 @@ export default function AdminLogin() {
 
     try {
       await axios.post(
-        `${API_BASE_URL}/admin/login`,
+        `${ADMIN_API_BASE}/admin/login`,
         { email, password },
         { withCredentials: true }
       );

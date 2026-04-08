@@ -1,12 +1,7 @@
 import axios from "axios";
+import { ADMIN_API_BASE } from "@/lib/adminBase";
 
 axios.defaults.withCredentials = true;
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL ||
-  (window.location.hostname === "localhost"
-    ? "http://localhost:4000"
-    : "https://desert-paddleboards-backend-production.up.railway.app");
 
 export type AdminGiftCertificate = {
   id: number;
@@ -25,6 +20,6 @@ export type AdminGiftCertificate = {
 };
 
 export async function fetchAdminGiftCertificates(): Promise<AdminGiftCertificate[]> {
-  const { data } = await axios.get(`${API_BASE}/admin/gift-certificates`);
+  const { data } = await axios.get(`${ADMIN_API_BASE}/admin/gift-certificates`);
   return Array.isArray(data) ? data : [];
 }

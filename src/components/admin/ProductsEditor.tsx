@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { ADMIN_API_BASE } from "@/lib/adminBase";
 
 axios.defaults.withCredentials = true;
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_BACKEND_URL ||
-  "https://desert-paddleboards-railway.up.railway.app";
 
 export default function ProductsEditor() {
   const [products, setProducts] = useState<any[]>([]);
@@ -14,7 +11,7 @@ export default function ProductsEditor() {
   const [saving, setSaving] = useState<number | null>(null);
 
   async function loadProducts() {
-    const res = await axios.get(`${API_BASE_URL}/admin/store/products`, {
+    const res = await axios.get(`${ADMIN_API_BASE}/admin/store/products`, {
       withCredentials: true,
     });
     setProducts(Array.isArray(res.data) ? res.data : []);
@@ -29,7 +26,7 @@ export default function ProductsEditor() {
     try {
       setSaving(id);
 
-      await axios.patch(`${API_BASE_URL}/admin/store/products/${id}`, updates, {
+      await axios.patch(`${ADMIN_API_BASE}/admin/store/products/${id}`, updates, {
         withCredentials: true,
       });
 
