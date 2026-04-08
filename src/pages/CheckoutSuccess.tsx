@@ -214,7 +214,7 @@ export default function CheckoutSuccess() {
           <CardContent className="p-6 space-y-4">
             <div>
               <h3 className="text-xl font-bold">Order summary</h3>
-              <p className="text-gray-600">Product: {data.order.productKey}</p>
+              <p className="text-gray-600">Product: {deliveryType === "gift" ? "Blue Wave Experiences Gift Certificate" : data.order.productKey}</p>
             </div>
 
             <div className="text-lg font-semibold">
