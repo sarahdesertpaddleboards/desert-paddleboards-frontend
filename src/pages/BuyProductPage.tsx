@@ -40,6 +40,15 @@ type SelectedSession = {
   className?: string | null;
 };
 
+type GiftPreview = {
+  code: string;
+  originalAmount: number;
+  amountApplied: number;
+  payableAmount: number;
+  remainingBalanceAfterPurchase: number;
+  currency: string;
+};
+
 function labelForType(type?: string) {
   switch ((type || "").toLowerCase()) {
     case "digital":
@@ -105,6 +114,32 @@ async function fetchBuyableProduct(productKey: string): Promise<BuyableProduct |
   }
 }
 
+async function previewGiftCode(args: {
+  productKey: string;
+  quantity: number;
+  giftCode: string;
+}) {
+  const baseUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    (window.location.hostname === "localhost"
+      ? "http://localhost:4000"
+      : "https://desert-paddleboards-backend-production.up.railway.app");
+
+  const res = await fetch(`${baseUrl}/checkout/gift-code/preview`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(args),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to validate gift code");
+  }
+
+  return data as GiftPreview;
+}
+
 export default function BuyProductPage() {
   const [match, params] = useRoute("/buy/:productKey");
   const productKey = params?.productKey;
@@ -115,26 +150,40 @@ export default function BuyProductPage() {
   const [email, setEmail] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [touched, setTouched] = useState(false);
+  const [giftCode, setGiftCode] = useState("");
+  const [giftPreview, setGiftPreview] = useState<GiftPreview | null>(null);
+  const [giftPreviewLoading, setGiftPreviewLoading] = useState(false);
+  const [giftError, setGiftError] = useState<string | null>(null);
 
+  const search = typeof window !== "undefined" ? window.location.search : "";
   const sessionId = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(search);
     const raw = params.get("sessionId");
     const parsed = raw ? Number(raw) : null;
     return parsed && Number.isFinite(parsed) ? parsed : null;
-  }, [window.location.search]);
+  }, [search]);
 
   const emailValid = looksLikeEmail(email);
   const bookingFlow = isBookingFlow(product, session);
+  const giftFlow = (product?.type || product?.productType || "").toLowerCase() === "gift";
   const maxQuantity = bookingFlow && typeof session?.seatsAvailable === "number"
     ? Math.max(1, Math.min(10, session.seatsAvailable))
-    : 10;
+    : giftFlow
+      ? 1
+      : 10;
   const totalPrice = product ? product.price * quantity : 0;
+  const displayedTotal = giftPreview?.payableAmount ?? totalPrice;
 
   useEffect(() => {
     if (quantity > maxQuantity) {
       setQuantity(maxQuantity);
     }
   }, [quantity, maxQuantity]);
+
+  useEffect(() => {
+    setGiftPreview(null);
+    setGiftError(null);
+  }, [productKey, quantity, session?.id]);
 
   useEffect(() => {
     if (!match || !productKey) return;
@@ -167,6 +216,27 @@ export default function BuyProductPage() {
   if (loading) return <div className="p-6">Loading…</div>;
   if (!product) return <div className="p-6">Product not found.</div>;
 
+  async function handleApplyGiftCode() {
+    if (!product?.productKey || !giftCode.trim()) return;
+
+    try {
+      setGiftPreviewLoading(true);
+      setGiftError(null);
+      const preview = await previewGiftCode({
+        productKey: product.productKey,
+        quantity,
+        giftCode,
+      });
+      setGiftPreview(preview);
+      setGiftCode(preview.code);
+    } catch (err: any) {
+      setGiftPreview(null);
+      setGiftError(err?.message || "Failed to apply gift code");
+    } finally {
+      setGiftPreviewLoading(false);
+    }
+  }
+
   async function handleBuy() {
     if (!emailValid) {
       setTouched(true);
@@ -181,6 +251,7 @@ export default function BuyProductPage() {
         quantity,
         email,
         name: product.name,
+        giftCode: giftPreview?.code || undefined,
       });
 
       const url = typeof checkout === "string" ? checkout : checkout?.url;
@@ -216,7 +287,7 @@ export default function BuyProductPage() {
               <p className="text-muted-foreground">{product.description}</p>
             </div>
             <div className="text-right whitespace-nowrap">
-              <div className="text-sm text-muted-foreground">Per spot</div>
+              <div className="text-sm text-muted-foreground">{bookingFlow ? "Per spot" : giftFlow ? "Gift value" : "Price"}</div>
               <div className="text-2xl font-semibold">${(product.price / 100).toFixed(2)}</div>
             </div>
           </div>
@@ -244,45 +315,81 @@ export default function BuyProductPage() {
           )}
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {bookingFlow ? "Number of spots" : "Quantity"}
-              </label>
-              <div className="flex items-center gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
-                >
-                  −
-                </Button>
-                <div className="min-w-[3rem] text-center text-lg font-semibold">{quantity}</div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
-                  disabled={quantity >= maxQuantity}
-                >
-                  +
-                </Button>
+            {!giftFlow && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {bookingFlow ? "Number of spots" : "Quantity"}
+                </label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    −
+                  </Button>
+                  <div className="min-w-[3rem] text-center text-lg font-semibold">{quantity}</div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
+                    disabled={quantity >= maxQuantity}
+                  >
+                    +
+                  </Button>
+                </div>
+                {bookingFlow && typeof session?.seatsAvailable === "number" && (
+                  <div className="text-sm text-muted-foreground">
+                    {session.seatsAvailable} {session.seatsAvailable === 1 ? "spot" : "spots"} remaining
+                  </div>
+                )}
               </div>
-              {bookingFlow && typeof session?.seatsAvailable === "number" && (
+            )}
+
+            <div className="rounded-lg border bg-muted/20 p-4 space-y-1">
+              <div className="text-sm text-muted-foreground">{giftFlow ? "Gift value" : "Total"}</div>
+              <div className="text-2xl font-semibold">${(displayedTotal / 100).toFixed(2)}</div>
+              {giftPreview && (
                 <div className="text-sm text-muted-foreground">
-                  {session.seatsAvailable} {session.seatsAvailable === 1 ? "spot" : "spots"} remaining
+                  Gift code <span className="font-medium text-foreground">{giftPreview.code}</span> applied, saving ${(giftPreview.amountApplied / 100).toFixed(2)}
                 </div>
               )}
-            </div>
-
-            <div className="rounded-lg border bg-muted/20 p-4">
-              <div className="text-sm text-muted-foreground">Total</div>
-              <div className="text-2xl font-semibold">${(totalPrice / 100).toFixed(2)}</div>
-              {bookingFlow && (
+              {bookingFlow && !giftPreview && (
                 <div className="text-sm text-muted-foreground mt-1">
                   {quantity} {quantity === 1 ? "spot" : "spots"} reserved
                 </div>
               )}
+              {giftFlow && (
+                <div className="text-sm text-muted-foreground mt-1">
+                  One gift certificate
+                </div>
+              )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Gift code</label>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Input
+                placeholder="Enter gift certificate code"
+                value={giftCode}
+                onChange={(e) => {
+                  setGiftCode(e.target.value.toUpperCase());
+                  setGiftPreview(null);
+                  setGiftError(null);
+                }}
+              />
+              <Button type="button" variant="outline" onClick={handleApplyGiftCode} disabled={giftPreviewLoading || !giftCode.trim()}>
+                {giftPreviewLoading ? "Applying…" : "Apply code"}
+              </Button>
+            </div>
+            {giftError && <div className="text-sm text-red-600">{giftError}</div>}
+            {giftPreview && (
+              <div className="text-sm text-muted-foreground">
+                New total ${(giftPreview.payableAmount / 100).toFixed(2)}. Remaining gift balance after this purchase: ${(giftPreview.remainingBalanceAfterPurchase / 100).toFixed(2)} {String(giftPreview.currency || "usd").toUpperCase()}.
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
