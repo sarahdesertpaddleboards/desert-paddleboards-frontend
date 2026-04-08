@@ -221,12 +221,12 @@ export default function SessionsPage() {
     return dates.map((date) => ({ ...date, count: counts.get(date.key) || 0 }));
   }, [venueSessions]);
 
-  const selectedDateOption = selectedDateIndex >= 0 ? dateOptions[selectedDateIndex] : null;
-
   const selectedDateIndex = useMemo(() => {
     if (!filters.date) return -1;
     return dateOptions.findIndex((date) => date.key === filters.date);
   }, [dateOptions, filters.date]);
+
+  const selectedDateOption = selectedDateIndex >= 0 ? dateOptions[selectedDateIndex] : null;
 
   const previousDate = selectedDateIndex > 0 ? dateOptions[selectedDateIndex - 1] : null;
   const nextDate = selectedDateIndex >= 0 && selectedDateIndex < dateOptions.length - 1 ? dateOptions[selectedDateIndex + 1] : null;
