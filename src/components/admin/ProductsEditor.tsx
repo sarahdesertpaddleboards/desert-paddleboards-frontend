@@ -85,6 +85,21 @@ export default function ProductsEditor() {
               />
             </div>
 
+            <div className="space-y-1">
+              <div className="text-sm">Digital object key:</div>
+              <input
+                type="text"
+                className="border p-1 rounded w-full max-w-xl"
+                defaultValue={p.digitalObjectKey ?? ""}
+                onBlur={(e) => updateProduct(p.id, { digitalObjectKey: e.target.value || null })}
+                disabled={saving === p.id}
+                placeholder="e.g. sonoran-echoes.zip"
+              />
+              <div className="text-xs text-gray-500">
+                Used for digital download fulfillment when this product maps to a private object in storage.
+              </div>
+            </div>
+
             {saving === p.id && (
               <div className="text-blue-600 text-sm">Saving...</div>
             )}
