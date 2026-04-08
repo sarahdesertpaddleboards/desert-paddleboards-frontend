@@ -368,29 +368,31 @@ export default function BuyProductPage() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Gift code</label>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Input
-                placeholder="Enter gift certificate code"
-                value={giftCode}
-                onChange={(e) => {
-                  setGiftCode(e.target.value.toUpperCase());
-                  setGiftPreview(null);
-                  setGiftError(null);
-                }}
-              />
-              <Button type="button" variant="outline" onClick={handleApplyGiftCode} disabled={giftPreviewLoading || !giftCode.trim()}>
-                {giftPreviewLoading ? "Applying…" : "Apply code"}
-              </Button>
-            </div>
-            {giftError && <div className="text-sm text-red-600">{giftError}</div>}
-            {giftPreview && (
-              <div className="text-sm text-muted-foreground">
-                New total ${(giftPreview.payableAmount / 100).toFixed(2)}. Remaining gift balance after this purchase: ${(giftPreview.remainingBalanceAfterPurchase / 100).toFixed(2)} {String(giftPreview.currency || "usd").toUpperCase()}.
+          {!giftFlow && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Gift code</label>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  placeholder="Enter gift certificate code"
+                  value={giftCode}
+                  onChange={(e) => {
+                    setGiftCode(e.target.value.toUpperCase());
+                    setGiftPreview(null);
+                    setGiftError(null);
+                  }}
+                />
+                <Button type="button" variant="outline" onClick={handleApplyGiftCode} disabled={giftPreviewLoading || !giftCode.trim()}>
+                  {giftPreviewLoading ? "Applying…" : "Apply code"}
+                </Button>
               </div>
-            )}
-          </div>
+              {giftError && <div className="text-sm text-red-600">{giftError}</div>}
+              {giftPreview && (
+                <div className="text-sm text-muted-foreground">
+                  New total ${(giftPreview.payableAmount / 100).toFixed(2)}. Remaining gift balance after this purchase: ${(giftPreview.remainingBalanceAfterPurchase / 100).toFixed(2)} {String(giftPreview.currency || "usd").toUpperCase()}.
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <label htmlFor="checkout-email" className="text-sm font-medium">

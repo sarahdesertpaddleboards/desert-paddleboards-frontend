@@ -113,6 +113,7 @@ export default function CheckoutSuccess() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [copiedGiftCode, setCopiedGiftCode] = useState(false);
   const [specialRequests, setSpecialRequests] = useState("");
   const [participants, setParticipants] = useState<Participant[]>([]);
 
@@ -235,11 +236,28 @@ export default function CheckoutSuccess() {
                   <Gift className="w-5 h-5 text-primary" />
                   <h3 className="text-xl font-bold">Your gift certificate code</h3>
                 </div>
-                <div className="rounded-xl border bg-muted/40 px-4 py-4 space-y-2">
+                <div className="rounded-xl border bg-muted/40 px-4 py-4 space-y-3">
                   <p className="text-sm text-gray-600">
                     Share this code with the recipient so they can redeem it later.
                   </p>
-                  <div className="text-2xl font-bold tracking-wide">{data.giftCertificate.code}</div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="text-2xl font-bold tracking-wide">{data.giftCertificate.code}</div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(data.giftCertificate?.code || "");
+                          setCopiedGiftCode(true);
+                          window.setTimeout(() => setCopiedGiftCode(false), 2000);
+                        } catch {
+                          setCopiedGiftCode(false);
+                        }
+                      }}
+                    >
+                      {copiedGiftCode ? "Copied" : "Copy code"}
+                    </Button>
+                  </div>
                   {typeof data.giftCertificate.remainingAmount === "number" && (
                     <p className="text-sm text-gray-600">
                       Value: ${(data.giftCertificate.remainingAmount / 100).toFixed(2)} {String(data.giftCertificate.currency || "usd").toUpperCase()}
