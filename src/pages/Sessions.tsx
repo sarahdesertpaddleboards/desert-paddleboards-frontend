@@ -82,6 +82,12 @@ function getDateChipWeekday(value: string, timeZone?: string | null) {
   });
 }
 
+function getWeekBucketLabel(dayOffset: number) {
+  if (dayOffset <= 6) return "This week";
+  if (dayOffset <= 13) return "Next week";
+  return "Later";
+}
+
 function dayNumberInZone(value: string | Date, timeZone?: string | null) {
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return Number.NaN;
@@ -192,7 +198,7 @@ export default function SessionsPage() {
 
   const dateOptions = useMemo(() => {
     const seen = new Set<string>();
-    const dates: { key: string; label: string; weekday: string; count: number }[] = [];
+    const dates: { key: string; label: string; weekday: string; count: number; weekBucket: string; dayOffset: number }[] = [];
     const counts = new Map<string, number>();
 
     for (const session of venueSessions) {
@@ -200,17 +206,22 @@ export default function SessionsPage() {
       counts.set(key, (counts.get(key) || 0) + 1);
       if (seen.has(key)) continue;
       seen.add(key);
+      const dayOffset = dayNumberInZone(session.startTime, session.venueTimezone) - dayNumberInZone(new Date(), session.venueTimezone);
       dates.push({
         key,
         label: getDateChipLabel(session.startTime, session.venueTimezone),
         weekday: getDateChipWeekday(session.startTime, session.venueTimezone),
         count: 0,
+        weekBucket: getWeekBucketLabel(dayOffset),
+        dayOffset,
       });
       if (dates.length >= 14) break;
     }
 
     return dates.map((date) => ({ ...date, count: counts.get(date.key) || 0 }));
   }, [venueSessions]);
+
+  const selectedDateOption = selectedDateIndex >= 0 ? dateOptions[selectedDateIndex] : null;
 
   const selectedDateIndex = useMemo(() => {
     if (!filters.date) return -1;
@@ -309,7 +320,16 @@ export default function SessionsPage() {
           {dateOptions.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div className="text-sm font-medium">Jump to date</div>
+                <div className="space-y-1">
+                  <div className="text-sm font-medium">Jump to date</div>
+                  {selectedDateOption ? (
+                    <div className="text-xs text-muted-foreground">
+                      Viewing <span className="font-medium text-foreground">{selectedDateOption.label}</span> in <span className="font-medium text-foreground">{selectedDateOption.weekBucket.toLowerCase()}</span>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-muted-foreground">Browse by date across this availability window</div>
+                  )}
+                </div>
                 {filters.date && (
                   <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" disabled={!previousDate} onClick={() => previousDate && updateFilters({ date: previousDate.key })}>
@@ -322,24 +342,31 @@ export default function SessionsPage() {
                 )}
               </div>
               <div className="overflow-x-auto pb-1">
-                <div className="flex gap-2 min-w-max">
+                <div className="flex gap-2 min-w-max items-stretch">
                   <Button variant={!filters.date ? "secondary" : "outline"} size="sm" onClick={() => updateFilters({ date: "" })}>All dates</Button>
-                  {dateOptions.map((date) => {
+                  {dateOptions.map((date, index) => {
                     const selected = filters.date === date.key;
+                    const showBucket = index === 0 || date.weekBucket !== dateOptions[index - 1]?.weekBucket;
                     return (
-                      <button
-                        key={date.key}
-                        type="button"
-                        onClick={() => updateFilters({ date: date.key })}
-                        className={selected
-                          ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
-                          : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
-                        }
-                      >
-                        <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
-                        <div className="text-sm font-semibold">{date.label}</div>
-                        <div className="text-xs opacity-80">{date.count} session{date.count === 1 ? "" : "s"}</div>
-                      </button>
+                      <div key={date.key} className="space-y-1">
+                        {showBucket ? (
+                          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground px-1">{date.weekBucket}</div>
+                        ) : (
+                          <div className="h-[16px]" />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => updateFilters({ date: date.key })}
+                          className={selected
+                            ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
+                            : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
+                          }
+                        >
+                          <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
+                          <div className="text-sm font-semibold">{date.label}</div>
+                          <div className="text-xs opacity-80">{date.count} session{date.count === 1 ? "" : "s"}</div>
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
