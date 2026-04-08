@@ -16,8 +16,9 @@ export function submitCheckout(payload: {
   quantity?: number;
   email: string;
   name?: string;
+  giftCode?: string;
 }) {
-  return apiPost("/checkout", payload);
+  return apiPost("/checkout/create-checkout-session", payload);
 }
 
 export default {
