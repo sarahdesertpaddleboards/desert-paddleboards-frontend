@@ -41,7 +41,7 @@ export default function OrdersManager() {
     try {
       setResendingId(id);
       await resendDownload(id);
-      toast.success("Download email re-sent");
+      toast.success("Email re-sent");
     } catch (err) {
       console.error(err);
       toast.error("Failed to resend email");
@@ -118,29 +118,22 @@ export default function OrdersManager() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex flex-wrap justify-between items-center gap-3">
-          <div>
-            <h2 className="text-2xl font-bold">Orders</h2>
-            <p className="text-muted-foreground">
-              Review customer purchases across experiences, gift certificates, digital products, and other catalog items.
-            </p>
-          </div>
-          <button
-            onClick={exportCSV}
-            className="border px-4 py-2 rounded hover:bg-gray-100"
-          >
-            Export CSV
-          </button>
-        </div>
+      <div className="flex flex-wrap justify-between items-center gap-3">
+        <h2 className="text-2xl font-bold">Orders</h2>
+        <button
+          onClick={exportCSV}
+          className="border px-4 py-2 rounded hover:bg-gray-100"
+        >
+          Export CSV
+        </button>
+      </div>
 
-        <div className="flex flex-wrap gap-2 text-sm">
-          <span className="rounded-full bg-slate-100 px-3 py-1">{summary.total} orders</span>
-          <span className="rounded-full bg-slate-100 px-3 py-1">{summary.experiences} experiences</span>
-          <span className="rounded-full bg-slate-100 px-3 py-1">{summary.gifts} gifts</span>
-          <span className="rounded-full bg-slate-100 px-3 py-1">{summary.digital} digital</span>
-          <span className="rounded-full bg-slate-100 px-3 py-1">Total value: {formatMoney(summary.totalValue, "usd")}</span>
-        </div>
+      <div className="flex flex-wrap gap-2 text-sm">
+        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.total} orders</span>
+        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.experiences} experiences</span>
+        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.gifts} gifts</span>
+        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.digital} digital</span>
+        <span className="rounded-full bg-slate-100 px-3 py-1">Total value: {formatMoney(summary.totalValue, "usd")}</span>
       </div>
 
       <div className="grid gap-3 md:grid-cols-[1fr_auto]">
@@ -173,6 +166,7 @@ export default function OrdersManager() {
         ) : (
           filteredOrders.map((order) => {
             const kind = inferOrderType(order.productKey);
+            const isGift = kind === "Gift certificate";
             return (
               <div
                 key={order.id}
@@ -202,7 +196,7 @@ export default function OrdersManager() {
                     disabled={resendingId === order.id}
                     className="rounded-lg border px-4 py-2 hover:bg-gray-50 disabled:opacity-60"
                   >
-                    {resendingId === order.id ? "Resending..." : "Resend email"}
+                    {resendingId === order.id ? "Resending..." : isGift ? "Resend receipt" : "Resend email"}
                   </button>
                 </div>
               </div>
