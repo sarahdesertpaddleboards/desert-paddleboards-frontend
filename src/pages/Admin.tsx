@@ -77,14 +77,13 @@ export default function Admin() {
         </button>
       </div>
 
-      <div className="rounded-xl border bg-slate-50 p-4">
-        <h2 className="text-lg font-semibold">{pageTitle}</h2>
-        {tab === "scheduleSessions" && selectedExperienceProduct ? (
-          <p className="text-sm text-muted-foreground mt-1">
+      {tab === "scheduleSessions" && selectedExperienceProduct ? (
+        <div className="rounded-xl border bg-slate-50 p-4">
+          <p className="text-sm text-muted-foreground">
             {selectedExperienceProduct.name}
           </p>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
       {tab === "catalog" && <ProductsEditor />}
       {tab === "orders" && <OrdersManager />}

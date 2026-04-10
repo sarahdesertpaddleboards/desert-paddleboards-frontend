@@ -129,11 +129,11 @@ export default function OrdersManager() {
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm">
-        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.total} orders</span>
-        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.experiences} experiences</span>
-        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.gifts} gifts</span>
-        <span className="rounded-full bg-slate-100 px-3 py-1">{summary.digital} digital</span>
-        <span className="rounded-full bg-slate-100 px-3 py-1">Total value: {formatMoney(summary.totalValue, "usd")}</span>
+        <span className="rounded-md bg-slate-100 px-3 py-1 text-slate-700">{summary.total} orders</span>
+        <span className="rounded-md bg-slate-100 px-3 py-1 text-slate-700">{summary.experiences} experiences</span>
+        <span className="rounded-md bg-slate-100 px-3 py-1 text-slate-700">{summary.gifts} gifts</span>
+        <span className="rounded-md bg-slate-100 px-3 py-1 text-slate-700">{summary.digital} digital</span>
+        <span className="rounded-md bg-slate-100 px-3 py-1 text-slate-700">Total value: {formatMoney(summary.totalValue, "usd")}</span>
       </div>
 
       <div className="grid gap-3 md:grid-cols-[1fr_auto]">
