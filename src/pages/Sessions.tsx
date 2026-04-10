@@ -114,6 +114,12 @@ function withinWindow(startTime: string, windowFilter: string, timeZone?: string
   return true;
 }
 
+function availabilityLabel(session: Session) {
+  if (session.seatsAvailable <= 0) return "Sold out";
+  if (session.seatsAvailable <= Math.max(3, Math.ceil(session.seatsTotal * 0.2))) return "Nearly full";
+  return "Available";
+}
+
 export default function SessionsPage() {
   const [location, navigate] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -227,7 +233,6 @@ export default function SessionsPage() {
   }, [dateOptions, filters.date]);
 
   const selectedDateOption = selectedDateIndex >= 0 ? dateOptions[selectedDateIndex] : null;
-
   const previousDate = selectedDateIndex > 0 ? dateOptions[selectedDateIndex - 1] : null;
   const nextDate = selectedDateIndex >= 0 && selectedDateIndex < dateOptions.length - 1 ? dateOptions[selectedDateIndex + 1] : null;
 
@@ -279,7 +284,7 @@ export default function SessionsPage() {
   const currentQuery = useMemo(() => buildQuery(filters), [filters]);
   const totalVisibleSessions = resultSessions.length;
   const soldOutVisibleSessions = resultSessions.filter((session) => session.seatsAvailable <= 0).length;
-  const lowAvailabilityVisibleSessions = resultSessions.filter((session) => session.seatsAvailable > 0 && session.seatsAvailable <= 3).length;
+  const nearlyFullVisibleSessions = resultSessions.filter((session) => availabilityLabel(session) === "Nearly full").length;
 
   function updateFilters(next: Partial<Filters>) {
     setFilters((prev) => ({ ...prev, ...next }));
@@ -299,16 +304,16 @@ export default function SessionsPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Availability browser</h1>
-        <p className="text-muted-foreground">
-          Browse bookable sessions by time window, date, city, and venue.
+        <h1 className="text-3xl font-bold">Browse availability</h1>
+        <p className="text-muted-foreground max-w-3xl">
+          Explore upcoming experience sessions by date, city, and venue, then choose the session that fits you best.
         </p>
       </div>
 
       <Card>
         <CardContent className="p-4 space-y-4">
           <div className="space-y-2">
-            <div className="text-sm font-medium">Time window</div>
+            <div className="text-sm font-medium">Availability window</div>
             <div className="flex flex-wrap gap-2">
               <Button variant={!filters.window ? "default" : "outline"} size="sm" onClick={() => updateFilters({ window: "", date: "" })}>All upcoming</Button>
               <Button variant={filters.window === "7d" ? "default" : "outline"} size="sm" onClick={() => updateFilters({ window: "7d", date: "" })}>Next 7 days</Button>
@@ -321,7 +326,7 @@ export default function SessionsPage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="space-y-1">
-                  <div className="text-sm font-medium">Jump to date</div>
+                  <div className="text-sm font-medium">Choose a date</div>
                   {selectedDateOption ? (
                     <div className="text-xs text-muted-foreground">
                       Viewing <span className="font-medium text-foreground">{selectedDateOption.label}</span> in <span className="font-medium text-foreground">{selectedDateOption.weekBucket.toLowerCase()}</span>
@@ -403,104 +408,139 @@ export default function SessionsPage() {
       </Card>
 
       {loading ? (
-        <p>Loading sessions…</p>
+        <p>Loading availability…</p>
       ) : groupedSessions.length === 0 ? (
         <Card>
-          <CardContent className="p-6 text-muted-foreground">No upcoming sessions found for this availability window.</CardContent>
+          <CardContent className="p-6 text-muted-foreground space-y-2">
+            <div>No upcoming sessions found for this availability window.</div>
+            <div>Try changing the date, city, venue, or time window to see more availability.</div>
+          </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{totalVisibleSessions} session{totalVisibleSessions === 1 ? "" : "s"} shown</span>
-            {lowAvailabilityVisibleSessions > 0 && (
-              <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">
-                {lowAvailabilityVisibleSessions} with few spots left
+          <div className="rounded-xl border bg-slate-50 p-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="text-sm font-medium">Availability summary</div>
+              <div className="text-sm text-muted-foreground">
+                {selectedDateOption
+                  ? `${totalVisibleSessions} session${totalVisibleSessions === 1 ? "" : "s"} on ${selectedDateOption.label}`
+                  : `${totalVisibleSessions} upcoming session${totalVisibleSessions === 1 ? "" : "s"} shown`}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">
+                {Math.max(0, totalVisibleSessions - nearlyFullVisibleSessions - soldOutVisibleSessions)} available
               </span>
-            )}
-            {soldOutVisibleSessions > 0 && (
-              <span className="rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">
-                {soldOutVisibleSessions} sold out
-              </span>
-            )}
+              {nearlyFullVisibleSessions > 0 && (
+                <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">
+                  {nearlyFullVisibleSessions} nearly full
+                </span>
+              )}
+              {soldOutVisibleSessions > 0 && (
+                <span className="rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">
+                  {soldOutVisibleSessions} sold out
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="space-y-8">
-            {groupedSessions.map(([heading, items]) => (
-              <section key={heading} className="space-y-3">
-                <h2 className="text-xl font-bold">{heading}</h2>
-                <div className="grid gap-4">
-                  {items.map((session) => {
-                    const soldOut = session.seatsAvailable <= 0;
-                    const canBook = Boolean(session.productKey) && !soldOut;
-                    return (
-                      <Card key={session.id} className="cursor-pointer border-border/70 hover:shadow-lg hover:-translate-y-0.5 transition-all" onClick={() => navigate(detailHref(session.id))}>
-                        <CardContent className="p-5 space-y-4">
-                          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                            <div className="space-y-3">
-                              <div className="space-y-1">
-                                <div className="text-lg font-semibold leading-tight">{session.className ?? "Session"}</div>
-                                <div className="text-sm font-medium text-foreground">
-                                  {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+            {groupedSessions.map(([heading, items]) => {
+              const soldOutCount = items.filter((session) => availabilityLabel(session) === "Sold out").length;
+              const nearlyFullCount = items.filter((session) => availabilityLabel(session) === "Nearly full").length;
+              const availableCount = items.filter((session) => availabilityLabel(session) === "Available").length;
+
+              return (
+                <section key={heading} className="space-y-3">
+                  <div className="rounded-xl border bg-white p-4 flex items-center justify-between gap-3 flex-wrap">
+                    <div>
+                      <h2 className="text-xl font-bold">{heading}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {items.length} session{items.length === 1 ? "" : "s"} available on this date
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 text-sm">
+                      {availableCount > 0 && <span className="rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">{availableCount} available</span>}
+                      {nearlyFullCount > 0 && <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">{nearlyFullCount} nearly full</span>}
+                      {soldOutCount > 0 && <span className="rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">{soldOutCount} sold out</span>}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4">
+                    {items.map((session) => {
+                      const state = availabilityLabel(session);
+                      const soldOut = state === "Sold out";
+                      const canBook = Boolean(session.productKey) && !soldOut;
+                      return (
+                        <Card key={session.id} className="cursor-pointer border-border/70 hover:shadow-lg hover:-translate-y-0.5 transition-all" onClick={() => navigate(detailHref(session.id))}>
+                          <CardContent className="p-5 space-y-4">
+                            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                              <div className="space-y-3">
+                                <div className="space-y-1">
+                                  <div className="text-lg font-semibold leading-tight">{session.className ?? "Session"}</div>
+                                  <div className="text-sm font-medium text-foreground">
+                                    {formatSessionTimeRange(session.startTime, session.endTime, session.venueTimezone || undefined)}
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                  <span>{session.venueName ?? "Venue TBD"}</span>
+                                  {session.venueCity && session.venueState ? (
+                                    <>
+                                      <span>•</span>
+                                      <span>{session.venueCity}, {session.venueState}</span>
+                                    </>
+                                  ) : null}
                                 </div>
                               </div>
 
-                              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                                <span>{session.venueName ?? "Venue TBD"}</span>
-                                {session.venueCity && session.venueState ? (
-                                  <>
-                                    <span>•</span>
-                                    <span>{session.venueCity}, {session.venueState}</span>
-                                  </>
-                                ) : null}
+                              <div className="lg:text-right space-y-2">
+                                <div className="text-sm font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
+                                <div className="h-2 w-full lg:w-36 rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className={soldOut
+                                      ? "h-full w-full bg-slate-300"
+                                      : state === "Nearly full"
+                                        ? "h-full bg-amber-400"
+                                        : "h-full bg-emerald-400"
+                                    }
+                                    style={{ width: `${Math.max(8, Math.min(100, (session.seatsAvailable / Math.max(1, session.seatsTotal)) * 100))}%` }}
+                                  />
+                                </div>
+                                <div>
+                                  {state === "Sold out" ? (
+                                    <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
+                                  ) : state === "Nearly full" ? (
+                                    <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">Nearly full</span>
+                                  ) : (
+                                    <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">Available</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
 
-                            <div className="lg:text-right space-y-2">
-                              <div className="text-sm font-medium text-foreground">{session.seatsAvailable} of {session.seatsTotal} seats left</div>
-                              <div className="h-2 w-full lg:w-36 rounded-full bg-muted overflow-hidden">
-                                <div
-                                  className={soldOut
-                                    ? "h-full w-full bg-slate-300"
-                                    : session.seatsAvailable <= 3
-                                      ? "h-full bg-amber-400"
-                                      : "h-full bg-emerald-400"
-                                  }
-                                  style={{ width: `${Math.max(8, Math.min(100, (session.seatsAvailable / Math.max(1, session.seatsTotal)) * 100))}%` }}
-                                />
-                              </div>
-                              <div>
-                                {soldOut ? (
-                                  <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium">Sold out</span>
-                                ) : session.seatsAvailable <= 3 ? (
-                                  <span className="inline-flex rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium">Few spots left</span>
-                                ) : (
-                                  <span className="inline-flex rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium">Available now</span>
-                                )}
-                              </div>
+                            <div className="flex gap-2 flex-wrap pt-1">
+                              <Button size="sm" disabled={!canBook} onClick={(e) => {
+                                e.stopPropagation();
+                                if (canBook) navigate(buyHref(session));
+                              }}>
+                                {soldOut ? "Sold out" : "Book this session"}
+                              </Button>
+                              <Button size="sm" variant="outline" onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(detailHref(session.id));
+                              }}>
+                                View details
+                              </Button>
                             </div>
-                          </div>
-
-                          <div className="flex gap-2 flex-wrap pt-1">
-                            <Button size="sm" disabled={!canBook} onClick={(e) => {
-                              e.stopPropagation();
-                              if (canBook) navigate(buyHref(session));
-                            }}>
-                              {soldOut ? "Sold out" : "Book this session"}
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(detailHref(session.id));
-                            }}>
-                              View details
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </div>
       )}
