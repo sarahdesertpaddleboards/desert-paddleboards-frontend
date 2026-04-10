@@ -39,7 +39,8 @@ export default function Shop() {
         const list = Array.isArray(data) ? data : [];
         setProducts(list);
         const gifts = list.filter((p) => (p.type || "").toLowerCase() === "gift").sort((a, b) => (a.price || 0) - (b.price || 0));
-        if (gifts[0]?.productKey) setSelectedGiftKey(gifts[0].productKey);
+        const defaultGift = gifts[gifts.length - 1];
+        if (defaultGift?.productKey) setSelectedGiftKey(defaultGift.productKey);
       })
       .finally(() => setLoading(false));
   }, []);
