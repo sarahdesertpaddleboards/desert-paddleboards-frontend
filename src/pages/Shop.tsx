@@ -29,12 +29,18 @@ function labelForType(type?: string) {
 
 export default function Shop() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
+  const [selectedGiftKey, setSelectedGiftKey] = useState("");
   const [, navigate] = useLocation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStoreProducts()
-      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .then((data) => {
+        const list = Array.isArray(data) ? data : [];
+        setProducts(list);
+        const gifts = list.filter((p) => (p.type || "").toLowerCase() === "gift").sort((a, b) => (a.price || 0) - (b.price || 0));
+        if (gifts[0]?.productKey) setSelectedGiftKey(gifts[0].productKey);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -50,6 +56,11 @@ export default function Shop() {
   const otherProducts = useMemo(
     () => sortedProducts.filter((p) => (p.type || "").toLowerCase() !== "gift"),
     [sortedProducts]
+  );
+
+  const selectedGiftProduct = useMemo(
+    () => giftProducts.find((p) => p.productKey === selectedGiftKey) ?? giftProducts[0] ?? null,
+    [giftProducts, selectedGiftKey]
   );
 
   function renderProductCard(p: StoreProduct) {
@@ -99,7 +110,7 @@ export default function Shop() {
         </Card>
       ) : (
         <div className="space-y-10">
-          {giftProducts.length > 0 && (
+          {giftProducts.length > 0 && selectedGiftProduct && (
             <section className="space-y-5">
               <div className="rounded-2xl border bg-primary/5 p-6 space-y-3">
                 <div className="flex items-center gap-2 text-primary">
@@ -112,9 +123,44 @@ export default function Shop() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {giftProducts.map(renderProductCard)}
-              </div>
+              <Card className="border-primary/20 hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-2">
+                      <Badge variant="secondary">Gift</Badge>
+                      <h2 className="text-2xl font-bold">Blue Wave Experiences Gift Certificate</h2>
+                    </div>
+                    <div className="text-lg font-semibold whitespace-nowrap">
+                      ${(selectedGiftProduct.price / 100).toFixed(2)}
+                    </div>
+                  </div>
+
+                  <p className="text-muted-foreground">
+                    {selectedGiftProduct.description}
+                  </p>
+
+                  <div className="space-y-2 max-w-sm">
+                    <label className="text-sm font-medium">Choose amount</label>
+                    <select
+                      className="border rounded-lg px-3 py-2 w-full"
+                      value={selectedGiftProduct.productKey}
+                      onChange={(e) => setSelectedGiftKey(e.target.value)}
+                    >
+                      {giftProducts.map((gift) => (
+                        <option key={gift.productKey} value={gift.productKey}>
+                          ${(gift.price / 100).toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <Button onClick={() => navigate(`/buy/${selectedGiftProduct.productKey}`)}>
+                      Choose gift certificate
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </section>
           )}
 

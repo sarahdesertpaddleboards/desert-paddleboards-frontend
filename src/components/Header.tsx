@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
 import { Menu, X, Phone } from "lucide-react";
 import { useState } from "react";
 
@@ -18,7 +17,6 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <nav className="container flex items-center justify-between py-4">
-        {/* Logo */}
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer">
             <div className="text-2xl font-bold text-primary">
@@ -27,7 +25,6 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navigation.map((item) => (
             <Link key={item.name} href={item.href}>
@@ -38,18 +35,13 @@ export default function Header() {
           ))}
         </div>
 
-        {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-4">
           <a href="tel:4802019520" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             <Phone className="h-4 w-4" />
             <span>480.201.9520</span>
           </a>
-          <Button asChild size="lg">
-            <Link href="/sessions">Browse Sessions</Link>
-          </Button>
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -63,7 +55,6 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border bg-background">
           <div className="container py-4 space-y-4">
@@ -85,9 +76,6 @@ export default function Header() {
                 <Phone className="h-5 w-5" />
                 <span>480.201.9520</span>
               </a>
-              <Button asChild size="lg" className="w-full">
-                <Link href="/sessions">Browse Sessions</Link>
-              </Button>
             </div>
           </div>
         </div>
