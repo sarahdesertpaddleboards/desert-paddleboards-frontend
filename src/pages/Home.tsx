@@ -71,9 +71,17 @@ function getDateChipLabel(value: string, timeZone?: string | null) {
   if (Number.isNaN(date.getTime())) return "Upcoming";
   return date.toLocaleDateString([], {
     timeZone: timeZone || undefined,
-    weekday: "short",
     month: "short",
     day: "numeric",
+  });
+}
+
+function getDateChipWeekday(value: string, timeZone?: string | null) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Day";
+  return date.toLocaleDateString([], {
+    timeZone: timeZone || undefined,
+    weekday: "short",
   });
 }
 
@@ -152,6 +160,7 @@ export default function Home() {
       .map((session) => ({
         key: getDayKey(session.startTime, session.venueTimezone),
         label: getDateChipLabel(session.startTime, session.venueTimezone),
+        weekday: getDateChipWeekday(session.startTime, session.venueTimezone),
       }));
   }, [cityFiltered]);
 
@@ -221,20 +230,59 @@ export default function Home() {
             </div>
 
             {dateOptions.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="text-sm font-medium">Date</div>
-                <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant={!selectedDate ? "secondary" : "outline"} onClick={() => setSelectedDate("")}>All upcoming</Button>
-                  {dateOptions.map((date) => (
-                    <Button key={date.key} size="sm" variant={selectedDate === date.key ? "secondary" : "outline"} onClick={() => setSelectedDate(date.key)}>
-                      {date.label}
-                    </Button>
-                  ))}
+                <div className="overflow-x-auto pb-1">
+                  <div className="flex gap-2 min-w-max items-stretch">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDate("")}
+                      className={!selectedDate
+                        ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
+                        : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
+                      }
+                    >
+                      <div className="text-xs uppercase tracking-wide opacity-80">All</div>
+                      <div className="text-sm font-semibold">Upcoming</div>
+                    </button>
+                    {dateOptions.map((date) => {
+                      const selected = selectedDate === date.key;
+                      return (
+                        <button
+                          key={date.key}
+                          type="button"
+                          onClick={() => setSelectedDate(date.key)}
+                          className={selected
+                            ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
+                            : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
+                          }
+                        >
+                          <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
+                          <div className="text-sm font-semibold">{date.label}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
+
+        {selectedDate && dateOptions.find((date) => date.key === selectedDate) ? (
+          <div className="rounded-xl border bg-primary/5 p-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="text-sm font-medium text-primary">Selected date</div>
+              <div className="text-lg font-semibold">
+                {dateOptions.find((date) => date.key === selectedDate)?.weekday}, {dateOptions.find((date) => date.key === selectedDate)?.label}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {filteredSessions.length} session{filteredSessions.length === 1 ? "" : "s"} available on this date
+              </div>
+            </div>
+            <Button variant="ghost" onClick={() => setSelectedDate("")}>View all upcoming</Button>
+          </div>
+        ) : null}
 
         {loading ? (
           <p>Loading sessions…</p>
