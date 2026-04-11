@@ -327,13 +327,7 @@ export default function SessionsPage() {
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="space-y-1">
                   <div className="text-sm font-medium">Choose a date</div>
-                  {selectedDateOption ? (
-                    <div className="text-xs text-muted-foreground">
-                      Viewing <span className="font-medium text-foreground">{selectedDateOption.label}</span> in <span className="font-medium text-foreground">{selectedDateOption.weekBucket.toLowerCase()}</span>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">Browse by date across this availability window</div>
-                  )}
+                  <div className="text-xs text-muted-foreground">Start by picking a date, then choose one of the sessions available that day.</div>
                 </div>
                 {filters.date && (
                   <div className="flex items-center gap-2">
@@ -407,6 +401,31 @@ export default function SessionsPage() {
         </CardContent>
       </Card>
 
+      {selectedDateOption && !loading ? (
+        <div className="rounded-xl border bg-primary/5 p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="text-sm font-medium text-primary">Selected date</div>
+            <div className="text-lg font-semibold">{selectedDateOption.weekday}, {selectedDateOption.label}</div>
+            <div className="text-sm text-muted-foreground">{selectedDateOption.count} session{selectedDateOption.count === 1 ? "" : "s"} in {selectedDateOption.weekBucket.toLowerCase()}</div>
+          </div>
+          <div className="flex flex-wrap gap-2 text-sm">
+            {previousDate ? (
+              <Button size="sm" variant="outline" onClick={() => updateFilters({ date: previousDate.key })}>
+                Previous date
+              </Button>
+            ) : null}
+            {nextDate ? (
+              <Button size="sm" variant="outline" onClick={() => updateFilters({ date: nextDate.key })}>
+                Next date
+              </Button>
+            ) : null}
+            <Button size="sm" variant="ghost" onClick={() => updateFilters({ date: "" })}>
+              View all dates
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
       {loading ? (
         <p>Loading availability…</p>
       ) : groupedSessions.length === 0 ? (
@@ -423,8 +442,8 @@ export default function SessionsPage() {
               <div className="text-sm font-medium">Availability summary</div>
               <div className="text-sm text-muted-foreground">
                 {selectedDateOption
-                  ? `${totalVisibleSessions} session${totalVisibleSessions === 1 ? "" : "s"} on ${selectedDateOption.label}`
-                  : `${totalVisibleSessions} upcoming session${totalVisibleSessions === 1 ? "" : "s"} shown`}
+                  ? `Choose one of ${totalVisibleSessions} session${totalVisibleSessions === 1 ? "" : "s"} on ${selectedDateOption.label}`
+                  : `${totalVisibleSessions} upcoming session${totalVisibleSessions === 1 ? "" : "s"} shown across your current filters`}
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-sm">
