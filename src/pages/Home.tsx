@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatInTimeZone } from "@/lib/sessionTime";
 
 type Session = {
@@ -21,6 +22,13 @@ type Session = {
   venueState: string | null;
   venueSlug: string | null;
   venueTimezone?: string | null;
+};
+
+type CalendarDay = {
+  key: string;
+  date: Date;
+  inMonth: boolean;
+  sessions: Session[];
 };
 
 function unwrapArray(maybe: any): any[] {
@@ -53,8 +61,8 @@ function formatHomeSessionRange(session: Session) {
   return `${start} – ${end}`;
 }
 
-function getDayKey(value: string, timeZone?: string | null) {
-  const date = new Date(value);
+function getDayKey(value: string | Date, timeZone?: string | null) {
+  const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) return "unknown";
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: timeZone || undefined,
@@ -66,29 +74,68 @@ function getDayKey(value: string, timeZone?: string | null) {
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-function getDateChipLabel(value: string, timeZone?: string | null) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Upcoming";
-  return date.toLocaleDateString([], {
-    timeZone: timeZone || undefined,
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function getDateChipWeekday(value: string, timeZone?: string | null) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Day";
-  return date.toLocaleDateString([], {
-    timeZone: timeZone || undefined,
-    weekday: "short",
-  });
-}
-
 function availabilityLabel(session: Session) {
   if (session.seatsAvailable <= 0) return "Sold out";
   if (session.seatsAvailable <= Math.max(3, Math.ceil(session.seatsTotal * 0.2))) return "Nearly full";
   return "Available";
+}
+
+function startOfMonth(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function endOfMonth(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function addMonths(date: Date, months: number) {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}
+
+function weekdayIndexMondayFirst(date: Date) {
+  const day = date.getDay();
+  return day === 0 ? 6 : day - 1;
+}
+
+function monthLabel(date: Date) {
+  return date.toLocaleDateString([], {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildMonthGrid(month: Date, sessions: Session[]): CalendarDay[] {
+  const first = startOfMonth(month);
+  const last = endOfMonth(month);
+  const start = addDays(first, -weekdayIndexMondayFirst(first));
+  const endPadding = 6 - weekdayIndexMondayFirst(last);
+  const end = addDays(last, endPadding);
+
+  const byDay = new Map<string, Session[]>();
+  for (const session of sessions) {
+    const key = getDayKey(session.startTime, session.venueTimezone);
+    const existing = byDay.get(key) ?? [];
+    existing.push(session);
+    byDay.set(key, existing);
+  }
+
+  const days: CalendarDay[] = [];
+  for (let cursor = new Date(start); cursor <= end; cursor = addDays(cursor, 1)) {
+    const key = getDayKey(cursor);
+    days.push({
+      key,
+      date: new Date(cursor),
+      inMonth: cursor.getMonth() === month.getMonth(),
+      sessions: byDay.get(key) ?? [],
+    });
+  }
+  return days;
 }
 
 export default function Home() {
@@ -97,6 +144,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
 
   useEffect(() => {
     let cancelled = false;
@@ -147,28 +195,21 @@ export default function Home() {
     return upcoming.filter((session) => normalize(session.venueCity || "") === selectedCity);
   }, [upcoming, selectedCity]);
 
-  const dateOptions = useMemo(() => {
-    const seen = new Set<string>();
-    return cityFiltered
-      .filter((session) => {
-        const key = getDayKey(session.startTime, session.venueTimezone);
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .slice(0, 8)
-      .map((session) => ({
-        key: getDayKey(session.startTime, session.venueTimezone),
-        label: getDateChipLabel(session.startTime, session.venueTimezone),
-        weekday: getDateChipWeekday(session.startTime, session.venueTimezone),
-      }));
-  }, [cityFiltered]);
+  const monthSessions = useMemo(() => {
+    return cityFiltered.filter((session) => {
+      const date = new Date(session.startTime);
+      return (
+        date.getFullYear() === visibleMonth.getFullYear() &&
+        date.getMonth() === visibleMonth.getMonth()
+      );
+    });
+  }, [cityFiltered, visibleMonth]);
 
-  const filteredSessions = useMemo(() => {
-    const byDate = selectedDate
-      ? cityFiltered.filter((session) => getDayKey(session.startTime, session.venueTimezone) === selectedDate)
-      : cityFiltered;
-    return byDate.slice(0, selectedDate ? 12 : 6);
+  const calendarDays = useMemo(() => buildMonthGrid(visibleMonth, cityFiltered), [visibleMonth, cityFiltered]);
+
+  const selectedDaySessions = useMemo(() => {
+    const key = selectedDate || getDayKey(new Date());
+    return cityFiltered.filter((session) => getDayKey(session.startTime, session.venueTimezone) === key);
   }, [cityFiltered, selectedDate]);
 
   useEffect(() => {
@@ -179,10 +220,10 @@ export default function Home() {
   }, [cityOptions, selectedCity]);
 
   useEffect(() => {
-    if (selectedDate && !dateOptions.some((date) => date.key === selectedDate)) {
-      setSelectedDate("");
-    }
-  }, [dateOptions, selectedDate]);
+    if (!selectedDate) return;
+    const existsInMonth = calendarDays.some((day) => day.key === selectedDate);
+    if (!existsInMonth) setSelectedDate("");
+  }, [calendarDays, selectedDate]);
 
   function buyHref(session: Session) {
     const params = new URLSearchParams();
@@ -191,15 +232,18 @@ export default function Home() {
     return `/buy/${session.productKey}?${params.toString()}`;
   }
 
+  const selectedDateLabel = selectedDate
+    ? new Date(selectedDate).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })
+    : monthLabel(visibleMonth);
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 space-y-10">
+    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
       <section className="space-y-4 text-center py-10">
         <h1 className="text-4xl md:text-5xl font-bold">Floating soundbath experiences in Arizona</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Blue Wave Experiences brings meditation, breathwork, and immersive sound healing onto the water for a deeply calming experience.
         </p>
         <div className="flex gap-3 justify-center">
-          <Button onClick={() => navigate("/sessions")}>Browse Sessions</Button>
           <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
         </div>
       </section>
@@ -208,13 +252,13 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold">Find your session</h2>
-            <p className="text-muted-foreground">Choose a city and date, then go straight to the session you want to book.</p>
+            <p className="text-muted-foreground">Choose a city, pick a day in the calendar, and go straight into booking.</p>
           </div>
-          <Button variant="outline" onClick={() => navigate("/sessions")}>View full availability</Button>
+          <Button variant="outline" onClick={() => navigate("/sessions")}>Full availability</Button>
         </div>
 
         <Card>
-          <CardContent className="p-5 space-y-4">
+          <CardContent className="p-5 space-y-5">
             <div className="space-y-2">
               <div className="text-sm font-medium">City</div>
               <div className="flex flex-wrap gap-2">
@@ -229,70 +273,88 @@ export default function Home() {
               </div>
             </div>
 
-            {dateOptions.length > 0 && (
-              <div className="space-y-3">
-                <div className="text-sm font-medium">Date</div>
-                <div className="overflow-x-auto pb-1">
-                  <div className="flex gap-2 min-w-max items-stretch">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDate("")}
-                      className={!selectedDate
-                        ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
-                        : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
-                      }
-                    >
-                      <div className="text-xs uppercase tracking-wide opacity-80">All</div>
-                      <div className="text-sm font-semibold">Upcoming</div>
-                    </button>
-                    {dateOptions.map((date) => {
-                      const selected = selectedDate === date.key;
-                      return (
-                        <button
-                          key={date.key}
-                          type="button"
-                          onClick={() => setSelectedDate(date.key)}
-                          className={selected
-                            ? "min-w-[96px] rounded-xl border border-primary bg-primary text-primary-foreground px-3 py-3 text-left shadow-sm"
-                            : "min-w-[96px] rounded-xl border bg-background px-3 py-3 text-left hover:bg-muted transition-colors"
-                          }
-                        >
-                          <div className="text-xs uppercase tracking-wide opacity-80">{date.weekday}</div>
-                          <div className="text-sm font-semibold">{date.label}</div>
-                        </button>
-                      );
-                    })}
-                  </div>
+            <div className="rounded-xl border overflow-hidden bg-white">
+              <div className="flex items-center justify-between gap-3 px-4 py-3 border-b bg-slate-50">
+                <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="icon" onClick={() => setVisibleMonth((m) => addMonths(m, -1))}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => setVisibleMonth((m) => addMonths(m, 1))}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-            )}
+
+              <div className="grid grid-cols-7 border-b text-xs uppercase tracking-wide text-muted-foreground">
+                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                  <div key={day} className="px-3 py-3 border-r last:border-r-0">{day}</div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7">
+                {calendarDays.map((day) => {
+                  const selected = selectedDate === day.key;
+                  const hasSessions = day.sessions.length > 0;
+                  return (
+                    <button
+                      key={day.key}
+                      type="button"
+                      onClick={() => setSelectedDate(day.key)}
+                      className={`min-h-[120px] border-r border-b last:border-r-0 p-3 text-left align-top transition-colors ${selected ? "bg-primary/10 ring-1 ring-primary" : hasSessions ? "hover:bg-slate-50" : "bg-background"} ${!day.inMonth ? "text-muted-foreground/50" : ""}`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className={`text-2xl font-semibold ${selected ? "text-primary" : ""}`}>{day.date.getDate()}</div>
+                        {hasSessions ? (
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                            {day.sessions.length}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        {day.sessions.slice(0, 2).map((session) => {
+                          const state = availabilityLabel(session);
+                          return (
+                            <div
+                              key={session.id}
+                              className={state === "Sold out" ? "rounded-md bg-slate-200 px-2 py-1 text-xs text-slate-700" : state === "Nearly full" ? "rounded-md bg-amber-500 px-2 py-1 text-xs text-white" : "rounded-md bg-emerald-600 px-2 py-1 text-xs text-white"}
+                            >
+                              {formatInTimeZone(session.startTime, session.venueTimezone || undefined, {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                          );
+                        })}
+                        {day.sessions.length > 2 ? (
+                          <div className="text-xs text-muted-foreground">+{day.sessions.length - 2} more</div>
+                        ) : null}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-primary/5 p-4">
+              <div className="text-sm font-medium text-primary">Selected day</div>
+              <div className="text-lg font-semibold">{selectedDateLabel}</div>
+              <div className="text-sm text-muted-foreground">
+                {selectedDaySessions.length} upcoming session{selectedDaySessions.length === 1 ? "" : "s"}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {selectedDate && dateOptions.find((date) => date.key === selectedDate) ? (
-          <div className="rounded-xl border bg-primary/5 p-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-1">
-              <div className="text-sm font-medium text-primary">Selected date</div>
-              <div className="text-lg font-semibold">
-                {dateOptions.find((date) => date.key === selectedDate)?.weekday}, {dateOptions.find((date) => date.key === selectedDate)?.label}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {filteredSessions.length} session{filteredSessions.length === 1 ? "" : "s"} available on this date
-              </div>
-            </div>
-            <Button variant="ghost" onClick={() => setSelectedDate("")}>View all upcoming</Button>
-          </div>
-        ) : null}
-
         {loading ? (
           <p>Loading sessions…</p>
-        ) : filteredSessions.length === 0 ? (
+        ) : selectedDaySessions.length === 0 ? (
           <Card>
-            <CardContent className="p-6 text-muted-foreground">No sessions available for the current selection.</CardContent>
+            <CardContent className="p-6 text-muted-foreground">No sessions available for the selected day.</CardContent>
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            {filteredSessions.map((s) => {
+            {selectedDaySessions.map((s) => {
               const state = availabilityLabel(s);
               const soldOut = state === "Sold out";
               return (
@@ -304,19 +366,7 @@ export default function Home() {
                     </div>
 
                     <div className="text-muted-foreground">
-                      {s.venueName ? (
-                        <>
-                          {s.venueName}
-                          {s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}
-                        </>
-                      ) : s.venueCity ? (
-                        <>
-                          {s.venueCity}
-                          {s.venueState ? `, ${s.venueState}` : ""}
-                        </>
-                      ) : (
-                        "Venue TBD"
-                      )}
+                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm">
