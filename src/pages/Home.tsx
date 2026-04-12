@@ -5,7 +5,7 @@ import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import heroImage from "../../media/inbound/file_21---acee10d8-a575-484d-8e56-8d8c3015b6a3.webp";
+const heroImage = "/images/hero-floating-soundbath.webp";
 import { formatInTimeZone } from "@/lib/sessionTime";
 
 type Session = {
