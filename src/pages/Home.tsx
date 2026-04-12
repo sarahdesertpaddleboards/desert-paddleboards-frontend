@@ -5,6 +5,7 @@ import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import heroImage from "../../media/inbound/file_21---acee10d8-a575-484d-8e56-8d8c3015b6a3.webp";
 import { formatInTimeZone } from "@/lib/sessionTime";
 
 type Session = {
@@ -30,6 +31,15 @@ type CalendarDay = {
   inMonth: boolean;
   sessions: Session[];
 };
+
+const CITY_COLORS = [
+  "bg-sky-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-fuchsia-500",
+  "bg-orange-500",
+  "bg-indigo-500",
+];
 
 function unwrapArray(maybe: any): any[] {
   if (Array.isArray(maybe)) return maybe;
@@ -187,6 +197,14 @@ export default function Home() {
     )].sort((a, b) => a.localeCompare(b));
   }, [upcoming]);
 
+  const cityColorMap = useMemo(() => {
+    const map = new Map<string, string>();
+    cityOptions.forEach((city, index) => {
+      map.set(normalize(city), CITY_COLORS[index % CITY_COLORS.length]);
+    });
+    return map;
+  }, [cityOptions]);
+
   const cityFiltered = useMemo(() => {
     if (!selectedCity) return upcoming;
     return upcoming.filter((session) => normalize(session.venueCity || "") === selectedCity);
@@ -195,8 +213,8 @@ export default function Home() {
   const calendarDays = useMemo(() => buildMonthGrid(visibleMonth, cityFiltered), [visibleMonth, cityFiltered]);
 
   const selectedDaySessions = useMemo(() => {
-    const key = selectedDate || getDayKey(new Date());
-    return cityFiltered.filter((session) => getDayKey(session.startTime, session.venueTimezone) === key);
+    if (!selectedDate) return [];
+    return cityFiltered.filter((session) => getDayKey(session.startTime, session.venueTimezone) === selectedDate);
   }, [cityFiltered, selectedDate]);
 
   useEffect(() => {
@@ -219,33 +237,40 @@ export default function Home() {
     return `/buy/${session.productKey}?${params.toString()}`;
   }
 
-  const selectedDateLabel = selectedDate
-    ? new Date(selectedDate).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })
-    : monthLabel(visibleMonth);
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
-      <section className="space-y-4 text-center py-10">
-        <h1 className="text-4xl md:text-5xl font-bold">Floating soundbath experiences in Arizona</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Blue Wave Experiences brings meditation, breathwork, and immersive sound healing onto the water for a deeply calming experience.
-        </p>
-        <div className="flex gap-3 justify-center">
-          <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <section className="grid gap-6 lg:grid-cols-[1.5fr_1fr] items-stretch">
+        <div className="overflow-hidden rounded-2xl">
+          <img src={heroImage} alt="Floating soundbath at sunset" className="h-full w-full object-cover min-h-[320px]" />
+        </div>
+        <div className="rounded-2xl bg-cyan-50 p-8 flex flex-col justify-center space-y-5">
+          <div className="space-y-3">
+            <div className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">Blue Wave Experiences</div>
+            <h1 className="text-4xl font-bold leading-tight">Floating soundbath sessions in Arizona</h1>
+            <p className="text-muted-foreground">
+              Choose a date in the calendar, see what is available, and go straight into booking.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button onClick={() => document.getElementById("homepage-calendar")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+              Open calendar
+            </Button>
+            <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
+          </div>
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section id="homepage-calendar" className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-bold">Find your session</h2>
-            <p className="text-muted-foreground">Choose a city, pick a day in the calendar, and go straight into booking.</p>
+            <h2 className="text-2xl font-bold">Book from the calendar</h2>
+            <p className="text-muted-foreground">Choose a city, select a day, then book the session you want.</p>
           </div>
           <Button variant="outline" onClick={() => navigate("/sessions")}>Full availability</Button>
         </div>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-4 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="text-sm font-medium">City</div>
               <div className="flex flex-wrap gap-2">
@@ -259,62 +284,19 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {loading ? (
-          <p>Loading sessions…</p>
-        ) : selectedDaySessions.length === 0 ? (
-          <Card>
-            <CardContent className="p-4 text-muted-foreground">No sessions available for the selected day.</CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-3 md:grid-cols-2">
-            {selectedDaySessions.map((s) => {
-              const state = availabilityLabel(s);
-              const soldOut = state === "Sold out";
-              return (
-                <Card key={s.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
-                  <CardContent className="p-4 space-y-2.5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1 min-w-0">
-                        <div className="font-semibold leading-tight">{s.className || "Session"}</div>
-                        <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
-                      </div>
-                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium whitespace-nowrap"}>
-                        {state}
-                      </span>
-                    </div>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              {cityOptions.map((city) => (
+                <div key={city} className="flex items-center gap-2">
+                  <span className={`h-2.5 w-2.5 rounded-full ${cityColorMap.get(normalize(city)) || "bg-slate-400"}`} />
+                  <span>{city}</span>
+                </div>
+              ))}
+            </div>
 
-                    <div className="text-sm text-muted-foreground">
-                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
-                    </div>
-
-                    <div className="text-sm text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
-
-                    <div className="flex gap-2 pt-1">
-                      <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
-                        {soldOut ? "Sold out" : "Book now"}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/sessions/${s.id}`); }}>
-                        View details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-
-        <Card>
-          <CardContent className="p-4">
             <div className="rounded-xl border overflow-hidden bg-white">
               <div className="flex items-center justify-between gap-3 px-4 py-3 border-b bg-slate-50">
-                <div>
-                  <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
-                  <div className="text-sm text-muted-foreground">{selectedDateLabel}</div>
-                </div>
+                <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="icon" onClick={() => setVisibleMonth((m) => addMonths(m, -1))}>
                     <ChevronLeft className="h-4 w-4" />
@@ -335,6 +317,7 @@ export default function Home() {
                 {calendarDays.map((day) => {
                   const selected = selectedDate === day.key;
                   const hasSessions = day.sessions.length > 0;
+                  const citiesOnDay = [...new Set(day.sessions.map((session) => normalize(session.venueCity || "")).filter(Boolean))];
                   return (
                     <button
                       key={day.key}
@@ -350,23 +333,12 @@ export default function Home() {
                           </span>
                         ) : null}
                       </div>
-                      <div className="mt-2 space-y-1.5">
-                        {day.sessions.slice(0, 2).map((session) => {
-                          const state = availabilityLabel(session);
-                          return (
-                            <div
-                              key={session.id}
-                              className={state === "Sold out" ? "rounded-md bg-slate-200 px-2 py-1 text-[11px] text-slate-700" : state === "Nearly full" ? "rounded-md bg-amber-500 px-2 py-1 text-[11px] text-white" : "rounded-md bg-emerald-600 px-2 py-1 text-[11px] text-white"}
-                            >
-                              {formatInTimeZone(session.startTime, session.venueTimezone || undefined, {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </div>
-                          );
-                        })}
-                        {day.sessions.length > 2 ? (
-                          <div className="text-[11px] text-muted-foreground">+{day.sessions.length - 2} more</div>
+                      <div className="mt-3 space-y-2">
+                        {citiesOnDay.slice(0, 3).map((cityKey) => (
+                          <div key={cityKey} className={`h-2 rounded-full ${cityColorMap.get(cityKey) || "bg-slate-300"}`} />
+                        ))}
+                        {day.sessions.length > 0 ? (
+                          <div className="text-[11px] text-muted-foreground">Tap to view</div>
                         ) : null}
                       </div>
                     </button>
@@ -376,6 +348,60 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+
+        {loading ? (
+          <p>Loading sessions…</p>
+        ) : !selectedDate ? (
+          <Card>
+            <CardContent className="p-4 text-muted-foreground">Select a day in the calendar to view sessions.</CardContent>
+          </Card>
+        ) : selectedDaySessions.length === 0 ? (
+          <Card>
+            <CardContent className="p-4 text-muted-foreground">No sessions available for the selected day.</CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-muted-foreground">
+              {new Date(selectedDate).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {selectedDaySessions.map((s) => {
+                const state = availabilityLabel(s);
+                const soldOut = state === "Sold out";
+                return (
+                  <Card key={s.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
+                    <CardContent className="p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-1 min-w-0">
+                          <div className="font-semibold leading-tight">{s.className || "Session"}</div>
+                          <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
+                        </div>
+                        <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium whitespace-nowrap"}>
+                          {state}
+                        </span>
+                      </div>
+
+                      <div className="text-sm text-muted-foreground">
+                        {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
+                      </div>
+
+                      <div className="text-sm text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
+
+                      <div className="flex gap-2 pt-1">
+                        <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
+                          {soldOut ? "Sold out" : "Book now"}
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/sessions/${s.id}`); }}>
+                          View details
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
