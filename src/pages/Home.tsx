@@ -273,6 +273,14 @@ export default function Home() {
               </div>
             </div>
 
+            <div className="rounded-xl border bg-primary/5 p-4">
+              <div className="text-sm font-medium text-primary">Selected day</div>
+              <div className="text-lg font-semibold">{selectedDateLabel}</div>
+              <div className="text-sm text-muted-foreground">
+                {selectedDaySessions.length} upcoming session{selectedDaySessions.length === 1 ? "" : "s"}
+              </div>
+            </div>
+
             <div className="rounded-xl border overflow-hidden bg-white">
               <div className="flex items-center justify-between gap-3 px-4 py-3 border-b bg-slate-50">
                 <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
@@ -333,14 +341,6 @@ export default function Home() {
                     </button>
                   );
                 })}
-              </div>
-            </div>
-
-            <div className="rounded-xl border bg-primary/5 p-4">
-              <div className="text-sm font-medium text-primary">Selected day</div>
-              <div className="text-lg font-semibold">{selectedDateLabel}</div>
-              <div className="text-sm text-muted-foreground">
-                {selectedDaySessions.length} upcoming session{selectedDaySessions.length === 1 ? "" : "s"}
               </div>
             </div>
           </CardContent>
