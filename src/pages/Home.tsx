@@ -280,7 +280,56 @@ export default function Home() {
                 {selectedDaySessions.length} upcoming session{selectedDaySessions.length === 1 ? "" : "s"}
               </div>
             </div>
+          </CardContent>
+        </Card>
 
+        {loading ? (
+          <p>Loading sessions…</p>
+        ) : selectedDaySessions.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-muted-foreground">No sessions available for the selected day.</CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {selectedDaySessions.map((s) => {
+              const state = availabilityLabel(s);
+              const soldOut = state === "Sold out";
+              return (
+                <Card key={s.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
+                  <CardContent className="p-5 space-y-3">
+                    <div className="space-y-1">
+                      <div className="font-semibold text-lg">{s.className || "Session"}</div>
+                      <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
+                    </div>
+
+                    <div className="text-muted-foreground">
+                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 text-sm">
+                      <div className="text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
+                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium"}>
+                        {state}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-2 pt-1">
+                      <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
+                        {soldOut ? "Sold out" : "Book now"}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/sessions/${s.id}`); }}>
+                        View details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+
+        <Card>
+          <CardContent className="p-5 space-y-5">
             <div className="rounded-xl border overflow-hidden bg-white">
               <div className="flex items-center justify-between gap-3 px-4 py-3 border-b bg-slate-50">
                 <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
