@@ -154,10 +154,7 @@ export default function Home() {
         setLoading(true);
         const raw = await getClassSessions();
         const list = unwrapArray(raw) as Session[];
-
-        if (!cancelled) {
-          setSessions(Array.isArray(list) ? list : []);
-        }
+        if (!cancelled) setSessions(Array.isArray(list) ? list : []);
       } catch (err) {
         console.error("HOME: failed to load sessions", err);
         if (!cancelled) setSessions([]);
@@ -194,16 +191,6 @@ export default function Home() {
     if (!selectedCity) return upcoming;
     return upcoming.filter((session) => normalize(session.venueCity || "") === selectedCity);
   }, [upcoming, selectedCity]);
-
-  const monthSessions = useMemo(() => {
-    return cityFiltered.filter((session) => {
-      const date = new Date(session.startTime);
-      return (
-        date.getFullYear() === visibleMonth.getFullYear() &&
-        date.getMonth() === visibleMonth.getMonth()
-      );
-    });
-  }, [cityFiltered, visibleMonth]);
 
   const calendarDays = useMemo(() => buildMonthGrid(visibleMonth, cityFiltered), [visibleMonth, cityFiltered]);
 
@@ -248,7 +235,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="space-y-5">
+      <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold">Find your session</h2>
@@ -258,8 +245,8 @@ export default function Home() {
         </div>
 
         <Card>
-          <CardContent className="p-5 space-y-5">
-            <div className="space-y-2">
+          <CardContent className="p-4">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="text-sm font-medium">City</div>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant={!selectedCity ? "default" : "outline"} onClick={() => { setSelectedCity(""); setSelectedDate(""); }}>
@@ -272,14 +259,6 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
-            <div className="rounded-xl border bg-primary/5 p-4">
-              <div className="text-sm font-medium text-primary">Selected day</div>
-              <div className="text-lg font-semibold">{selectedDateLabel}</div>
-              <div className="text-sm text-muted-foreground">
-                {selectedDaySessions.length} upcoming session{selectedDaySessions.length === 1 ? "" : "s"}
-              </div>
-            </div>
           </CardContent>
         </Card>
 
@@ -287,31 +266,31 @@ export default function Home() {
           <p>Loading sessions…</p>
         ) : selectedDaySessions.length === 0 ? (
           <Card>
-            <CardContent className="p-6 text-muted-foreground">No sessions available for the selected day.</CardContent>
+            <CardContent className="p-4 text-muted-foreground">No sessions available for the selected day.</CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-2">
             {selectedDaySessions.map((s) => {
               const state = availabilityLabel(s);
               const soldOut = state === "Sold out";
               return (
-                <Card key={s.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
-                  <CardContent className="p-5 space-y-3">
-                    <div className="space-y-1">
-                      <div className="font-semibold text-lg">{s.className || "Session"}</div>
-                      <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
-                    </div>
-
-                    <div className="text-muted-foreground">
-                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
-                    </div>
-
-                    <div className="flex items-center justify-between gap-3 text-sm">
-                      <div className="text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
-                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium"}>
+                <Card key={s.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
+                  <CardContent className="p-4 space-y-2.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1 min-w-0">
+                        <div className="font-semibold leading-tight">{s.className || "Session"}</div>
+                        <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
+                      </div>
+                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium whitespace-nowrap"}>
                         {state}
                       </span>
                     </div>
+
+                    <div className="text-sm text-muted-foreground">
+                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
+                    </div>
+
+                    <div className="text-sm text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
 
                     <div className="flex gap-2 pt-1">
                       <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
@@ -329,10 +308,13 @@ export default function Home() {
         )}
 
         <Card>
-          <CardContent className="p-5 space-y-5">
+          <CardContent className="p-4">
             <div className="rounded-xl border overflow-hidden bg-white">
               <div className="flex items-center justify-between gap-3 px-4 py-3 border-b bg-slate-50">
-                <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
+                <div>
+                  <div className="text-xl font-semibold">{monthLabel(visibleMonth)}</div>
+                  <div className="text-sm text-muted-foreground">{selectedDateLabel}</div>
+                </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="icon" onClick={() => setVisibleMonth((m) => addMonths(m, -1))}>
                     <ChevronLeft className="h-4 w-4" />
@@ -344,8 +326,8 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-7 border-b text-xs uppercase tracking-wide text-muted-foreground">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                  <div key={day} className="px-3 py-3 border-r last:border-r-0">{day}</div>
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                  <div key={day} className="px-3 py-2 border-r last:border-r-0">{day}</div>
                 ))}
               </div>
 
@@ -358,23 +340,23 @@ export default function Home() {
                       key={day.key}
                       type="button"
                       onClick={() => setSelectedDate(day.key)}
-                      className={`min-h-[120px] border-r border-b last:border-r-0 p-3 text-left align-top transition-colors ${selected ? "bg-primary/10 ring-1 ring-primary" : hasSessions ? "hover:bg-slate-50" : "bg-background"} ${!day.inMonth ? "text-muted-foreground/50" : ""}`}
+                      className={`min-h-[104px] border-r border-b last:border-r-0 p-2.5 text-left align-top transition-colors ${selected ? "bg-primary/10 ring-1 ring-primary" : hasSessions ? "hover:bg-slate-50" : "bg-background"} ${!day.inMonth ? "text-muted-foreground/50" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className={`text-2xl font-semibold ${selected ? "text-primary" : ""}`}>{day.date.getDate()}</div>
+                        <div className={`text-xl font-semibold ${selected ? "text-primary" : ""}`}>{day.date.getDate()}</div>
                         {hasSessions ? (
                           <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
                             {day.sessions.length}
                           </span>
                         ) : null}
                       </div>
-                      <div className="mt-3 space-y-2">
+                      <div className="mt-2 space-y-1.5">
                         {day.sessions.slice(0, 2).map((session) => {
                           const state = availabilityLabel(session);
                           return (
                             <div
                               key={session.id}
-                              className={state === "Sold out" ? "rounded-md bg-slate-200 px-2 py-1 text-xs text-slate-700" : state === "Nearly full" ? "rounded-md bg-amber-500 px-2 py-1 text-xs text-white" : "rounded-md bg-emerald-600 px-2 py-1 text-xs text-white"}
+                              className={state === "Sold out" ? "rounded-md bg-slate-200 px-2 py-1 text-[11px] text-slate-700" : state === "Nearly full" ? "rounded-md bg-amber-500 px-2 py-1 text-[11px] text-white" : "rounded-md bg-emerald-600 px-2 py-1 text-[11px] text-white"}
                             >
                               {formatInTimeZone(session.startTime, session.venueTimezone || undefined, {
                                 hour: "2-digit",
@@ -384,7 +366,7 @@ export default function Home() {
                           );
                         })}
                         {day.sessions.length > 2 ? (
-                          <div className="text-xs text-muted-foreground">+{day.sessions.length - 2} more</div>
+                          <div className="text-[11px] text-muted-foreground">+{day.sessions.length - 2} more</div>
                         ) : null}
                       </div>
                     </button>
@@ -394,51 +376,6 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
-
-        {loading ? (
-          <p>Loading sessions…</p>
-        ) : selectedDaySessions.length === 0 ? (
-          <Card>
-            <CardContent className="p-6 text-muted-foreground">No sessions available for the selected day.</CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {selectedDaySessions.map((s) => {
-              const state = availabilityLabel(s);
-              const soldOut = state === "Sold out";
-              return (
-                <Card key={s.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
-                  <CardContent className="p-5 space-y-3">
-                    <div className="space-y-1">
-                      <div className="font-semibold text-lg">{s.className || "Session"}</div>
-                      <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
-                    </div>
-
-                    <div className="text-muted-foreground">
-                      {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
-                    </div>
-
-                    <div className="flex items-center justify-between gap-3 text-sm">
-                      <div className="text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
-                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium"}>
-                        {state}
-                      </span>
-                    </div>
-
-                    <div className="flex gap-2 pt-1">
-                      <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
-                        {soldOut ? "Sold out" : "Book now"}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/sessions/${s.id}`); }}>
-                        View details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
       </section>
     </div>
   );
