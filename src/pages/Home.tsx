@@ -4,8 +4,8 @@ import { useLocation } from "wouter";
 import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-const heroImage = "/images/hero-floating-soundbath.webp";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import heroImage from "/images/hero-floating-soundbath.webp";
 import { formatInTimeZone } from "@/lib/sessionTime";
 
 type Session = {
@@ -32,14 +32,7 @@ type CalendarDay = {
   sessions: Session[];
 };
 
-const CITY_COLORS = [
-  "bg-sky-500",
-  "bg-emerald-500",
-  "bg-amber-500",
-  "bg-fuchsia-500",
-  "bg-orange-500",
-  "bg-indigo-500",
-];
+const CITY_COLORS = ["bg-sky-500", "bg-emerald-500", "bg-amber-500", "bg-fuchsia-500", "bg-orange-500", "bg-indigo-500"];
 
 function unwrapArray(maybe: any): any[] {
   if (Array.isArray(maybe)) return maybe;
@@ -61,13 +54,7 @@ function formatHomeSessionRange(session: Session) {
     minute: "2-digit",
   });
   const endDate = new Date(session.endTime);
-  const end = Number.isNaN(endDate.getTime())
-    ? "TBA"
-    : endDate.toLocaleTimeString([], {
-        timeZone,
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+  const end = Number.isNaN(endDate.getTime()) ? "TBA" : endDate.toLocaleTimeString([], { timeZone, hour: "2-digit", minute: "2-digit" });
   return `${start} – ${end}`;
 }
 
@@ -114,10 +101,7 @@ function weekdayIndexMondayFirst(date: Date) {
 }
 
 function monthLabel(date: Date) {
-  return date.toLocaleDateString([], {
-    month: "long",
-    year: "numeric",
-  });
+  return date.toLocaleDateString([], { month: "long", year: "numeric" });
 }
 
 function buildMonthGrid(month: Date, sessions: Session[]): CalendarDay[] {
@@ -138,12 +122,7 @@ function buildMonthGrid(month: Date, sessions: Session[]): CalendarDay[] {
   const days: CalendarDay[] = [];
   for (let cursor = new Date(start); cursor <= end; cursor = addDays(cursor, 1)) {
     const key = getDayKey(cursor);
-    days.push({
-      key,
-      date: new Date(cursor),
-      inMonth: cursor.getMonth() === month.getMonth(),
-      sessions: byDay.get(key) ?? [],
-    });
+    days.push({ key, date: new Date(cursor), inMonth: cursor.getMonth() === month.getMonth(), sessions: byDay.get(key) ?? [] });
   }
   return days;
 }
@@ -153,8 +132,8 @@ export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
+  const [chooserDay, setChooserDay] = useState<{ label: string; sessions: Session[] } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -189,19 +168,12 @@ export default function Home() {
   }, [sessions]);
 
   const cityOptions = useMemo(() => {
-    return [...new Set(
-      upcoming
-        .map((session) => session.venueCity)
-        .filter((city): city is string => Boolean(city))
-        .map((city) => city.trim())
-    )].sort((a, b) => a.localeCompare(b));
+    return [...new Set(upcoming.map((session) => session.venueCity).filter((city): city is string => Boolean(city)).map((city) => city.trim()))].sort((a, b) => a.localeCompare(b));
   }, [upcoming]);
 
   const cityColorMap = useMemo(() => {
     const map = new Map<string, string>();
-    cityOptions.forEach((city, index) => {
-      map.set(normalize(city), CITY_COLORS[index % CITY_COLORS.length]);
-    });
+    cityOptions.forEach((city, index) => map.set(normalize(city), CITY_COLORS[index % CITY_COLORS.length]));
     return map;
   }, [cityOptions]);
 
@@ -212,29 +184,23 @@ export default function Home() {
 
   const calendarDays = useMemo(() => buildMonthGrid(visibleMonth, cityFiltered), [visibleMonth, cityFiltered]);
 
-  const selectedDaySessions = useMemo(() => {
-    if (!selectedDate) return [];
-    return cityFiltered.filter((session) => getDayKey(session.startTime, session.venueTimezone) === selectedDate);
-  }, [cityFiltered, selectedDate]);
-
-  useEffect(() => {
-    if (selectedCity && !cityOptions.some((city) => normalize(city) === selectedCity)) {
-      setSelectedCity("");
-      setSelectedDate("");
-    }
-  }, [cityOptions, selectedCity]);
-
-  useEffect(() => {
-    if (!selectedDate) return;
-    const existsInMonth = calendarDays.some((day) => day.key === selectedDate);
-    if (!existsInMonth) setSelectedDate("");
-  }, [calendarDays, selectedDate]);
-
   function buyHref(session: Session) {
     const params = new URLSearchParams();
     params.set("sessionId", String(session.id));
     params.set("from", "/");
     return `/buy/${session.productKey}?${params.toString()}`;
+  }
+
+  function openDay(day: CalendarDay) {
+    if (day.sessions.length === 0) return;
+    if (day.sessions.length === 1) {
+      navigate(`/sessions/${day.sessions[0].id}`);
+      return;
+    }
+    setChooserDay({
+      label: day.date.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }),
+      sessions: day.sessions,
+    });
   }
 
   return (
@@ -247,14 +213,10 @@ export default function Home() {
           <div className="space-y-3">
             <div className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">Blue Wave Experiences</div>
             <h1 className="text-4xl font-bold leading-tight">Floating soundbath sessions in Arizona</h1>
-            <p className="text-muted-foreground">
-              Choose a date in the calendar, see what is available, and go straight into booking.
-            </p>
+            <p className="text-muted-foreground">Choose a date in the calendar and go straight into booking.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => document.getElementById("homepage-calendar")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
-              Open calendar
-            </Button>
+            <Button onClick={() => document.getElementById("homepage-calendar")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Open calendar</Button>
             <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
           </div>
         </div>
@@ -264,7 +226,7 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold">Book from the calendar</h2>
-            <p className="text-muted-foreground">Choose a city, select a day, then book the session you want.</p>
+            <p className="text-muted-foreground">Choose a city, then click a day in the calendar.</p>
           </div>
           <Button variant="outline" onClick={() => navigate("/sessions")}>Full availability</Button>
         </div>
@@ -274,11 +236,9 @@ export default function Home() {
             <div className="flex flex-wrap items-center gap-3">
               <div className="text-sm font-medium">City</div>
               <div className="flex flex-wrap gap-2">
-                <Button size="sm" variant={!selectedCity ? "default" : "outline"} onClick={() => { setSelectedCity(""); setSelectedDate(""); }}>
-                  All cities
-                </Button>
+                <Button size="sm" variant={!selectedCity ? "default" : "outline"} onClick={() => setSelectedCity("")}>All cities</Button>
                 {cityOptions.map((city) => (
-                  <Button key={city} size="sm" variant={normalize(city) === selectedCity ? "default" : "outline"} onClick={() => { setSelectedCity(normalize(city)); setSelectedDate(""); }}>
+                  <Button key={city} size="sm" variant={normalize(city) === selectedCity ? "default" : "outline"} onClick={() => setSelectedCity(normalize(city))}>
                     {city}
                   </Button>
                 ))}
@@ -315,31 +275,26 @@ export default function Home() {
 
               <div className="grid grid-cols-7">
                 {calendarDays.map((day) => {
-                  const selected = selectedDate === day.key;
                   const hasSessions = day.sessions.length > 0;
                   const citiesOnDay = [...new Set(day.sessions.map((session) => normalize(session.venueCity || "")).filter(Boolean))];
                   return (
                     <button
                       key={day.key}
                       type="button"
-                      onClick={() => setSelectedDate(day.key)}
-                      className={`min-h-[104px] border-r border-b last:border-r-0 p-2.5 text-left align-top transition-colors ${selected ? "bg-primary/10 ring-1 ring-primary" : hasSessions ? "hover:bg-slate-50" : "bg-background"} ${!day.inMonth ? "text-muted-foreground/50" : ""}`}
+                      onClick={() => openDay(day)}
+                      disabled={!hasSessions}
+                      className={`min-h-[104px] border-r border-b last:border-r-0 p-2.5 text-left align-top transition-colors ${hasSessions ? "hover:bg-slate-50" : "bg-background"} ${!day.inMonth ? "text-muted-foreground/50" : ""} ${!hasSessions ? "cursor-default" : "cursor-pointer"}`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className={`text-xl font-semibold ${selected ? "text-primary" : ""}`}>{day.date.getDate()}</div>
-                        {hasSessions ? (
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
-                            {day.sessions.length}
-                          </span>
-                        ) : null}
+                        <div className="text-xl font-semibold">{day.date.getDate()}</div>
+                        {hasSessions ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">{day.sessions.length}</span> : null}
                       </div>
                       <div className="mt-3 space-y-2">
                         {citiesOnDay.slice(0, 3).map((cityKey) => (
                           <div key={cityKey} className={`h-2 rounded-full ${cityColorMap.get(cityKey) || "bg-slate-300"}`} />
                         ))}
-                        {day.sessions.length > 0 ? (
-                          <div className="text-[11px] text-muted-foreground">Tap to view</div>
-                        ) : null}
+                        {day.sessions.length === 1 ? <div className="text-[11px] text-muted-foreground">Tap to book</div> : null}
+                        {day.sessions.length > 1 ? <div className="text-[11px] text-muted-foreground">Choose session</div> : null}
                       </div>
                     </button>
                   );
@@ -348,61 +303,46 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+      </section>
 
-        {loading ? (
-          <p>Loading sessions…</p>
-        ) : !selectedDate ? (
-          <Card>
-            <CardContent className="p-4 text-muted-foreground">Select a day in the calendar to view sessions.</CardContent>
-          </Card>
-        ) : selectedDaySessions.length === 0 ? (
-          <Card>
-            <CardContent className="p-4 text-muted-foreground">No sessions available for the selected day.</CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-muted-foreground">
-              {new Date(selectedDate).toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+      {chooserDay ? (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end md:items-center justify-center p-4">
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-xl">
+            <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
+              <div>
+                <div className="text-lg font-semibold">Choose a session</div>
+                <div className="text-sm text-muted-foreground">{chooserDay.label}</div>
+              </div>
+              <button type="button" onClick={() => setChooserDay(null)} className="rounded-full p-2 hover:bg-slate-100">
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {selectedDaySessions.map((s) => {
+            <div className="p-5 space-y-3">
+              {chooserDay.sessions.map((s) => {
                 const state = availabilityLabel(s);
-                const soldOut = state === "Sold out";
                 return (
-                  <Card key={s.id} className="cursor-pointer hover:shadow-sm transition-shadow" onClick={() => navigate(`/sessions/${s.id}`)}>
-                    <CardContent className="p-4 space-y-2.5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="space-y-1 min-w-0">
-                          <div className="font-semibold leading-tight">{s.className || "Session"}</div>
-                          <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
-                        </div>
-                        <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium whitespace-nowrap" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium whitespace-nowrap"}>
-                          {state}
-                        </span>
-                      </div>
-
-                      <div className="text-sm text-muted-foreground">
-                        {s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}
-                      </div>
-
-                      <div className="text-sm text-muted-foreground">{s.seatsAvailable} of {s.seatsTotal} seats left</div>
-
-                      <div className="flex gap-2 pt-1">
-                        <Button size="sm" disabled={soldOut || !s.productKey} onClick={(e) => { e.stopPropagation(); if (!soldOut && s.productKey) navigate(buyHref(s)); }}>
-                          {soldOut ? "Sold out" : "Book now"}
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/sessions/${s.id}`); }}>
-                          View details
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div key={s.id} className="rounded-xl border p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="font-semibold">{s.className || "Session"}</div>
+                      <div className="text-sm text-muted-foreground">{formatHomeSessionRange(s)}</div>
+                      <div className="text-sm text-muted-foreground">{s.venueName ? `${s.venueName}${s.venueCity && s.venueState ? ` • ${s.venueCity}, ${s.venueState}` : ""}` : "Venue TBD"}</div>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap md:justify-end">
+                      <span className={state === "Sold out" ? "rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-medium" : state === "Nearly full" ? "rounded-full bg-amber-100 text-amber-900 px-2.5 py-1 text-xs font-medium" : "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-1 text-xs font-medium"}>{state}</span>
+                      <Button size="sm" variant="outline" onClick={() => { setChooserDay(null); navigate(`/sessions/${s.id}`); }}>View details</Button>
+                      <Button size="sm" disabled={state === "Sold out" || !s.productKey} onClick={() => { setChooserDay(null); if (s.productKey) navigate(buyHref(s)); }}>
+                        {state === "Sold out" ? "Sold out" : "Book now"}
+                      </Button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </div>
-        )}
-      </section>
+        </div>
+      ) : null}
+
+      {loading ? <p>Loading sessions…</p> : null}
     </div>
   );
 }
