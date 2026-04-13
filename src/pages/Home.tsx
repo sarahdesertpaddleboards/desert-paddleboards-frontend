@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { getClassSessions } from "../lib/classApi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Instagram, Facebook, Music2 } from "lucide-react";
 import heroImage from "/images/hero-floating-soundbath.webp";
 import { formatInTimeZone } from "@/lib/sessionTime";
 
@@ -218,6 +218,20 @@ export default function Home() {
           <div className="flex flex-wrap gap-3">
             <Button onClick={() => document.getElementById("homepage-calendar")?.scrollIntoView({ behavior: "smooth", block: "start" })}>Open calendar</Button>
             <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
+          </div>
+          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+            <a href="https://www.instagram.com/bluewaveexperiences/?hl=en" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
+              <Instagram className="h-4 w-4" />
+              <span>Instagram</span>
+            </a>
+            <a href="https://www.facebook.com/desertpaddleboards" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
+              <Facebook className="h-4 w-4" />
+              <span>Facebook</span>
+            </a>
+            <a href="https://www.tiktok.com/@desertpaddleboards" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
+              <Music2 className="h-4 w-4" />
+              <span>TikTok</span>
+            </a>
           </div>
         </div>
       </section>
