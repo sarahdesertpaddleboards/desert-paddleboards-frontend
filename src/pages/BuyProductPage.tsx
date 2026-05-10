@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRoute } from "wouter";
 import { formatSessionTimeRange } from "@/lib/sessionTime";
+import { PUBLIC_API_BASE } from "@/lib/publicApi";
 
 type BuyableProduct = {
   productKey: string;
@@ -119,13 +120,7 @@ async function previewGiftCode(args: {
   quantity: number;
   giftCode: string;
 }) {
-  const baseUrl =
-    import.meta.env.VITE_API_BASE_URL ||
-    (window.location.hostname === "localhost"
-      ? "http://localhost:4000"
-      : "https://desert-paddleboards-backend-production.up.railway.app");
-
-  const res = await fetch(`${baseUrl}/checkout/gift-code/preview`, {
+  const res = await fetch(`${PUBLIC_API_BASE}/checkout/gift-code/preview`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
