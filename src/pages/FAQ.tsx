@@ -33,7 +33,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
     items: [
       {
         question: "What should I wear?",
-        answer: "Wear comfortable swimwear that you can relax in for 60-90 minutes. We recommend a one-piece swimsuit or athletic swimwear. Bring a cover-up or comfortable clothes to change into afterward. For evening classes, consider bringing a light jacket or towel for warmth."
+        answer: "Wear comfortable swimwear that you can relax in for 60-90 minutes. We recommend a one-piece swimsuit or athletic swimwear. Bring a cover-up or comfortable clothes to change into afterward. For evening sessions, consider bringing a light jacket or towel for warmth."
       },
       {
         question: "What should I bring?",
@@ -78,28 +78,28 @@ const faqData: { category: string; items: FAQItem[] }[] = [
     category: "Booking & Policies",
     items: [
       {
-        question: "How do I book a class?",
-        answer: "You can book directly through our website by browsing our Classes & Events page and selecting your preferred date and location. Payment is processed securely through Stripe, and you'll receive an email confirmation with all the details you need."
+        question: "How do I book a session?",
+        answer: "You can book directly through our website by browsing our Experiences page and selecting your preferred date and location. Payment is processed securely through Stripe, and you'll receive an email confirmation with all the details you need."
       },
       {
         question: "What is your cancellation policy?",
-        answer: "We understand plans change! You can cancel or reschedule up to 24 hours before your class for a full refund or credit toward a future class. Cancellations made less than 24 hours before the class are non-refundable, though we'll do our best to accommodate emergencies on a case-by-case basis."
+        answer: "We understand plans change! You can cancel or reschedule up to 24 hours before your session for a full refund or credit toward a future session. Cancellations made less than 24 hours before the session are non-refundable, though we'll do our best to accommodate emergencies on a case-by-case basis."
       },
       {
-        question: "What happens if the class is cancelled due to weather?",
-        answer: "For outdoor classes, we monitor weather conditions closely. If we need to cancel due to unsafe weather (lightning, extreme heat, high winds), you'll receive a full refund or the option to transfer to another date. We'll notify you as early as possible, typically at least 2-3 hours before class time."
+        question: "What happens if the session is cancelled due to weather?",
+        answer: "For outdoor sessions, we monitor weather conditions closely. If we need to cancel due to unsafe weather (lightning, extreme heat, high winds), you'll receive a full refund or the option to transfer to another date. We'll notify you as early as possible, typically at least 2-3 hours before session time."
       },
       {
         question: "Can I purchase a gift certificate?",
-        answer: "Yes! Gift certificates are available in any amount and make wonderful gifts for birthdays, holidays, or anyone seeking relaxation and unique experiences. You can purchase them through our Shop page, and they can be used toward any of our classes or private events."
+        answer: "Yes! Gift certificates are available in any amount and make wonderful gifts for birthdays, holidays, or anyone seeking relaxation and unique experiences. You can purchase them through our Shop page, and they can be used toward any of our sessions or private events."
       },
       {
         question: "Do you offer private events or group bookings?",
         answer: "Absolutely! We love hosting private floating soundbaths for bachelorette parties, corporate wellness events, birthday celebrations, and retreats. Private events can be customized to your group's needs and preferences. Visit our Private Events page or contact us directly for pricing and availability."
       },
       {
-        question: "What's the difference between resort and public pool classes?",
-        answer: "Resort classes ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering luxury amenities, beautiful settings, and often include access to resort facilities. Public pool classes ($40) are held at community aquatic centers, providing the same high-quality soundbath experience at a more accessible price point."
+        question: "What's the difference between resort and public pool sessions?",
+        answer: "Resort sessions ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering luxury amenities, beautiful settings, and often include access to resort facilities. Public pool sessions ($40) are held at community aquatic centers, providing the same high-quality soundbath experience at a more accessible price point."
       }
     ]
   },
@@ -108,19 +108,19 @@ const faqData: { category: string; items: FAQItem[] }[] = [
     items: [
       {
         question: "When should I arrive?",
-        answer: "Please arrive 10-15 minutes before class starts to check in, get settled, and receive any instructions. This buffer time helps ensure we can start promptly and you have time to relax before the experience begins."
+        answer: "Please arrive 10-15 minutes before your session starts to check in, get settled, and receive any instructions. This buffer time helps ensure we can start promptly and you have time to relax before the experience begins."
       },
       {
-        question: "Where do I meet for class?",
-        answer: "Specific meeting location details are included in your confirmation email. For resort classes, we typically meet at the pool area. For public pools, we meet at the main entrance or designated area. If you have trouble finding us, call the number provided in your confirmation."
+        question: "Where do I meet for my session?",
+        answer: "Specific meeting location details are included in your confirmation email. For resort sessions, we typically meet at the pool area. For public pools, we meet at the main entrance or designated area. If you have trouble finding us, call the number provided in your confirmation."
       },
       {
-        question: "What happens during the class?",
+        question: "What happens during the session?",
         answer: "After a brief welcome and safety overview, you'll get on your paddleboard and find a comfortable lying position. The soundbath typically lasts 45-60 minutes, during which you'll float peacefully while immersed in healing sounds. Afterward, there's time for gentle reawakening, sharing (optional), and connecting with other participants."
       },
       {
         question: "Can I eat before class?",
-        answer: "We recommend eating a light meal 1-2 hours before class rather than arriving on a full or empty stomach. Heavy meals right before class may make you uncomfortable while lying down, and being too hungry can be distracting. Stay well-hydrated throughout the day."
+        answer: "We recommend eating a light meal 1-2 hours before your session rather than arriving on a full or empty stomach. Heavy meals right before a session may make you uncomfortable while lying down, and being too hungry can be distracting. Stay well-hydrated throughout the day."
       }
     ]
   }
@@ -199,10 +199,10 @@ export default function FAQ() {
               Call Us: 480.201.9520
             </a>
             <a
-              href="/classes"
+              href="/sessions"
               className="inline-flex items-center justify-center px-8 py-3 bg-background border-2 border-primary text-primary rounded-md font-medium hover:bg-primary/10 transition-colors"
             >
-              Browse Classes
+              Browse Experiences
             </a>
           </div>
         </div>
