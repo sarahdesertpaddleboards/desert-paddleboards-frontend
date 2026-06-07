@@ -10,7 +10,6 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
-import Shop from "./pages/Shop";
 import PrivateEvents from "./pages/PrivateEvents";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
@@ -18,11 +17,6 @@ import SantaPaddle from "./pages/SantaPaddle";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
-import BuyProductPage from "./pages/BuyProductPage";
-import ClassesPage from "./pages/classes/index";
-import ClassDetailPage from "./pages/classes/[id]";
-import SessionsPage from "./pages/Sessions";
-import SessionDetailPage from "./pages/sessions/[id]";
 
 function Router() {
   return (
@@ -31,7 +25,6 @@ function Router() {
 
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/shop" component={Shop} />
         <Route path="/private-events" component={PrivateEvents} />
         <Route path="/about" component={About} />
         <Route path="/faq" component={FAQ} />
@@ -41,13 +34,7 @@ function Router() {
         <Route path="/admin-login" component={AdminLogin} />
         <Route path="/admin/login" component={AdminLogin} />
 
-        <Route path="/classes" component={ClassesPage} />
-        <Route path="/classes/:id" component={ClassDetailPage} />
-        <Route path="/sessions" component={SessionsPage} />
-        <Route path="/sessions/:id" component={SessionDetailPage} />
-
         <Route path="/success" component={CheckoutSuccess} />
-        <Route path="/buy/:productKey" component={BuyProductPage} />
 
         <Route component={NotFound} />
       </Switch>
