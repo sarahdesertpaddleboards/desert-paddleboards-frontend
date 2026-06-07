@@ -211,7 +211,7 @@ export default function Home() {
         </div>
         <div className="rounded-2xl bg-cyan-50 p-8 flex flex-col justify-center space-y-5">
           <div className="space-y-3">
-            <div className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">Blue Wave Experiences</div>
+            <div className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">Desert Paddleboards</div>
             <h1 className="text-4xl font-bold leading-tight">Floating soundbath sessions in Arizona</h1>
             <p className="text-muted-foreground">Choose a date in the calendar and go straight into booking.</p>
           </div>
@@ -220,7 +220,7 @@ export default function Home() {
             <Button variant="outline" onClick={() => navigate("/shop")}>Visit Shop</Button>
           </div>
           <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-            <a href="https://www.instagram.com/bluewaveexperiences/?hl=en" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
+            <a href="https://www.instagram.com/desertpaddleboards/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
               <Instagram className="h-4 w-4" />
               <span>Instagram</span>
             </a>

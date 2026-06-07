@@ -44,7 +44,7 @@ export default function Admin() {
   return (
     <div className="p-8 space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold">Blue Wave Experiences Admin</h1>
+        <h1 className="text-3xl font-bold">Desert Paddleboards Admin</h1>
       </div>
 
       <div className="flex gap-4 border-b pb-2 flex-wrap">
