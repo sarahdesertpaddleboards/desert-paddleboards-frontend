@@ -182,14 +182,13 @@ export default function LocationFinder() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/45 to-brand-dark/15" />
         <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
-            Floating soundbaths · Arizona
+            Floating soundbaths · water wellness · Arizona
           </p>
-          <h1 className="mt-2 max-w-[15ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
-            Stillness, found on the water.
+          <h1 className="mt-2 max-w-[16ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
+            The Floating Nap™
           </h1>
           <p className="mt-3 max-w-xl text-base text-white/90">
-            Live music over calm water. Find a floating soundbath near you and
-            book online.
+            A meditative concert on the water. Find one near you and book online.
           </p>
           <form onSubmit={handleSearch} className="mt-5 flex max-w-md gap-2">
             <input

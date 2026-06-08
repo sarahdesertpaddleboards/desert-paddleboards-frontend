@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import PrivateEvents from "./pages/PrivateEvents";
+import CommunityEvents from "./pages/CommunityEvents";
 import SantaPaddle from "./pages/SantaPaddle";
 import Membership from "./pages/Membership";
 import LocationsIndex from "./pages/locations/index";
@@ -31,6 +32,7 @@ export const routes: RouteRecord[] = [
           experiences.map((e) => `/locations/${e.slug}`),
       },
       { path: "membership", element: <Membership /> },
+      { path: "community-events", element: <CommunityEvents /> },
       { path: "private-events", element: <PrivateEvents /> },
       { path: "about", element: <About /> },
       { path: "faq", element: <FAQ /> },
