@@ -17,6 +17,9 @@ import SantaPaddle from "./pages/SantaPaddle";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
+import LocationsIndex from "./pages/locations/index";
+import LocationDetail from "./pages/locations/[slug]";
+import Membership from "./pages/Membership";
 
 function Router() {
   return (
@@ -25,6 +28,9 @@ function Router() {
 
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/locations" component={LocationsIndex} />
+        <Route path="/locations/:slug" component={LocationDetail} />
+        <Route path="/membership" component={Membership} />
         <Route path="/private-events" component={PrivateEvents} />
         <Route path="/about" component={About} />
         <Route path="/faq" component={FAQ} />
