@@ -33,6 +33,9 @@ export interface Experience {
   venue: string;
   city: string;
   state: string;
+  /** Venue coordinates (from FareHarbor primary_location) for the map + distance */
+  lat: number;
+  lng: number;
   kind: ExperienceKind;
   /** Evergreen description — DRAFT, pending Sarah's review */
   blurb: string;
@@ -52,6 +55,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "Float weightlessly on the water as live sound washes over you, high above the city on the Canopy by Hilton rooftop pool in Tempe.",
+    lat: 33.422201,
+    lng: -111.937732,
     image: "https://cdn.filestackcontent.com/i0Np2qm1SHa2nzK9wMXx",
     featured: true,
   },
@@ -65,6 +70,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "A floating meditation set to live music at Hotel Adeline in Scottsdale — drift, breathe, and let go.",
+    lat: 33.51104,
+    lng: -111.92462,
     image: "https://cdn.filestackcontent.com/f1OgGIzzRFmzbAYHYnqW",
   },
   {
@@ -77,6 +84,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "Unwind on the water with a floating meditation and live music at the DoubleTree by Hilton in Gilbert.",
+    lat: 33.317033,
+    lng: -111.743508,
     image: "https://cdn.filestackcontent.com/N1IhadaQJur3pehMENXg",
   },
   {
@@ -89,6 +98,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "A spa-day soundbath at the Revive Spa pool, JW Marriott Desert Ridge in Phoenix. Float, restore, and reset.",
+    lat: 33.684112,
+    lng: -111.965534,
     image: "https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw",
   },
   {
@@ -101,6 +112,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "A serene floating soundbath at Aji Spa, Sheraton Grand at Wild Horse Pass — desert calm on the water.",
+    lat: 33.00863,
+    lng: -111.94364,
     image: "https://cdn.filestackcontent.com/VPmBIgASEyIo57cg78j9",
   },
   {
@@ -113,6 +126,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "A floating soundbath at the historic Wigwam resort's LeMonds Spa in Litchfield Park.",
+    lat: 33.496679,
+    lng: -112.357527,
     image: "https://cdn.filestackcontent.com/8vc5VkiQUqWSg9yG0WFF",
   },
   {
@@ -125,6 +140,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "Float beneath the Superstition Mountains as the desert light fades — a soundbath in Apache Junction.",
+    lat: 33.392842,
+    lng: -111.557638,
     image: "https://cdn.filestackcontent.com/sqrTR58YQq2Ru4MBETmC",
   },
   {
@@ -137,6 +154,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "The Floating Nap™ — as seen on TikTok. A sunset soundbath on the water at Skyline Pool in Mesa.",
+    lat: 33.399801,
+    lng: -111.614372,
     image: "https://cdn.filestackcontent.com/yKfM7hUnRuexWsM6b0KL",
     featured: true,
   },
@@ -150,6 +169,8 @@ export const experiences: Experience[] = [
     kind: "soundbath",
     blurb:
       "A community floating soundbath at Mulberry in Mesa — now open to the public.",
+    lat: 33.368099,
+    lng: -111.605824,
     image: "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg",
   },
   {
@@ -162,6 +183,8 @@ export const experiences: Experience[] = [
     kind: "class",
     blurb:
       "A 90-minute high-energy aquatic workout — water aerobics plus floating yoga and surf fitness at the Mesa Aquatics Complex.",
+    lat: 33.396339,
+    lng: -111.795887,
     image: "https://cdn.filestackcontent.com/1UEnWJiQLm4Miz06WkdH",
   },
 ];
@@ -174,6 +197,8 @@ export const membership: Experience = {
   venue: "",
   city: "Arizona",
   state: "AZ",
+  lat: 33.4484,
+  lng: -112.074,
   kind: "membership",
   blurb:
     "Classes every Tuesday all summer long. Buy the whole season as a membership and save.",
