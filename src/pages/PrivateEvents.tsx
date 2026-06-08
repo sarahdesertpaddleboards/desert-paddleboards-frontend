@@ -4,9 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Heart, Briefcase, Sparkles, CheckCircle2 } from "lucide-react";
+import { Users, Heart, Briefcase, Sparkles, CheckCircle2, Building2, Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Head } from "vite-react-ssg";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbLd, graph } from "@/lib/jsonld";
+import { SITE_URL, business } from "@/data/site";
 
 export default function PrivateEvents() {
   const [formData, setFormData] = useState({
@@ -56,6 +60,16 @@ export default function PrivateEvents() {
       icon: Users,
       title: "Group Celebrations",
       description: "Birthdays, anniversaries, reunions - make any celebration extra special on the water."
+    },
+    {
+      icon: Dumbbell,
+      title: "Gyms & Member Appreciation",
+      description: "Treat your members to an unforgettable floating soundbath — we bring everything, or just drop off the boards for your own instructors."
+    },
+    {
+      icon: Building2,
+      title: "Small Business & Team Events",
+      description: "A memorable team-wellness experience that's nothing like the usual offsite — perfect for stressed-out teams."
     }
   ];
 
@@ -68,14 +82,43 @@ export default function PrivateEvents() {
     "Photo opportunities and social media content",
   ];
 
+  const structuredData = graph([
+    breadcrumbLd([
+      { name: "Home", path: "/" },
+      { name: "Private Events", path: "/private-events" },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Private Floating Soundbath Events",
+      serviceType: "Private event",
+      provider: { "@type": "Organization", name: business.name, url: SITE_URL },
+      areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
+      description:
+        "Private floating soundbath events for bachelorette parties, corporate wellness, retreats, gym member-appreciation days and group celebrations across Arizona.",
+    },
+  ]);
+
   return (
     <div className="min-h-screen">
+      <Head>
+        <title>
+          Private Events — Bachelorette, Corporate Wellness &amp; Group
+          Celebrations | Desert Paddleboards
+        </title>
+        <meta
+          name="description"
+          content="Private floating soundbath events across Arizona — bachelorette parties, corporate wellness and team offsites, gym member-appreciation days, retreats and group celebrations. We bring the boards, live musicians and team."
+        />
+      </Head>
+      <JsonLd data={structuredData} />
+
       {/* Hero */}
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
-          src="/hero-yoga.jpg"
-          alt="Private Group Event"
+          src="/hero-pool-soundbath.webp"
+          alt="Private floating soundbath group event in Arizona"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 container text-center text-white">
@@ -99,7 +142,7 @@ export default function PrivateEvents() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {eventTypes.map((type) => {
             const Icon = type.icon;
             return (

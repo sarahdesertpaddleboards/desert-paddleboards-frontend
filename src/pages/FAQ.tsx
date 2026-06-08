@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { Head } from "vite-react-ssg";
 
 interface FAQItem {
   question: string;
@@ -154,6 +155,16 @@ function FAQAccordion({ question, answer }: FAQItem) {
 export default function FAQ() {
   return (
     <div className="min-h-screen bg-background">
+      <Head>
+        <title>
+          FAQ — Floating Soundbaths, Booking &amp; What to Expect | Desert
+          Paddleboards
+        </title>
+        <meta
+          name="description"
+          content="Answers about floating soundbaths, pool pilates, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event in Arizona."
+        />
+      </Head>
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">

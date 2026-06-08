@@ -176,13 +176,13 @@ export const experiences: Experience[] = [
   {
     itemId: 146434,
     slug: "lazy-river-water-aerobics-floating-yoga-mesa",
-    title: "Lazy River Water Aerobics & Floating Yoga",
+    title: "Pool Pilates, Water Aerobics & Floating Yoga",
     venue: "Mesa Aquatics Complex",
     city: "Mesa",
     state: "AZ",
     kind: "class",
     blurb:
-      "A 90-minute high-energy aquatic workout — water aerobics plus floating yoga and surf fitness at the Mesa Aquatics Complex.",
+      "A 90-minute high-energy aquatic workout — pool pilates, water aerobics, floating yoga and surf fitness at the Mesa Aquatics Complex.",
     lat: 33.396339,
     lng: -111.795887,
     image: "https://cdn.filestackcontent.com/1UEnWJiQLm4Miz06WkdH",
