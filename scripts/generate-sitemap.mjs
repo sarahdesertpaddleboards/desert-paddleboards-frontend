@@ -13,7 +13,13 @@ const DIST = join(__dirname, "../dist");
 const SITE_URL = "https://desertpaddleboards.com";
 
 // Pages that should not be indexed / listed.
-const EXCLUDE = [/^admin(\/|$)/, /^admin-login$/, /^success$/, /^404$/];
+const EXCLUDE = [
+  /^admin(\/|$)/,
+  /^admin-login$/,
+  /^success$/,
+  /^404$/,
+  /^mockups(\/|$)/, // temporary design mockups, never index
+];
 
 function walk(dir) {
   const files = [];

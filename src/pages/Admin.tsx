@@ -1,99 +1,99 @@
-import { useEffect, useMemo, useState } from "react";
-import ProductsEditor from "@/components/admin/ProductsEditor";
+import { useState } from "react";
+import axios from "axios";
+import { ADMIN_API_BASE } from "@/lib/adminBase";
 import OrdersManager from "@/components/admin/OrdersManager";
-import ClassProductsEditor from "@/components/admin/classes/ClassProductsEditor";
-import ClassSessionsEditor from "@/components/admin/classes/ClassSessionsEditor";
-import { fetchAdminClassProducts, type AdminClassProduct } from "@/lib/adminApi";
+import GiftCertificatesManager from "@/components/admin/GiftCertificatesManager";
 
-type AdminTab = "catalog" | "orders" | "experienceProducts" | "scheduleSessions";
+type Tab = "overview" | "records";
+
+const FAREHARBOR_DASHBOARD = "https://fareharbor.com/dashboard/";
 
 export default function Admin() {
-  const [tab, setTab] = useState<AdminTab>("catalog");
-  const [classProducts, setClassProducts] = useState<AdminClassProduct[]>([]);
-  const [selectedClassProductId, setSelectedClassProductId] = useState<number | null>(null);
+  const [tab, setTab] = useState<Tab>("overview");
 
-  useEffect(() => {
-    fetchAdminClassProducts().then((items) => {
-      const list = Array.isArray(items) ? items : [];
-      setClassProducts(list);
-      if (!selectedClassProductId && list[0]?.id) {
-        setSelectedClassProductId(list[0].id);
-      }
-    });
-  }, []);
-
-  const selectedExperienceProduct = useMemo(
-    () => classProducts.find((p) => p.id === selectedClassProductId) ?? null,
-    [classProducts, selectedClassProductId],
-  );
-
-  const pageTitle = useMemo(() => {
-    switch (tab) {
-      case "catalog":
-        return "Catalog";
-      case "experienceProducts":
-        return "Experience Products";
-      case "scheduleSessions":
-        return "Schedule Sessions";
-      case "orders":
-      default:
-        return "Orders";
+  async function logout() {
+    try {
+      await axios.post(
+        `${ADMIN_API_BASE}/admin/logout`,
+        {},
+        { withCredentials: true },
+      );
+    } catch {
+      /* ignore — redirect regardless */
     }
-  }, [tab]);
+    window.location.href = "/admin-login";
+  }
+
+  const tabClass = (t: Tab) =>
+    `pb-2 text-sm font-medium ${
+      tab === t
+        ? "border-b-2 border-cyan-700 text-foreground"
+        : "text-muted-foreground hover:text-foreground"
+    }`;
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="space-y-1">
+    <div className="mx-auto max-w-5xl space-y-6 p-8">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Desert Paddleboards Admin</h1>
-      </div>
-
-      <div className="flex gap-4 border-b pb-2 flex-wrap">
         <button
-          onClick={() => setTab("catalog")}
-          className={`pb-2 ${tab === "catalog" ? "border-b-2 border-blue-600 font-medium" : ""}`}
+          onClick={logout}
+          className="text-sm font-medium text-muted-foreground hover:text-foreground"
         >
-          Catalog
-        </button>
-
-        <button
-          onClick={() => setTab("experienceProducts")}
-          className={`pb-2 ${tab === "experienceProducts" ? "border-b-2 border-blue-600 font-medium" : ""}`}
-        >
-          Experience Products
-        </button>
-
-        <button
-          onClick={() => setTab("scheduleSessions")}
-          className={`pb-2 ${tab === "scheduleSessions" ? "border-b-2 border-blue-600 font-medium" : ""}`}
-        >
-          Schedule Sessions
-        </button>
-
-        <button
-          onClick={() => setTab("orders")}
-          className={`pb-2 ${tab === "orders" ? "border-b-2 border-blue-600 font-medium" : ""}`}
-        >
-          Orders
+          Log out
         </button>
       </div>
 
-      {tab === "scheduleSessions" && selectedExperienceProduct ? (
-        <div className="rounded-xl border bg-slate-50 p-4">
-          <p className="text-sm text-muted-foreground">
-            {selectedExperienceProduct.name}
-          </p>
+      <div className="flex gap-6 border-b pb-1">
+        <button onClick={() => setTab("overview")} className={tabClass("overview")}>
+          Overview
+        </button>
+        <button onClick={() => setTab("records")} className={tabClass("records")}>
+          Store records
+        </button>
+      </div>
+
+      {tab === "overview" && (
+        <div className="space-y-5">
+          <section className="space-y-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-6">
+            <h2 className="text-xl font-bold">Bookings &amp; gift certificates</h2>
+            <p className="text-muted-foreground">
+              All bookings, availability, and gift certificates are managed in
+              FareHarbor. Use your FareHarbor dashboard to view and add bookings,
+              open new dates, message customers, and handle cancellations,
+              reschedules and refunds.
+            </p>
+            <a
+              href={FAREHARBOR_DASHBOARD}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Open FareHarbor dashboard →
+            </a>
+          </section>
+
+          <section className="space-y-2 rounded-2xl border border-border p-6">
+            <h2 className="text-lg font-bold">Website content</h2>
+            <p className="text-sm text-muted-foreground">
+              Page copy — the homepage hero, FAQ, and location descriptions — is
+              currently part of the site code. Ask your developer to update it. A
+              self-service editor can be added later if you need to change copy
+              often.
+            </p>
+          </section>
         </div>
-      ) : null}
+      )}
 
-      {tab === "catalog" && <ProductsEditor />}
-      {tab === "orders" && <OrdersManager />}
-      {tab === "experienceProducts" && <ClassProductsEditor />}
-      {tab === "scheduleSessions" && (
-        <ClassSessionsEditor
-          classProductId={selectedClassProductId}
-          classProducts={classProducts}
-          onSelectClassProduct={setSelectedClassProductId}
-        />
+      {tab === "records" && (
+        <div className="space-y-8">
+          <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-muted-foreground">
+            Legacy custom-store records (Stripe). New bookings and gift
+            certificates live in FareHarbor, so these will usually be empty —
+            kept here for reference only.
+          </p>
+          <OrdersManager />
+          <GiftCertificatesManager />
+        </div>
       )}
     </div>
   );
