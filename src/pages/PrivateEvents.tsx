@@ -117,7 +117,7 @@ export default function PrivateEvents() {
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
-          src="/hero-pool-soundbath.webp"
+          src="https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw"
           alt="Private floating soundbath group event in Arizona"
           className="absolute inset-0 w-full h-full object-cover"
         />

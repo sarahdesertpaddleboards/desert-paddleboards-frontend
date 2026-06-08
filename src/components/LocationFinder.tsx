@@ -5,7 +5,9 @@ import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
-import heroImage from "/images/hero-floating-soundbath.webp";
+// Homepage hero — Aji Spa stopgap (Sarah likes this shot; musician visible).
+// Swap for her dedicated hero photo when she sends it.
+const heroImage = "https://cdn.filestackcontent.com/VPmBIgASEyIo57cg78j9";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
@@ -184,11 +186,12 @@ export default function LocationFinder() {
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
             Floating soundbaths · water wellness · Arizona
           </p>
-          <h1 className="mt-2 max-w-[16ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
-            The Floating Nap™
+          <h1 className="mt-2 max-w-[18ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
+            We want you to sleep with us.
           </h1>
           <p className="mt-3 max-w-xl text-base text-white/90">
-            A meditative concert on the water. Find one near you and book online.
+            The Floating Nap™ — a floating soundbath with live music on the water.
+            Find one near you and book online.
           </p>
           <form onSubmit={handleSearch} className="mt-5 flex max-w-md gap-2">
             <input

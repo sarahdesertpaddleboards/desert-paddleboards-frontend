@@ -15,7 +15,7 @@ export default function Membership() {
         <img
           src={membership.image}
           alt={membership.title}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
         <div className="absolute inset-0 bg-black/35" />
         <div className="relative z-10 flex h-full items-end">
@@ -40,6 +40,19 @@ export default function Membership() {
           <p className="text-lg leading-relaxed text-muted-foreground">
             {membership.blurb}
           </p>
+
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-foreground">$85</span>
+              <span className="text-muted-foreground">
+                / month · month-to-month
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Versus $25 per class — a $15 saving every month. Classes every
+              Tuesday. Pay monthly, cancel anytime.
+            </p>
+          </div>
         </div>
 
         <aside className="lg:col-span-1">
