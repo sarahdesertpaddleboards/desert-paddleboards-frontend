@@ -1,5 +1,5 @@
-import { Link } from "wouter";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -54,28 +54,28 @@ export default function Footer() {
             <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/sessions">
+                <Link to="/locations">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     Experiences
                   </span>
                 </Link>
               </li>
               <li>
-                <Link href="/shop">
+                <Link to="/membership">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Shop
+                    Membership
                   </span>
                 </Link>
               </li>
               <li>
-                <Link href="/private-events">
+                <Link to="/private-events">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     Private Events
                   </span>
                 </Link>
               </li>
               <li>
-                <Link href="/about">
+                <Link to="/about">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     About Us
                   </span>
@@ -133,12 +133,12 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>© {currentYear} Desert Paddleboards. All rights reserved.</p>
             <div className="flex gap-6">
-              <Link href="/privacy">
+              <Link to="/privacy">
                 <span className="hover:text-primary transition-colors cursor-pointer">
                   Privacy Policy
                 </span>
               </Link>
-              <Link href="/terms">
+              <Link to="/terms">
                 <span className="hover:text-primary transition-colors cursor-pointer">
                   Terms of Service
                 </span>

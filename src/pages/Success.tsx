@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle, Download, Gift, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ type SuccessResponse = {
 };
 
 export default function Success() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const [data, setData] = useState<SuccessResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -139,7 +139,7 @@ export default function Success() {
 
         {/* Footer */}
         <div className="text-center mt-12">
-          <Button variant="outline" onClick={() => setLocation("/")}>
+          <Button variant="outline" onClick={() => navigate("/")}>
             Return Home
           </Button>
         </div>

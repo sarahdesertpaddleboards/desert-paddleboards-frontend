@@ -1,9 +1,20 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { experiences, membership } from "@/data/locations";
 
 export default function LocationsIndex() {
   return (
     <main className="container py-16">
+      <Head>
+        <title>
+          Floating Soundbath Locations Across Arizona | Desert Paddleboards
+        </title>
+        <meta
+          name="description"
+          content="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert, Chandler and more. See locations on the map and book online."
+        />
+      </Head>
+
       <header className="max-w-2xl space-y-4">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
           Experiences
@@ -19,7 +30,7 @@ export default function LocationsIndex() {
 
       <section className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {experiences.map((exp) => (
-          <Link key={exp.slug} href={`/locations/${exp.slug}`}>
+          <Link key={exp.slug} to={`/locations/${exp.slug}`}>
             <article className="group cursor-pointer overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg">
               <div className="aspect-[4/3] overflow-hidden bg-muted">
                 <img
@@ -51,7 +62,7 @@ export default function LocationsIndex() {
           </p>
           <h2 className="text-2xl font-bold">{membership.title}</h2>
           <p className="text-muted-foreground">{membership.blurb}</p>
-          <Link href={`/membership`}>
+          <Link to={`/membership`}>
             <span className="inline-flex cursor-pointer items-center font-semibold text-cyan-700 hover:text-cyan-900">
               Learn more &rarr;
             </span>

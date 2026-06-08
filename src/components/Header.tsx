@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <nav className="container flex items-center justify-between py-4">
-        <Link href="/">
+        <Link to="/">
           <div className="flex items-center gap-2 cursor-pointer">
             <div className="text-2xl font-bold text-primary">
               <span>Desert Paddleboards</span>
@@ -27,7 +27,7 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-8">
           {navigation.map((item) => (
-            <Link key={item.name} href={item.href}>
+            <Link key={item.name} to={item.href}>
               <span className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer">
                 {item.name}
               </span>
@@ -59,7 +59,7 @@ export default function Header() {
         <div className="md:hidden border-t border-border bg-background">
           <div className="container py-4 space-y-4">
             {navigation.map((item) => (
-              <Link key={item.name} href={item.href}>
+              <Link key={item.name} to={item.href}>
                 <div
                   className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
                   onClick={() => setMobileMenuOpen(false)}

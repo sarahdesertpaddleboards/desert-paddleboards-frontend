@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle, Download, Gift, Calendar, Package, MapPin, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -108,7 +108,7 @@ function formatSessionRange(session: BookedSession) {
 }
 
 export default function CheckoutSuccess() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const [data, setData] = useState<CheckoutSuccessResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -118,6 +118,7 @@ export default function CheckoutSuccess() {
   const [participants, setParticipants] = useState<Participant[]>([]);
 
   const bookingSessionId = useMemo(() => {
+    if (typeof window === "undefined") return null;
     const params = new URLSearchParams(window.location.search);
     return params.get("session_id");
   }, []);
@@ -414,7 +415,7 @@ export default function CheckoutSuccess() {
         </div>
 
         <div className="text-center mt-12">
-          <Button variant="outline" onClick={() => setLocation("/")}>
+          <Button variant="outline" onClick={() => navigate("/")}>
             Return Home
           </Button>
         </div>

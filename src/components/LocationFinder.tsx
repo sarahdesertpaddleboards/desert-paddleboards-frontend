@@ -1,6 +1,6 @@
 /// <reference types="@types/google.maps" />
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
@@ -73,7 +73,7 @@ export default function LocationFinder() {
   // Distance (miles) from origin to each venue, when an origin is set
   const distanceByItem = useMemo(() => {
     const map = new Map<number, number>();
-    const g = (window as any).google;
+    const g = typeof window !== "undefined" ? (window as any).google : undefined;
     if (!origin || !g?.maps?.geometry?.spherical) return map;
     const from = new g.maps.LatLng(origin.lat, origin.lng);
     for (const e of experiences) {
@@ -281,7 +281,7 @@ function VenueCard({
 }) {
   return (
     <article className="flex gap-4 rounded-2xl border border-border bg-card p-4">
-      <Link href={`/locations/${exp.slug}`}>
+      <Link to={`/locations/${exp.slug}`}>
         <img
           src={exp.image}
           alt={`${exp.title}, ${exp.city}`}
@@ -300,7 +300,7 @@ function VenueCard({
             </span>
           ) : null}
         </div>
-        <Link href={`/locations/${exp.slug}`}>
+        <Link to={`/locations/${exp.slug}`}>
           <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-cyan-800">
             {exp.title}
           </h3>

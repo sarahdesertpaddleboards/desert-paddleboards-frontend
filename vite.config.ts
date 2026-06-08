@@ -18,4 +18,13 @@ export default defineConfig({
     open: true,
     port: 5173,
   },
+  // vite-react-ssg: only pre-render the public marketing pages.
+  // Admin + checkout-success are client-only app routes.
+  ssgOptions: {
+    includedRoutes(paths: string[]) {
+      return paths.filter(
+        (path) => !path.startsWith("/admin") && path !== "/success",
+      );
+    },
+  },
 });

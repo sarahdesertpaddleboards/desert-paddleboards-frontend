@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { Award, Heart, Tv, Users } from "lucide-react";
 
 export default function About() {
@@ -285,7 +285,7 @@ export default function About() {
           </div>
           <div className="text-center mt-12">
             <Button asChild size="lg" className="text-lg px-8 py-6">
-              <Link href="/sessions">Book Your Transformative Experience</Link>
+              <Link to="/locations">Book Your Transformative Experience</Link>
             </Button>
             <p className="text-sm text-muted-foreground mt-4">
               Join hundreds of satisfied customers who've found their zen on the water
@@ -311,10 +311,10 @@ export default function About() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/sessions">Browse Sessions</Link>
+              <Link to="/locations">Browse Experiences</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="/private-events">Plan Your Event</Link>
+              <Link to="/private-events">Plan Your Event</Link>
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
-import { Link, useParams } from "wouter";
+import { Link, useParams } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { getExperienceBySlug } from "@/data/locations";
 import FareHarborButton from "@/components/FareHarborButton";
 
@@ -14,7 +15,7 @@ export default function LocationDetail() {
         <p className="mt-2 text-muted-foreground">
           We couldn&apos;t find that experience.
         </p>
-        <Link href="/locations">
+        <Link to="/locations">
           <span className="mt-6 inline-block cursor-pointer font-semibold text-cyan-700 hover:text-cyan-900">
             &larr; Back to all experiences
           </span>
@@ -29,6 +30,13 @@ export default function LocationDetail() {
 
   return (
     <main>
+      <Head>
+        <title>
+          {`${exp.title}${exp.venue ? ` — ${exp.venue}` : ""}, ${exp.city} | Desert Paddleboards`}
+        </title>
+        <meta name="description" content={exp.blurb} />
+      </Head>
+
       {/* Hero */}
       <div className="relative h-[42vh] min-h-[320px] w-full overflow-hidden bg-muted">
         <img
@@ -51,7 +59,7 @@ export default function LocationDetail() {
 
       <div className="container grid grid-cols-1 gap-12 py-12 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Link href="/locations">
+          <Link to="/locations">
             <span className="inline-block cursor-pointer text-sm font-medium text-cyan-700 hover:text-cyan-900">
               &larr; All experiences
             </span>

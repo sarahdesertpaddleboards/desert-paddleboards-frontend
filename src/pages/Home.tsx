@@ -1,4 +1,5 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { Instagram, Facebook, Music2 } from "lucide-react";
 import heroImage from "/images/hero-floating-soundbath.webp";
 import LocationFinder from "@/components/LocationFinder";
@@ -6,6 +7,14 @@ import LocationFinder from "@/components/LocationFinder";
 export default function Home() {
   return (
     <div className="mx-auto max-w-6xl space-y-16 px-4 py-8">
+      <Head>
+        <title>Floating Soundbaths in Arizona | Desert Paddleboards</title>
+        <meta
+          name="description"
+          content="Float weightlessly as live sound washes over you. Find a floating soundbath near you across Phoenix, Mesa, Scottsdale, Tempe and more — and book online."
+        />
+      </Head>
+
       {/* Hero */}
       <section className="grid items-stretch gap-6 lg:grid-cols-[1.5fr_1fr]">
         <div className="overflow-hidden rounded-2xl">
@@ -35,7 +44,7 @@ export default function Home() {
             >
               Find a session near you
             </a>
-            <Link href="/locations">
+            <Link to="/locations">
               <span className="inline-flex cursor-pointer items-center justify-center rounded-full border border-border px-6 py-2.5 text-sm font-semibold hover:bg-muted">
                 Browse all experiences
               </span>

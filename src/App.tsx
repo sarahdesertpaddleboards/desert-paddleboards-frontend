@@ -1,66 +1,50 @@
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Route, Switch } from "wouter";
+import type { RouteRecord } from "vite-react-ssg";
 
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-
+import Layout from "./Layout";
 import Home from "./pages/Home";
-import CheckoutSuccess from "./pages/CheckoutSuccess";
-import PrivateEvents from "./pages/PrivateEvents";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
+import PrivateEvents from "./pages/PrivateEvents";
 import SantaPaddle from "./pages/SantaPaddle";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/AdminLogin";
+import Membership from "./pages/Membership";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
-import Membership from "./pages/Membership";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
+import NotFound from "./pages/NotFound";
 
-function Router() {
-  return (
-    <>
-      <Header />
+import { experiences } from "./data/locations";
 
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/locations" component={LocationsIndex} />
-        <Route path="/locations/:slug" component={LocationDetail} />
-        <Route path="/membership" component={Membership} />
-        <Route path="/private-events" component={PrivateEvents} />
-        <Route path="/about" component={About} />
-        <Route path="/faq" component={FAQ} />
-        <Route path="/santa-paddle" component={SantaPaddle} />
+export const routes: RouteRecord[] = [
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "locations", element: <LocationsIndex /> },
+      {
+        path: "locations/:slug",
+        element: <LocationDetail />,
+        // Tell the SSG which dynamic pages to pre-render
+        getStaticPaths: () =>
+          experiences.map((e) => `/locations/${e.slug}`),
+      },
+      { path: "membership", element: <Membership /> },
+      { path: "private-events", element: <PrivateEvents /> },
+      { path: "about", element: <About /> },
+      { path: "faq", element: <FAQ /> },
+      { path: "santa-paddle", element: <SantaPaddle /> },
 
-        <Route path="/admin" component={Admin} />
-        <Route path="/admin-login" component={AdminLogin} />
-        <Route path="/admin/login" component={AdminLogin} />
+      // App-only routes (excluded from pre-render in vite.config.ts)
+      { path: "admin", element: <Admin /> },
+      { path: "admin-login", element: <AdminLogin /> },
+      { path: "admin/login", element: <AdminLogin /> },
+      { path: "success", element: <CheckoutSuccess /> },
 
-        <Route path="/success" component={CheckoutSuccess} />
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+];
 
-        <Route component={NotFound} />
-      </Switch>
-
-      <Footer />
-    </>
-  );
-}
-
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
-
-export default App;
+export default routes;

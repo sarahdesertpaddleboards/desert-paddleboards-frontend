@@ -1,10 +1,16 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { membership } from "@/data/locations";
 import FareHarborButton from "@/components/FareHarborButton";
 
 export default function Membership() {
   return (
     <main>
+      <Head>
+        <title>{membership.title} | Desert Paddleboards</title>
+        <meta name="description" content={membership.blurb} />
+      </Head>
+
       <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden bg-muted">
         <img
           src={membership.image}
@@ -26,7 +32,7 @@ export default function Membership() {
 
       <div className="container grid grid-cols-1 gap-12 py-12 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Link href="/locations">
+          <Link to="/locations">
             <span className="inline-block cursor-pointer text-sm font-medium text-cyan-700 hover:text-cyan-900">
               &larr; All experiences
             </span>
