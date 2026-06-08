@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { experiences, membership } from "@/data/locations";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbLd } from "@/lib/jsonld";
 
 export default function LocationsIndex() {
   return (
@@ -14,6 +16,12 @@ export default function LocationsIndex() {
           content="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert, Chandler and more. See locations on the map and book online."
         />
       </Head>
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Experiences", path: "/locations" },
+        ])}
+      />
 
       <header className="max-w-2xl space-y-4">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">

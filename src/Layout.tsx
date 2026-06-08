@@ -7,6 +7,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import JsonLd from "./components/JsonLd";
+import { graph, organizationLd, webSiteLd } from "./lib/jsonld";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,7 @@ export default function Layout() {
                 content="Floating soundbaths, paddleboard yoga and wellness experiences across Arizona. Find a session near you and book online."
               />
             </Head>
+            <JsonLd data={graph([organizationLd(), webSiteLd()])} />
             <Toaster />
             <Header />
             <Outlet />

@@ -3,6 +3,8 @@ import { Head } from "vite-react-ssg";
 import { Instagram, Facebook, Music2 } from "lucide-react";
 import heroImage from "/images/hero-floating-soundbath.webp";
 import LocationFinder from "@/components/LocationFinder";
+import JsonLd from "@/components/JsonLd";
+import { localBusinessLd } from "@/lib/jsonld";
 
 export default function Home() {
   return (
@@ -14,6 +16,7 @@ export default function Home() {
           content="Float weightlessly as live sound washes over you. Find a floating soundbath near you across Phoenix, Mesa, Scottsdale, Tempe and more — and book online."
         />
       </Head>
+      <JsonLd data={localBusinessLd()} />
 
       {/* Hero */}
       <section className="grid items-stretch gap-6 lg:grid-cols-[1.5fr_1fr]">

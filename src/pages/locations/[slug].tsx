@@ -2,6 +2,10 @@ import { Link, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { getExperienceBySlug } from "@/data/locations";
 import FareHarborButton from "@/components/FareHarborButton";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
+import type { UpcomingSession } from "@/lib/experiencesApi";
+import upcoming from "@/data/upcoming.generated.json";
 
 export default function LocationDetail() {
   const params = useParams();
@@ -28,6 +32,20 @@ export default function LocationDetail() {
     .filter(Boolean)
     .join(" · ");
 
+  // Upcoming sessions for this experience (baked at build time) → Event JSON-LD
+  const upcomingForItem = (upcoming.sessions as UpcomingSession[])
+    .filter((s) => s.itemId === exp.itemId)
+    .slice(0, 6);
+
+  const structuredData = graph([
+    breadcrumbLd([
+      { name: "Home", path: "/" },
+      { name: "Experiences", path: "/locations" },
+      { name: exp.title, path: `/locations/${exp.slug}` },
+    ]),
+    ...upcomingForItem.map((s) => eventLd(exp, s)),
+  ]);
+
   return (
     <main>
       <Head>
@@ -36,6 +54,7 @@ export default function LocationDetail() {
         </title>
         <meta name="description" content={exp.blurb} />
       </Head>
+      <JsonLd data={structuredData} />
 
       {/* Hero */}
       <div className="relative h-[42vh] min-h-[320px] w-full overflow-hidden bg-muted">

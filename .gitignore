@@ -6,6 +6,9 @@ dist/
 dist-ssr/
 *.tsbuildinfo
 
+# Generated at build time (FareHarbor SEO data)
+src/data/upcoming.generated.json
+
 # Environment variables
 .env
 .env.*
