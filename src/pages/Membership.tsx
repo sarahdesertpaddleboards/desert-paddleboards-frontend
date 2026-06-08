@@ -33,7 +33,7 @@ export default function Membership() {
       <div className="container grid grid-cols-1 gap-12 py-12 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Link to="/locations">
-            <span className="inline-block cursor-pointer text-sm font-medium text-cyan-700 hover:text-cyan-900">
+            <span className="inline-block cursor-pointer text-sm font-medium text-brand hover:text-brand-dark">
               &larr; All experiences
             </span>
           </Link>

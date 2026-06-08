@@ -24,7 +24,7 @@ export default function LocationsIndex() {
       />
 
       <header className="max-w-2xl space-y-4">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
           Experiences
         </p>
         <h1 className="text-4xl font-bold leading-tight">
@@ -49,7 +49,7 @@ export default function LocationsIndex() {
                 />
               </div>
               <div className="space-y-1 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700">
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand">
                   {exp.city}, {exp.state}
                 </p>
                 <h2 className="text-lg font-bold leading-snug">{exp.title}</h2>
@@ -63,15 +63,15 @@ export default function LocationsIndex() {
       </section>
 
       {/* Membership callout */}
-      <section className="mt-16 overflow-hidden rounded-2xl bg-cyan-50 p-8 md:flex md:items-center md:gap-8">
+      <section className="mt-16 overflow-hidden rounded-2xl bg-brand/10 p-8 md:flex md:items-center md:gap-8">
         <div className="flex-1 space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
             Save all summer
           </p>
           <h2 className="text-2xl font-bold">{membership.title}</h2>
           <p className="text-muted-foreground">{membership.blurb}</p>
           <Link to={`/membership`}>
-            <span className="inline-flex cursor-pointer items-center font-semibold text-cyan-700 hover:text-cyan-900">
+            <span className="inline-flex cursor-pointer items-center font-semibold text-brand hover:text-brand-dark">
               Learn more &rarr;
             </span>
           </Link>

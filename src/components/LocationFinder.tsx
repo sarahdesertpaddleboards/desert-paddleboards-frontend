@@ -5,6 +5,7 @@ import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
+import heroImage from "/images/hero-floating-soundbath.webp";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
@@ -170,103 +171,114 @@ export default function LocationFinder() {
   }
 
   return (
-    <section id="finder" className="space-y-6">
-      <div className="max-w-2xl space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
-          Find a session near you
-        </p>
-        <h2 className="text-3xl font-bold leading-tight">
-          Floating soundbaths across the Valley
-        </h2>
-        <p className="text-muted-foreground">
-          See where every experience is on the map, find what&apos;s closest to
-          you, and book the date that suits — all in one place.
-        </p>
-      </div>
-
-      {/* City / ZIP distance search */}
-      <form onSubmit={handleSearch} className="flex flex-wrap items-center gap-3">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter your city or ZIP to sort by distance"
-          className="w-full max-w-sm rounded-full border border-border bg-background px-5 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-600"
+    <>
+      {/* Compact hero with built-in search */}
+      <section className="relative h-[360px] min-h-[320px] w-full overflow-hidden">
+        <img
+          src={heroImage}
+          alt="Floating soundbath at sunset"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <button
-          type="submit"
-          className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-        >
-          Find nearest
-        </button>
-        {origin ? (
-          <button
-            type="button"
-            onClick={clearOrigin}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground"
-          >
-            Clear
-          </button>
-        ) : null}
-      </form>
-      {originLabel ? (
-        <p className="-mt-2 text-sm text-muted-foreground">
-          Showing distance from <span className="font-medium">{originLabel}</span>
-        </p>
-      ) : null}
-      {geoError ? <p className="-mt-2 text-sm text-red-600">{geoError}</p> : null}
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/45 to-brand-dark/15" />
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
+            Floating soundbaths · Arizona
+          </p>
+          <h1 className="mt-2 max-w-[15ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
+            Stillness, found on the water.
+          </h1>
+          <p className="mt-3 max-w-xl text-base text-white/90">
+            Live music over calm water. Find a floating soundbath near you and
+            book online.
+          </p>
+          <form onSubmit={handleSearch} className="mt-5 flex max-w-md gap-2">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Enter your city or ZIP"
+              className="flex-1 rounded-md bg-white px-4 py-3 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+            />
+            <button
+              type="submit"
+              className="rounded-md bg-secondary px-5 py-3 text-sm font-semibold uppercase tracking-wide text-secondary-foreground hover:bg-secondary/90"
+            >
+              Find near me
+            </button>
+          </form>
+          {originLabel ? (
+            <p className="mt-2 text-xs text-white/85">
+              Showing distance from{" "}
+              <span className="font-medium">{originLabel}</span> ·{" "}
+              <button
+                type="button"
+                onClick={clearOrigin}
+                className="underline"
+              >
+                clear
+              </button>
+            </p>
+          ) : null}
+          {geoError ? (
+            <p className="mt-2 text-xs text-amber-200">{geoError}</p>
+          ) : null}
+        </div>
+      </section>
 
-      {/* City filter */}
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          onClick={() => setSelectedCity("")}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-            !selectedCity
-              ? "bg-primary text-primary-foreground"
-              : "border border-border hover:bg-muted"
-          }`}
-        >
-          All cities
-        </button>
-        {cities.map((city) => (
+      {/* Finder: filter + map + live sessions */}
+      <section id="finder" className="mx-auto max-w-6xl px-4 py-10">
+        {/* City filter */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            key={city}
-            onClick={() => setSelectedCity(city)}
+            onClick={() => setSelectedCity("")}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              selectedCity === city
+              !selectedCity
                 ? "bg-primary text-primary-foreground"
                 : "border border-border hover:bg-muted"
             }`}
           >
-            {city}
+            All cities
           </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Map */}
-        <div className="lg:sticky lg:top-24 lg:h-[560px]">
-          <MapView
-            initialCenter={PHOENIX_CENTER}
-            initialZoom={9}
-            onMapReady={handleMapReady}
-            className="h-[360px] w-full overflow-hidden rounded-2xl border border-border lg:h-[560px]"
-          />
-        </div>
-
-        {/* Venue list */}
-        <div className="space-y-4">
-          {visible.map((exp) => (
-            <VenueCard
-              key={exp.slug}
-              exp={exp}
-              next={nextByItem.get(exp.itemId)}
-              distanceMi={distanceByItem.get(exp.itemId)}
-            />
+          {cities.map((city) => (
+            <button
+              key={city}
+              onClick={() => setSelectedCity(city)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                selectedCity === city
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border hover:bg-muted"
+              }`}
+            >
+              {city}
+            </button>
           ))}
         </div>
-      </div>
-    </section>
+
+        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Map */}
+          <div className="lg:sticky lg:top-24 lg:h-[560px]">
+            <MapView
+              initialCenter={PHOENIX_CENTER}
+              initialZoom={9}
+              onMapReady={handleMapReady}
+              className="h-[360px] w-full overflow-hidden rounded-2xl border border-border lg:h-[560px]"
+            />
+          </div>
+
+          {/* Venue list */}
+          <div className="space-y-4">
+            {visible.map((exp) => (
+              <VenueCard
+                key={exp.slug}
+                exp={exp}
+                next={nextByItem.get(exp.itemId)}
+                distanceMi={distanceByItem.get(exp.itemId)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -291,17 +303,17 @@ function VenueCard({
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700">
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand">
             {exp.city}, {exp.state}
           </p>
           {typeof distanceMi === "number" ? (
-            <span className="whitespace-nowrap rounded-full bg-cyan-50 px-2.5 py-0.5 text-xs font-medium text-cyan-800">
+            <span className="whitespace-nowrap rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand-dark">
               {distanceMi < 1 ? "<1" : Math.round(distanceMi)} mi away
             </span>
           ) : null}
         </div>
         <Link to={`/locations/${exp.slug}`}>
-          <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-cyan-800">
+          <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-brand-dark">
             {exp.title}
           </h3>
         </Link>

@@ -27,7 +27,7 @@ export default function Admin() {
   const tabClass = (t: Tab) =>
     `pb-2 text-sm font-medium ${
       tab === t
-        ? "border-b-2 border-cyan-700 text-foreground"
+        ? "border-b-2 border-brand text-foreground"
         : "text-muted-foreground hover:text-foreground"
     }`;
 
@@ -54,7 +54,7 @@ export default function Admin() {
 
       {tab === "overview" && (
         <div className="space-y-5">
-          <section className="space-y-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-6">
+          <section className="space-y-3 rounded-2xl border border-brand/30 bg-brand/10 p-6">
             <h2 className="text-xl font-bold">Bookings &amp; gift certificates</h2>
             <p className="text-muted-foreground">
               All bookings, availability, and gift certificates are managed in

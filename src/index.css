@@ -16,6 +16,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -43,40 +45,42 @@
 }
 
 :root {
-  /* Desert Paddleboards - Water & Tranquility Theme */
-  --primary: oklch(0.55 0.15 210); /* Calming ocean blue */
-  --primary-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.55 0.15 210);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --chart-1: oklch(0.65 0.12 200);
-  --chart-2: oklch(0.55 0.15 210);
-  --chart-3: oklch(0.75 0.10 190);
-  --chart-4: oklch(0.45 0.12 220);
-  --chart-5: oklch(0.60 0.12 200);
+  /* Desert Paddleboards — "Still Water" theme (blue-grey / teal / navy) */
+  --brand: #3e7c84; /* teal accent */
+  --brand-dark: #1f3a4d; /* deep navy */
+  --primary: #1f3a4d;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #1f3a4d;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #3e7c84;
+  --chart-2: #1f3a4d;
+  --chart-3: #6fa3a9;
+  --chart-4: #2c5563;
+  --chart-5: #8fb6bb;
   --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.65 0.12 200); /* Soft aqua */
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.92 0.02 210); /* Soft blue-grey */
-  --accent-foreground: oklch(0.25 0 0);
+  --background: #eef3f5;
+  --foreground: #1e2e38;
+  --card: #ffffff;
+  --card-foreground: #1e2e38;
+  --popover: #ffffff;
+  --popover-foreground: #1e2e38;
+  --secondary: #3e7c84;
+  --secondary-foreground: #ffffff;
+  --muted: #e3ecef;
+  --muted-foreground: #5e7682;
+  --accent: #dce8eb;
+  --accent-foreground: #1e2e38;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --destructive-foreground: #ffffff;
+  --border: #d5e0e4;
+  --input: #d5e0e4;
+  --ring: #3e7c84;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1e2e38;
+  --sidebar-accent: #e3ecef;
+  --sidebar-accent-foreground: #1e2e38;
+  --sidebar-border: #d5e0e4;
+  --sidebar-ring: #3e7c84;
 }
 
 .dark {
@@ -120,20 +124,20 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'EB Garamond', Georgia, serif;
+    font-family: 'Josefin Sans', system-ui, sans-serif;
     font-weight: 400;
-    line-height: 1.7;
+    line-height: 1.65;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cinzel', 'Trajan Pro', serif;
+    font-family: 'Playfair Display', Georgia, serif;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    line-height: 1.2;
+    letter-spacing: 0;
+    line-height: 1.15;
   }
   /* Sans-serif elements (buttons, UI) */
   button, .btn, nav {
-    font-family: 'Montserrat', sans-serif;
-    letter-spacing: 0.03em;
+    font-family: 'Josefin Sans', system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
   /* Script accents */
   .script-text {
