@@ -187,7 +187,7 @@ export default function LocationFinder() {
             Floating soundbaths · water wellness · Arizona
           </p>
           <h1 className="mt-2 max-w-[18ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
-            We want you to sleep with us.
+            A concert you attend lying down.
           </h1>
           <p className="mt-3 max-w-xl text-base text-white/90">
             The Floating Nap™ — a floating soundbath with live music on the water.

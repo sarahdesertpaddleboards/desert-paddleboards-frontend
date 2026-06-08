@@ -201,7 +201,7 @@ export const membership: Experience = {
   lng: -112.074,
   kind: "membership",
   blurb:
-    "Classes every Tuesday. Go month-to-month for $85 — a $15 saving versus $25 per class. Pay monthly, cancel anytime.",
+    "Classes every Tuesday. $85 a month, no commitment — or $25 per class, so the membership saves you $15. Cancel anytime.",
   image: "https://cdn.filestackcontent.com/C3V95cP7Tmqsirm0hh8A",
   featured: true,
 };

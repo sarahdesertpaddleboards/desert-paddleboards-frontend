@@ -55,7 +55,7 @@ export default function About() {
         <img
           src="/about-sarah-class.webp"
           alt="Desert Paddleboards"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-top"
         />
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl  font-bold mb-4">
