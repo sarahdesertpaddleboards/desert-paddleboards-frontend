@@ -1,0 +1,6 @@
+# Cloudflare Pages config — frontend + same-origin Pages Functions.
+# The /experiences/upcoming session feed lives in functions/ (replaces the
+# Railway backend for the public site). Deploy: pnpm build && wrangler pages deploy
+name = "desert-paddleboards"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "dist"
