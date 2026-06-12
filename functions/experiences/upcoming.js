@@ -111,6 +111,12 @@ async function buildFeed() {
     .sort((a, b) => a.startAt.localeCompare(b.startAt));
 }
 
+// In-memory fallback cache (per isolate). The Cache API below is a no-op on
+// *.pages.dev domains (it only works behind a custom domain), so while the
+// site runs on pages.dev this keeps warm isolates from rebuilding the feed
+// on every request.
+let memCache = null; // { at: number, body: string }
+
 export async function onRequestGet(context) {
   // Stable synthetic key — the edge cache entry is shared by all visitors.
   const cacheKey = new Request(
@@ -118,11 +124,14 @@ export async function onRequestGet(context) {
   );
   const cache = caches.default;
 
+  if (memCache && Date.now() - memCache.at < CACHE_TTL_S * 1000) {
+    return jsonResponse(memCache.body, CACHE_TTL_S);
+  }
+
   const cached = await cache.match(cacheKey);
   if (cached) return cached;
 
   let body;
-  let status = 200;
   try {
     const sessions = await buildFeed();
     body = {
@@ -142,17 +151,23 @@ export async function onRequestGet(context) {
   }
 
   const ok = !body.error;
-  const res = new Response(JSON.stringify(body), {
-    status,
+  const text = JSON.stringify(body);
+  if (ok) memCache = { at: Date.now(), body: text };
+
+  const res = jsonResponse(text, ok ? CACHE_TTL_S : 60);
+  context.waitUntil(cache.put(cacheKey, res.clone()));
+  return res;
+}
+
+function jsonResponse(text, ttlS) {
+  return new Response(text, {
+    status: 200,
     headers: {
       "Content-Type": "application/json",
       // Public read-only data; allow cross-origin reads (e.g. the Vercel
       // deployment during the parallel-run phase).
       "Access-Control-Allow-Origin": "*",
-      "Cache-Control": `public, max-age=${ok ? 300 : 60}, s-maxage=${ok ? CACHE_TTL_S : 60}`,
+      "Cache-Control": `public, max-age=${Math.min(ttlS, 300)}, s-maxage=${ttlS}`,
     },
   });
-
-  context.waitUntil(cache.put(cacheKey, res.clone()));
-  return res;
 }
