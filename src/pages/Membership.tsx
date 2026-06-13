@@ -43,12 +43,12 @@ export default function Membership() {
 
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-foreground">$85</span>
+              <span className="text-3xl font-bold text-foreground">$80</span>
               <span className="text-muted-foreground">/ month</span>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
               No commitment — cancel anytime. Or $25 per class; the membership
-              saves you $15 a month, with classes every Tuesday.
+              saves you $20 a month, with classes every Tuesday.
             </p>
           </div>
         </div>
