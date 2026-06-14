@@ -41,6 +41,10 @@ jobs:
       - run: pnpm build
         env:
           VITE_API_BASE_URL: /
+          # Google Maps browser key (public by design — restricted by HTTP
+          # referrer in Google Cloud Console, not by secrecy). Drives the
+          # homepage venue map. Add it as a repo secret of the same name.
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
 
       # Recreate the Pages project if it doesn't exist yet (idempotent — fails
       # harmlessly if it's already there). Restores the desert-paddleboards.pages.dev
