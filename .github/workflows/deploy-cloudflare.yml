@@ -50,10 +50,12 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 6daebc6bd3ea63b3ac731f40be37534b
           command: pages project create desert-paddleboards --production-branch main
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 6daebc6bd3ea63b3ac731f40be37534b
           command: pages deploy dist --project-name=desert-paddleboards --branch=main
