@@ -30,7 +30,7 @@ export const products: Product[] = [
   {
     slug: "life-is-better-beach-tote",
     name: "Life is Better on the Water — Beach Tote",
-    priceUsd: 28, // TODO: confirm price with Sarah
+    priceUsd: 10, // matches the FareHarbor price ($10 + tax); adjust if desired
     blurb:
       "Our signature roomy beach tote — perfect for towels, water and sunscreen on the way to the float. (Draft copy — Sarah to review.)",
     image: "https://cdn.filestackcontent.com/Z7xKad6uSQJZrz6oPThV",
