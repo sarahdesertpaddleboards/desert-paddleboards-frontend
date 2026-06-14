@@ -8,6 +8,7 @@ import PrivateEvents from "./pages/PrivateEvents";
 import CommunityEvents from "./pages/CommunityEvents";
 import SantaPaddle from "./pages/SantaPaddle";
 import Membership from "./pages/Membership";
+import Shop from "./pages/Shop";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -32,6 +33,7 @@ export const routes: RouteRecord[] = [
           experiences.map((e) => `/locations/${e.slug}`),
       },
       { path: "membership", element: <Membership /> },
+      { path: "shop", element: <Shop /> },
       { path: "community-events", element: <CommunityEvents /> },
       { path: "private-events", element: <PrivateEvents /> },
       { path: "about", element: <About /> },

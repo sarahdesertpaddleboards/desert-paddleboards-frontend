@@ -9,6 +9,7 @@ export default function Header() {
     { name: "Home", href: "/" },
     { name: "Experiences", href: "/locations" },
     { name: "Membership", href: "/membership" },
+    { name: "Shop", href: "/shop" },
     { name: "Community Events", href: "/community-events" },
     { name: "Private Events", href: "/private-events" },
     { name: "About", href: "/about" },
