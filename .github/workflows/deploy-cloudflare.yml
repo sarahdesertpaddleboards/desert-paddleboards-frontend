@@ -1,0 +1,46 @@
+name: Deploy to Cloudflare Pages
+
+# Auto-deploys the site to Cloudflare Pages on every push to main — the same
+# behaviour as Cloudflare's native Git integration, but driven from GitHub so
+# it doesn't depend on the (Workers-only) Pages dashboard flow.
+#
+# One-time setup: add a repo secret CLOUDFLARE_API_TOKEN (Cloudflare → My
+# Profile → API Tokens → "Edit Cloudflare Workers" template, which includes
+# Pages:Edit). The account id below is not secret (it's in every dashboard URL).
+#
+# Build note: VITE_API_BASE_URL=/ points the frontend at the same-origin Pages
+# Function (functions/experiences/upcoming.js) instead of the Railway backend.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # lets you trigger a deploy by hand from the Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+        env:
+          VITE_API_BASE_URL: /
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 6daebc6bd3ea63b3ac731f40be37534b
+          command: pages deploy dist --project-name=desert-paddleboards --branch=main
