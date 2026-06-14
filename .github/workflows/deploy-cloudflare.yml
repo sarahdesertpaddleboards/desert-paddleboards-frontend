@@ -4,9 +4,9 @@ name: Deploy to Cloudflare Pages
 # behaviour as Cloudflare's native Git integration, but driven from GitHub so
 # it doesn't depend on the (Workers-only) Pages dashboard flow.
 #
-# One-time setup: add a repo secret CLOUDFLARE_API_TOKEN (Cloudflare → My
-# Profile → API Tokens → "Edit Cloudflare Workers" template, which includes
-# Pages:Edit). The account id below is not secret (it's in every dashboard URL).
+# One-time setup: add a repo secret CLOUDFLARE_API_TOKEN (a token scoped to the
+# Admin@desertpaddleboards.com account with Cloudflare Pages: Edit). The account
+# id below is not secret (it's in every dashboard URL).
 #
 # Build note: VITE_API_BASE_URL=/ points the frontend at the same-origin Pages
 # Function (functions/experiences/upcoming.js) instead of the Railway backend.
@@ -15,6 +15,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch: # lets you trigger a deploy by hand from the Actions tab
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: 6daebc6bd3ea63b3ac731f40be37534b # Admin@desertpaddleboards.com
 
 jobs:
   deploy:
@@ -39,8 +42,18 @@ jobs:
         env:
           VITE_API_BASE_URL: /
 
-      - uses: cloudflare/wrangler-action@v3
+      # Recreate the Pages project if it doesn't exist yet (idempotent — fails
+      # harmlessly if it's already there). Restores the desert-paddleboards.pages.dev
+      # URL after the project was deleted during the Worker→Pages switch.
+      - name: Ensure Pages project exists
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: 6daebc6bd3ea63b3ac731f40be37534b
+          command: pages project create desert-paddleboards --production-branch main
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: pages deploy dist --project-name=desert-paddleboards --branch=main
