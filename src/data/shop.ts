@@ -75,7 +75,7 @@ export const products: Product[] = [
     priceUsd: 20,
     blurb:
       "The full album from our floating soundbaths, featuring award-winning Native American flutist Cody Blackbird. Digital download — yours to keep.",
-    image: "", // TODO: album cover art
+    image: "/sonoran-echoes-album.jpeg",
     paymentLink: "", // TODO: Stripe / Gumroad link
   },
   {
