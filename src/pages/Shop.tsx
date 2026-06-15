@@ -4,6 +4,19 @@ import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
 import { products, formatPrice, type Product } from "@/data/shop";
 
+const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
+  {
+    kind: "physical",
+    title: "Boards & gear",
+    blurb: "Take a little of the water home with you.",
+  },
+  {
+    kind: "digital",
+    title: "Digital downloads",
+    blurb: "Music and guides — delivered straight to your inbox after checkout.",
+  },
+];
+
 export default function Shop() {
   const live = products.filter((p) => !p.soldOut);
 
@@ -12,22 +25,20 @@ export default function Shop() {
       { name: "Home", path: "/" },
       { name: "Shop", path: "/shop" },
     ]),
-    ...live
-      .filter((p) => p.paymentLink)
-      .map((p) => ({
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name: p.name,
-        image: [p.image],
-        description: p.blurb,
-        offers: {
-          "@type": "Offer",
-          price: p.priceUsd,
-          priceCurrency: "USD",
-          availability: "https://schema.org/InStock",
-          url: `${SITE_URL}/shop`,
-        },
-      })),
+    ...live.map((p) => ({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: p.name,
+      ...(p.image ? { image: [p.image] } : {}),
+      description: p.blurb,
+      offers: {
+        "@type": "Offer",
+        price: p.priceUsd,
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url: `${SITE_URL}/shop`,
+      },
+    })),
   ]);
 
   return (
@@ -36,7 +47,7 @@ export default function Shop() {
         <title>Shop — Desert Paddleboards</title>
         <meta
           name="description"
-          content="Floating soundbath merch from Desert Paddleboards — beach totes and more. Checkout securely via Stripe."
+          content="Desert Paddleboards shop — floating meditation boards, the Sonoran Echoes album, river paddleboarding guides and beach totes. Secure checkout via Stripe."
         />
       </Head>
       <JsonLd data={structuredData} />
@@ -47,56 +58,97 @@ export default function Shop() {
         </p>
         <h1 className="text-4xl font-bold leading-tight">Float merch</h1>
         <p className="text-lg text-muted-foreground">
-          Take a little of the water with you. Secure checkout is handled by
+          Boards, music and guides from the water. Secure checkout is handled by
           Stripe — your card details never touch our site.
         </p>
       </header>
 
-      {live.length === 0 ? (
-        <p className="mt-12 text-muted-foreground">
-          New merch is on the way — check back soon.
-        </p>
-      ) : (
-        <section className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {live.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </section>
-      )}
+      {SECTIONS.map((section) => {
+        const items = live.filter((p) => p.kind === section.kind);
+        if (items.length === 0) return null;
+        return (
+          <section key={section.kind} className="mt-14">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold">{section.title}</h2>
+              <p className="text-muted-foreground">{section.blurb}</p>
+            </div>
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((p) => (
+                <ProductCard key={p.slug} product={p} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </main>
   );
 }
 
 function ProductCard({ product }: { product: Product }) {
-  const available = Boolean(product.paymentLink);
+  const options =
+    product.options ??
+    (product.paymentLink !== undefined
+      ? [{ label: "", priceUsd: product.priceUsd, paymentLink: product.paymentLink }]
+      : []);
+  const anyAvailable = options.some((o) => o.paymentLink);
+
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="aspect-square overflow-hidden bg-muted">
-        <img
-          src={product.image}
-          alt={product.name}
-          loading="lazy"
-          className="h-full w-full object-cover"
-        />
+      <div className="relative aspect-square overflow-hidden bg-muted">
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand/20 to-secondary/20 p-6 text-center">
+            <span className="text-sm font-semibold uppercase tracking-wider text-brand-dark/70">
+              {product.name}
+            </span>
+          </div>
+        )}
+        {product.kind === "digital" ? (
+          <span className="absolute left-3 top-3 rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+            Digital download
+          </span>
+        ) : null}
       </div>
+
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-lg font-bold leading-snug">{product.name}</h2>
-          <span className="whitespace-nowrap text-lg font-bold text-brand-dark">
-            {formatPrice(product.priceUsd)}
-          </span>
+          <h3 className="text-lg font-bold leading-snug">{product.name}</h3>
+          <div className="whitespace-nowrap text-right">
+            <span className="text-lg font-bold text-brand-dark">
+              {product.options ? "from " : ""}
+              {formatPrice(product.priceUsd)}
+            </span>
+            {product.priceNote ? (
+              <span className="block text-xs text-muted-foreground">
+                {product.priceNote}
+              </span>
+            ) : null}
+          </div>
         </div>
         <p className="flex-1 text-sm text-muted-foreground">{product.blurb}</p>
 
-        {available ? (
-          <a
-            href={product.paymentLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-          >
-            Buy now
-          </a>
+        {anyAvailable ? (
+          <div className="mt-1 space-y-2">
+            {options
+              .filter((o) => o.paymentLink)
+              .map((o) => (
+                <a
+                  key={o.label || "buy"}
+                  href={o.paymentLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+                >
+                  {o.label ? `Buy ${o.label} — ${formatPrice(o.priceUsd)}` : "Buy now"}
+                </a>
+              ))}
+          </div>
         ) : (
           <span className="mt-1 inline-flex w-full items-center justify-center rounded-full border border-border px-6 py-3 text-sm font-semibold text-muted-foreground">
             Coming soon

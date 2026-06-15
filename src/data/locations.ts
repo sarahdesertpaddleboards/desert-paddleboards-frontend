@@ -90,8 +90,18 @@ const byId = new Map(catalog.map((c) => [c.itemId, c]));
  */
 const FORCE_LOCATION_IDS = new Set<number>([626146]);
 
+/**
+ * Venues to hide from the site even though FareHarbor still lists them.
+ * (Sarah should also unlist/archive these in FareHarbor so they stop taking
+ * bookings — this just removes them from the website.)
+ */
+const EXCLUDED_ITEM_IDS = new Set<number>([
+  714583, // Arizona Grand Resort & Spa — no longer running this location (Sarah, Jun 2026)
+]);
+
 /** Is this catalog item a fixed-location experience the site should surface? */
 function isLocationCatalogItem(c: CatalogItem): boolean {
+  if (EXCLUDED_ITEM_IDS.has(c.itemId)) return false;
   if (c.isUnlisted || c.isRetail) return false;
   return (c.lat !== null && c.lng !== null) || FORCE_LOCATION_IDS.has(c.itemId);
 }
@@ -218,14 +228,6 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Grand Hyatt Scottsdale",
     blurb:
       "A floating soundbath with live music at the Grand Hyatt Scottsdale — sink into the water and let the desert evening settle.",
-  },
-  {
-    itemId: 714583,
-    slug: "floating-soundbath-arizona-grand-resort-phoenix",
-    title: "Floating Soundbath",
-    venue: "Arizona Grand Resort & Spa",
-    blurb:
-      "A floating soundbath at the Arizona Grand Resort & Spa in Phoenix — drift on the water as live sound carries you.",
   },
   {
     itemId: 698585,
