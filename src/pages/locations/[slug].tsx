@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { Head } from "vite-react-ssg";
+import ReactMarkdown from "react-markdown";
 import { getExperienceBySlug } from "@/data/locations";
+import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
@@ -31,6 +33,8 @@ export default function LocationDetail() {
   const locationLabel = [exp.venue, `${exp.city}, ${exp.state}`]
     .filter(Boolean)
     .join(" · ");
+
+  const longDescription = locationContent[exp.slug];
 
   // Upcoming sessions for this experience (baked at build time) → Event JSON-LD
   const upcomingForItem = (upcoming.sessions as UpcomingSession[])
@@ -88,9 +92,15 @@ export default function LocationDetail() {
             <p className="text-lg font-medium text-foreground">{locationLabel}</p>
           ) : null}
 
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            {exp.blurb}
-          </p>
+          {longDescription ? (
+            <div className="prose prose-slate max-w-none prose-headings:font-bold prose-strong:text-foreground prose-li:marker:text-brand prose-p:text-muted-foreground prose-li:text-muted-foreground">
+              <ReactMarkdown>{longDescription}</ReactMarkdown>
+            </div>
+          ) : (
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              {exp.blurb}
+            </p>
+          )}
         </div>
 
         {/* Booking card */}
