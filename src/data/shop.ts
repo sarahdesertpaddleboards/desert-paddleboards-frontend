@@ -50,7 +50,7 @@ export const products: Product[] = [
     priceNote: "+ $40 shipping (US)",
     blurb:
       "Our signature inflatable floating board — the very one we float on at every soundbath. Take Life is Better on the Water home. Choose brand new or gently used.",
-    image: "", // TODO: add Sarah's hi-res board photo (drop in /public, set path)
+    image: "/floating-boards-sunset.jpg",
     options: [
       { label: "New", priceUsd: 250, paymentLink: "" }, // TODO: Stripe link
       { label: "Used", priceUsd: 150, paymentLink: "" }, // TODO: Stripe link
