@@ -5,9 +5,9 @@ import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
-// Homepage hero — Aji Spa stopgap (Sarah likes this shot; musician visible).
-// Swap for her dedicated hero photo when she sends it.
-const heroImage = "https://cdn.filestackcontent.com/VPmBIgASEyIo57cg78j9";
+// Homepage hero — Sarah's signature sunset shot: branded boards on the
+// green-lit pool at dusk (self-hosted in /public).
+const heroImage = "/floating-boards-sunset.jpg";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
