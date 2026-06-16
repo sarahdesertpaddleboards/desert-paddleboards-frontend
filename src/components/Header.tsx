@@ -12,6 +12,7 @@ export default function Header() {
     { name: "Shop", href: "/shop" },
     { name: "Community Events", href: "/community-events" },
     { name: "Private Events", href: "/private-events" },
+    { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
     { name: "FAQ", href: "/faq" },
   ];

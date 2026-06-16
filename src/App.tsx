@@ -11,6 +11,8 @@ import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import BlogIndex from "./pages/blog/index";
+import BlogPost from "./pages/blog/[slug]";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -19,6 +21,7 @@ import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 import { experiences } from "./data/locations";
+import { blogPosts } from "./data/blog-posts";
 
 export const routes: RouteRecord[] = [
   {
@@ -38,6 +41,12 @@ export const routes: RouteRecord[] = [
       { path: "shop", element: <Shop /> },
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
+      { path: "blog", element: <BlogIndex /> },
+      {
+        path: "blog/:slug",
+        element: <BlogPost />,
+        getStaticPaths: () => blogPosts.map((p) => `/blog/${p.slug}`),
+      },
       { path: "community-events", element: <CommunityEvents /> },
       { path: "private-events", element: <PrivateEvents /> },
       { path: "about", element: <About /> },
