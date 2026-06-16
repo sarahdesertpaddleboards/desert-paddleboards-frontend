@@ -9,6 +9,8 @@ import CommunityEvents from "./pages/CommunityEvents";
 import SantaPaddle from "./pages/SantaPaddle";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -34,6 +36,8 @@ export const routes: RouteRecord[] = [
       },
       { path: "membership", element: <Membership /> },
       { path: "shop", element: <Shop /> },
+      { path: "privacy", element: <Privacy /> },
+      { path: "terms", element: <Terms /> },
       { path: "community-events", element: <CommunityEvents /> },
       { path: "private-events", element: <PrivateEvents /> },
       { path: "about", element: <About /> },

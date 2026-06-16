@@ -1,0 +1,32 @@
+# Cloudflare Pages redirects — legacy GoDaddy URLs → new site.
+# Format: <from> <to> <status>.  Takes effect once desertpaddleboards.com
+# points at Cloudflare (DNS cutover). Targets under "Phase 2" are built as
+# part of the content migration — do not cut over DNS until they exist.
+# Keep in sync as pages are added.
+
+# --- Renamed pages -----------------------------------------------------------
+/about-us                     /about            301
+/privacy-policy               /privacy          301
+/terms-and-conditions         /terms            301
+/private%2Fcommunity-events   /private-events   301
+/private/community-events     /private-events   301
+
+# --- Folded into homepage sections ------------------------------------------
+/reviews                      /                 301
+/gallery                      /                 301
+/contact                      /                 301
+
+# --- Consolidated content (Phase 2 targets) ---------------------------------
+/colorado-river-paddle        /adventures       301
+/upcoming-trips               /adventures       301
+/airstream-rental             /rentals          301
+/adventure-life-coaching      /coaching         301
+/sedona-floating              /locations        301
+/witches-regatta-year-11      /community-events 301
+
+# --- Blog (GoDaddy used /blog/f/<slug>; new site uses /blog/<slug>) ----------
+/blog/f/*                     /blog/:splat      301
+
+# --- Retired ----------------------------------------------------------------
+/sarah-for-us-senate          /                 301
+/m/*                          /                 301
