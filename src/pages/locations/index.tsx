@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { experiences, membership } from "@/data/locations";
 import JsonLd from "@/components/JsonLd";
+import GoogleReviews from "@/components/GoogleReviews";
 import { breadcrumbLd } from "@/lib/jsonld";
 
 export default function LocationsIndex() {
@@ -77,6 +78,12 @@ export default function LocationsIndex() {
           </Link>
         </div>
       </section>
+
+      <GoogleReviews
+        max={3}
+        heading="Loved across Arizona"
+        className="mt-16 rounded-2xl border-t-0"
+      />
     </main>
   );
 }

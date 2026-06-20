@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import { membership } from "@/data/locations";
 import FareHarborButton from "@/components/FareHarborButton";
+import GoogleReviews from "@/components/GoogleReviews";
 
 export default function Membership() {
   return (
@@ -68,6 +69,8 @@ export default function Membership() {
           </div>
         </aside>
       </div>
+
+      <GoogleReviews max={3} heading="Loved across Arizona" />
     </main>
   );
 }
