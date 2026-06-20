@@ -2,6 +2,7 @@ import { Head } from "vite-react-ssg";
 import LocationFinder from "@/components/LocationFinder";
 import JsonLd from "@/components/JsonLd";
 import { localBusinessLd } from "@/lib/jsonld";
+import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
 
 export default function Home() {
   return (
@@ -16,10 +17,15 @@ export default function Home() {
       <JsonLd data={localBusinessLd()} />
       <LocationFinder />
 
-      {/* Social proof / legitimacy band */}
+      {/* Social proof / legitimacy band — real Google rating */}
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-6xl px-4 py-10 text-center">
-          <div className="text-lg tracking-[0.3em] text-secondary">★★★★★</div>
+          <p className="text-lg tracking-[0.2em] text-secondary">
+            ★★★★★{" "}
+            <span className="align-middle text-base font-semibold text-foreground">
+              {reviewSummary().rating.toFixed(1)} from {reviewSummary().count} Google reviews
+            </span>
+          </p>
           <p className="mt-2 text-lg font-medium">
             Loved by communities, resorts and first-timers across Arizona
           </p>
@@ -28,6 +34,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* Google reviews — real text, baked in at build time */}
+      <GoogleReviews max={3} heading="Loved across Arizona" />
     </>
   );
 }

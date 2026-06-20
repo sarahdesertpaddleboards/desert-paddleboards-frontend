@@ -19,6 +19,10 @@ src/data/upcoming.generated.json
 .idea/
 .vscode/*
 !.vscode/extensions.json
+.claude/
+
+# Wrangler local cache (Cloudflare Pages)
+.wrangler/
 
 # Logs
 *.log

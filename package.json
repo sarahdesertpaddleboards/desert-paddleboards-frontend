@@ -4,8 +4,8 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "node scripts/generate-seo-data.mjs && vite-react-ssg dev",
-    "build": "node scripts/generate-seo-data.mjs && vite-react-ssg build && node scripts/generate-sitemap.mjs",
+    "dev": "node scripts/generate-seo-data.mjs && node scripts/generate-reviews.mjs && vite-react-ssg dev",
+    "build": "node scripts/generate-seo-data.mjs && node scripts/generate-reviews.mjs && vite-react-ssg build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -61,6 +61,27 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/adventures">
+                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                    Adventures
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/rentals">
+                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                    Rentals
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/coaching">
+                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                    Coaching
+                  </span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/membership">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     Membership
@@ -91,9 +112,17 @@ export default function Footer() {
               <li>Floating Soundbaths</li>
               <li>Floating Yoga</li>
               <li>Water Aerobics</li>
-              <li>Paddleboard Rentals</li>
+              <li>
+                <Link to="/rentals" className="hover:text-primary transition-colors cursor-pointer">
+                  Paddleboard Rentals
+                </Link>
+              </li>
+              <li>
+                <Link to="/adventures" className="hover:text-primary transition-colors cursor-pointer">
+                  Guided Adventures
+                </Link>
+              </li>
               <li>Private Group Events</li>
-              <li>Gift Certificates</li>
             </ul>
           </div>
 

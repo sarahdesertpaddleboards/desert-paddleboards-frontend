@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-12T07:45:46.126Z",
+  "generatedAt": "2026-06-20T17:33:10.209Z",
   "items": [
     {
       "itemId": 146393,
@@ -375,6 +375,21 @@
       "lat": 33.373882,
       "lng": -111.970219,
       "image": "https://cdn.filestackcontent.com/HPzk22atQuCGB76YgxQZ"
+    },
+    {
+      "itemId": 722096,
+      "name": "Hotel Solaya Floating Soundbath - SCOTTSDALE",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Hotel Solaya",
+      "city": "Scottsdale",
+      "state": "AZ",
+      "street": "4000 North Drinkwater Boulevard",
+      "postalCode": "85251",
+      "googlePlaceId": "ChIJ7cFIVscLK4cRWN1pp1ur0oQ",
+      "lat": 33.493661,
+      "lng": -111.922728,
+      "image": "https://cdn.filestackcontent.com/MgqpJAiSAirUp9s6FIqj"
     },
     {
       "itemId": 725981,
