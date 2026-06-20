@@ -12,6 +12,7 @@ import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import FareHarborButton from "@/components/FareHarborButton";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
+import { submitWeb3Form } from "@/lib/web3forms";
 import { PRIVATE_SOUNDBATH_ITEM_ID } from "@/data/locations";
 import { SITE_URL, business } from "@/data/site";
 
@@ -26,12 +27,51 @@ export default function PrivateEvents() {
     location: "",
     message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () =>
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      eventType: "",
+      numberOfGuests: "",
+      preferredDate: "",
+      location: "",
+      message: "",
+    });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Static site (no backend): compose a pre-filled email to Sarah with the
-    // enquiry details and hand off to the visitor's mail client.
+    setSubmitting(true);
+
     const subject = `Private event enquiry${formData.eventType ? ` — ${formData.eventType}` : ""}`;
+
+    // Preferred path: deliver straight to Sarah's inbox via Web3Forms.
+    const result = await submitWeb3Form({
+      subject,
+      from_name: "Desert Paddleboards website",
+      replyto: formData.email,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || "—",
+      event_type: formData.eventType || "—",
+      guests: formData.numberOfGuests || "—",
+      preferred_date: formData.preferredDate || "—",
+      preferred_location: formData.location || "—",
+      message: formData.message || "—",
+    });
+
+    setSubmitting(false);
+
+    if (result.success) {
+      toast.success("Thank you! Your enquiry has been sent — we'll reply within 24 hours.");
+      resetForm();
+      return;
+    }
+
+    // Fallback (no key configured yet, or the request failed): hand off to the
+    // visitor's mail client with everything pre-filled so the lead isn't lost.
     const body = [
       `Name: ${formData.name}`,
       `Email: ${formData.email}`,
@@ -47,7 +87,7 @@ export default function PrivateEvents() {
     window.location.href = `mailto:sarah@desertpaddleboards.com?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
-    toast.success("Opening your email app with your enquiry ready to send…");
+    toast.message("Opening your email app so you can send your enquiry directly…");
   };
 
   const eventTypes = [
@@ -324,8 +364,8 @@ export default function PrivateEvents() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button type="submit" size="lg" className="flex-1">
-                    Submit Inquiry
+                  <Button type="submit" size="lg" className="flex-1" disabled={submitting}>
+                    {submitting ? "Sending…" : "Submit Inquiry"}
                   </Button>
                   <Button type="button" variant="outline" size="lg" asChild>
                     <a href="tel:4802019520">Or Call 480.201.9520</a>
