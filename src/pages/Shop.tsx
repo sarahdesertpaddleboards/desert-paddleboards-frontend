@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
@@ -80,6 +81,30 @@ export default function Shop() {
           </section>
         );
       })}
+
+      {/* Cross-links to other offerings */}
+      <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <Link
+          to="/rentals"
+          className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
+        >
+          <h2 className="text-lg font-bold">Need a whole fleet?</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Rent paddleboards for your group or event — delivered, set up and picked up.{" "}
+            <span className="font-medium text-primary">See rentals →</span>
+          </p>
+        </Link>
+        <Link
+          to="/coaching"
+          className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
+        >
+          <h2 className="text-lg font-bold">Want to go deeper?</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Work one-on-one with Sarah through Adventure Life Coaching.{" "}
+            <span className="font-medium text-primary">Explore coaching →</span>
+          </p>
+        </Link>
+      </section>
     </main>
   );
 }

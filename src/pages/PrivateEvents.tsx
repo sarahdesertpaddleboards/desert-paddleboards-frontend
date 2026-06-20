@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -347,6 +348,16 @@ export default function PrivateEvents() {
           </blockquote>
           <p className="text-lg opacity-90">— Jessica M., Scottsdale</p>
         </div>
+      </section>
+
+      {/* Cross-link */}
+      <section className="container py-12">
+        <p className="text-center text-muted-foreground">
+          Want a bigger adventure for your group?{" "}
+          <Link to="/adventures" className="font-medium text-primary hover:underline">
+            Explore our guided paddleboard trips and retreats →
+          </Link>
+        </p>
       </section>
     </div>
   );

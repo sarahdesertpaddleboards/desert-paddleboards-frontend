@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Head } from "vite-react-ssg";
 import {
   Building2,
@@ -234,6 +235,13 @@ export default function CommunityEvents() {
             </a>
           </div>
         </section>
+
+        <p className="text-center text-sm text-muted-foreground">
+          Looking for something more active for your group?{" "}
+          <Link to="/adventures" className="font-medium text-primary hover:underline">
+            Explore our guided paddleboard adventures →
+          </Link>
+        </p>
       </div>
     </main>
   );
