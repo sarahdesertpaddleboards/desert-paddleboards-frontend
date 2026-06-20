@@ -80,7 +80,7 @@ export default function Adventures() {
       <Seo
         title="Guided Paddleboard Adventures &amp; Retreats in Arizona | Desert Paddleboards"
         description="Guided paddleboard adventures with Desert Paddleboards — clear-paddleboard trips through the Colorado River's Black Canyon, Flagstaff paddle-and-ride retreats, and intentional small-group travel to Thailand and the Alps."
-        image="/floating-boards-sunset.jpg"
+        image="/images/blog/paddleboarding-the-salt-river.webp"
       />
       <JsonLd data={structuredData} />
 
@@ -88,9 +88,9 @@ export default function Adventures() {
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35 z-10" />
         <img
-          src="/floating-boards-sunset.jpg"
-          alt="Paddleboarding adventure on Arizona water"
-          className="absolute inset-0 w-full h-full object-cover"
+          src="/images/blog/paddleboarding-the-salt-river.webp"
+          alt="Paddleboarding adventure on the Salt River in Arizona"
+          className="absolute inset-0 w-full h-full object-cover object-[center_45%]"
         />
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Adventures</h1>

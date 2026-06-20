@@ -29,18 +29,25 @@ export default function PrivateEvents() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // This will be connected to the backend later
-    toast.success("Thank you! We'll contact you within 24 hours to discuss your event.");
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      eventType: "",
-      numberOfGuests: "",
-      preferredDate: "",
-      location: "",
-      message: "",
-    });
+    // Static site (no backend): compose a pre-filled email to Sarah with the
+    // enquiry details and hand off to the visitor's mail client.
+    const subject = `Private event enquiry${formData.eventType ? ` — ${formData.eventType}` : ""}`;
+    const body = [
+      `Name: ${formData.name}`,
+      `Email: ${formData.email}`,
+      `Phone: ${formData.phone || "—"}`,
+      `Event type: ${formData.eventType || "—"}`,
+      `Number of guests: ${formData.numberOfGuests || "—"}`,
+      `Preferred date: ${formData.preferredDate || "—"}`,
+      `Preferred location: ${formData.location || "—"}`,
+      "",
+      "Details:",
+      formData.message || "—",
+    ].join("\n");
+    window.location.href = `mailto:sarah@desertpaddleboards.com?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+    toast.success("Opening your email app with your enquiry ready to send…");
   };
 
   const eventTypes = [

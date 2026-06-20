@@ -27,7 +27,7 @@ const posts: BlogPost[] = [
     date: "2026-05-27",
     excerpt:
       "What cortisol is, why Arizona summers spike it, and simple habits — hydrating, slowing down, mindful movement, and floating sound baths — to support a healthier stress response.",
-    image: "https://img1.wsimg.com/isteam/getty/2249092738",
+    image: "/images/blog/simple-ways-to-lower-cortisol-this-summer.webp",
     body: `### Understanding Cortisol: Your Body's Natural Stress Response
 
 Cortisol. We keep hearing about it. But... what is it, what does it do, and why does it seem to be ruining my LIFE??
@@ -67,7 +67,7 @@ At the end of the day, lowering cortisol isn't about doing more — it's about c
     excerpt:
       "A lighthearted look at the world's five 'Blue Zones' where people live longest and the 'Power Nine' habits they share — and how floating sound baths tap into several of those longevity habits.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_1736.jpg",
+      "/images/blog/blue-zone-wellness.webp",
     body: `**What are "BLUE ZONES" and why should you care?**
 
 No it's not a spa treatment or one of Sarah's weird branding ideas. Blue Zones are actual regions in the world where people live suspiciously longer and are happier — like, they're 100 years old and still doing yardwork and yelling at grandkids in Italian.
@@ -111,7 +111,7 @@ So sign up today, and see what all the hype is about!`,
     excerpt:
       "Why floating sound baths make a standout corporate wellness and team-building experience in Scottsdale — what they are, why they work for groups, and why resorts should offer them.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/pro-h8tTyhJ8-2cf6f16.jpeg",
+      "/images/blog/floating-sound-baths-the-ultimate-corporate-wellness-event.webp",
     body: `In the heart of Scottsdale, Arizona, where luxury resorts and vibrant desert landscapes meet, a unique corporate event trend is making waves: floating sound baths. Ideal for company retreats, wellness-focused gatherings, and team-building activities, floating sound baths offer an immersive experience that helps foster community, relaxation, and mindfulness — all while floating peacefully on water.
 
 **What is a Floating Sound Bath?**
@@ -140,7 +140,7 @@ Floating sound baths offer an innovative, relaxing, and highly effective way to 
     excerpt:
       "An introduction to floating sound bath classes in Mesa, AZ — the healing benefits of sound therapy, what makes floating uniquely relaxing, and tailored options for groups of up to 50.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/sound%20bath%20greg-71d01cd.JPG",
+      "/images/blog/discover-the-tranquil-bliss-of-a-floating-sound-bath-in-mesa-az.webp",
     body: `Imagine floating effortlessly on the serene surface of a pool or lake, surrounded by the soothing sounds of gongs, chimes, and singing bowls. This is the essence of a floating sound bath, a unique and transformative experience offered right here in Mesa, AZ. Whether you're seeking a new form of relaxation for yourself, your team, or your friends and family, our floating sound bath classes are designed to provide unparalleled tranquility and wellness benefits. With the capacity to host up to 50 people per event, we bring the healing power of sound to your desired setting.
 
 ### The Healing Power of Sound
@@ -180,7 +180,7 @@ Embrace the serene bliss of a floating sound bath and discover the profound bene
     excerpt:
       "Arizona Goat Yoga — the original goat yoga — performed on America's Got Talent in 2022. How founders Sarah Williams and April Gould took their baby goats and alpacas to the national stage.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/agt.JPG",
+      "/images/blog/goat-yoga.webp",
     body: `Arizona Goat Yoga, the original goat yoga, has been making waves in the yoga world since 2015, and in 2022, they took the nation by storm by performing on America's Got Talent. Sarah Williams and April Gould, the co-founders of Arizona Goat Yoga, brought their baby goats and alpacas to the national stage, where they wowed the audience and the judges with their unique and entertaining performance.
 
 Goat yoga, as the name suggests, is a yoga class that involves practicing yoga while surrounded by playful and friendly goats. The goats interact with the participants throughout the class, creating a stress-free and enjoyable environment. Arizona Goat Yoga has become a popular attraction in Arizona, with people of all ages and skill levels coming to practice yoga with the specially trained yoga goats.
@@ -198,7 +198,7 @@ The performance on America's Got Talent brought Arizona Goat Yoga to the nationa
     excerpt:
       "The origin story of goat yoga, which began in Arizona in 2015 when American Ninja Warriors Sarah Williams and April Gould combined yoga, comedy, and April's goats.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_4891_Original.jpg",
+      "/images/blog/goat-yoga.webp",
     body: `In the past decade, yoga has gained immense popularity all over the world, with millions of people practicing it for its numerous health benefits. But have you ever heard of goat yoga? Yes, you read that right! Goat yoga is a new trend in the yoga world, which involves practicing yoga while surrounded by playful and friendly goats.
 
 Believe it or not, the idea of goat yoga was born in Arizona, and it all started with two American Ninja Warriors, Sarah Williams and April Gould. Sarah owned a paddleboard business that was only operational during summers, and April was famous for her goats. They both had a mutual interest in yoga, so they decided to combine their skills and interests and started Arizona Goat Yoga in 2015.
@@ -218,7 +218,7 @@ In conclusion, Arizona Goat Yoga is a perfect example of how combining unique sk
     excerpt:
       "A practical guide to paddleboarding at Saguaro Lake in the Tonto National Forest — the main recreation areas, the required Tonto Pass, nearby dining, and board rentals.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/259879591_1683993715282999_3605450337936207948.jpg",
+      "/images/blog/paddleboarding-saguaro-lake.webp",
     body: `Saguaro Lake, located in the Tonto National Forest, is a popular destination for outdoor enthusiasts in Arizona.
 
 Before heading to the lake, it's important to know the recreation areas and passes required. The main recreation areas are Butcher Jones and Saguaro del Norte. Butcher Jones is located on the north side of the lake and offers a boat ramp, picnic tables, restrooms, and a beach area. Saguaro del Norte, on the south side, offers a visitor center, picnic areas, and a boat launch. A Tonto Pass is required for both recreation areas and can be purchased at the entrance or online for $8 per vehicle per day. The pass is also valid for other recreation areas in the Tonto National Forest.
@@ -236,7 +236,7 @@ Paddleboarding at Saguaro Lake is a unique and unforgettable adventure for anyon
     excerpt:
       "An overview of the immersion swimming technique for teaching adults to swim — relaxation, balance, and efficiency in the water — and details on private one-on-one lessons.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/39856_480153117795_7588501_n.jpg",
+      "/images/blog/adult-swim-lessons.webp",
     body: `Swimming is a great exercise that is easy on the joints, helps with weight loss and improves cardiovascular health. However, many adults are afraid of the water, making it difficult for them to learn to swim. With over 20 years of swimming and coaching experience, I have found that **the immersion swimming technique is an effective way to teach adults to swim**.
 
 The immersion swimming technique is a popular approach that uses a hands-on, immersive teaching method. Instead of focusing on a lot of technical terms and theoretical concepts, it gets students into the water as soon as possible. **This technique focuses on relaxation, balance, and efficiency in the water.**
@@ -258,7 +258,7 @@ Private adult lessons are held at local health clubs or community heated pools. 
     excerpt:
       "A guide to paddleboarding Canyon Lake in Arizona's Tonto National Forest — the best recreation areas and campgrounds for a day trip or overnight stay, plus fees.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_1376_Original.jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280",
+      "/images/blog/canyon-lake-day-trip-or-overnight.webp",
     body: `Arizona is a haven for outdoor enthusiasts, and paddleboarding at Canyon Lake is a must-do activity for anyone looking for a unique and exciting adventure. Located in the Tonto National Forest, Canyon Lake offers a stunning natural setting, crystal-clear water, and incredible rock formations that are perfect for paddleboarding.
 
 Paddleboarding at Canyon Lake is suitable for all skill levels, from beginners to experienced paddlers. It's a popular destination for day use and camping, with several recreational areas and campgrounds that offer access to the lake. Some of the best to consider:
@@ -279,7 +279,7 @@ With its stunning natural setting, clear waters, and incredible rock formations,
     excerpt:
       "An overview of paddleboarding Watson Lake near Prescott — the Granite Dells rock formations, local wildlife, and practical info on fees and board rentals.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_2601_Original.jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280",
+      "/images/blog/paddleboarding-watson-lake.webp",
     body: `Arizona is known for its beautiful landscapes, and Prescott is no exception. With its mild climate and stunning scenery, Prescott is a popular destination for outdoor enthusiasts.
 
 Watson Lake is a man-made reservoir located just a few miles from downtown Prescott. The lake is surrounded by stunning rock formations, including the Granite Dells, which make for a unique and breathtaking paddleboarding experience.
@@ -301,7 +301,7 @@ If you need to rent a paddleboard, we offer daily rentals for $35. Boards are in
     excerpt:
       "The 2-hour paddleboarding journey down the Salt River from Phon D Sutton to Granite Reef in Tonto National Forest — its scenery, wildlife, and appeal for all skill levels.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_3269_Original%202.jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280",
+      "/images/blog/salt-river-paddleboarding-winter.webp",
     body: `Paddleboarding on the Salt River is a thrilling adventure that offers a unique perspective on the beauty of Tonto National Forest. With its crystal-clear waters and breathtaking scenery, this river is an ideal destination for outdoor enthusiasts and nature lovers alike.
 
 The 2-hour paddleboarding journey from Phon D Sutton to Granite Reef promises to be an exhilarating experience that will leave you feeling invigorated and refreshed. As you make your way down the river, you will encounter a variety of natural wonders, from towering cliffs and lush vegetation to fascinating wildlife such as blue herons, ospreys, and bald eagles.
@@ -318,7 +318,7 @@ Overall, paddleboarding on the Salt River is an unforgettable experience that sh
     date: "2022-09-05",
     excerpt:
       "The story behind the Witches Regatta — an annual Halloween paddleboard gathering on Tempe Town Lake where paddlers dress as witches and warlocks (and why it falls on a Monday).",
-    image: "",
+    image: "/images/blog/witches-regatta.jpg",
     body: `Witches Regatta started in 2017 as an enchanting way to haunt Tempe Town Lake every Halloween. Witches are enticed to wear their best cloak and float the eerie reclaimed waters of this urban lake. Bewitching? Yes — beautiful witches (and warlocks) will cast a spell as they fly East and then West around the lake.
 
 Grab your black cat and a hat, trade your broom for a paddle! Witches will captivate the crowds that gather to watch this coven fly!
@@ -334,7 +334,7 @@ Call in sick — you're bone tired and weary... you deserve to be a witch for a 
     excerpt:
       "A stop-by-stop guide to paddleboarding Arizona's Salt River, covering each recreation-area access point from Blue Point down to Granite Reef, plus practical tips for shuttling two cars.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/53384cb5912f7a6bd69a7246d4c8a5c5.JPG",
+      "/images/blog/paddleboarding-the-salt-river.webp",
     body: `#### Starting from the top
 
 - **Water users:** Due to recent flooding, the very top is a dangerous area to start for beginners — there are Class Two rapids!
@@ -357,7 +357,7 @@ Call in sick — you're bone tired and weary... you deserve to be a witch for a 
     excerpt:
       "A look at Desert Paddleboards' 'Pup on a Sup' private lesson at Tempe Town Lake, where dogs and owners learn paddleboarding basics together — gear and pricing included.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/8F4E7BD0-6703-426E-8CD8-F5E4B8476900-0001.JPG",
+      "/images/blog/paddleboarding-with-dogs.webp",
     body: `Get your pup out on a SUP! The ultimate adventure with your pup — a one-of-a-kind stand-up paddleboard lesson learning the basics, safety, and technique of the sport.
 
 We meet at the boat ramp at Tempe Town Lake, where you'll be able to ease your dog into paddleboarding. A pawprint paddleboard is included in the rental price. We have some dog lifejackets but can't guarantee all sizes.
@@ -371,7 +371,7 @@ Private lessons with dog, paddleboard, and lifejackets — $75 a person.`,
     excerpt:
       "A guided luxury catamaran trip through the islands of French Polynesia led by Lois and Sarah — itinerary, inclusions, and the water and land experiences on offer.",
     image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/IMG_0807.JPG",
+      "/images/blog/ladies-tahitian-adventure.webp",
     body: `Experience the Tahitian Islands with Lois and Sarah. Lois grew up in the islands of Tahiti and is fluent in several languages including French and Tahitian. Sarah and Lois take you on a once-in-a-lifetime luxury adventure through the islands of French Polynesia.
 
 Every day is an adventure! We'll hike and explore, visit locals, and head out to sea.
