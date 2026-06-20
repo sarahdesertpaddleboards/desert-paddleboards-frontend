@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import {
   Building2,
   Users,
@@ -10,6 +9,7 @@ import {
   Waves,
   CheckCircle2,
 } from "lucide-react";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -70,16 +70,10 @@ export default function CommunityEvents() {
 
   return (
     <main>
-      <Head>
-        <title>
-          Community &amp; Senior-Living Events — Floating Soundbaths for HOAs,
-          55+ &amp; Corporate Wellness | Desert Paddleboards
-        </title>
-        <meta
-          name="description"
-          content="Turnkey floating soundbath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona. We bring the boards, live musicians and team — you pick the date."
-        />
-      </Head>
+      <Seo
+        title="Community &amp; Senior-Living Events — Floating Soundbaths for HOAs, 55+ &amp; Corporate Wellness | Desert Paddleboards"
+        description="Turnkey floating soundbath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona. We bring the boards, live musicians and team — you pick the date."
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

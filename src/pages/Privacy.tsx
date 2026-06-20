@@ -1,5 +1,5 @@
-import { Head } from "vite-react-ssg";
 import ReactMarkdown from "react-markdown";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd } from "@/lib/jsonld";
 import { privacyMarkdown } from "@/data/legal-content";
@@ -7,13 +7,10 @@ import { privacyMarkdown } from "@/data/legal-content";
 export default function Privacy() {
   return (
     <main className="container max-w-3xl py-16">
-      <Head>
-        <title>Privacy Policy | Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="How Desert Paddleboards collects, uses and protects your information."
-        />
-      </Head>
+      <Seo
+        title="Privacy Policy | Desert Paddleboards"
+        description="How Desert Paddleboards collects, uses and protects your information."
+      />
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },

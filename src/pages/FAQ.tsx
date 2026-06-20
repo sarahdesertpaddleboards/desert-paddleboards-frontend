@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 
 interface FAQItem {
   question: string;
@@ -155,16 +155,10 @@ function FAQAccordion({ question, answer }: FAQItem) {
 export default function FAQ() {
   return (
     <div className="min-h-screen bg-background">
-      <Head>
-        <title>
-          FAQ — Floating Soundbaths, Booking &amp; What to Expect | Desert
-          Paddleboards
-        </title>
-        <meta
-          name="description"
-          content="Answers about floating soundbaths, pool pilates, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event in Arizona."
-        />
-      </Head>
+      <Seo
+        title="FAQ — Floating Soundbaths, Booking &amp; What to Expect | Desert Paddleboards"
+        description="Answers about floating soundbaths, pool pilates, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event in Arizona."
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">
@@ -210,7 +204,7 @@ export default function FAQ() {
               Call Us: 480.201.9520
             </a>
             <a
-              href="/sessions"
+              href="/locations"
               className="inline-flex items-center justify-center px-8 py-3 bg-background border-2 border-primary text-primary rounded-md font-medium hover:bg-primary/10 transition-colors"
             >
               Browse Experiences

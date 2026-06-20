@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mountain, Bike, Globe, Waves, CheckCircle2 } from "lucide-react";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -77,13 +77,11 @@ export default function Adventures() {
 
   return (
     <div className="min-h-screen">
-      <Head>
-        <title>Guided Paddleboard Adventures &amp; Retreats in Arizona | Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="Guided paddleboard adventures with Desert Paddleboards — clear-paddleboard trips through the Colorado River's Black Canyon, Flagstaff paddle-and-ride retreats, and intentional small-group travel to Thailand and the Alps."
-        />
-      </Head>
+      <Seo
+        title="Guided Paddleboard Adventures &amp; Retreats in Arizona | Desert Paddleboards"
+        description="Guided paddleboard adventures with Desert Paddleboards — clear-paddleboard trips through the Colorado River's Black Canyon, Flagstaff paddle-and-ride retreats, and intentional small-group travel to Thailand and the Alps."
+        image="/floating-boards-sunset.jpg"
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

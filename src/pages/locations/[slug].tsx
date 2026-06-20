@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import ReactMarkdown from "react-markdown";
 import { getExperienceBySlug } from "@/data/locations";
 import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
 import type { UpcomingSession } from "@/lib/experiencesApi";
@@ -52,12 +52,11 @@ export default function LocationDetail() {
 
   return (
     <main>
-      <Head>
-        <title>
-          {`${exp.title}${exp.venue ? ` — ${exp.venue}` : ""}, ${exp.city} | Desert Paddleboards`}
-        </title>
-        <meta name="description" content={exp.blurb} />
-      </Head>
+      <Seo
+        title={`${exp.title}${exp.venue ? ` — ${exp.venue}` : ""}, ${exp.city} | Desert Paddleboards`}
+        description={exp.blurb}
+        image={exp.image}
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

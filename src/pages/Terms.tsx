@@ -1,5 +1,5 @@
-import { Head } from "vite-react-ssg";
 import ReactMarkdown from "react-markdown";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd } from "@/lib/jsonld";
 import { termsMarkdown } from "@/data/legal-content";
@@ -7,13 +7,10 @@ import { termsMarkdown } from "@/data/legal-content";
 export default function Terms() {
   return (
     <main className="container max-w-3xl py-16">
-      <Head>
-        <title>Terms of Service | Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="The terms that apply to bookings, classes, rentals, products and use of the Desert Paddleboards website."
-        />
-      </Head>
+      <Seo
+        title="Terms of Service | Desert Paddleboards"
+        description="The terms that apply to bookings, classes, rentals, products and use of the Desert Paddleboards website."
+      />
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },

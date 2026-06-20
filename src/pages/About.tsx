@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Award, Heart, Tv, Users } from "lucide-react";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 
 export default function About() {
   const achievements = [
@@ -39,22 +39,17 @@ export default function About() {
 
   return (
     <div className="min-h-screen">
-      <Head>
-        <title>
-          About Sarah Williams &amp; Desert Paddleboards — Floating Soundbaths in
-          Arizona
-        </title>
-        <meta
-          name="description"
-          content="Meet Sarah Williams, the founder behind Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011. Featured in Phoenix Magazine and local news."
-        />
-      </Head>
+      <Seo
+        title="About Sarah Williams &amp; Desert Paddleboards — Floating Soundbaths in Arizona"
+        description="Meet Sarah Williams, the founder behind Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011. Featured in Phoenix Magazine and local news."
+        image="/about-sarah-class.webp"
+      />
       {/* Hero */}
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
           src="/about-sarah-class.webp"
-          alt="Desert Paddleboards"
+          alt="Sarah Williams leading a paddleboard class on the water"
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
         <div className="relative z-20 container text-center text-white">

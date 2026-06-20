@@ -1,4 +1,5 @@
 import { Calendar, MapPin, Clock, Users, Heart, Camera } from "lucide-react";
+import Seo from "@/components/Seo";
 
 export default function SantaPaddle() {
   const photos = [
@@ -26,6 +27,11 @@ export default function SantaPaddle() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-green-50">
+      <Seo
+        title="Santa Paddle — Floating Soundbath & Holiday Paddle | Desert Paddleboards"
+        description="Join the Desert Paddleboards Santa Paddle on Tempe Town Lake — a festive holiday paddleboard event with costumes, music and good cheer on the water."
+        image={photos[0].url}
+      />
       {/* Hero Section */}
       <div className="relative h-[60vh] overflow-hidden">
         <img
@@ -192,7 +198,7 @@ export default function SantaPaddle() {
                 Get Directions
               </a>
               <a
-                href="/classes"
+                href="/locations"
                 className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors inline-flex items-center justify-center"
               >
                 <Calendar className="w-5 h-5 mr-2" />

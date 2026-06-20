@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Compass, Mic, Mountain, CheckCircle2 } from "lucide-react";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -74,13 +74,11 @@ export default function Coaching() {
 
   return (
     <div className="min-h-screen">
-      <Head>
-        <title>Adventure Life Coaching &amp; Motivational Speaking with Sarah Williams | Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="One-on-one adventure life coaching and motivational speaking with Sarah Williams — build the confidence to break out of your comfort zone. Sessions and multi-session packages available in Arizona."
-        />
-      </Head>
+      <Seo
+        title="Adventure Life Coaching &amp; Motivational Speaking with Sarah Williams | Desert Paddleboards"
+        description="One-on-one adventure life coaching and motivational speaking with Sarah Williams — build the confidence to break out of your comfort zone. Sessions and multi-session packages available in Arizona."
+        image="/about-sarah-class.webp"
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

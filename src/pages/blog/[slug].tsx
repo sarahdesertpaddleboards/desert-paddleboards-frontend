@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import ReactMarkdown from "react-markdown";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -52,10 +52,12 @@ export default function BlogPostPage() {
 
   return (
     <main className="container max-w-3xl py-16">
-      <Head>
-        <title>{`${post.title} | Desert Paddleboards`}</title>
-        <meta name="description" content={post.excerpt} />
-      </Head>
+      <Seo
+        title={`${post.title} | Desert Paddleboards`}
+        description={post.excerpt}
+        image={post.image || undefined}
+        type="article"
+      />
       <JsonLd data={structuredData} />
 
       <Link to="/blog">

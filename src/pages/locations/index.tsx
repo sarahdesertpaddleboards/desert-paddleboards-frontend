@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import { experiences, membership } from "@/data/locations";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import GoogleReviews from "@/components/GoogleReviews";
 import { breadcrumbLd } from "@/lib/jsonld";
@@ -8,15 +8,10 @@ import { breadcrumbLd } from "@/lib/jsonld";
 export default function LocationsIndex() {
   return (
     <main className="container py-16">
-      <Head>
-        <title>
-          Floating Soundbath Locations Across Arizona | Desert Paddleboards
-        </title>
-        <meta
-          name="description"
-          content="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert, Chandler and more. See locations on the map and book online."
-        />
-      </Head>
+      <Seo
+        title="Floating Soundbath Locations Across Arizona | Desert Paddleboards"
+        description="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert, Chandler and more. See locations on the map and book online."
+      />
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },

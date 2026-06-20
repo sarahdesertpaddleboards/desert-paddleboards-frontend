@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, Heart, Briefcase, Sparkles, CheckCircle2, Building2, Dumbbell } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import FareHarborButton from "@/components/FareHarborButton";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
@@ -104,16 +104,10 @@ export default function PrivateEvents() {
 
   return (
     <div className="min-h-screen">
-      <Head>
-        <title>
-          Private Events — Bachelorette, Corporate Wellness &amp; Group
-          Celebrations | Desert Paddleboards
-        </title>
-        <meta
-          name="description"
-          content="Private floating soundbath events across Arizona — bachelorette parties, corporate wellness and team offsites, gym member-appreciation days, retreats and group celebrations. We bring the boards, live musicians and team."
-        />
-      </Head>
+      <Seo
+        title="Private Events — Bachelorette, Corporate Wellness &amp; Group Celebrations | Desert Paddleboards"
+        description="Private floating soundbath events across Arizona — bachelorette parties, corporate wellness and team offsites, gym member-appreciation days, retreats and group celebrations. We bring the boards, live musicians and team."
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

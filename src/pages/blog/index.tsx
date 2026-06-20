@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd } from "@/lib/jsonld";
 import { blogPosts, formatPostDate } from "@/data/blog-posts";
@@ -7,13 +7,10 @@ import { blogPosts, formatPostDate } from "@/data/blog-posts";
 export default function BlogIndex() {
   return (
     <main className="container py-16">
-      <Head>
-        <title>Blog — Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="Wellness, floating soundbaths and Arizona paddleboarding adventures — tips, guides and stories from Desert Paddleboards."
-        />
-      </Head>
+      <Seo
+        title="Blog — Desert Paddleboards"
+        description="Wellness, floating soundbaths and Arizona paddleboarding adventures — tips, guides and stories from Desert Paddleboards."
+      />
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },

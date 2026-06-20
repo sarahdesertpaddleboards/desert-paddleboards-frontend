@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
-import { Head } from "vite-react-ssg";
 import { membership } from "@/data/locations";
+import Seo from "@/components/Seo";
 import FareHarborButton from "@/components/FareHarborButton";
 import GoogleReviews from "@/components/GoogleReviews";
 
 export default function Membership() {
   return (
     <main>
-      <Head>
-        <title>{membership.title} | Desert Paddleboards</title>
-        <meta name="description" content={membership.blurb} />
-      </Head>
+      <Seo
+        title={`${membership.title} | Desert Paddleboards`}
+        description={membership.blurb}
+        image="/hero-pool-soundbath.webp"
+      />
 
       <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden bg-muted">
         <img

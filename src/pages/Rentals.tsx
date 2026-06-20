@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Waves, Truck, Sparkles, MapPin, CheckCircle2 } from "lucide-react";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -44,13 +44,11 @@ export default function Rentals() {
 
   return (
     <div className="min-h-screen">
-      <Head>
-        <title>Paddleboard &amp; Airstream Rentals — Phoenix, AZ | Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="Rent paddleboards for your group or event across the Phoenix metro, or book the Grapefruit Orchard Airstream — a camera-ready mobile space for brand activations, pop-ups and content creation. Delivered Valley-wide."
-        />
-      </Head>
+      <Seo
+        title="Paddleboard &amp; Airstream Rentals — Phoenix, AZ | Desert Paddleboards"
+        description="Rent paddleboards for your group or event across the Phoenix metro, or book the Grapefruit Orchard Airstream — a camera-ready mobile space for brand activations, pop-ups and content creation. Delivered Valley-wide."
+        image="/floating-boards-sunset.jpg"
+      />
       <JsonLd data={structuredData} />
 
       {/* Hero */}

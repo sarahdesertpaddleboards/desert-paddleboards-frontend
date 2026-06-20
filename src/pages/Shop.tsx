@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Head } from "vite-react-ssg";
+import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
@@ -44,13 +44,11 @@ export default function Shop() {
 
   return (
     <main className="container py-16">
-      <Head>
-        <title>Shop — Desert Paddleboards</title>
-        <meta
-          name="description"
-          content="Desert Paddleboards shop — floating meditation boards, the Sonoran Echoes album, river paddleboarding guides and beach totes. Secure checkout via Stripe."
-        />
-      </Head>
+      <Seo
+        title="Shop — Desert Paddleboards"
+        description="Desert Paddleboards shop — floating meditation boards, the Sonoran Echoes album, river paddleboarding guides and beach totes. Secure checkout via Stripe."
+        image="/floating-boards-sunset.jpg"
+      />
       <JsonLd data={structuredData} />
 
       <header className="max-w-2xl space-y-4">
