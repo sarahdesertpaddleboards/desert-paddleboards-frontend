@@ -34,6 +34,54 @@ function fmtTime(iso: string): string {
   });
 }
 
+function escapeHtml(s: string): string {
+  return s.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ] as string,
+  );
+}
+
+/** HTML for a venue's map info window — name, venue, next session + a link. */
+function venueInfoHtml(exp: Experience, next?: UpcomingSession): string {
+  const venue = exp.venue
+    ? `<div style="font-size:13px;color:#475569;margin-top:1px">${escapeHtml(exp.venue)}</div>`
+    : "";
+  const when = next
+    ? `Next: <strong>${fmtDate(next.startAt)}</strong> · ${fmtTime(next.startAt)}`
+    : "See calendar for dates";
+  return `<div style="max-width:230px;line-height:1.35;font-family:inherit">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#3e7c84">${escapeHtml(exp.city)}, ${escapeHtml(exp.state)}</div>
+    <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(exp.title)}</div>
+    ${venue}
+    <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
+    <a href="/locations/${exp.slug}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>
+  </div>`;
+}
+
+/** Up to `n` venues nearest to a point, by great-circle distance. */
+function nearestVenues(
+  g: any,
+  point: { lat: number; lng: number },
+  n: number,
+): Experience[] {
+  if (!g?.maps?.geometry?.spherical) return experiences.slice(0, n);
+  const from = new g.maps.LatLng(point.lat, point.lng);
+  return experiences
+    .map((e) => ({
+      e,
+      d: g.maps.geometry.spherical.computeDistanceBetween(
+        from,
+        new g.maps.LatLng(e.lat, e.lng),
+      ),
+    }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, n)
+    .map((x) => x.e);
+}
+
 export default function LocationFinder() {
   const [sessions, setSessions] = useState<UpcomingSession[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -44,6 +92,7 @@ export default function LocationFinder() {
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const originMarkerRef = useRef<any>(null);
+  const infoWindowRef = useRef<any>(null);
 
   // Load live sessions (graceful on failure)
   useEffect(() => {
@@ -65,6 +114,13 @@ export default function LocationFinder() {
     }
     return map;
   }, [sessions]);
+
+  // Live ref to the sessions map so marker click handlers (created once, when
+  // the map loads) read the latest "next session" data without stale closures.
+  const nextByItemRef = useRef(nextByItem);
+  useEffect(() => {
+    nextByItemRef.current = nextByItem;
+  }, [nextByItem]);
 
   const cities = useMemo(
     () =>
@@ -113,13 +169,26 @@ export default function LocationFinder() {
     mapRef.current = map;
     const g = (window as any).google;
     if (!g?.maps?.marker) return;
+
+    const infoWindow = new g.maps.InfoWindow();
+    infoWindowRef.current = infoWindow;
+
     const bounds = new g.maps.LatLngBounds();
     for (const e of experiences) {
-      new g.maps.marker.AdvancedMarkerElement({
+      const marker = new g.maps.marker.AdvancedMarkerElement({
         map,
         position: { lat: e.lat, lng: e.lng },
         title: `${e.title}${e.venue ? ` — ${e.venue}` : ""}, ${e.city}`,
+        gmpClickable: true,
       });
+      // Click a pin → open the venue's info window (fresh "next session" data).
+      // AdvancedMarkerElement emits "gmp-click" (not "click") in the current API.
+      const openInfo = () => {
+        infoWindow.close();
+        infoWindow.setContent(venueInfoHtml(e, nextByItemRef.current.get(e.itemId)));
+        infoWindow.open({ map, anchor: marker });
+      };
+      marker.addListener("gmp-click", openInfo);
       bounds.extend({ lat: e.lat, lng: e.lng });
     }
     map.fitBounds(bounds, 48);
@@ -150,13 +219,30 @@ export default function LocationFinder() {
 
         const map = mapRef.current;
         if (map) {
-          map.setCenter(next);
-          map.setZoom(10);
+          infoWindowRef.current?.close();
+
+          // Frame "you" + the nearest venues so the result is visual.
+          const bounds = new g.maps.LatLngBounds();
+          bounds.extend(next);
+          for (const e of nearestVenues(g, next, 5)) {
+            bounds.extend({ lat: e.lat, lng: e.lng });
+          }
+          map.fitBounds(bounds, 64);
+
+          // Distinct teal "You are here" pin (vs the venue pins).
           if (originMarkerRef.current) originMarkerRef.current.map = null;
+          const youContent = g.maps.marker.PinElement
+            ? new g.maps.marker.PinElement({
+                background: "#3e7c84",
+                borderColor: "#1f3a4d",
+                glyphColor: "#ffffff",
+              }).element
+            : undefined;
           originMarkerRef.current = new g.maps.marker.AdvancedMarkerElement({
             map,
             position: next,
-            title: "You",
+            title: "You are here",
+            ...(youContent ? { content: youContent } : {}),
           });
         }
       },
