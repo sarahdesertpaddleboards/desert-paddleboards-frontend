@@ -126,6 +126,9 @@ interface MapViewProps {
   initialCenter?: google.maps.LatLngLiteral;
   initialZoom?: number;
   onMapReady?: (map: google.maps.Map) => void;
+  /** Called if the map fails to load or render (e.g. a Maps API/account
+   *  issue), so the parent can hide the empty map area gracefully. */
+  onUnavailable?: () => void;
 }
 
 export function MapView({
@@ -133,13 +136,19 @@ export function MapView({
   initialCenter = { lat: 37.7749, lng: -122.4194 },
   initialZoom = 12,
   onMapReady,
+  onUnavailable,
 }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
 
   const init = usePersistFn(async () => {
     if (map.current) return; // already initialised — never create the map twice
-    await loadMapScript();
+    try {
+      await loadMapScript();
+    } catch {
+      onUnavailable?.();
+      return;
+    }
     if (map.current || !mapContainer.current) return;
     map.current = new window.google.maps.Map(mapContainer.current, {
       zoom: initialZoom,
@@ -157,6 +166,14 @@ export function MapView({
     if (onMapReady) {
       onMapReady(map.current);
     }
+    // The Maps API can silently fail to render (no error) on an account/billing
+    // issue. If no tiles appear shortly, treat the map as unavailable so the
+    // parent hides the empty box instead of showing a broken grey rectangle.
+    window.setTimeout(() => {
+      if (mapContainer.current && !mapContainer.current.querySelector(".gm-style")) {
+        onUnavailable?.();
+      }
+    }, 4000);
   });
 
   useEffect(() => {

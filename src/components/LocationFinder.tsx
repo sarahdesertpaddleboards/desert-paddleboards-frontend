@@ -89,6 +89,7 @@ export default function LocationFinder() {
   const [origin, setOrigin] = useState<{ lat: number; lng: number } | null>(null);
   const [originLabel, setOriginLabel] = useState("");
   const [geoError, setGeoError] = useState<string | null>(null);
+  const [mapAvailable, setMapAvailable] = useState(true);
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const originMarkerRef = useRef<any>(null);
@@ -343,16 +344,24 @@ export default function LocationFinder() {
           ))}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Map */}
-          <div className="lg:sticky lg:top-24 lg:h-[560px]">
-            <MapView
-              initialCenter={PHOENIX_CENTER}
-              initialZoom={9}
-              onMapReady={handleMapReady}
-              className="h-[360px] w-full overflow-hidden rounded-2xl border border-border lg:h-[560px]"
-            />
-          </div>
+        <div
+          className={`mt-6 grid grid-cols-1 gap-8 ${
+            mapAvailable ? "lg:grid-cols-2" : ""
+          }`}
+        >
+          {/* Map — hidden if the Maps API is unavailable, so we never show an
+              empty grey box; the search + list still work without it. */}
+          {mapAvailable ? (
+            <div className="lg:sticky lg:top-24 lg:h-[560px]">
+              <MapView
+                initialCenter={PHOENIX_CENTER}
+                initialZoom={9}
+                onMapReady={handleMapReady}
+                onUnavailable={() => setMapAvailable(false)}
+                className="h-[360px] w-full overflow-hidden rounded-2xl border border-border lg:h-[560px]"
+              />
+            </div>
+          ) : null}
 
           {/* Venue list */}
           <div className="space-y-4">
