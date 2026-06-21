@@ -18,7 +18,15 @@
  */
 
 const SHORTNAME = "desertpaddleboards";
-const MONTHS_AHEAD = 2; // current month + this many following months
+const MAX_MONTHS_AHEAD = 2; // ceiling: current month + this many following months
+// Each item-month is one fetch (subrequest). Cloudflare's FREE Workers plan
+// caps a single request at 50 subrequests; exceeding it makes the overflow
+// fetches throw and get silently swallowed (.catch(() => [])), which drops
+// whole venues' sessions from the feed. So we never schedule more than this
+// many item-month fetches — the number of months auto-shrinks as venues grow
+// (every venue always gets at least the current month). Raise this only on the
+// Workers PAID plan (1000 subrequests) — see the note in the deploy docs.
+const SUBREQUEST_BUDGET = 45;
 const CACHE_TTL_S = 30 * 60; // 30 minutes
 
 // Fixed-location venues whose FareHarbor primary_location has no lat/lng.
@@ -51,9 +59,9 @@ async function fetchLocationItemIds() {
   }
 }
 
-function monthsToFetch(now) {
+function monthsToFetch(now, monthsAhead) {
   const out = [];
-  for (let i = 0; i <= MONTHS_AHEAD; i++) {
+  for (let i = 0; i <= monthsAhead; i++) {
     const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + i, 1));
     out.push({ year: d.getUTCFullYear(), month: d.getUTCMonth() + 1 });
   }
@@ -91,8 +99,15 @@ async function fetchItemMonth(itemId, year, month) {
 
 async function buildFeed() {
   const now = new Date();
-  const months = monthsToFetch(now);
   const itemIds = await fetchLocationItemIds();
+
+  // Stay under the subrequest cap: one fetch was already spent on the items
+  // list, so divide the rest across the venues and fetch as many months as
+  // fit (always at least the current month for every venue).
+  const itemCount = Math.max(1, itemIds.length);
+  const affordableMonths = Math.max(1, Math.floor((SUBREQUEST_BUDGET - 1) / itemCount));
+  const monthsAhead = Math.min(MAX_MONTHS_AHEAD, affordableMonths - 1);
+  const months = monthsToFetch(now, monthsAhead);
 
   const tasks = [];
   for (const itemId of itemIds)
