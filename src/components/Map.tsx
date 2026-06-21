@@ -88,21 +88,40 @@ declare global {
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-function loadMapScript() {
-  return new Promise(resolve => {
+// Load the Google Maps JS API exactly once. Re-appending the script (on every
+// MapView mount / route change) re-registers Google's web components and spams
+// "Element already defined" + "loaded multiple times" errors — so we cache a
+// single promise and short-circuit if the API is already present.
+let mapsScriptPromise: Promise<void> | null = null;
+
+function loadMapScript(): Promise<void> {
+  if (typeof window !== "undefined" && window.google?.maps) {
+    return Promise.resolve();
+  }
+  if (mapsScriptPromise) return mapsScriptPromise;
+
+  mapsScriptPromise = new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(
+      "script[data-google-maps]",
+    );
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("Maps load failed")));
+      return;
+    }
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=weekly&loading=async&libraries=marker,places,geocoding,geometry`;
     script.async = true;
     script.crossOrigin = "anonymous";
-    script.onload = () => {
-      resolve(null);
-      script.remove(); // Clean up immediately
-    };
+    script.dataset.googleMaps = "true";
+    script.onload = () => resolve();
     script.onerror = () => {
-      console.error("Failed to load Google Maps script");
+      mapsScriptPromise = null; // allow a retry on a later mount
+      reject(new Error("Failed to load Google Maps script"));
     };
     document.head.appendChild(script);
   });
+  return mapsScriptPromise;
 }
 
 interface MapViewProps {
