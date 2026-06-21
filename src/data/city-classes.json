@@ -10,7 +10,12 @@
       "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog",
       "bookingLabel": "Register with Queen Creek",
       "note": "Booked through the Town of Queen Creek — search \"swimming\" activities.",
-      "sessions": []
+      "sessions": [
+        { "date": "2026-07-10", "time": "20:00" },
+        { "date": "2026-07-24", "time": "20:00" },
+        { "date": "2026-08-07", "time": "20:00" },
+        { "date": "2026-08-21", "time": "20:00" }
+      ]
     },
     {
       "id": "sedona-soundbath",
@@ -22,7 +27,12 @@
       "bookingUrl": "https://sedonarecreation.activityreg.com/selectActivity",
       "bookingLabel": "Register with City of Sedona",
       "note": "Booked through the City of Sedona — search \"swimming\" activities.",
-      "sessions": []
+      "sessions": [
+        { "date": "2026-07-11", "time": "19:30" },
+        { "date": "2026-08-01", "time": "19:30" },
+        { "date": "2026-09-12", "time": "19:00" },
+        { "date": "2026-10-10", "time": "19:00" }
+      ]
     },
     {
       "id": "avondale-soundbath",
