@@ -110,7 +110,11 @@ function loadMapScript(): Promise<void> {
       return;
     }
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=weekly&loading=async&libraries=marker,places,geocoding,geometry`;
+    // NB: do NOT add loading=async here — this code uses the classic pattern
+    // (script.onload → new google.maps.Map). loading=async defers the
+    // libraries past onload, so the Map constructor isn't ready yet and the
+    // map silently fails to render. Classic loading fires onload when ready.
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
     script.async = true;
     script.crossOrigin = "anonymous";
     script.dataset.googleMaps = "true";
