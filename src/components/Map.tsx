@@ -134,7 +134,11 @@ export function MapView({
       fullscreenControl: true,
       zoomControl: true,
       streetViewControl: true,
-      mapId: "DEMO_MAP_ID",
+      // Real project Map ID (vector, JavaScript) under the polar-cargo Cloud
+      // project — required for AdvancedMarkerElement to render. The previous
+      // "DEMO_MAP_ID" placeholder renders tiles but silently drops markers on
+      // a real (referrer-restricted) domain. Map IDs are public identifiers.
+      mapId: "e25c1a7a2912c3c0afc55fee",
     });
     if (onMapReady) {
       onMapReady(map.current);
