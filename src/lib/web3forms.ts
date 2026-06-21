@@ -10,7 +10,7 @@
  * While the key is empty, callers fall back to a mailto: link so the form
  * still works (just via the visitor's mail client instead of direct delivery).
  */
-export const WEB3FORMS_ACCESS_KEY = "";
+export const WEB3FORMS_ACCESS_KEY = "c4611b11-880b-48ed-b12d-606e0ed4754c";
 
 export interface Web3FormsResult {
   success: boolean;
