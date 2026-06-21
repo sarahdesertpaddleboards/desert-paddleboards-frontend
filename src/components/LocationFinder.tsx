@@ -6,8 +6,9 @@ import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
 // Homepage hero — Sarah's signature sunset shot: branded boards on the
-// green-lit pool at dusk (self-hosted in /public).
-const heroImage = "/floating-boards-sunset.jpg";
+// evening floating soundbath at a resort pool — floats on the water, candle
+// lanterns and a sound-healer with crystal bowls (self-hosted in /public).
+const heroImage = "/floating-soundbath-evening.jpg";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
@@ -178,8 +179,8 @@ export default function LocationFinder() {
       <section className="relative h-[360px] min-h-[320px] w-full overflow-hidden">
         <img
           src={heroImage}
-          alt="Floating soundbath at sunset"
-          className="absolute inset-0 h-full w-full object-cover"
+          alt="Evening floating soundbath at a resort pool, with guests floating on the water by candlelight"
+          className="absolute inset-0 h-full w-full object-cover object-bottom"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/45 to-brand-dark/15" />
         <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-4">

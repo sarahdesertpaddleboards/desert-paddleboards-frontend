@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-20T19:09:43.670Z",
+  "generatedAt": "2026-06-21T07:24:12.625Z",
   "items": [
     {
       "itemId": 146393,
@@ -255,6 +255,21 @@
       "lat": null,
       "lng": null,
       "image": "https://cdn.filestackcontent.com/Z7xKad6uSQJZrz6oPThV"
+    },
+    {
+      "itemId": 642745,
+      "name": "Floating Soundbath at Westin Kierland Resort & Spa",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Westin Kierland Resort",
+      "city": "Scottsdale",
+      "state": "AZ",
+      "street": "6902 East Greenway Parkway",
+      "postalCode": "85254",
+      "googlePlaceId": "ChIJBxYQvBZ0K4cRqUGEFr5XAFM",
+      "lat": 33.625404,
+      "lng": -111.933225,
+      "image": "https://cdn.filestackcontent.com/T2HXwJYyTRqGNTphF1dD"
     },
     {
       "itemId": 648798,
