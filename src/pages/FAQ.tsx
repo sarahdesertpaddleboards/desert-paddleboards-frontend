@@ -207,7 +207,7 @@ export default function FAQ() {
               href="/locations"
               className="inline-flex items-center justify-center px-8 py-3 bg-background border-2 border-primary text-primary rounded-md font-medium hover:bg-primary/10 transition-colors"
             >
-              Browse Experiences
+              Browse Floating Sessions
             </a>
           </div>
         </div>

@@ -56,7 +56,7 @@ export default function Footer() {
               <li>
                 <Link to="/locations">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Experiences
+                    Floating Sessions
                   </span>
                 </Link>
               </li>
@@ -78,13 +78,6 @@ export default function Footer() {
                 <Link to="/coaching">
                   <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
                     Coaching
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/membership">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Membership
                   </span>
                 </Link>
               </li>

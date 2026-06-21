@@ -15,7 +15,7 @@ export default function LocationsIndex() {
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Experiences", path: "/locations" },
+          { name: "Floating Sessions", path: "/locations" },
         ])}
       />
 

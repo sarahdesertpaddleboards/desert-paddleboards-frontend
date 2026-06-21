@@ -7,15 +7,15 @@ export default function Header() {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Experiences", href: "/locations" },
-    { name: "Adventures", href: "/adventures" },
-    { name: "Membership", href: "/membership" },
-    { name: "Shop", href: "/shop" },
+    { name: "Floating Sessions", href: "/locations" },
     { name: "Community Events", href: "/community-events" },
     { name: "Private Events", href: "/private-events" },
+    { name: "Shop", href: "/shop" },
+    { name: "Adventures", href: "/adventures" },
     { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
     { name: "FAQ", href: "/faq" },
+    // Membership intentionally hidden from nav for now (route/page kept live).
   ];
 
   return (

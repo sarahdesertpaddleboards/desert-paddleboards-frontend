@@ -44,7 +44,7 @@ export default function LocationDetail() {
   const structuredData = graph([
     breadcrumbLd([
       { name: "Home", path: "/" },
-      { name: "Experiences", path: "/locations" },
+      { name: "Floating Sessions", path: "/locations" },
       { name: exp.title, path: `/locations/${exp.slug}` },
     ]),
     ...upcomingForItem.map((s) => eventLd(exp, s)),
