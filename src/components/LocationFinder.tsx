@@ -1,5 +1,5 @@
 /// <reference types="@types/google.maps" />
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
@@ -82,7 +82,12 @@ function nearestVenues(
     .map((x) => x.e);
 }
 
-export default function LocationFinder() {
+export default function LocationFinder({
+  afterHero,
+}: {
+  /** Rendered between the hero and the map/venue-list finder. */
+  afterHero?: ReactNode;
+} = {}) {
   const [sessions, setSessions] = useState<UpcomingSession[]>([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [query, setQuery] = useState("");
@@ -314,6 +319,8 @@ export default function LocationFinder() {
           ) : null}
         </div>
       </section>
+
+      {afterHero}
 
       {/* Finder: filter + map + live sessions */}
       <section id="finder" className="mx-auto max-w-6xl px-4 py-10">

@@ -15,13 +15,15 @@ export default function Home() {
         image="/floating-soundbath-evening.jpg"
       />
       <JsonLd data={localBusinessLd()} />
-      <LocationFinder />
-
-      {/* Visual session calendar (FareHarbor + city classes merged) */}
-      <SessionCalendar
-        heading="Find a session by date"
-        showAllHref="/calendar"
-        className="py-12"
+      {/* Calendar sits above the map/list finder (date-first entry point) */}
+      <LocationFinder
+        afterHero={
+          <SessionCalendar
+            heading="Find a session by date"
+            showAllHref="/calendar"
+            className="py-12"
+          />
+        }
       />
 
       {/* Social proof / legitimacy band — real Google rating */}
