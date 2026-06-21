@@ -3,6 +3,7 @@ import JsonLd from "@/components/JsonLd";
 import Seo from "@/components/Seo";
 import { localBusinessLd } from "@/lib/jsonld";
 import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
+import UpcomingSessions from "@/components/UpcomingSessions";
 
 export default function Home() {
   return (
@@ -14,6 +15,14 @@ export default function Home() {
       />
       <JsonLd data={localBusinessLd()} />
       <LocationFinder />
+
+      {/* Upcoming sessions calendar (FareHarbor + city classes merged) */}
+      <UpcomingSessions
+        limit={6}
+        heading="Upcoming sessions"
+        showAllHref="/calendar"
+        className="py-12"
+      />
 
       {/* Social proof / legitimacy band — real Google rating */}
       <section className="border-t border-border bg-card">

@@ -9,6 +9,7 @@ import CommunityEvents from "./pages/CommunityEvents";
 import Adventures from "./pages/Adventures";
 import Rentals from "./pages/Rentals";
 import Coaching from "./pages/Coaching";
+import Calendar from "./pages/Calendar";
 import SantaPaddle from "./pages/SantaPaddle";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
@@ -55,6 +56,7 @@ export const routes: RouteRecord[] = [
       { path: "adventures", element: <Adventures /> },
       { path: "rentals", element: <Rentals /> },
       { path: "coaching", element: <Coaching /> },
+      { path: "calendar", element: <Calendar /> },
       { path: "about", element: <About /> },
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
