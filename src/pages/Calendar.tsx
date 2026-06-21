@@ -1,5 +1,6 @@
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
+import SessionCalendar from "@/components/SessionCalendar";
 import UpcomingSessions from "@/components/UpcomingSessions";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 
@@ -48,7 +49,8 @@ export default function Calendar() {
         </p>
       </div>
 
-      <UpcomingSessions heading="" />
+      <SessionCalendar heading="" className="mb-16" />
+      <UpcomingSessions heading="All upcoming sessions" />
     </main>
   );
 }

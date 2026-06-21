@@ -3,7 +3,7 @@ import JsonLd from "@/components/JsonLd";
 import Seo from "@/components/Seo";
 import { localBusinessLd } from "@/lib/jsonld";
 import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
-import UpcomingSessions from "@/components/UpcomingSessions";
+import SessionCalendar from "@/components/SessionCalendar";
 import VideoSection from "@/components/VideoSection";
 
 export default function Home() {
@@ -17,10 +17,9 @@ export default function Home() {
       <JsonLd data={localBusinessLd()} />
       <LocationFinder />
 
-      {/* Upcoming sessions calendar (FareHarbor + city classes merged) */}
-      <UpcomingSessions
-        limit={6}
-        heading="Upcoming sessions"
+      {/* Visual session calendar (FareHarbor + city classes merged) */}
+      <SessionCalendar
+        heading="Find a session by date"
         showAllHref="/calendar"
         className="py-12"
       />

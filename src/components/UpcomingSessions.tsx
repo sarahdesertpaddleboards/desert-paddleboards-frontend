@@ -1,73 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { experiences } from "@/data/locations";
-import { cityClasses } from "@/data/city-classes";
-import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
 import FareHarborButton, { useFareHarborEmbed } from "@/components/FareHarborButton";
+import {
+  useMergedSessions,
+  dateKey,
+  fmtTime,
+  fmtDateHeader,
+  type CalSession,
+} from "@/lib/sessions";
 
 /**
- * Upcoming Sessions calendar — a single chronological, date-grouped list that
- * MERGES two booking sources:
- *   1. FareHarbor sessions (live, from getUpcomingSessions) → "Book" lightframe.
- *   2. City-run classes (src/data/city-classes.ts) that book through the
- *      cities' own systems → external "Register with …" link.
- * This is why we render our own calendar instead of embedding FareHarbor's —
- * the FareHarbor widget can't show the city classes.
+ * Upcoming Sessions — a chronological, date-grouped list merging live
+ * FareHarbor sessions with city-run classes (shared logic in lib/sessions).
+ * FareHarbor → "Book" lightframe; city → external "Register with …" link.
  */
-
-const TZ = "America/Phoenix";
-
-const dateKeyFmt = new Intl.DateTimeFormat("en-CA", {
-  timeZone: TZ,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
-function dateKey(iso: string): string {
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? iso : dateKeyFmt.format(d);
-}
-
-function fmtDateHeader(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", {
-    timeZone: TZ,
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function fmtTime(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleTimeString("en-US", {
-    timeZone: TZ,
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
-
-interface CalSession {
-  startAt: string;
-  title: string;
-  venue: string;
-  city: string;
-  state: string;
-  spotsLeft?: number | null;
-  source: "fareharbor" | "city";
-  itemId?: number;
-  bookingUrl?: string;
-  bookingLabel?: string;
-}
-
 interface UpcomingSessionsProps {
-  /** Cap the number of sessions shown (e.g. a homepage teaser). */
   limit?: number;
   heading?: string;
-  /** Show a "full calendar" link (used on the compact homepage version). */
   showAllHref?: string;
   className?: string;
 }
@@ -78,63 +27,8 @@ export default function UpcomingSessions({
   showAllHref,
   className = "",
 }: UpcomingSessionsProps) {
-  const [fhSessions, setFhSessions] = useState<UpcomingSession[]>([]);
   useFareHarborEmbed();
-
-  useEffect(() => {
-    let cancelled = false;
-    getUpcomingSessions().then((s) => {
-      if (!cancelled) setFhSessions(s);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const byItemId = useMemo(
-    () => new Map(experiences.map((e) => [e.itemId, e])),
-    [],
-  );
-
-  const sessions = useMemo<CalSession[]>(() => {
-    const now = Date.now();
-    const out: CalSession[] = [];
-
-    for (const s of fhSessions) {
-      if (s.isSoldOut) continue;
-      const exp = byItemId.get(s.itemId);
-      if (!exp) continue; // only show FareHarbor sessions we have a venue for
-      out.push({
-        startAt: s.startAt,
-        title: exp.title,
-        venue: exp.venue,
-        city: exp.city,
-        state: exp.state,
-        spotsLeft: s.spotsLeft,
-        source: "fareharbor",
-        itemId: s.itemId,
-      });
-    }
-
-    for (const c of cityClasses) {
-      for (const cs of c.sessions) {
-        out.push({
-          startAt: cs.startAt,
-          title: c.title,
-          venue: c.venue,
-          city: c.city,
-          state: c.state,
-          source: "city",
-          bookingUrl: c.bookingUrl,
-          bookingLabel: c.bookingLabel,
-        });
-      }
-    }
-
-    return out
-      .filter((s) => Date.parse(s.startAt) > now)
-      .sort((a, b) => a.startAt.localeCompare(b.startAt));
-  }, [fhSessions, byItemId]);
+  const sessions = useMergedSessions();
 
   const shown = typeof limit === "number" ? sessions.slice(0, limit) : sessions;
 
