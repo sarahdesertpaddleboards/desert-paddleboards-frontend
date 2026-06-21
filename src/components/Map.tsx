@@ -88,37 +88,30 @@ declare global {
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-// Load the Google Maps JS API exactly once. Re-appending the script (on every
-// MapView mount / route change) re-registers Google's web components and spams
-// "Element already defined" + "loaded multiple times" errors — so we cache a
-// single promise and short-circuit if the API is already present.
+// Load the Google Maps JS API exactly once. We cache a single promise so
+// concurrent/repeat callers share one load (no "loaded multiple times" /
+// "already defined" spam), and we REMOVE the bootstrap <script> after it
+// loads — leaving it in the DOM conflicts with Google's own library loader
+// and leaves new google.maps.Map() silently producing no map.
 let mapsScriptPromise: Promise<void> | null = null;
 
 function loadMapScript(): Promise<void> {
-  if (typeof window !== "undefined" && window.google?.maps) {
+  if (typeof window !== "undefined" && window.google?.maps?.Map) {
     return Promise.resolve();
   }
   if (mapsScriptPromise) return mapsScriptPromise;
 
   mapsScriptPromise = new Promise<void>((resolve, reject) => {
-    const existing = document.querySelector<HTMLScriptElement>(
-      "script[data-google-maps]",
-    );
-    if (existing) {
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () => reject(new Error("Maps load failed")));
-      return;
-    }
     const script = document.createElement("script");
-    // NB: do NOT add loading=async here — this code uses the classic pattern
-    // (script.onload → new google.maps.Map). loading=async defers the
-    // libraries past onload, so the Map constructor isn't ready yet and the
-    // map silently fails to render. Classic loading fires onload when ready.
+    // Classic loading (no loading=async): onload fires when the API +
+    // libraries are ready, so new google.maps.Map works immediately.
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
     script.async = true;
     script.crossOrigin = "anonymous";
-    script.dataset.googleMaps = "true";
-    script.onload = () => resolve();
+    script.onload = () => {
+      resolve();
+      script.remove();
+    };
     script.onerror = () => {
       mapsScriptPromise = null; // allow a retry on a later mount
       reject(new Error("Failed to load Google Maps script"));
@@ -145,11 +138,9 @@ export function MapView({
   const map = useRef<google.maps.Map | null>(null);
 
   const init = usePersistFn(async () => {
+    if (map.current) return; // already initialised — never create the map twice
     await loadMapScript();
-    if (!mapContainer.current) {
-      console.error("Map container not found");
-      return;
-    }
+    if (map.current || !mapContainer.current) return;
     map.current = new window.google.maps.Map(mapContainer.current, {
       zoom: initialZoom,
       center: initialCenter,
