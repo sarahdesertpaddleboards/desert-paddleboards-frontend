@@ -39,6 +39,19 @@ content:
               - { name: endTime, label: "End time (optional, 24-hour)", type: string }
           - { name: id, label: "ID (do not change)", type: string }
 
+  - name: videos
+    label: Homepage Videos
+    type: file
+    path: src/data/videos.json
+    fields:
+      - name: videos
+        label: Videos ("See it in action")
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: id, label: "YouTube video ID (the part after watch?v=)", type: string }
+
   - name: shop
     label: Shop — Products & Prices
     type: file

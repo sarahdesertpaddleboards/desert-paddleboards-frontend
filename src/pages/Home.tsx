@@ -4,6 +4,7 @@ import Seo from "@/components/Seo";
 import { localBusinessLd } from "@/lib/jsonld";
 import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
 import UpcomingSessions from "@/components/UpcomingSessions";
+import VideoSection from "@/components/VideoSection";
 
 export default function Home() {
   return (
@@ -44,6 +45,9 @@ export default function Home() {
 
       {/* Google reviews — real text, baked in at build time */}
       <GoogleReviews max={3} heading="Loved across Arizona" />
+
+      {/* Videos — click-to-play YouTube facade */}
+      <VideoSection heading="See it in action" className="py-16" />
     </>
   );
 }
