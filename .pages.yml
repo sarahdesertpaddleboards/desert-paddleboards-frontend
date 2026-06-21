@@ -1,0 +1,71 @@
+# Pages CMS configuration (https://pagescms.org).
+# Gives Sarah / her assistant a friendly UI to edit the calendar's city-class
+# dates and the shop products (incl. Stripe payment links). Saving in the CMS
+# commits to this repo, which auto-rebuilds + deploys the site.
+#
+# One-time setup: at app.pagescms.org, sign in with GitHub and grant access to
+# this repo. Pages CMS reads this file to build the editing forms.
+
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: city-classes
+    label: Calendar — City Classes
+    type: file
+    path: src/data/city-classes.json
+    fields:
+      - name: cityClasses
+        label: City classes
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Class name, type: string }
+          - { name: venue, label: Venue / pool, type: string }
+          - { name: city, label: City, type: string }
+          - { name: state, label: State, type: string }
+          - { name: address, label: Address, type: string }
+          - { name: bookingUrl, label: Registration link (city website), type: string }
+          - { name: bookingLabel, label: Button text, type: string }
+          - { name: note, label: Note (optional), type: text }
+          - name: sessions
+            label: Upcoming dates
+            type: object
+            list: true
+            fields:
+              - { name: date, label: Date, type: date }
+              - { name: time, label: "Start time (24-hour, e.g. 20:00 = 8 PM)", type: string }
+              - { name: endTime, label: "End time (optional, 24-hour)", type: string }
+          - { name: id, label: "ID (do not change)", type: string }
+
+  - name: shop
+    label: Shop — Products & Prices
+    type: file
+    path: src/data/shop.json
+    fields:
+      - name: products
+        label: Products
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Product name, type: string }
+          - name: kind
+            label: Type
+            type: select
+            options:
+              values: [physical, digital]
+          - { name: priceUsd, label: Price (USD, whole number), type: number }
+          - { name: priceNote, label: "Price note (e.g. + $40 shipping)", type: string }
+          - { name: blurb, label: Description, type: text }
+          - { name: image, label: Image URL, type: string }
+          - { name: paymentLink, label: Stripe payment link, type: string }
+          - name: options
+            label: Variants (e.g. New / Used) — leave empty for a single price
+            type: object
+            list: true
+            fields:
+              - { name: label, label: Variant label, type: string }
+              - { name: priceUsd, label: Price (USD), type: number }
+              - { name: paymentLink, label: Stripe payment link, type: string }
+          - { name: slug, label: "Slug (do not change)", type: string }

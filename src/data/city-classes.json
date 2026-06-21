@@ -1,0 +1,40 @@
+{
+  "cityClasses": [
+    {
+      "id": "queen-creek-friday-floats",
+      "title": "Friday Night Floating Soundbath",
+      "venue": "Queen Creek Recreation Pool",
+      "city": "Queen Creek",
+      "state": "AZ",
+      "address": "22343 E Ryan Rd, Queen Creek, AZ 85142",
+      "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog",
+      "bookingLabel": "Register with Queen Creek",
+      "note": "Booked through the Town of Queen Creek — search \"swimming\" activities.",
+      "sessions": []
+    },
+    {
+      "id": "sedona-soundbath",
+      "title": "Sedona Floating Soundbath",
+      "venue": "Sedona Community Pool",
+      "city": "Sedona",
+      "state": "AZ",
+      "address": "570 Posse Ground Rd, Sedona, AZ 86336",
+      "bookingUrl": "https://sedonarecreation.activityreg.com/selectActivity",
+      "bookingLabel": "Register with City of Sedona",
+      "note": "Booked through the City of Sedona — search \"swimming\" activities.",
+      "sessions": []
+    },
+    {
+      "id": "avondale-soundbath",
+      "title": "Avondale Floating Soundbath",
+      "venue": "City of Avondale",
+      "city": "Avondale",
+      "state": "AZ",
+      "address": "",
+      "bookingUrl": "https://secure.rec1.com/AZ/city-of-avondale-parks-recreation/catalog/index/215ec2ec018114c4b5719d803890ffeb?filter=c2VhcmNoPXNvdW5kYmF0aA==",
+      "bookingLabel": "Register with City of Avondale",
+      "note": "Booked through the City of Avondale — search \"soundbath\".",
+      "sessions": []
+    }
+  ]
+}
