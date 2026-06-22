@@ -30,9 +30,6 @@ export default function LocationDetail() {
     );
   }
 
-  const locationLabel = [exp.venue, `${exp.city}, ${exp.state}`]
-    .filter(Boolean)
-    .join(" · ");
 
   const longDescription = locationContent[exp.slug];
 
@@ -76,12 +73,13 @@ export default function LocationDetail() {
         <div className="absolute inset-0 bg-black/35" />
         <div className="relative z-10 flex h-full items-end">
           <div className="container pb-8 text-white">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em]">
-              {exp.city}, {exp.state}
-            </p>
-            <h1 className="mt-2 max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
+            <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
               {exp.title}
             </h1>
+            <p className="mt-2 text-lg font-medium text-white/95">
+              {exp.venue ? `${exp.venue} · ` : ""}
+              {exp.city}
+            </p>
           </div>
         </div>
       </div>
@@ -94,9 +92,6 @@ export default function LocationDetail() {
             </span>
           </Link>
 
-          {exp.venue ? (
-            <p className="text-lg font-medium text-foreground">{locationLabel}</p>
-          ) : null}
 
           {longDescription ? (
             <div className="prose prose-slate max-w-none prose-headings:font-bold prose-strong:text-foreground prose-li:marker:text-brand prose-p:text-muted-foreground prose-li:text-muted-foreground">

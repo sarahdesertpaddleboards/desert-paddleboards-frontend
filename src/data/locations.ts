@@ -147,7 +147,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 627535,
     slug: "sunset-floating-soundbath-skyline-pool-mesa",
-    title: "Sunset Floating Soundbath at Skyline Pool",
+    title: "Floating Soundbath",
     venue: "Skyline Pool",
     blurb:
       "The Floating Nap™ — as seen on TikTok. A sunset soundbath on the water at Skyline Pool in Mesa.",
@@ -157,7 +157,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 725981,
     slug: "floating-soundbath-hotel-adeline-scottsdale",
-    title: "Floating Soundbath with Live Music",
+    title: "Resort Floating Soundbath",
     venue: "Hotel Adeline",
     blurb:
       "A floating meditation set to live music at Hotel Adeline in Scottsdale — drift, breathe, and let go.",
@@ -166,7 +166,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 728366,
     slug: "floating-soundbath-doubletree-gilbert",
-    title: "Floating Soundbath with Live Music",
+    title: "Resort Floating Soundbath",
     venue: "DoubleTree by Hilton",
     blurb:
       "Unwind on the water with a floating meditation and live music at the DoubleTree by Hilton in Gilbert.",
@@ -175,7 +175,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 578969,
     slug: "floating-soundbath-jw-marriott-desert-ridge-phoenix",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "JW Marriott Desert Ridge — Revive Spa",
     blurb:
       "A spa-day soundbath at the Revive Spa pool, JW Marriott Desert Ridge in Phoenix. Float, restore, and reset.",
@@ -184,7 +184,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 626146,
     slug: "floating-soundbath-aji-spa-sheraton-grand-chandler",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "Aji Spa — Sheraton Grand at Wild Horse Pass",
     city: "Chandler",
     // FareHarbor has no coords for Aji; set manually (Wild Horse Pass).
@@ -197,7 +197,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 636156,
     slug: "floating-soundbath-lemonds-spa-wigwam-litchfield-park",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "LeMonds Spa — The Wigwam",
     blurb:
       "A floating soundbath at the historic Wigwam resort's LeMonds Spa in Litchfield Park.",
@@ -206,8 +206,8 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 344396,
     slug: "superstition-shadows-floating-soundbath-apache-junction",
-    title: "Superstition Shadows Floating Soundbath",
-    venue: "",
+    title: "Floating Soundbath",
+    venue: "Superstition Shadows",
     blurb:
       "Float beneath the Superstition Mountains as the desert light fades — a soundbath in Apache Junction.",
     image: "https://cdn.filestackcontent.com/sqrTR58YQq2Ru4MBETmC",
@@ -215,8 +215,8 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 648798,
     slug: "mulberry-community-floating-soundbath-mesa",
-    title: "Mulberry Community Floating Soundbath",
-    venue: "Mulberry",
+    title: "Floating Soundbath",
+    venue: "Mulberry Community",
     blurb:
       "A community floating soundbath at Mulberry in Mesa — now open to the public.",
     image: "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg",
@@ -224,7 +224,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 712901,
     slug: "floating-soundbath-grand-hyatt-scottsdale",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "Grand Hyatt Scottsdale",
     blurb:
       "A floating soundbath with live music at the Grand Hyatt Scottsdale — sink into the water and let the desert evening settle.",
@@ -264,7 +264,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 655636,
     slug: "indoor-floating-soundbath-swimhaus-gilbert",
-    title: "Indoor Floating Soundbath",
+    title: "Floating Soundbath",
     venue: "SwimHaus Swim School",
     blurb:
       "An indoor floating soundbath at SwimHaus in Gilbert — climate-controlled calm on the water, any time of year.",
@@ -272,7 +272,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "PebbleCreek Oasis Pool",
     blurb:
       "A floating soundbath at the PebbleCreek Oasis Pool in Goodyear — float, breathe, and let live sound carry you.",
@@ -280,7 +280,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 146434,
     slug: "lazy-river-water-aerobics-floating-yoga-mesa",
-    title: "Pool Pilates, Water Aerobics & Floating Yoga",
+    title: "Water Aerobics & Pool Fitness",
     venue: "Mesa Aquatics Complex",
     kind: "class",
     blurb:
@@ -290,7 +290,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 642745,
     slug: "floating-soundbath-at-westin-kierland-resort-spa-scottsdale",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "Westin Kierland Resort & Spa",
     blurb:
       "Float weightlessly on the water as live sound washes over you at the Westin Kierland Resort & Spa pool in Scottsdale.",
@@ -298,7 +298,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 722096,
     slug: "hotel-solaya-floating-soundbath-scottsdale",
-    title: "Floating Soundbath",
+    title: "Resort Floating Soundbath",
     venue: "Hotel Solaya",
     blurb:
       "A floating soundbath on the water at Hotel Solaya in Scottsdale — drift, breathe, and let the live sound carry you into deep rest.",

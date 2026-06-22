@@ -5,10 +5,10 @@ import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
-// Homepage hero — Sarah's signature sunset shot: branded boards on the
-// evening floating soundbath at a resort pool — floats on the water, candle
-// lanterns and a sound-healer with crystal bowls (self-hosted in /public).
-const heroImage = "/floating-soundbath-evening.jpg";
+// Homepage hero — sunset floating soundbath at a resort pool: branded floats
+// on the water at golden hour with a musician playing crystal bowls and gong
+// (self-hosted in /public).
+const heroImage = "/floating-soundbath-sunset-hero.jpg";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
@@ -271,8 +271,8 @@ export default function LocationFinder({
       <section className="relative h-[360px] min-h-[320px] w-full overflow-hidden">
         <img
           src={heroImage}
-          alt="Evening floating soundbath at a resort pool, with guests floating on the water by candlelight"
-          className="absolute inset-0 h-full w-full object-cover object-bottom"
+          alt="Sunset floating soundbath at a resort pool — guests floating on the water as a musician plays crystal bowls and a gong"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/45 to-brand-dark/15" />
         <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
@@ -280,7 +280,7 @@ export default function LocationFinder({
             Floating soundbaths · water wellness · Arizona
           </p>
           <h1 className="mt-2 max-w-[18ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
-            Naps just got a live band.
+            Life is better on the water.
           </h1>
           <p className="mt-3 max-w-xl text-base text-white/90">
             The Floating Nap™ — a floating soundbath with live music on the water.
@@ -408,23 +408,21 @@ function VenueCard({
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-            {exp.city}, {exp.state}
-          </p>
+          <Link to={`/locations/${exp.slug}`} className="min-w-0">
+            <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-brand-dark">
+              {exp.title}
+            </h3>
+          </Link>
           {typeof distanceMi === "number" ? (
             <span className="whitespace-nowrap rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand-dark">
               {distanceMi < 1 ? "<1" : Math.round(distanceMi)} mi away
             </span>
           ) : null}
         </div>
-        <Link to={`/locations/${exp.slug}`}>
-          <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-brand-dark">
-            {exp.title}
-          </h3>
-        </Link>
-        {exp.venue ? (
-          <p className="truncate text-sm text-muted-foreground">{exp.venue}</p>
-        ) : null}
+        <p className="truncate text-sm font-medium text-muted-foreground">
+          {exp.venue ? `${exp.venue} · ` : ""}
+          {exp.city}
+        </p>
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm">

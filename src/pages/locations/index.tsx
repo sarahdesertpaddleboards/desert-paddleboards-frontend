@@ -45,13 +45,11 @@ export default function LocationsIndex() {
                 />
               </div>
               <div className="space-y-1 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-                  {exp.city}, {exp.state}
-                </p>
                 <h2 className="text-lg font-bold leading-snug">{exp.title}</h2>
-                {exp.venue ? (
-                  <p className="text-sm text-muted-foreground">{exp.venue}</p>
-                ) : null}
+                <p className="text-sm font-medium text-muted-foreground">
+                  {exp.venue ? `${exp.venue} · ` : ""}
+                  {exp.city}
+                </p>
               </div>
             </article>
           </Link>
