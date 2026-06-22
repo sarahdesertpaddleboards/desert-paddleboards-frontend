@@ -68,6 +68,17 @@ function monthsToFetch(now, monthsAhead) {
   return out;
 }
 
+// Arizona (Phoenix) observes no daylight saving — it's MST / UTC-07:00 all
+// year. FareHarbor's public calendar returns naive local timestamps with no
+// offset (e.g. "2026-06-30T19:00:00"), so `new Date(...)` parses them in the
+// VIEWER's timezone and renders the wrong time for anyone outside Arizona
+// (and in JSON-LD). Pin them to Phoenix so every client agrees. Leaves any
+// already-offset/UTC string untouched.
+function withPhoenixOffset(s) {
+  if (typeof s !== "string") return s;
+  return /[zZ]|[+-]\d\d:?\d\d$/.test(s) ? s : `${s}-07:00`;
+}
+
 async function fetchItemMonth(itemId, year, month) {
   const mm = String(month).padStart(2, "0");
   const url = `https://fareharbor.com/api/v1/companies/${SHORTNAME}/items/${itemId}/calendar/${year}/${mm}/`;
@@ -83,8 +94,8 @@ async function fetchItemMonth(itemId, year, month) {
         out.push({
           itemId,
           availabilityPk: av.pk,
-          startAt: av.start_at,
-          endAt: av.end_at,
+          startAt: withPhoenixOffset(av.start_at),
+          endAt: withPhoenixOffset(av.end_at),
           spotsLeft:
             typeof av.approximate_available_capacity === "number"
               ? av.approximate_available_capacity
