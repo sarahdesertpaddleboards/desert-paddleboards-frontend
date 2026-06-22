@@ -50,6 +50,10 @@ jobs:
           # no referrer restriction, restricted to Places API (New) in Cloud
           # Console. If unset, the build keeps the committed reviews snapshot.
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          # Google Analytics 4 Measurement ID (public by design — e.g.
+          # G-XXXXXXX). Add it as a repo secret named VITE_GA4_ID to switch
+          # analytics on; if unset, no analytics script loads at all.
+          VITE_GA4_ID: ${{ secrets.VITE_GA4_ID }}
 
       # Recreate the Pages project if it doesn't exist yet (idempotent — fails
       # harmlessly if it's already there). Restores the desert-paddleboards.pages.dev

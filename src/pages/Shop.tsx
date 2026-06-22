@@ -4,6 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
 import { products, formatPrice, type Product } from "@/data/shop";
+import { trackEvent } from "@/lib/analytics";
 
 const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
@@ -166,6 +167,13 @@ function ProductCard({ product }: { product: Product }) {
                   href={o.paymentLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent("shop_click", {
+                      product: product.name,
+                      variant: o.label || undefined,
+                      value: o.priceUsd,
+                    })
+                  }
                   className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
                 >
                   {o.label ? `Buy ${o.label} — ${formatPrice(o.priceUsd)}` : "Buy now"}

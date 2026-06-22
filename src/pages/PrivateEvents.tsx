@@ -13,6 +13,7 @@ import JsonLd from "@/components/JsonLd";
 import FareHarborButton from "@/components/FareHarborButton";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { submitWeb3Form } from "@/lib/web3forms";
+import { trackEvent } from "@/lib/analytics";
 import { PRIVATE_SOUNDBATH_ITEM_ID } from "@/data/locations";
 import { SITE_URL, business } from "@/data/site";
 
@@ -65,6 +66,7 @@ export default function PrivateEvents() {
     setSubmitting(false);
 
     if (result.success) {
+      trackEvent("generate_lead", { form: "private-events" });
       toast.success("Thank you! Your enquiry has been sent — we'll reply within 24 hours.");
       resetForm();
       return;
