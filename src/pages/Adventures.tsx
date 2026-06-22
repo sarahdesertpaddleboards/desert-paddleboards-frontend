@@ -78,8 +78,8 @@ export default function Adventures() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Guided Paddleboard Adventures &amp; Retreats in Arizona | Desert Paddleboards"
-        description="Guided paddleboard adventures with Desert Paddleboards — clear-paddleboard trips through the Colorado River's Black Canyon, Flagstaff paddle-and-ride retreats, and intentional small-group travel to Thailand and the Alps."
+        title="Paddleboard Adventures in Arizona | Desert Paddleboards"
+        description="Guided paddleboard adventures across Arizona and beyond — clear-board trips through the Black Canyon, Flagstaff retreats and intentional small-group travel."
         image="/images/blog/paddleboarding-the-salt-river.webp"
       />
       <JsonLd data={structuredData} />

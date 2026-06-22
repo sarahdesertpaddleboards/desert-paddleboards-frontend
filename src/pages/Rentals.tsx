@@ -45,8 +45,8 @@ export default function Rentals() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Paddleboard &amp; Airstream Rentals — Phoenix, AZ | Desert Paddleboards"
-        description="Rent paddleboards for your group or event across the Phoenix metro, or book the Grapefruit Orchard Airstream — a camera-ready mobile space for brand activations, pop-ups and content creation. Delivered Valley-wide."
+        title="Paddleboard &amp; Airstream Rentals — Phoenix, AZ"
+        description="Rent paddleboards across metro Phoenix, or book the Grapefruit Orchard Airstream — a camera-ready space for shoots, pop-ups and brand activations."
         image="/floating-boards-sunset.jpg"
       />
       <JsonLd data={structuredData} />

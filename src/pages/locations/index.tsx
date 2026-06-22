@@ -9,8 +9,8 @@ export default function LocationsIndex() {
   return (
     <main className="container py-16">
       <Seo
-        title="Floating Soundbath Locations Across Arizona | Desert Paddleboards"
-        description="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert, Chandler and more. See locations on the map and book online."
+        title="Floating Soundbath Locations Across Arizona"
+        description="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert and more. See locations on the map and book online."
       />
       <JsonLd
         data={breadcrumbLd([

@@ -71,8 +71,8 @@ export default function CommunityEvents() {
   return (
     <main>
       <Seo
-        title="Community &amp; Senior-Living Events — Floating Soundbaths for HOAs, 55+ &amp; Corporate Wellness | Desert Paddleboards"
-        description="Turnkey floating soundbath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona. We bring the boards, live musicians and team — you pick the date."
+        title="Floating Soundbath Events for HOAs &amp; 55+ Communities"
+        description="Turnkey floating soundbath events for HOAs, 55+ communities and corporate wellness across Arizona. We bring the boards, musicians and team — you pick the date."
       />
       <JsonLd data={structuredData} />
 

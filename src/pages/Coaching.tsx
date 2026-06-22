@@ -75,8 +75,8 @@ export default function Coaching() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Adventure Life Coaching &amp; Motivational Speaking with Sarah Williams | Desert Paddleboards"
-        description="One-on-one adventure life coaching and motivational speaking with Sarah Williams — build the confidence to break out of your comfort zone. Sessions and multi-session packages available in Arizona."
+        title="Adventure Life Coaching &amp; Speaking | Sarah Williams"
+        description="One-on-one adventure life coaching and motivational speaking with Sarah Williams — build the confidence to step outside your comfort zone, in Arizona."
         image="/about-sarah-class.webp"
       />
       <JsonLd data={structuredData} />

@@ -156,8 +156,8 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="FAQ — Floating Soundbaths, Booking &amp; What to Expect | Desert Paddleboards"
-        description="Answers about floating soundbaths, pool pilates, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event in Arizona."
+        title="Floating Soundbath FAQ — Booking &amp; What to Expect"
+        description="Answers about floating soundbaths, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event."
       />
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">

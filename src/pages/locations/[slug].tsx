@@ -50,10 +50,17 @@ export default function LocationDetail() {
     ...upcomingForItem.map((s) => eventLd(exp, s)),
   ]);
 
+  // SEO title: lead with the service + venue + city (the local-search terms).
+  // Append the brand only when there's room, so titles don't blow past the
+  // ~60-char point where Google truncates them in results.
+  const baseTitle = `${exp.title}${exp.venue ? ` — ${exp.venue}` : ""}, ${exp.city}`;
+  const seoTitle =
+    baseTitle.length <= 40 ? `${baseTitle} | Desert Paddleboards` : baseTitle;
+
   return (
     <main>
       <Seo
-        title={`${exp.title}${exp.venue ? ` — ${exp.venue}` : ""}, ${exp.city} | Desert Paddleboards`}
+        title={seoTitle}
         description={exp.blurb}
         image={exp.image}
       />

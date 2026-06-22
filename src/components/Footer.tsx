@@ -102,9 +102,21 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Floating Soundbaths</li>
-              <li>Floating Yoga</li>
-              <li>Water Aerobics</li>
+              <li>
+                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
+                  Floating Soundbaths
+                </Link>
+              </li>
+              <li>
+                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
+                  Floating Yoga
+                </Link>
+              </li>
+              <li>
+                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
+                  Water Aerobics
+                </Link>
+              </li>
               <li>
                 <Link to="/rentals" className="hover:text-primary transition-colors cursor-pointer">
                   Paddleboard Rentals
@@ -115,7 +127,11 @@ export default function Footer() {
                   Guided Adventures
                 </Link>
               </li>
-              <li>Private Group Events</li>
+              <li>
+                <Link to="/private-events" className="hover:text-primary transition-colors cursor-pointer">
+                  Private Group Events
+                </Link>
+              </li>
             </ul>
           </div>
 

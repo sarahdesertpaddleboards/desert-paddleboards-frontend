@@ -9,7 +9,7 @@ export default function Privacy() {
     <main className="container max-w-3xl py-16">
       <Seo
         title="Privacy Policy | Desert Paddleboards"
-        description="How Desert Paddleboards collects, uses and protects your information."
+        description="How Desert Paddleboards collects, uses and protects your personal information across our website, bookings, classes and online shop."
       />
       <JsonLd
         data={breadcrumbLd([

@@ -152,8 +152,8 @@ export default function PrivateEvents() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Private Events — Bachelorette, Corporate Wellness &amp; Group Celebrations | Desert Paddleboards"
-        description="Private floating soundbath events across Arizona — bachelorette parties, corporate wellness and team offsites, gym member-appreciation days, retreats and group celebrations. We bring the boards, live musicians and team."
+        title="Private Events — Bachelorette &amp; Corporate Wellness"
+        description="Private floating soundbath events across Arizona — bachelorette parties, corporate offsites, retreats and celebrations. We bring the boards, musicians and team."
       />
       <JsonLd data={structuredData} />
 

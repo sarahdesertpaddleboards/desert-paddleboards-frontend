@@ -62,7 +62,7 @@ ${urls}
 
 writeFileSync(join(DIST, "sitemap.xml"), sitemap);
 
-const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\nDisallow: /success\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 writeFileSync(join(DIST, "robots.txt"), robots);
 
 console.log(`[sitemap] wrote ${routes.length} urls to dist/sitemap.xml + robots.txt`);

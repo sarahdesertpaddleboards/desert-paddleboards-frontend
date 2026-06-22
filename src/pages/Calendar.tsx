@@ -19,8 +19,8 @@ export default function Calendar() {
   return (
     <main className="py-16">
       <Seo
-        title="Calendar — Upcoming Floating Soundbaths & Classes | Desert Paddleboards"
-        description="Every upcoming floating soundbath and water-wellness class across Arizona — book online instantly, or register for city-run classes (Queen Creek, Sedona, Avondale) through the city."
+        title="Floating Soundbath & Class Calendar | Desert Paddleboards"
+        description="Every upcoming floating soundbath and water-wellness class across Arizona — book online, or register for city-run classes in Queen Creek, Sedona & Avondale."
       />
       <JsonLd data={structuredData} />
 

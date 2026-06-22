@@ -40,8 +40,8 @@ export default function About() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="About Sarah Williams &amp; Desert Paddleboards — Floating Soundbaths in Arizona"
-        description="Meet Sarah Williams, the founder behind Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011. Featured in Phoenix Magazine and local news."
+        title="About Sarah Williams | Desert Paddleboards"
+        description="Meet Sarah Williams, founder of Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011."
         image="/about-sarah-class.webp"
       />
       {/* Hero */}

@@ -287,6 +287,22 @@ const LOCATION_OVERLAYS: Overlay[] = [
       "A 90-minute high-energy aquatic workout — pool pilates, water aerobics, floating yoga and surf fitness at the Mesa Aquatics Complex.",
     image: "https://cdn.filestackcontent.com/1UEnWJiQLm4Miz06WkdH",
   },
+  {
+    itemId: 642745,
+    slug: "floating-soundbath-at-westin-kierland-resort-spa-scottsdale",
+    title: "Floating Soundbath",
+    venue: "Westin Kierland Resort & Spa",
+    blurb:
+      "Float weightlessly on the water as live sound washes over you at the Westin Kierland Resort & Spa pool in Scottsdale.",
+  },
+  {
+    itemId: 722096,
+    slug: "hotel-solaya-floating-soundbath-scottsdale",
+    title: "Floating Soundbath",
+    venue: "Hotel Solaya",
+    blurb:
+      "A floating soundbath on the water at Hotel Solaya in Scottsdale — drift, breathe, and let the live sound carry you into deep rest.",
+  },
 ];
 
 // ---------------------------------------------------------------------------
