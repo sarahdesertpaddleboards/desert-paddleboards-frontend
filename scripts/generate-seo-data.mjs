@@ -106,6 +106,15 @@ function monthsToFetch(now) {
   return out;
 }
 
+// Arizona observes no DST (MST / UTC-07:00 year-round). FareHarbor returns
+// naive timestamps with no offset, so pin them to Phoenix — otherwise the
+// Event JSON-LD startDate is ambiguous and renders wrong off-Arizona. Mirrors
+// withPhoenixOffset in functions/experiences/upcoming.js.
+function withPhoenixOffset(s) {
+  if (typeof s !== "string") return s;
+  return /[zZ]|[+-]\d\d:?\d\d$/.test(s) ? s : `${s}-07:00`;
+}
+
 async function fetchItemMonth(itemId, year, month) {
   const mm = String(month).padStart(2, "0");
   const url = `https://fareharbor.com/api/v1/companies/${SHORTNAME}/items/${itemId}/calendar/${year}/${mm}/`;
@@ -121,8 +130,8 @@ async function fetchItemMonth(itemId, year, month) {
         out.push({
           itemId,
           availabilityPk: av.pk,
-          startAt: av.start_at,
-          endAt: av.end_at,
+          startAt: withPhoenixOffset(av.start_at),
+          endAt: withPhoenixOffset(av.end_at),
           spotsLeft:
             typeof av.approximate_available_capacity === "number"
               ? av.approximate_available_capacity
