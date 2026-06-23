@@ -289,7 +289,7 @@ export default function PrivateEvents() {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="(480) 201-9520"
+                      placeholder="(602) 555-0123"
                     />
                   </div>
 
@@ -370,7 +370,7 @@ export default function PrivateEvents() {
                     {submitting ? "Sending…" : "Submit Inquiry"}
                   </Button>
                   <Button type="button" variant="outline" size="lg" asChild>
-                    <a href="tel:4802019520">Or Call 480.201.9520</a>
+                    <a href="tel:6024560884">Or Call 602.456.0884</a>
                   </Button>
                 </div>
 

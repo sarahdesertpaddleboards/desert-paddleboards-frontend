@@ -40,9 +40,9 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <a href="tel:4802019520" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+          <a href="tel:6024560884" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             <Phone className="h-4 w-4" />
-            <span>480.201.9520</span>
+            <span>602.456.0884</span>
           </a>
         </div>
 
@@ -74,11 +74,11 @@ export default function Header() {
             ))}
             <div className="pt-4 space-y-3">
               <a
-                href="tel:4802019520"
+                href="tel:6024560884"
                 className="flex items-center gap-2 text-base font-medium text-foreground/80"
               >
                 <Phone className="h-5 w-5" />
-                <span>480.201.9520</span>
+                <span>602.456.0884</span>
               </a>
             </div>
           </div>

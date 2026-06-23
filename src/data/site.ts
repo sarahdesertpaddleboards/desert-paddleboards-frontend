@@ -5,7 +5,7 @@ export const SITE_URL = "https://desertpaddleboards.com";
 export const business = {
   name: "Desert Paddleboards",
   url: SITE_URL,
-  telephone: "+14802019520",
+  telephone: "+16024560884",
   email: "sarah@desertpaddleboards.com",
   description:
     "Floating soundbaths, paddleboard yoga and water-based wellness experiences across Arizona.",

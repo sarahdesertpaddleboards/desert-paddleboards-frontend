@@ -194,7 +194,7 @@ export default function Coaching() {
               </a>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <a href="tel:4802019520">Or call 480.201.9520</a>
+              <a href="tel:6024560884">Or call 602.456.0884</a>
             </Button>
           </div>
         </div>

@@ -222,10 +222,10 @@ export default function CommunityEvents() {
               Email us about your community
             </a>
             <a
-              href="tel:4802019520"
+              href="tel:6024560884"
               className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10"
             >
-              Or call 480.201.9520
+              Or call 602.456.0884
             </a>
           </div>
         </section>

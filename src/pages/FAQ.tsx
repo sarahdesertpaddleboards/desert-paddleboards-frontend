@@ -198,10 +198,10 @@ export default function FAQ() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="tel:480.201.9520"
+              href="tel:602.456.0884"
               className="inline-flex items-center justify-center px-8 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors"
             >
-              Call Us: 480.201.9520
+              Call Us: 602.456.0884
             </a>
             <a
               href="/locations"

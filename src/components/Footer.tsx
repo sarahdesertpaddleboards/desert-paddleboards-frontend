@@ -141,11 +141,11 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <a
-                  href="tel:4802019520"
+                  href="tel:6024560884"
                   className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Phone className="h-4 w-4" />
-                  <span>480.201.9520</span>
+                  <span>602.456.0884</span>
                 </a>
               </li>
               <li>
