@@ -582,7 +582,7 @@ function CityVenueCard({
   return (
     <article className="flex gap-4 rounded-2xl border border-border bg-card p-4">
       <img
-        src={CITY_CARD_IMAGE}
+        src={c.image || CITY_CARD_IMAGE}
         alt={`${c.title}, ${c.city}`}
         loading="lazy"
         className="h-24 w-24 flex-shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"

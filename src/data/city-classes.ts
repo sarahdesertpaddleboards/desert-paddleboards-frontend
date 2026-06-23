@@ -29,6 +29,8 @@ export interface CityClass {
   bookingUrl: string;
   bookingLabel: string;
   note?: string;
+  /** Venue photo (path under /public or absolute URL). */
+  image?: string;
   sessions: CityClassSession[];
   /** Geocoded venue location (for the map). Undefined until we have coords. */
   lat?: number;
