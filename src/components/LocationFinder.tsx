@@ -6,6 +6,7 @@ import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
 import { cityClassVenues, type CityClass } from "@/data/city-classes";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
+import { trackEvent } from "@/lib/analytics";
 // Homepage hero — sunset floating soundbath at a resort pool: branded floats
 // on the water at golden hour with a musician playing crystal bowls and gong
 // (self-hosted in /public).
@@ -85,6 +86,17 @@ function cityVenueInfoHtml(c: CityClass, nextIso?: string): string {
   </div>`;
 }
 
+/** A row in the venue finder list — either a FareHarbor venue or a city class. */
+interface FinderRow {
+  key: string;
+  kind: "fareharbor" | "city";
+  city: string;
+  next?: { startAt: string; spotsLeft?: number | null };
+  dist?: number;
+  exp?: Experience;
+  cityClass?: CityClass;
+}
+
 /** Up to `n` venues nearest to a point, by great-circle distance. */
 function nearestVenues(
   g: any,
@@ -154,9 +166,12 @@ export default function LocationFinder({
 
   const cities = useMemo(
     () =>
-      [...new Set(experiences.map((e) => e.city))].sort((a, b) =>
-        a.localeCompare(b),
-      ),
+      [
+        ...new Set([
+          ...experiences.map((e) => e.city),
+          ...cityClassVenues.map((c) => c.city),
+        ]),
+      ].sort((a, b) => a.localeCompare(b)),
     [],
   );
 
@@ -176,24 +191,57 @@ export default function LocationFinder({
     return map;
   }, [origin]);
 
-  const visible = useMemo(() => {
-    let list = experiences.slice();
-    if (selectedCity) list = list.filter((e) => e.city === selectedCity);
+  // Distance (miles) to each city-run venue, when an origin is set.
+  const cityDistanceById = useMemo(() => {
+    const map = new Map<string, number>();
+    const g = typeof window !== "undefined" ? (window as any).google : undefined;
+    if (!origin || !g?.maps?.geometry?.spherical) return map;
+    const from = new g.maps.LatLng(origin.lat, origin.lng);
+    for (const c of cityClassVenues) {
+      if (typeof c.lat !== "number" || typeof c.lng !== "number") continue;
+      const meters = g.maps.geometry.spherical.computeDistanceBetween(
+        from,
+        new g.maps.LatLng(c.lat, c.lng),
+      );
+      map.set(c.id, meters / 1609.344);
+    }
+    return map;
+  }, [origin]);
 
-    list.sort((a, b) => {
-      if (origin) {
-        return (
-          (distanceByItem.get(a.itemId) ?? Infinity) -
-          (distanceByItem.get(b.itemId) ?? Infinity)
-        );
-      }
-      // default: soonest next session first, venues without sessions last
-      const an = nextByItem.get(a.itemId)?.startAt ?? "9999";
-      const bn = nextByItem.get(b.itemId)?.startAt ?? "9999";
-      return an.localeCompare(bn);
+  // Unified finder list: FareHarbor venues + city-run classes, filtered by
+  // city and sorted by distance (when searching) or soonest session.
+  const visible = useMemo<FinderRow[]>(() => {
+    const rows: FinderRow[] = [
+      ...experiences.map((e) => ({
+        key: e.slug,
+        kind: "fareharbor" as const,
+        city: e.city,
+        next: nextByItem.get(e.itemId),
+        dist: distanceByItem.get(e.itemId),
+        exp: e,
+      })),
+      ...cityClassVenues.map((c) => {
+        const iso = nextCityIso(c);
+        return {
+          key: c.id,
+          kind: "city" as const,
+          city: c.city,
+          next: iso ? { startAt: iso } : undefined,
+          dist: cityDistanceById.get(c.id),
+          cityClass: c,
+        };
+      }),
+    ];
+
+    const list = selectedCity
+      ? rows.filter((r) => r.city === selectedCity)
+      : rows;
+
+    return list.slice().sort((a, b) => {
+      if (origin) return (a.dist ?? Infinity) - (b.dist ?? Infinity);
+      return (a.next?.startAt ?? "9999").localeCompare(b.next?.startAt ?? "9999");
     });
-    return list;
-  }, [selectedCity, origin, distanceByItem, nextByItem]);
+  }, [selectedCity, origin, distanceByItem, cityDistanceById, nextByItem]);
 
   function handleMapReady(map: google.maps.Map) {
     mapRef.current = map;
@@ -245,7 +293,12 @@ export default function LocationFinder({
         infoWindow.setContent(cityVenueInfoHtml(c, nextCityIso(c)));
         infoWindow.open({ map, anchor: marker });
       });
-      bounds.extend({ lat: c.lat, lng: c.lng });
+      // Only widen the DEFAULT view for metro-area venues. Far-flung pins like
+      // Sedona (~120mi north) still render — they're just off the initial view
+      // (reachable by panning or search), so the map stays focused on Phoenix.
+      if (Math.abs(c.lat - PHOENIX_CENTER.lat) < 0.7) {
+        bounds.extend({ lat: c.lat, lng: c.lng });
+      }
     }
 
     map.fitBounds(bounds, 48);
@@ -421,16 +474,25 @@ export default function LocationFinder({
             </div>
           ) : null}
 
-          {/* Venue list */}
+          {/* Venue list — FareHarbor venues + city-run classes */}
           <div className="space-y-4">
-            {visible.map((exp) => (
-              <VenueCard
-                key={exp.slug}
-                exp={exp}
-                next={nextByItem.get(exp.itemId)}
-                distanceMi={distanceByItem.get(exp.itemId)}
-              />
-            ))}
+            {visible.map((row) =>
+              row.kind === "fareharbor" && row.exp ? (
+                <VenueCard
+                  key={row.key}
+                  exp={row.exp}
+                  next={row.next}
+                  distanceMi={row.dist}
+                />
+              ) : row.cityClass ? (
+                <CityVenueCard
+                  key={row.key}
+                  c={row.cityClass}
+                  next={row.next}
+                  distanceMi={row.dist}
+                />
+              ) : null,
+            )}
           </div>
         </div>
       </section>
@@ -444,7 +506,7 @@ function VenueCard({
   distanceMi,
 }: {
   exp: Experience;
-  next?: UpcomingSession;
+  next?: { startAt: string; spotsLeft?: number | null };
   distanceMi?: number;
 }) {
   return (
@@ -498,6 +560,70 @@ function VenueCard({
           >
             Book
           </FareHarborButton>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+// Generic soundbath image for city-class cards (they have no per-venue photo).
+const CITY_CARD_IMAGE = "/floating-boards-sunset.jpg";
+
+/** A city-run class in the finder list — books through the city, not FareHarbor. */
+function CityVenueCard({
+  c,
+  next,
+  distanceMi,
+}: {
+  c: CityClass;
+  next?: { startAt: string };
+  distanceMi?: number;
+}) {
+  return (
+    <article className="flex gap-4 rounded-2xl border border-border bg-card p-4">
+      <img
+        src={CITY_CARD_IMAGE}
+        alt={`${c.title}, ${c.city}`}
+        loading="lazy"
+        className="h-24 w-24 flex-shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
+      />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-base font-bold leading-snug">{c.title}</h3>
+          {typeof distanceMi === "number" ? (
+            <span className="whitespace-nowrap rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand-dark">
+              {distanceMi < 1 ? "<1" : Math.round(distanceMi)} mi away
+            </span>
+          ) : null}
+        </div>
+        <p className="truncate text-sm font-medium text-muted-foreground">
+          {c.venue} · {c.city}
+        </p>
+        <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-brand">
+          City class · book with the city
+        </p>
+
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm">
+            {next ? (
+              <span className="text-foreground">
+                Next: <span className="font-medium">{fmtDate(next.startAt)}</span>{" "}
+                · {fmtTime(next.startAt)}
+              </span>
+            ) : (
+              <span className="text-muted-foreground">See calendar for dates</span>
+            )}
+          </div>
+          <a
+            href={c.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={c.bookingLabel}
+            onClick={() => trackEvent("city_register_click", { city: c.city })}
+            className="cursor-pointer rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10"
+          >
+            Register →
+          </a>
         </div>
       </div>
     </article>
