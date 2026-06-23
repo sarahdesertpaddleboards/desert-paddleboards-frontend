@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { GA_ID, initAnalytics, trackPageView } from "@/lib/analytics";
+import { ANALYTICS_ENABLED, initAnalytics, trackPageView } from "@/lib/analytics";
 
 /**
- * Mounts Google Analytics (when VITE_GA4_ID is set) and reports a page view
- * on every route change. Renders nothing. Lives inside the router so
- * useLocation works.
+ * Mounts the configured analytics (Google Analytics 4 and/or the Meta Pixel)
+ * and reports a page view on every route change. Renders nothing. Lives inside
+ * the router so useLocation works.
  */
 export default function Analytics() {
   const { pathname, search } = useLocation();
@@ -15,7 +15,7 @@ export default function Analytics() {
   }, []);
 
   useEffect(() => {
-    if (!GA_ID) return;
+    if (!ANALYTICS_ENABLED) return;
     trackPageView(pathname + search);
   }, [pathname, search]);
 

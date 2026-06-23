@@ -54,6 +54,10 @@ jobs:
           # G-XXXXXXX). Add it as a repo secret named VITE_GA4_ID to switch
           # analytics on; if unset, no analytics script loads at all.
           VITE_GA4_ID: ${{ secrets.VITE_GA4_ID }}
+          # Meta (Facebook) Pixel ID (public by design — a 15–16 digit number).
+          # Add it as a repo secret named VITE_META_PIXEL_ID to switch the Pixel
+          # on; if unset, no Meta script loads at all.
+          VITE_META_PIXEL_ID: ${{ secrets.VITE_META_PIXEL_ID }}
 
       # Recreate the Pages project if it doesn't exist yet (idempotent — fails
       # harmlessly if it's already there). Restores the desert-paddleboards.pages.dev
