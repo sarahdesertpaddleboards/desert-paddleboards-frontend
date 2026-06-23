@@ -30,7 +30,19 @@ export interface CityClass {
   bookingLabel: string;
   note?: string;
   sessions: CityClassSession[];
+  /** Geocoded venue location (for the map). Undefined until we have coords. */
+  lat?: number;
+  lng?: number;
 }
+
+// Geocoded venue coordinates, kept in CODE (not the CMS-editable JSON) so that
+// saving city-class edits through Pages CMS can never drop them. Add an entry
+// when a new city venue gets a confirmed address.
+const CITY_VENUE_COORDS: Record<string, { lat: number; lng: number }> = {
+  "queen-creek-friday-floats": { lat: 33.26759, lng: -111.60122 }, // Queen Creek Recreation Pool
+  "sedona-soundbath": { lat: 34.87137, lng: -111.78573 }, // Sedona Community Pool
+  // "avondale-soundbath": add when the venue/address is confirmed
+};
 
 interface RawSession {
   date: string;
@@ -46,6 +58,7 @@ function toIso(date: string, time: string): string {
 
 export const cityClasses: CityClass[] = data.cityClasses.map((c) => ({
   ...c,
+  ...(CITY_VENUE_COORDS[c.id] ?? {}),
   sessions: (c.sessions as RawSession[])
     .filter((s) => s && s.date && s.time)
     .map((s) => ({
@@ -53,3 +66,9 @@ export const cityClasses: CityClass[] = data.cityClasses.map((c) => ({
       ...(s.endTime ? { endAt: toIso(s.date, s.endTime) } : {}),
     })),
 }));
+
+/** City venues that have coordinates AND at least one upcoming-or-any session,
+ *  shaped for the map. Avondale (no coords/dates yet) is excluded. */
+export const cityClassVenues = cityClasses.filter(
+  (c) => typeof c.lat === "number" && typeof c.lng === "number",
+);

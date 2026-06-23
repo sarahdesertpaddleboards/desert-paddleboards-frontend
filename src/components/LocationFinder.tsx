@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
 import { experiences, type Experience } from "@/data/locations";
+import { cityClassVenues, type CityClass } from "@/data/city-classes";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
 // Homepage hero — sunset floating soundbath at a resort pool: branded floats
 // on the water at golden hour with a musician playing crystal bowls and gong
@@ -58,6 +59,29 @@ function venueInfoHtml(exp: Experience, next?: UpcomingSession): string {
     ${venue}
     <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
     <a href="/locations/${exp.slug}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>
+  </div>`;
+}
+
+/** Soonest still-upcoming session for a city class, if any. */
+function nextCityIso(c: CityClass): string | undefined {
+  const now = Date.now();
+  return c.sessions
+    .map((s) => s.startAt)
+    .filter((iso) => Date.parse(iso) > now)
+    .sort()[0];
+}
+
+/** Info window for a city-run class — booked through the city's own system. */
+function cityVenueInfoHtml(c: CityClass, nextIso?: string): string {
+  const when = nextIso
+    ? `Next: <strong>${fmtDate(nextIso)}</strong> · ${fmtTime(nextIso)}`
+    : "See calendar for dates";
+  return `<div style="max-width:230px;line-height:1.35;font-family:inherit">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1f3a4d">${escapeHtml(c.city)}, ${escapeHtml(c.state)} · City class</div>
+    <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(c.title)}</div>
+    <div style="font-size:13px;color:#475569;margin-top:1px">${escapeHtml(c.venue)}</div>
+    <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
+    <a href="${escapeHtml(c.bookingUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">${escapeHtml(c.bookingLabel)} →</a>
   </div>`;
 }
 
@@ -197,6 +221,33 @@ export default function LocationFinder({
       marker.addListener("gmp-click", openInfo);
       bounds.extend({ lat: e.lat, lng: e.lng });
     }
+
+    // City-run classes (Queen Creek, Sedona, …) book through the cities' own
+    // systems, not FareHarbor — distinct navy pins that link out to register.
+    for (const c of cityClassVenues) {
+      if (typeof c.lat !== "number" || typeof c.lng !== "number") continue;
+      const pin = g.maps.marker.PinElement
+        ? new g.maps.marker.PinElement({
+            background: "#1f3a4d",
+            borderColor: "#0f172a",
+            glyphColor: "#7fd1da",
+          }).element
+        : undefined;
+      const marker = new g.maps.marker.AdvancedMarkerElement({
+        map,
+        position: { lat: c.lat, lng: c.lng },
+        title: `${c.title} — ${c.venue}, ${c.city}`,
+        gmpClickable: true,
+        ...(pin ? { content: pin } : {}),
+      });
+      marker.addListener("gmp-click", () => {
+        infoWindow.close();
+        infoWindow.setContent(cityVenueInfoHtml(c, nextCityIso(c)));
+        infoWindow.open({ map, anchor: marker });
+      });
+      bounds.extend({ lat: c.lat, lng: c.lng });
+    }
+
     map.fitBounds(bounds, 48);
   }
 

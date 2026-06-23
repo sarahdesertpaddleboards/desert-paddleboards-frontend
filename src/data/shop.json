@@ -7,7 +7,7 @@
       "priceUsd": 150,
       "priceNote": "+ $40 shipping (US)",
       "blurb": "The very board we float on at every soundbath — our signature inflatable, stable enough for first-timers and ready for the pool, the lake or the river. Take 'Life is Better on the Water' home with you. Choose brand new or gently used.",
-      "image": "/floating-boards-sunset.jpg",
+      "image": "/floating-meditation-board.jpg",
       "options": [
         { "label": "New", "priceUsd": 250, "paymentLink": "https://buy.stripe.com/8x2bJ1aNX6Uo2lzdAl6oo00" },
         { "label": "Used", "priceUsd": 150, "paymentLink": "https://buy.stripe.com/00w14n3lv4Mg6BP7bX6oo01" }
