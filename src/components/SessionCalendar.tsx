@@ -71,6 +71,9 @@ function SessionRow({ s, showDate }: { s: CalSession; showDate?: boolean }) {
           {s.city}
           {s.source === "city" ? " · city class" : ""}
         </p>
+        {s.note ? (
+          <p className="mt-1 text-xs text-muted-foreground/90">{s.note}</p>
+        ) : null}
       </div>
       <BookingButton s={s} />
     </li>

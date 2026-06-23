@@ -17,6 +17,8 @@ export interface CalSession {
   /** City class external registration link. */
   bookingUrl?: string;
   bookingLabel?: string;
+  /** Optional note shown under the session (e.g. city-class details). */
+  note?: string;
 }
 
 export const TZ = "America/Phoenix";
@@ -109,6 +111,7 @@ export function useMergedSessions(): CalSession[] {
           source: "city",
           bookingUrl: c.bookingUrl,
           bookingLabel: c.bookingLabel,
+          note: c.note,
         });
       }
     }

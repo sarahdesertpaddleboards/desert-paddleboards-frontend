@@ -88,6 +88,11 @@ export default function UpcomingSessions({
                         {s.city}, {s.state}
                         {s.source === "city" ? " · city class" : ""}
                       </p>
+                      {s.note ? (
+                        <p className="mt-1 text-xs text-muted-foreground/90">
+                          {s.note}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
 

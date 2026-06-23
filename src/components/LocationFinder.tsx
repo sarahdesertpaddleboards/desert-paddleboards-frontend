@@ -602,6 +602,11 @@ function CityVenueCard({
         <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-brand">
           City class · book with the city
         </p>
+        {c.note ? (
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+            {c.note}
+          </p>
+        ) : null}
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm">

@@ -2,14 +2,14 @@
   "cityClasses": [
     {
       "id": "queen-creek-friday-floats",
-      "title": "Friday Night Floating Soundbath",
+      "title": "Lazy River Floating Soundbath",
       "venue": "Queen Creek Recreation Pool",
       "city": "Queen Creek",
       "state": "AZ",
       "address": "22343 E Ryan Rd, Queen Creek, AZ 85142",
       "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog",
       "bookingLabel": "Register with Queen Creek",
-      "note": "Booked through the Town of Queen Creek — search \"swimming\" activities.",
+      "note": "Floated in the resort-style lazy river — the current is switched off during the soundbath, so you drift on calm, still water. Booked through the Town of Queen Creek (search \"swimming\" activities).",
       "sessions": [
         { "date": "2026-07-10", "time": "20:00" },
         { "date": "2026-07-24", "time": "20:00" },
