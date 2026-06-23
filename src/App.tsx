@@ -25,6 +25,7 @@ import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 import { experiences } from "./data/locations";
+import { cityClassDetailSlugs } from "./data/city-classes";
 import { blogPosts } from "./data/blog-posts";
 
 export const routes: RouteRecord[] = [
@@ -37,9 +38,12 @@ export const routes: RouteRecord[] = [
       {
         path: "locations/:slug",
         element: <LocationDetail />,
-        // Tell the SSG which dynamic pages to pre-render
-        getStaticPaths: () =>
-          experiences.map((e) => `/locations/${e.slug}`),
+        // Tell the SSG which dynamic pages to pre-render — FareHarbor venues
+        // plus city-run classes (which share the same detail-page template).
+        getStaticPaths: () => [
+          ...experiences.map((e) => `/locations/${e.slug}`),
+          ...cityClassDetailSlugs.map((s) => `/locations/${s}`),
+        ],
       },
       { path: "membership", element: <Membership /> },
       { path: "shop", element: <Shop /> },

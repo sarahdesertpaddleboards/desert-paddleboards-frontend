@@ -21,6 +21,8 @@ export interface CityClassSession {
 
 export interface CityClass {
   id: string;
+  /** URL slug for the detail page at /locations/[slug]. */
+  slug: string;
   title: string;
   venue: string;
   city: string;
@@ -35,6 +37,13 @@ export interface CityClass {
   /** Geocoded venue location (for the map). Undefined until we have coords. */
   lat?: number;
   lng?: number;
+  /**
+   * MIGRATION HOOK toward FareHarbor: when Sarah adds this class to FareHarbor
+   * as a product, set its FareHarbor item id here. The detail page and cards
+   * then book through FareHarbor's lightframe instead of the city's external
+   * registration — no other changes needed.
+   */
+  fareharborItemId?: number;
 }
 
 // Geocoded venue coordinates, kept in CODE (not the CMS-editable JSON) so that
@@ -74,3 +83,23 @@ export const cityClasses: CityClass[] = data.cityClasses.map((c) => ({
 export const cityClassVenues = cityClasses.filter(
   (c) => typeof c.lat === "number" && typeof c.lng === "number",
 );
+
+/** Look up a city class by its detail-page slug. */
+export function getCityClassBySlug(slug: string): CityClass | undefined {
+  return cityClasses.find((c) => c.slug === slug);
+}
+
+/** Slugs of city classes that should get a prerendered detail page — those
+ *  with at least one session on the calendar. */
+export const cityClassDetailSlugs = cityClasses
+  .filter((c) => c.sessions.length > 0)
+  .map((c) => c.slug);
+
+/** Soonest still-upcoming session for a city class (ISO), if any. */
+export function nextCitySessionIso(c: CityClass): string | undefined {
+  const now = Date.now();
+  return c.sessions
+    .map((s) => s.startAt)
+    .filter((iso) => Date.parse(iso) > now)
+    .sort()[0];
+}

@@ -82,7 +82,7 @@ function cityVenueInfoHtml(c: CityClass, nextIso?: string): string {
     <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(c.title)}</div>
     <div style="font-size:13px;color:#475569;margin-top:1px">${escapeHtml(c.venue)}</div>
     <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
-    <a href="${escapeHtml(c.bookingUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">${escapeHtml(c.bookingLabel)} →</a>
+    <a href="/locations/${escapeHtml(c.slug)}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>
   </div>`;
 }
 
@@ -581,15 +581,21 @@ function CityVenueCard({
 }) {
   return (
     <article className="flex gap-4 rounded-2xl border border-border bg-card p-4">
-      <img
-        src={c.image || CITY_CARD_IMAGE}
-        alt={`${c.title}, ${c.city}`}
-        loading="lazy"
-        className="h-24 w-24 flex-shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
-      />
+      <Link to={`/locations/${c.slug}`}>
+        <img
+          src={c.image || CITY_CARD_IMAGE}
+          alt={`${c.title}, ${c.city}`}
+          loading="lazy"
+          className="h-24 w-24 flex-shrink-0 cursor-pointer rounded-xl object-cover sm:h-28 sm:w-28"
+        />
+      </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-base font-bold leading-snug">{c.title}</h3>
+          <Link to={`/locations/${c.slug}`} className="min-w-0">
+            <h3 className="cursor-pointer text-base font-bold leading-snug hover:text-brand-dark">
+              {c.title}
+            </h3>
+          </Link>
           {typeof distanceMi === "number" ? (
             <span className="whitespace-nowrap rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand-dark">
               {distanceMi < 1 ? "<1" : Math.round(distanceMi)} mi away

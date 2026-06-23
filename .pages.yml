@@ -22,6 +22,7 @@ content:
         list: true
         fields:
           - { name: title, label: Class name, type: string }
+          - { name: slug, label: "Page URL slug (do not change once live)", type: string }
           - { name: venue, label: Venue / pool, type: string }
           - { name: city, label: City, type: string }
           - { name: state, label: State, type: string }

@@ -285,7 +285,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     kind: "class",
     blurb:
       "A 90-minute high-energy aquatic workout — pool pilates, water aerobics, floating yoga and surf fitness at the Mesa Aquatics Complex.",
-    image: "https://cdn.filestackcontent.com/1UEnWJiQLm4Miz06WkdH",
+    image: "/water-aerobics-mesa.jpg",
   },
   {
     itemId: 642745,

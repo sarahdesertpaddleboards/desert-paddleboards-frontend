@@ -2,6 +2,7 @@
   "cityClasses": [
     {
       "id": "queen-creek-friday-floats",
+      "slug": "lazy-river-floating-soundbath-queen-creek",
       "title": "Lazy River Floating Soundbath",
       "venue": "Queen Creek Recreation Pool",
       "city": "Queen Creek",
@@ -20,6 +21,7 @@
     },
     {
       "id": "sedona-soundbath",
+      "slug": "floating-soundbath-sedona",
       "title": "Sedona Floating Soundbath",
       "venue": "Sedona Community Pool",
       "city": "Sedona",
@@ -37,6 +39,7 @@
     },
     {
       "id": "avondale-soundbath",
+      "slug": "floating-soundbath-avondale",
       "title": "Avondale Floating Soundbath",
       "venue": "City of Avondale",
       "city": "Avondale",
