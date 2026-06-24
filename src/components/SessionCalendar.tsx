@@ -65,7 +65,15 @@ function SessionRow({ s, showDate }: { s: CalSession; showDate?: boolean }) {
           {showDate ? `${fmtDayShort(s.startAt)} · ` : ""}
           {fmtTime(s.startAt)}
         </p>
-        <p className="font-semibold leading-snug">{s.title}</p>
+        {s.slug ? (
+          <Link to={`/locations/${s.slug}`}>
+            <p className="font-semibold leading-snug hover:text-brand-dark">
+              {s.title}
+            </p>
+          </Link>
+        ) : (
+          <p className="font-semibold leading-snug">{s.title}</p>
+        )}
         <p className="text-sm text-muted-foreground">
           {s.venue ? `${s.venue} · ` : ""}
           {s.city}
@@ -73,6 +81,14 @@ function SessionRow({ s, showDate }: { s: CalSession; showDate?: boolean }) {
         </p>
         {s.note ? (
           <p className="mt-1 text-xs text-muted-foreground/90">{s.note}</p>
+        ) : null}
+        {s.slug ? (
+          <Link
+            to={`/locations/${s.slug}`}
+            className="mt-1 inline-block text-xs font-semibold text-brand hover:underline"
+          >
+            More info →
+          </Link>
         ) : null}
       </div>
       <BookingButton s={s} />

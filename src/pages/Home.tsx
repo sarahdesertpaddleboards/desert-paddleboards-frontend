@@ -4,6 +4,7 @@ import Seo from "@/components/Seo";
 import { localBusinessLd } from "@/lib/jsonld";
 import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
 import SessionCalendar from "@/components/SessionCalendar";
+import FeaturedEvent from "@/components/FeaturedEvent";
 import VideoSection from "@/components/VideoSection";
 
 export default function Home() {
@@ -25,6 +26,10 @@ export default function Home() {
           />
         }
       />
+
+      {/* Featured event highlight (e.g. the Witches Regatta) — surfaced even
+          when it's months out, so it isn't buried in the date-sorted list. */}
+      <FeaturedEvent className="py-12" />
 
       {/* Social proof / legitimacy band — real Google rating */}
       <section className="border-t border-border bg-card">

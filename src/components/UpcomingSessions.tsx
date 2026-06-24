@@ -82,7 +82,15 @@ export default function UpcomingSessions({
                       {fmtTime(s.startAt)}
                     </time>
                     <div className="min-w-0">
-                      <p className="font-semibold leading-snug">{s.title}</p>
+                      {s.slug ? (
+                        <Link to={`/locations/${s.slug}`}>
+                          <p className="font-semibold leading-snug hover:text-brand-dark">
+                            {s.title}
+                          </p>
+                        </Link>
+                      ) : (
+                        <p className="font-semibold leading-snug">{s.title}</p>
+                      )}
                       <p className="text-sm text-muted-foreground">
                         {s.venue ? `${s.venue} · ` : ""}
                         {s.city}, {s.state}
@@ -92,6 +100,14 @@ export default function UpcomingSessions({
                         <p className="mt-1 text-xs text-muted-foreground/90">
                           {s.note}
                         </p>
+                      ) : null}
+                      {s.slug ? (
+                        <Link
+                          to={`/locations/${s.slug}`}
+                          className="mt-1 inline-block text-xs font-semibold text-brand hover:underline"
+                        >
+                          More info →
+                        </Link>
                       ) : null}
                     </div>
                   </div>

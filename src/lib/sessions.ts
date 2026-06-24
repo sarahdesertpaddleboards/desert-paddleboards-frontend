@@ -12,6 +12,8 @@ export interface CalSession {
   state: string;
   spotsLeft?: number | null;
   source: "fareharbor" | "city";
+  /** Slug of the detail page at /locations/[slug], for a "more info" link. */
+  slug?: string;
   /** FareHarbor item id → lightframe "Book". */
   itemId?: number;
   /** City class external registration link. */
@@ -96,6 +98,7 @@ export function useMergedSessions(): CalSession[] {
         state: exp.state,
         spotsLeft: s.spotsLeft,
         source: "fareharbor",
+        slug: exp.slug,
         itemId: s.itemId,
       });
     }
@@ -108,6 +111,7 @@ export function useMergedSessions(): CalSession[] {
           venue: c.venue,
           city: c.city,
           state: c.state,
+          slug: c.slug,
           note: c.note,
         };
         // Featured events with a FareHarbor item book through FareHarbor's
