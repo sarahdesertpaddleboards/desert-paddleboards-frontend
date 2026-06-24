@@ -29,6 +29,7 @@ content:
           - { name: address, label: Address, type: string }
           - { name: bookingUrl, label: Registration link (city website), type: string }
           - { name: bookingLabel, label: Button text, type: string }
+          - { name: fareharborItemId, label: "FareHarbor item ID (only for events booked through FareHarbor — leave blank for city classes)", type: number }
           - { name: image, label: "Venue photo (path or URL, optional)", type: string }
           - { name: note, label: Note (optional), type: text }
           - name: sessions

@@ -102,17 +102,26 @@ export function useMergedSessions(): CalSession[] {
 
     for (const c of cityClasses) {
       for (const cs of c.sessions) {
-        out.push({
+        const base = {
           startAt: cs.startAt,
           title: c.title,
           venue: c.venue,
           city: c.city,
           state: c.state,
-          source: "city",
-          bookingUrl: c.bookingUrl,
-          bookingLabel: c.bookingLabel,
           note: c.note,
-        });
+        };
+        // Featured events with a FareHarbor item book through FareHarbor's
+        // lightframe (Book); true city classes link out to the city (Register).
+        if (typeof c.fareharborItemId === "number") {
+          out.push({ ...base, source: "fareharbor", itemId: c.fareharborItemId });
+        } else {
+          out.push({
+            ...base,
+            source: "city",
+            bookingUrl: c.bookingUrl,
+            bookingLabel: c.bookingLabel,
+          });
+        }
       }
     }
 

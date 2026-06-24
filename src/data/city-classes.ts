@@ -28,8 +28,9 @@ export interface CityClass {
   city: string;
   state: string;
   address?: string;
-  bookingUrl: string;
-  bookingLabel: string;
+  /** External (city) registration link. Omitted for FareHarbor-booked events. */
+  bookingUrl?: string;
+  bookingLabel?: string;
   note?: string;
   /** Venue photo (path under /public or absolute URL). */
   image?: string;
@@ -52,6 +53,7 @@ export interface CityClass {
 const CITY_VENUE_COORDS: Record<string, { lat: number; lng: number }> = {
   "queen-creek-friday-floats": { lat: 33.26759, lng: -111.60122 }, // Queen Creek Recreation Pool
   "sedona-soundbath": { lat: 34.87137, lng: -111.78573 }, // Sedona Community Pool
+  "witches-regatta": { lat: 33.43344, lng: -111.94048 }, // Tempe Town Lake
   // "avondale-soundbath": add when the venue/address is confirmed
 };
 

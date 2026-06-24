@@ -49,6 +49,20 @@
       "bookingLabel": "Register with City of Avondale",
       "note": "Booked through the City of Avondale — search \"soundbath\".",
       "sessions": []
+    },
+    {
+      "id": "witches-regatta",
+      "slug": "witches-regatta-tempe-town-lake",
+      "title": "Witches Regatta SUP Event",
+      "venue": "Tempe Town Lake",
+      "city": "Tempe",
+      "state": "AZ",
+      "fareharborItemId": 405030,
+      "image": "/witches-regatta.jpg",
+      "note": "Our annual Halloween paddleboard gathering on Tempe Town Lake — wear your best witch or warlock cloak and float the lake as a coven. It's wildly popular and capacity is limited, so book early.",
+      "sessions": [
+        { "date": "2026-10-24", "time": "10:00" }
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import { getExperienceBySlug } from "@/data/locations";
+import { getExperienceBySlug, fareHarborBookUrl } from "@/data/locations";
 import { getCityClassBySlug } from "@/data/city-classes";
 import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
@@ -90,8 +90,11 @@ export default function LocationDetail() {
         .slice(0, 6)
         .map((s) => eventLd(exp, s))
     : [];
+  const cityEventOfferUrl = view.isCity
+    ? (view.bookingUrl ?? (fhItemId ? fareHarborBookUrl(fhItemId) : SITE_URL))
+    : SITE_URL;
   const cityEvents =
-    view.isCity && view.bookingUrl
+    view.isCity && view.sessions.length > 0
       ? view.sessions.map((s) => ({
           "@context": "https://schema.org",
           "@type": "Event",
@@ -114,7 +117,7 @@ export default function LocationDetail() {
           organizer: { "@type": "Organization", name: business.name, url: SITE_URL },
           offers: {
             "@type": "Offer",
-            url: view.bookingUrl,
+            url: cityEventOfferUrl,
             availability: "https://schema.org/InStock",
           },
         }))
@@ -152,7 +155,7 @@ export default function LocationDetail() {
           <div className="container pb-8 text-white">
             {view.isCity ? (
               <p className="mb-2 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide backdrop-blur">
-                City class · book with the city
+                {fhItemId ? "Featured event" : "City class · book with the city"}
               </p>
             ) : null}
             <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">

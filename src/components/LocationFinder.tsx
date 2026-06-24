@@ -78,7 +78,7 @@ function cityVenueInfoHtml(c: CityClass, nextIso?: string): string {
     ? `Next: <strong>${fmtDate(nextIso)}</strong> · ${fmtTime(nextIso)}`
     : "See calendar for dates";
   return `<div style="max-width:230px;line-height:1.35;font-family:inherit">
-    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1f3a4d">${escapeHtml(c.city)}, ${escapeHtml(c.state)} · City class</div>
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1f3a4d">${escapeHtml(c.city)}, ${escapeHtml(c.state)} · ${c.fareharborItemId ? "Featured event" : "City class"}</div>
     <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(c.title)}</div>
     <div style="font-size:13px;color:#475569;margin-top:1px">${escapeHtml(c.venue)}</div>
     <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
@@ -606,7 +606,7 @@ function CityVenueCard({
           {c.venue} · {c.city}
         </p>
         <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-brand">
-          City class · book with the city
+          {c.fareharborItemId ? "Featured event" : "City class · book with the city"}
         </p>
         {c.note ? (
           <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
@@ -625,16 +625,25 @@ function CityVenueCard({
               <span className="text-muted-foreground">See calendar for dates</span>
             )}
           </div>
-          <a
-            href={c.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={c.bookingLabel}
-            onClick={() => trackEvent("city_register_click", { city: c.city })}
-            className="cursor-pointer rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10"
-          >
-            Register →
-          </a>
+          {c.fareharborItemId ? (
+            <FareHarborButton
+              itemId={c.fareharborItemId}
+              className="cursor-pointer rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Book
+            </FareHarborButton>
+          ) : c.bookingUrl ? (
+            <a
+              href={c.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={c.bookingLabel}
+              onClick={() => trackEvent("city_register_click", { city: c.city })}
+              className="cursor-pointer rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10"
+            >
+              Register →
+            </a>
+          ) : null}
         </div>
       </div>
     </article>

@@ -11,6 +11,15 @@
  */
 
 export const locationContent: Record<string, string> = {
+  "witches-regatta-tempe-town-lake": `
+The **Witches Regatta** is our most bewitching event of the year — an annual Halloween paddleboard gathering that haunts Tempe Town Lake every October. Wear your best witch or warlock cloak, trade your broom for a paddle, and float the lake as a coven while crowds gather on the banks to watch.
+
+**Saturday, October 24, 2026 · 10:00 AM — Tempe Town Lake, Tempe.**
+
+Since 2017, witches and warlocks have cast their spell flying east and then west around the reclaimed waters of this urban lake. It has become wildly popular, and capacity is limited — so book early before it sells out.
+
+Bring your costume (the wilder the better) and your sense of fun; boards and the essentials are provided.
+`,
   "floating-soundbath-grand-hyatt-scottsdale": `
 Join us for a one-of-a-kind Floating Sound Bath in the adults-only pool at the newly renovated Grand Hyatt Scottsdale Resort.
 
