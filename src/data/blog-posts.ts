@@ -394,8 +394,7 @@ Need spare time to write or read? You can do that in Bora Bora, where we'll fini
     date: "2022-08-18",
     excerpt:
       "The story behind the company's viral TikTok clip, filmed at its Mermaid Paddleboard Bootcamp class at Tempe Town Lake — plus a tip for going viral.",
-    image:
-      "https://img1.wsimg.com/isteam/ip/2cdadd33-d03e-4cb6-b66c-28f69905b56a/6A132E05-F18C-4132-83CC-A84FFB152654.JPG",
+    image: "/tiktok-famous.jpg",
     body: `Did you see our viral post on TikTok? It was at Mermaid Paddleboard Bootcamp! All ages and abilities come to this class.
 
 We start out on paddleboard mats for 40 minutes doing surf-inspired exercises, yoga, and pilates. The second half of the class is in the Lazy River — we turn it on and do a bootcamp-style water aerobics class! It's the ideal mermaid/merman workout.
