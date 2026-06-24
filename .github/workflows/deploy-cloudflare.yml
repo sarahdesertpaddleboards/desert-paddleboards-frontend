@@ -50,10 +50,11 @@ jobs:
           # no referrer restriction, restricted to Places API (New) in Cloud
           # Console. If unset, the build keeps the committed reviews snapshot.
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
-          # Google Analytics 4 Measurement ID (public by design — e.g.
-          # G-XXXXXXX). Add it as a repo secret named VITE_GA4_ID to switch
-          # analytics on; if unset, no analytics script loads at all.
-          VITE_GA4_ID: ${{ secrets.VITE_GA4_ID }}
+          # Google Analytics 4 Measurement ID — public by design (exposed in
+          # client JS), so kept here in plain text. This is Sarah's existing
+          # GA4 property (stream "Desert Paddleboards - GA4"), which already
+          # holds her historical traffic. Production build only, not local dev.
+          VITE_GA4_ID: "G-1KGN416Q9C"
           # Meta (Facebook) Pixel ID — public by design (it's exposed in the
           # page's JS), so it lives here in plain text. This is Sarah's Pixel
           # on her Meta account. Set in the production build only, so it never
