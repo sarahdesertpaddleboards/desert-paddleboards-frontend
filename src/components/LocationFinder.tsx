@@ -7,6 +7,7 @@ import { experiences, type Experience } from "@/data/locations";
 import { cityClassVenues, type CityClass } from "@/data/city-classes";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
 import { trackEvent } from "@/lib/analytics";
+import { appendUtms } from "@/lib/utm";
 // Homepage hero — sunset floating soundbath at a resort pool: branded floats
 // on the water at golden hour with a musician playing crystal bowls and gong
 // (self-hosted in /public).
@@ -634,7 +635,7 @@ function CityVenueCard({
             </FareHarborButton>
           ) : c.bookingUrl ? (
             <a
-              href={c.bookingUrl}
+              href={appendUtms(c.bookingUrl)}
               target="_blank"
               rel="noopener noreferrer"
               title={c.bookingLabel}

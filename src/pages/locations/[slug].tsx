@@ -11,6 +11,7 @@ import type { UpcomingSession } from "@/lib/experiencesApi";
 import upcoming from "@/data/upcoming.generated.json";
 import { fmtDateHeader, fmtTime } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
+import { appendUtms } from "@/lib/utm";
 import { SITE_URL, business } from "@/data/site";
 
 const CITY_FALLBACK_IMAGE = "/floating-boards-sunset.jpg";
@@ -234,7 +235,7 @@ export default function LocationDetail() {
                   registration system. Tap below to reserve your spot.
                 </p>
                 <a
-                  href={view.bookingUrl}
+                  href={appendUtms(view.bookingUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() =>

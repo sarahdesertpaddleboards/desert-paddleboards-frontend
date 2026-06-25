@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { fareHarborBookUrl } from "@/data/locations";
 import { trackEvent } from "@/lib/analytics";
+import { appendUtms } from "@/lib/utm";
 
 /**
  * FareHarbor Lightframe.
@@ -45,7 +46,7 @@ export default function FareHarborButton({
 
   return (
     <a
-      href={fareHarborBookUrl(itemId)}
+      href={appendUtms(fareHarborBookUrl(itemId))}
       className={className ?? defaultClassName}
       onClick={() => trackEvent("book_click", { item_id: itemId })}
     >
