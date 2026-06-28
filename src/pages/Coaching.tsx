@@ -146,9 +146,9 @@ export default function Coaching() {
           </div>
           <div className="text-center mt-10">
             <Button size="lg" asChild>
-              <a href="mailto:sarah@desertpaddleboards.com?subject=Adventure%20Life%20Coaching">
+              <Link to="/contact?subject=Life%20coaching">
                 Book your coaching package
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
@@ -189,9 +189,9 @@ export default function Coaching() {
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
             <Button size="lg" asChild>
-              <a href="mailto:sarah@desertpaddleboards.com?subject=Motivational%20Speaking%20Inquiry">
+              <Link to="/contact?subject=Motivational%20speaking">
                 Book Sarah to speak
-              </a>
+              </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <a href="tel:6024560884">Or call 602.456.0884</a>

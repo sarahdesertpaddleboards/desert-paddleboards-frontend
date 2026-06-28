@@ -215,12 +215,12 @@ export default function CommunityEvents() {
             custom quote — usually within 24 hours.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={`mailto:${business.email}?subject=Community%20event%20enquiry`}
+            <Link
+              to="/contact?subject=Community%20event"
               className="inline-flex items-center justify-center rounded-full bg-secondary px-7 py-3 text-sm font-semibold text-secondary-foreground hover:bg-secondary/90"
             >
               Email us about your community
-            </a>
+            </Link>
             <a
               href="tel:6024560884"
               className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10"

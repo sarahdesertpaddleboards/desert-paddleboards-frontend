@@ -149,13 +149,13 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:sarah@desertpaddleboards.com"
+                <Link
+                  to="/contact"
                   className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Mail className="h-4 w-4" />
                   <span>sarah@desertpaddleboards.com</span>
-                </a>
+                </Link>
               </li>
               <li className="text-muted-foreground pt-2">
                 Based in Mesa, AZ

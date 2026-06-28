@@ -11,6 +11,8 @@ export interface CalSession {
   city: string;
   state: string;
   spotsLeft?: number | null;
+  /** Sold-out FareHarbor session — still shown on the calendar, not bookable. */
+  isSoldOut?: boolean;
   source: "fareharbor" | "city";
   /** Slug of the detail page at /locations/[slug], for a "more info" link. */
   slug?: string;
@@ -87,7 +89,6 @@ export function useMergedSessions(): CalSession[] {
     const out: CalSession[] = [];
 
     for (const s of fhSessions) {
-      if (s.isSoldOut) continue;
       const exp = byItemId.get(s.itemId);
       if (!exp) continue;
       out.push({
@@ -97,6 +98,7 @@ export function useMergedSessions(): CalSession[] {
         city: exp.city,
         state: exp.state,
         spotsLeft: s.spotsLeft,
+        isSoldOut: s.isSoldOut,
         source: "fareharbor",
         slug: exp.slug,
         itemId: s.itemId,

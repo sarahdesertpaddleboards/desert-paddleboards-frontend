@@ -149,9 +149,9 @@ export default function Adventures() {
           </div>
           <div className="text-center mt-10">
             <Button size="lg" asChild>
-              <a href="mailto:sarah@desertpaddleboards.com?subject=Adventure%20Trip%20Inquiry">
+              <Link to="/contact?subject=Guided%20adventure">
                 Reserve your spot
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
@@ -181,9 +181,9 @@ export default function Adventures() {
           </div>
           <div className="mt-8">
             <Button variant="outline" size="lg" asChild>
-              <a href="mailto:sarah@desertpaddleboards.com?subject=Upcoming%20Trip%20Interest">
+              <Link to="/contact?subject=Upcoming%20trip">
                 Ask about an upcoming trip
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

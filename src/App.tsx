@@ -3,6 +3,7 @@ import type { RouteRecord } from "vite-react-ssg";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import PrivateEvents from "./pages/PrivateEvents";
 import CommunityEvents from "./pages/CommunityEvents";
@@ -20,6 +21,7 @@ import BlogPost from "./pages/blog/[slug]";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import Airstream from "./pages/Airstream";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -62,6 +64,7 @@ export const routes: RouteRecord[] = [
       { path: "coaching", element: <Coaching /> },
       { path: "calendar", element: <Calendar /> },
       { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
 
@@ -74,6 +77,12 @@ export const routes: RouteRecord[] = [
       { path: "*", element: <NotFound /> },
     ],
   },
+
+  // Standalone hidden minisite — Sarah's Backyard Airstream corporate rental.
+  // Deliberately NOT a child of <Layout>, so it renders without the Desert
+  // Paddleboards header/footer/nav (its own self-contained site) and is not
+  // linked from anywhere on the main site. Still pre-rendered → SEO-indexable.
+  { path: "/airstream", element: <Airstream /> },
 ];
 
 export default routes;

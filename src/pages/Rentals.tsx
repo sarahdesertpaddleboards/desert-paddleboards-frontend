@@ -96,9 +96,9 @@ export default function Rentals() {
                 </div>
                 <div className="flex flex-col gap-3">
                   <Button size="lg" asChild>
-                    <a href="mailto:sarah@desertpaddleboards.com?subject=Paddleboard%20Rental%20Inquiry">
+                    <Link to="/contact?subject=Paddleboard%20rental">
                       Request a rental
-                    </a>
+                    </Link>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
                     <a href="tel:6024560884">Or call 602.456.0884</a>
@@ -167,9 +167,9 @@ export default function Rentals() {
 
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
               <Button size="lg" asChild>
-                <a href="mailto:sarah@desertpaddleboards.com?subject=Airstream%20Rental%20Inquiry">
+                <Link to="/contact?subject=Airstream%20rental">
                   Email to reserve
-                </a>
+                </Link>
               </Button>
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" /> Based in Queen Creek · Delivered Valley-wide

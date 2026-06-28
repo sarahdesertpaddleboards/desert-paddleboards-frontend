@@ -90,7 +90,10 @@ async function fetchItemMonth(itemId, year, month) {
     for (const day of week?.days ?? []) {
       if (day?.month !== "current") continue; // skip spillover days
       for (const av of day?.availabilities ?? []) {
-        if (!av?.is_bookable) continue;
+        // Keep bookable sessions AND sold-out ones, so a class that fills up
+        // still shows on the calendar (marked "Sold out") instead of vanishing.
+        // Skip anything else non-bookable (e.g. cancelled, booking cutoff past).
+        if (!av?.is_bookable && !av?.is_sold_out) continue;
         out.push({
           itemId,
           availabilityPk: av.pk,

@@ -32,6 +32,13 @@ function fmtDayShort(iso: string): string {
 }
 
 function BookingButton({ s }: { s: CalSession }) {
+  if (s.isSoldOut) {
+    return (
+      <span className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-muted px-5 py-2 text-sm font-semibold text-muted-foreground">
+        Sold out
+      </span>
+    );
+  }
   if (s.source === "fareharbor") {
     return (
       <FareHarborButton
