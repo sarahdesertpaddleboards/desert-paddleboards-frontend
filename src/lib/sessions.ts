@@ -13,6 +13,12 @@ export interface CalSession {
   spotsLeft?: number | null;
   /** Sold-out FareHarbor session — still shown on the calendar, not bookable. */
   isSoldOut?: boolean;
+  /**
+   * Live FareHarbor session that's currently bookable online. `false` means a
+   * real session that's only closed by the booking cutoff (show "call to book").
+   * `undefined` for static featured events / city classes (treat as bookable).
+   */
+  isBookable?: boolean;
   source: "fareharbor" | "city";
   /** Slug of the detail page at /locations/[slug], for a "more info" link. */
   slug?: string;
@@ -99,6 +105,7 @@ export function useMergedSessions(): CalSession[] {
         state: exp.state,
         spotsLeft: s.spotsLeft,
         isSoldOut: s.isSoldOut,
+        isBookable: s.isBookable,
         source: "fareharbor",
         slug: exp.slug,
         itemId: s.itemId,

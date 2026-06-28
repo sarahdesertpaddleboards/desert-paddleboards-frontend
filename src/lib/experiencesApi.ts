@@ -9,6 +9,7 @@ export interface UpcomingSession {
   endAt: string;
   spotsLeft: number | null;
   isSoldOut: boolean;
+  isBookable: boolean;
 }
 
 /**

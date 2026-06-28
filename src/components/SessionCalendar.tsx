@@ -32,11 +32,27 @@ function fmtDayShort(iso: string): string {
 }
 
 function BookingButton({ s }: { s: CalSession }) {
+  // Sold out → invite a waitlist text (booking is closed in FareHarbor).
   if (s.isSoldOut) {
     return (
-      <span className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-muted px-5 py-2 text-sm font-semibold text-muted-foreground">
-        Sold out
-      </span>
+      <a
+        href="sms:6024560884"
+        className="inline-flex max-w-[8.5rem] flex-shrink-0 flex-col items-center justify-center rounded-xl bg-muted px-3 py-1.5 text-center text-[11px] font-semibold leading-tight text-muted-foreground hover:bg-muted/80"
+      >
+        Fully booked — text to join waitlist
+      </a>
+    );
+  }
+  // Real FareHarbor session that's only closed by the booking cutoff (e.g.
+  // starts within the next few hours) → point them to call instead.
+  if (s.source === "fareharbor" && s.isBookable === false) {
+    return (
+      <a
+        href="tel:6024560884"
+        className="inline-flex max-w-[8.5rem] flex-shrink-0 flex-col items-center justify-center rounded-xl bg-muted px-3 py-1.5 text-center text-[11px] font-semibold leading-tight text-muted-foreground hover:bg-muted/80"
+      >
+        Booking closed — please call to book
+      </a>
     );
   }
   if (s.source === "fareharbor") {

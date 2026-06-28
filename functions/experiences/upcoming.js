@@ -90,10 +90,17 @@ async function fetchItemMonth(itemId, year, month) {
     for (const day of week?.days ?? []) {
       if (day?.month !== "current") continue; // skip spillover days
       for (const av of day?.availabilities ?? []) {
-        // Keep bookable sessions AND sold-out ones, so a class that fills up
-        // still shows on the calendar (marked "Sold out") instead of vanishing.
-        // Skip anything else non-bookable (e.g. cancelled, booking cutoff past).
-        if (!av?.is_bookable && !av?.is_sold_out) continue;
+        // Surface a session if it's bookable, sold out, OR only closed because
+        // it's past the (short) booking cutoff — so a class never silently
+        // vanishes once it fills up or the cutoff passes. The UI shows the right
+        // call-to-action per state (Book / waitlist text / call). Anything else
+        // (e.g. truly unavailable) is skipped.
+        const show =
+          av?.is_bookable ||
+          av?.is_sold_out ||
+          av?.is_past_cutoff_with_bookings ||
+          av?.is_past_cutoff_without_bookings;
+        if (!show) continue;
         out.push({
           itemId,
           availabilityPk: av.pk,
@@ -104,6 +111,7 @@ async function fetchItemMonth(itemId, year, month) {
               ? av.approximate_available_capacity
               : null,
           isSoldOut: Boolean(av.is_sold_out),
+          isBookable: Boolean(av.is_bookable),
         });
       }
     }
