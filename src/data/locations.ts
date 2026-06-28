@@ -280,7 +280,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 146434,
     slug: "lazy-river-water-aerobics-floating-yoga-mesa",
-    title: "Water Aerobics & Pool Fitness",
+    title: "Lazy River Water Aerobics and Paddleboard Yoga/Pilates",
     venue: "Mesa Aquatics Complex",
     kind: "class",
     blurb:
