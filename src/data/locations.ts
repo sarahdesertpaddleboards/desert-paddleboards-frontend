@@ -298,7 +298,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 722096,
     slug: "hotel-solaya-floating-soundbath-scottsdale",
-    title: "Resort Floating Soundbath",
+    title: "Floating Soundbath",
     venue: "Hotel Solaya",
     blurb:
       "A floating soundbath on the water at Hotel Solaya in Scottsdale — drift, breathe, and let the live sound carry you into deep rest.",
