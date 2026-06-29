@@ -188,8 +188,8 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Aji Spa — Sheraton Grand at Wild Horse Pass",
     city: "Chandler",
     // FareHarbor has no coords for Aji; set manually (Wild Horse Pass).
-    lat: 33.00863,
-    lng: -111.94364,
+    lat: 33.266258,
+    lng: -111.9930353,
     blurb:
       "A serene floating soundbath at Aji Spa, Sheraton Grand at Wild Horse Pass — desert calm on the water.",
     image: "https://cdn.filestackcontent.com/VPmBIgASEyIo57cg78j9",
