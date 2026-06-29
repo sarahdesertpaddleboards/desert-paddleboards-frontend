@@ -89,7 +89,7 @@ export default function CommunityEvents() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
               For HOAs · 55+ communities · workplaces
             </p>
-            <h1 className="mt-2 max-w-3xl text-4xl italic leading-tight md:text-5xl">
+            <h1 className="mt-2 max-w-3xl text-balance text-4xl italic leading-tight md:text-5xl">
               Bring the floating soundbath to your community
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">

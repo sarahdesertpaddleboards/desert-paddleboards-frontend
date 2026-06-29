@@ -281,7 +281,7 @@ export default function Airstream() {
               <MapPin className="h-3.5 w-3.5" /> Available across {BRAND.areas}
             </div>
             <p className="font-semibold uppercase tracking-[0.22em] text-teal-300">Blue Wave</p>
-            <h1 className="mt-2 font-serif text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className="mt-2 text-balance font-serif text-4xl font-bold leading-tight md:text-6xl">
               Mobile Wellness Lounge
             </h1>
             <p className="mt-5 text-lg text-slate-200 md:text-xl">{BRAND.tagline}</p>

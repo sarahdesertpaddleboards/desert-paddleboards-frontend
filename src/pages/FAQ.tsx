@@ -162,7 +162,7 @@ export default function FAQ() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h1 className="text-balance text-4xl md:text-5xl font-bold text-center mb-6">
             Frequently Asked Questions
           </h1>
           <p className="text-xl text-center text-muted-foreground max-w-2xl mx-auto">

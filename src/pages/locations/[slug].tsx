@@ -159,7 +159,7 @@ export default function LocationDetail() {
                 {fhItemId ? "Featured event" : "City class · book with the city"}
               </p>
             ) : null}
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
+            <h1 className="max-w-3xl text-balance text-4xl font-bold leading-tight md:text-5xl">
               {view.title}
             </h1>
             <p className="mt-2 text-lg font-medium text-white/95">

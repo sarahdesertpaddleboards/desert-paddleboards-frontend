@@ -25,7 +25,7 @@ export default function Membership() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em]">
               Membership
             </p>
-            <h1 className="mt-2 max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
+            <h1 className="mt-2 max-w-3xl text-balance text-4xl font-bold leading-tight md:text-5xl">
               {membership.title}
             </h1>
           </div>

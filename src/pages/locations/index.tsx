@@ -23,7 +23,7 @@ export default function LocationsIndex() {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
           Experiences
         </p>
-        <h1 className="text-4xl font-bold leading-tight">
+        <h1 className="text-balance text-4xl font-bold leading-tight">
           Floating soundbaths across Arizona
         </h1>
         <p className="text-lg text-muted-foreground">

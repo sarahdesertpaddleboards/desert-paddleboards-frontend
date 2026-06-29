@@ -53,7 +53,7 @@ export default function About() {
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
         <div className="relative z-20 container text-center text-white">
-          <h1 className="text-4xl md:text-6xl  font-bold mb-4">
+          <h1 className="text-balance text-4xl font-bold mb-4 md:text-6xl">
             About Desert Paddleboards
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">

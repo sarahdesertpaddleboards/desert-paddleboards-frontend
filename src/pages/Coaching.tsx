@@ -90,7 +90,7 @@ export default function Coaching() {
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
         <div className="relative z-20 container text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">Adventure Life Coaching</h1>
+          <h1 className="text-balance text-4xl md:text-6xl font-bold mb-4">Adventure Life Coaching</h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
             Build the confidence and skills to break out of your comfort zone — and embark on your next adventure.
           </p>

@@ -73,7 +73,7 @@ export default function BlogPostPage() {
       <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {formatPostDate(post.date)}
       </p>
-      <h1 className="mt-2 text-4xl font-bold leading-tight">{post.title}</h1>
+      <h1 className="mt-2 text-balance text-4xl font-bold leading-tight">{post.title}</h1>
 
       {post.image ? (
         <img
