@@ -22,7 +22,6 @@ import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Airstream from "./pages/Airstream";
-import SocialPreview from "./pages/SocialPreview";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
@@ -68,8 +67,6 @@ export const routes: RouteRecord[] = [
       { path: "contact", element: <Contact /> },
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
-      // Temporary, unlinked, no-indexed — Instagram feed A/B comparison.
-      { path: "social-preview", element: <SocialPreview /> },
 
       // App-only routes (excluded from pre-render in vite.config.ts)
       { path: "admin", element: <Admin /> },

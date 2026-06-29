@@ -1,100 +1,49 @@
-import { Instagram } from "lucide-react";
+import { useEffect } from "react";
 
 /**
- * Privacy-friendly Instagram feed component
- * Displays a beautiful grid linking to your Instagram profile
- * No third-party widgets or API access required
+ * Live Instagram feed via SnapWidget (widget 1126190, Sarah's paid account).
+ * Loads SnapWidget's resize script so the grid is responsive (auto-height) on
+ * every device. WHICH posts appear is curated in Sarah's SnapWidget account
+ * (Widget → Filter), not here — so the site never needs a code change to swap
+ * content or hide reels.
  */
-export default function InstagramFeed() {
-  const instagramHandle = "desertpaddleboards";
-  const instagramUrl = `https://www.instagram.com/${instagramHandle}/`;
-
-  // Sample post images - you can replace these with actual image URLs from your Instagram posts
-  const samplePosts = [
-    {
-      id: 1,
-      alt: "Floating soundbath at sunset",
-      gradient: "from-orange-200 via-pink-200 to-purple-200"
-    },
-    {
-      id: 2,
-      alt: "Peaceful floating meditation",
-      gradient: "from-blue-200 via-cyan-200 to-teal-200"
-    },
-    {
-      id: 3,
-      alt: "Group floating yoga class",
-      gradient: "from-green-200 via-emerald-200 to-cyan-200"
-    },
-    {
-      id: 4,
-      alt: "Desert paddleboard adventure",
-      gradient: "from-yellow-200 via-orange-200 to-red-200"
-    },
-    {
-      id: 5,
-      alt: "Sound healing instruments",
-      gradient: "from-purple-200 via-pink-200 to-rose-200"
-    },
-    {
-      id: 6,
-      alt: "Serene water wellness",
-      gradient: "from-indigo-200 via-blue-200 to-cyan-200"
-    }
-  ];
+export default function InstagramFeed({ className = "" }: { className?: string }) {
+  useEffect(() => {
+    if (document.getElementById("snapwidget-script")) return;
+    const s = document.createElement("script");
+    s.id = "snapwidget-script";
+    s.async = true;
+    s.src = "https://snapwidget.com/js/snapwidget.js";
+    document.body.appendChild(s);
+  }, []);
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-blue-50">
-      <div className="container">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Instagram className="w-8 h-8 text-pink-600" />
-            <h2 className="text-4xl font-bold text-gray-900">
-              Follow Our Journey
-            </h2>
-          </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join our community on Instagram for daily inspiration,
-            class updates, and serene desert moments
-          </p>
+    <section className={`bg-card ${className}`}>
+      <div className="mx-auto max-w-4xl px-4 text-center">
+        <h2 className="text-2xl font-bold md:text-3xl">Lately on Instagram</h2>
+        <p className="mt-2 text-muted-foreground">
+          Fresh from{" "}
           <a
-            href={instagramUrl}
+            href="https://www.instagram.com/desertpaddleboards/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-4 text-pink-600 hover:text-pink-700 font-medium text-xl"
+            className="font-semibold text-primary hover:underline"
           >
-            @{instagramHandle}
+            @desertpaddleboards
           </a>
-        </div>
-
-        {/* Instagram Post Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {samplePosts.map((post) => (
-            <a
-              key={post.id}
-              href={instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`aspect-square bg-gradient-to-br ${post.gradient} rounded-lg overflow-hidden group relative hover:scale-105 transition-transform shadow-md hover:shadow-xl`}
-              aria-label={post.alt}
-            >
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <Instagram className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
-              </div>
-            </a>
-          ))}
-        </div>
-
-        <div className="text-center mt-8">
-          <a
-            href={instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white rounded-full hover:from-purple-600 hover:via-pink-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl text-lg font-medium"
-          >
-            <Instagram className="w-6 h-6" />
-            Follow Us on Instagram
-          </a>
+        </p>
+        {/* SnapWidget gives a fixed-size grid (765x510). Cap the width so the
+            full grid shows without clipping. If Sarah toggles "Responsive" on
+            the widget in her SnapWidget account, the resize script above makes
+            it fully fluid and this fixed height becomes a graceful fallback. */}
+        <div className="mx-auto mt-8 w-full max-w-[765px]">
+          <iframe
+            src="https://snapwidget.com/embed/1126190"
+            className="snapwidget-widget block w-full"
+            title="Latest Instagram posts from Desert Paddleboards"
+            scrolling="no"
+            style={{ border: "none", overflow: "hidden", height: 510 }}
+          />
         </div>
       </div>
     </section>

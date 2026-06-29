@@ -6,6 +6,7 @@ import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
 import SessionCalendar from "@/components/SessionCalendar";
 import FeaturedEvent from "@/components/FeaturedEvent";
 import VideoSection from "@/components/VideoSection";
+import InstagramFeed from "@/components/InstagramFeed";
 import SocialFollow from "@/components/SocialFollow";
 
 export default function Home() {
@@ -56,8 +57,10 @@ export default function Home() {
       {/* Videos — click-to-play YouTube facade */}
       <VideoSection heading="See it in action" className="py-16" />
 
-      {/* Follow us — prominent social band (Instagram-led). A live IG feed can
-          slot in below this once a feed tool is chosen. */}
+      {/* Live Instagram feed (SnapWidget) — recent posts, then the follow CTA. */}
+      <InstagramFeed className="py-16" />
+
+      {/* Follow us — prominent social band (Instagram-led). */}
       <SocialFollow />
     </>
   );
