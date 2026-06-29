@@ -384,7 +384,9 @@ export default function LocationFinder({
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
             Floating soundbaths · water wellness · Arizona
           </p>
-          <h1 className="mt-2 max-w-[18ch] text-4xl italic leading-[1.05] text-white md:text-5xl">
+          {/* Fluid size keeps it on ONE line across every screen width (scales
+              with the viewport, capped at 3rem so it never wraps or overflows). */}
+          <h1 className="mt-2 whitespace-nowrap text-[clamp(1.25rem,6.5vw,3rem)] italic leading-[1.05] text-white">
             Life is better on the water.
           </h1>
           <p className="mt-3 max-w-xl text-base text-white/90">
