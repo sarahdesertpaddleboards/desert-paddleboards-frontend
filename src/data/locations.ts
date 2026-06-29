@@ -157,7 +157,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 725981,
     slug: "floating-soundbath-hotel-adeline-scottsdale",
-    title: "Resort Floating Soundbath",
+    title: "Floating Soundbath",
     venue: "Hotel Adeline",
     blurb:
       "A floating meditation set to live music at Hotel Adeline in Scottsdale — drift, breathe, and let go.",
@@ -166,7 +166,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 728366,
     slug: "floating-soundbath-doubletree-gilbert",
-    title: "Resort Floating Soundbath",
+    title: "Floating Soundbath",
     venue: "DoubleTree by Hilton",
     blurb:
       "Unwind on the water with a floating meditation and live music at the DoubleTree by Hilton in Gilbert.",
@@ -272,7 +272,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
-    title: "Resort Floating Soundbath",
+    title: "Community Floating Soundbath",
     venue: "PebbleCreek Oasis Pool",
     blurb:
       "A floating soundbath at the PebbleCreek Oasis Pool in Goodyear — float, breathe, and let live sound carry you.",
