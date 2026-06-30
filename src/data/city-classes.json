@@ -73,7 +73,8 @@
       "city": "Mesa",
       "state": "AZ",
       "fareharborItemId": 146393,
-      "note": "A guided paddleboard outing on the lower Salt River — glide past saguaros, cottonwoods and (if you're lucky) the wild horses on calm desert water. Boards and guide included; meet at the put-in.",
+      "address": "3624 N Power Rd, Mesa, AZ 85215",
+      "note": "A guided paddleboard outing on the lower Salt River — glide past saguaros, cottonwoods and (if you're lucky) the wild horses on calm desert water. Boards and guide included. Meeting point: the Walgreens at 3624 N Power Rd, Mesa — we head to the river together from there.",
       "sessions": [
         { "date": "2026-07-24", "time": "07:00" }
       ]
