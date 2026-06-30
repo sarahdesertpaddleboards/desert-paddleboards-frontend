@@ -9,6 +9,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Analytics from "./components/Analytics";
 import JsonLd from "./components/JsonLd";
+import ScrollToTop from "./components/ScrollToTop";
 import { graph, organizationLd, webSiteLd } from "./lib/jsonld";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ export default function Layout() {
               />
             </Head>
             <JsonLd data={graph([organizationLd(), webSiteLd()])} />
+            <ScrollToTop />
             <Toaster />
             <Analytics />
             <Header />
