@@ -49,87 +49,70 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Explore */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
+            <h4 className="font-semibold text-foreground mb-4">Explore</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/locations">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Floating Sessions
-                  </span>
+                <Link to="/locations" className="text-muted-foreground hover:text-primary transition-colors">
+                  Floating Sessions
                 </Link>
               </li>
               <li>
-                <Link to="/adventures">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Adventures
-                  </span>
+                <Link to="/adventures" className="text-muted-foreground hover:text-primary transition-colors">
+                  Adventures
                 </Link>
               </li>
               <li>
-                <Link to="/rentals">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Rentals
-                  </span>
+                <Link to="/rentals" className="text-muted-foreground hover:text-primary transition-colors">
+                  Rentals
                 </Link>
               </li>
               <li>
-                <Link to="/coaching">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Coaching
-                  </span>
+                <Link to="/community-events" className="text-muted-foreground hover:text-primary transition-colors">
+                  Community Events
                 </Link>
               </li>
               <li>
-                <Link to="/private-events">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    Private Events
-                  </span>
+                <Link to="/private-events" className="text-muted-foreground hover:text-primary transition-colors">
+                  Private Events
                 </Link>
               </li>
               <li>
-                <Link to="/about">
-                  <span className="text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-                    About Us
-                  </span>
+                <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                  Shop
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Services */}
+          {/* More */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Services</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold text-foreground mb-4">More</h4>
+            <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
-                  Floating Soundbaths
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
+                  About
                 </Link>
               </li>
               <li>
-                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
-                  Floating Yoga
+                <Link to="/coaching" className="text-muted-foreground hover:text-primary transition-colors">
+                  Coaching
                 </Link>
               </li>
               <li>
-                <Link to="/locations" className="hover:text-primary transition-colors cursor-pointer">
-                  Water Aerobics
+                <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
+                  Blog
                 </Link>
               </li>
               <li>
-                <Link to="/rentals" className="hover:text-primary transition-colors cursor-pointer">
-                  Paddleboard Rentals
+                <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">
+                  FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/adventures" className="hover:text-primary transition-colors cursor-pointer">
-                  Guided Adventures
-                </Link>
-              </li>
-              <li>
-                <Link to="/private-events" className="hover:text-primary transition-colors cursor-pointer">
-                  Private Group Events
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>

@@ -10,12 +10,14 @@ export default function Header() {
     { name: "Floating Sessions", href: "/locations" },
     { name: "Community Events", href: "/community-events" },
     { name: "Private Events", href: "/private-events" },
-    { name: "Shop", href: "/shop" },
     { name: "Adventures", href: "/adventures" },
-    { name: "Blog", href: "/blog" },
+    { name: "Rentals", href: "/rentals" },
+    { name: "Shop", href: "/shop" },
     { name: "About", href: "/about" },
-    { name: "FAQ", href: "/faq" },
-    // Membership intentionally hidden from nav for now (route/page kept live).
+    { name: "Contact", href: "/contact" },
+    // Blog, FAQ + Membership are kept live but out of the top nav (Blog + FAQ
+    // are in the footer) to keep the menu to one tidy row.
+
   ];
 
   return (
@@ -29,7 +31,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex flex-wrap items-center gap-x-5 gap-y-1 lg:gap-x-6">
           {navigation.map((item) => (
             <Link key={item.name} to={item.href}>
               <span className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer">

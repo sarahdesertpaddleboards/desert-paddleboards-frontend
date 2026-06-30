@@ -1,30 +1,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Waves, Truck, Sparkles, MapPin, CheckCircle2 } from "lucide-react";
+import { Waves, Truck, Sparkles, MapPin } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
 
 /**
- * /rentals — paddleboard rentals + the "Grapefruit Orchard" Airstream brand-activation rental.
+ * /rentals — paddleboard fleet rentals + a feature for the Blue Wave Mobile
+ * Wellness Lounge (the Airstream minisite at /airstream).
  * Redirect target for the old GoDaddy /airstream-rental page.
  */
 export default function Rentals() {
-  const airstreamUses = [
-    "Brand activations & product launches",
-    "Corporate pop-ups & experiential campaigns",
-    "Content creation & influencer events",
-    "Mobile offices & VIP client experiences",
-  ];
-
-  const airstreamRates = [
-    { name: "Weekend Activation", detail: "Fri–Sun", price: "from $1,500" },
-    { name: "Weekly Campaign", detail: "5–7 days", price: "from $2,500" },
-    { name: "Extended Campaign", detail: "2–3 weeks", price: "custom quote" },
-  ];
-
   const structuredData = graph([
     breadcrumbLd([
       { name: "Home", path: "/" },
@@ -38,15 +26,15 @@ export default function Rentals() {
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
       description:
-        "Paddleboard rentals for groups and events, plus the Grapefruit Orchard Airstream — a camera-ready mobile space for brand activations and pop-ups across the Phoenix metro.",
+        "Paddleboard fleet rentals for groups and events, plus the Blue Wave Mobile Wellness Lounge — a luxury Airstream wellness activation available across Arizona and Southern California.",
     },
   ]);
 
   return (
     <div className="min-h-screen">
       <Seo
-        title="Paddleboard &amp; Airstream Rentals — Phoenix, AZ"
-        description="Rent paddleboards across metro Phoenix, or book the Grapefruit Orchard Airstream — a camera-ready space for shoots, pop-ups and brand activations."
+        title="Paddleboard &amp; Airstream Rentals — Arizona"
+        description="Rent a fleet of paddleboards across metro Phoenix, or bring the Blue Wave Mobile Wellness Lounge — our luxury Airstream wellness activation — to your event across AZ &amp; SoCal."
         image="/floating-boards-sunset.jpg"
       />
       <JsonLd data={structuredData} />
@@ -62,7 +50,7 @@ export default function Rentals() {
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Rentals</h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
-            Paddleboards for your group or event — plus a one-of-a-kind Airstream for brand activations.
+            Paddleboards for your group or event — plus the Blue Wave Mobile Wellness Lounge Airstream.
           </p>
         </div>
       </section>
@@ -121,7 +109,7 @@ export default function Rentals() {
         </div>
       </section>
 
-      {/* Airstream */}
+      {/* Blue Wave Mobile Wellness Lounge — featured; full details on /airstream */}
       <section className="bg-accent/20 py-16">
         <div className="container">
           <div className="max-w-4xl mx-auto">
@@ -129,52 +117,30 @@ export default function Rentals() {
               <div className="inline-flex p-3 rounded-full bg-primary/10 text-primary">
                 <Sparkles className="h-6 w-6" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold">The Grapefruit Orchard Airstream</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Blue Wave Mobile Wellness Lounge
+              </h2>
             </div>
-            <p className="text-lg font-medium mb-2">Brand activation rental — Phoenix, AZ</p>
-            <p className="text-muted-foreground mb-8">
-              Your brand deserves a better stage. The Grapefruit Orchard Airstream is a fully outfitted,
-              camera-ready mobile space for corporate brand activations, pop-up experiences and marketing
-              campaigns across the Phoenix metro. Delivered to your location. Ready to turn heads.
+            <p className="text-lg font-medium mb-2">
+              Our luxury Airstream wellness activation — Arizona &amp; Southern California
             </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-              {airstreamUses.map((u) => (
-                <div key={u} className="flex items-start gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-muted-foreground">{u}</span>
-                </div>
-              ))}
-            </div>
-
-            <h3 className="text-xl font-bold mb-4">Rental Rates</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {airstreamRates.map((r) => (
-                <Card key={r.name}>
-                  <CardContent className="pt-8 pb-6 text-center">
-                    <h4 className="font-bold text-lg mb-1">{r.name}</h4>
-                    <div className="text-sm text-muted-foreground mb-2">{r.detail}</div>
-                    <div className="text-2xl font-bold text-primary">{r.price}</div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <p className="text-sm text-muted-foreground mb-8">
-              Delivery, setup and pickup included within the Phoenix metro. Additional fees apply for generator
-              power, location moves and branded staging. Past clients include local healthcare &amp; wellness
-              brands, community festivals and corporate activations.
+            <p className="text-muted-foreground mb-8 max-w-2xl">
+              A beautifully restored Airstream, reimagined as a mobile wellness lounge — brought
+              to your event, retreat, festival or private gathering. A serene, show-stopping space
+              for sound healing, recovery and relaxation, delivered and styled for you.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
               <Button size="lg" asChild>
-                <Link to="/contact?subject=Airstream%20rental">
-                  Email to reserve
-                </Link>
+                <Link to="/airstream">Explore the Blue Wave Lounge →</Link>
               </Button>
-              <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" /> Based in Queen Creek · Delivered Valley-wide
-              </p>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/contact?subject=Blue%20Wave%20Airstream">Enquire about a date</Link>
+              </Button>
             </div>
+            <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4" /> Available across Arizona &amp; Southern California
+            </p>
           </div>
         </div>
       </section>
