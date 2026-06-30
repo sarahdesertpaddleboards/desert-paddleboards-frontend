@@ -64,6 +64,19 @@
       "sessions": [
         { "date": "2026-10-24", "time": "10:00" }
       ]
+    },
+    {
+      "id": "salt-river-outing",
+      "slug": "salt-river-paddleboarding-outing",
+      "title": "Salt River Paddleboarding Outing",
+      "venue": "Salt River",
+      "city": "Mesa",
+      "state": "AZ",
+      "fareharborItemId": 146393,
+      "note": "A guided paddleboard outing on the lower Salt River — glide past saguaros, cottonwoods and (if you're lucky) the wild horses on calm desert water. Boards and guide included; meet at the put-in.",
+      "sessions": [
+        { "date": "2026-07-24", "time": "07:00" }
+      ]
     }
   ]
 }

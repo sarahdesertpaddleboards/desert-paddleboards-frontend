@@ -5,6 +5,7 @@ import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
 import { products, formatPrice, type Product } from "@/data/shop";
 import { trackEvent } from "@/lib/analytics";
+import { useFareHarborEmbed } from "@/components/FareHarborButton";
 
 const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
@@ -20,6 +21,7 @@ const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
 ];
 
 export default function Shop() {
+  useFareHarborEmbed(); // for the gift-certificate FareHarbor lightframe
   const live = products.filter((p) => !p.soldOut);
 
   const structuredData = graph([
@@ -80,6 +82,26 @@ export default function Shop() {
           </section>
         );
       })}
+
+      {/* Gift certificates — booked/redeemed through FareHarbor */}
+      <section className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-brand/10 to-secondary/10 p-8 text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
+          Gift certificates
+        </p>
+        <h2 className="mt-2 text-2xl font-bold">Give the gift of floating</h2>
+        <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
+          A Desert Paddleboards gift certificate is the perfect present — redeemable
+          toward any floating soundbath, water-fitness class, rental or outing.
+          Purchased securely through FareHarbor.
+        </p>
+        <a
+          href="https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629"
+          onClick={() => trackEvent("shop_click", { product: "Gift certificate" })}
+          className="mt-6 inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+        >
+          Buy a gift certificate
+        </a>
+      </section>
 
       {/* Cross-links to other offerings */}
       <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
