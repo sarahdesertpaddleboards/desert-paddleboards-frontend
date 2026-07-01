@@ -10,9 +10,9 @@ export default function Header() {
     { name: "Floating Sessions", href: "/locations" },
     { name: "Community Events", href: "/community-events" },
     { name: "Private Events", href: "/private-events" },
-    { name: "Adventures", href: "/adventures" },
     { name: "Rentals", href: "/rentals" },
     { name: "Shop", href: "/shop" },
+    { name: "Adventures", href: "/adventures" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
     // Blog, FAQ + Membership are kept live but out of the top nav (Blog + FAQ
