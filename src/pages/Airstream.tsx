@@ -10,8 +10,8 @@
  * App.tsx and is NOT linked from the DPB nav/footer — i.e. "hidden" but live and
  * pre-rendered at build time, so it's SEO-indexable on the trusted domain.
  *
- * Booking model = enquiry-led. This is a high-touch premium service, so the
- * enquiry form (→ sarah@ via Web3Forms) is the single primary CTA. The previous
+ * Booking model = inquiry-led. This is a high-touch premium service, so the
+ * inquiry form (→ sarah@ via Web3Forms) is the single primary CTA. The previous
  * Airbnb / overnight-stay framing was retired with the rebrand.
  *
  * Photos (public/airstream/): hero.jpg, interior.jpg, exterior.jpg, detail.jpg —
@@ -39,6 +39,7 @@ import {
   CalendarDays,
   CheckCircle2,
   ArrowRight,
+  Clapperboard,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -133,6 +134,7 @@ const IDEAL_FOR = [
   { icon: Mic, label: "Speaker & talent green rooms" },
   { icon: PartyPopper, label: "Employee appreciation events" },
   { icon: Tent, label: "Wellness festivals & community events" },
+  { icon: Clapperboard, label: "Film & TV production sets" },
 ];
 
 /** Image that falls back to a soft placeholder if the file isn't there. */
@@ -183,7 +185,7 @@ export default function Airstream() {
     e.preventDefault();
     setSubmitting(true);
 
-    const subject = `Mobile Wellness Lounge enquiry${form.company ? ` — ${form.company}` : form.eventType ? ` — ${form.eventType}` : ""}`;
+    const subject = `Mobile Wellness Lounge inquiry${form.company ? ` — ${form.company}` : form.eventType ? ` — ${form.eventType}` : ""}`;
     const result = await submitWeb3Form({
       subject,
       from_name: "Blue Wave Mobile Wellness Lounge website",
@@ -203,14 +205,14 @@ export default function Airstream() {
     setSubmitting(false);
 
     if (result.success) {
-      toast.success("Thanks — your enquiry is on its way to the Blue Wave team. We'll reply within one business day.");
+      toast.success("Thanks — your inquiry is on its way to the Blue Wave team. We'll reply within one business day.");
       reset();
     } else {
       const body = encodeURIComponent(
         `Name: ${form.name}\nCompany: ${form.company}\nEmail: ${form.email}\nPhone: ${form.phone}\nEvent date: ${form.date}\nLocation: ${form.location}\nEvent type: ${form.eventType}\nGuests: ${form.guests}\nWellness programming: ${form.programming}\n\n${form.message}`,
       );
       window.location.href = `mailto:${BRAND.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
-      toast("Opening your email app to send the enquiry…");
+      toast("Opening your email app to send the inquiry…");
     }
   };
 
@@ -237,8 +239,8 @@ export default function Airstream() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased">
       <Seo
-        title={`${BRAND.name} — Luxury Airstream Wellness Activation | ${BRAND.areas}`}
-        description={`${BRAND.tagline} A luxury Airstream wellness lounge for corporate events, conferences, retreats and resorts across ${BRAND.areas}. Book as a standalone hospitality space or paired with floating sound baths, meditation and breathwork.`}
+        title={`Airstream Corporate Wellness Lounge for Hire | ${BRAND.areas}`}
+        description={`A luxury Airstream mobile wellness lounge available for corporate events, conferences, executive retreats, film & TV production sets, resort activations and private gatherings across ${BRAND.areas}. Pair with floating sound baths, meditation and breathwork.`}
         image={HERO_IMG}
       />
       <JsonLd data={serviceLd} />
@@ -256,10 +258,10 @@ export default function Airstream() {
             <a href="#configurations" className="hover:text-slate-900">Configurations</a>
             <a href="#experiences" className="hover:text-slate-900">Experiences</a>
             <a href="#gallery" className="hover:text-slate-900">Gallery</a>
-            <a href="#enquire" className="hover:text-slate-900">Enquire</a>
+            <a href="#inquire" className="hover:text-slate-900">Inquire</a>
           </nav>
           <Button asChild size="sm" className="bg-teal-700 hover:bg-teal-800">
-            <a href="#enquire">Enquire</a>
+            <a href="#inquire">Inquire</a>
           </Button>
         </div>
       </header>
@@ -282,13 +284,13 @@ export default function Airstream() {
             </div>
             <p className="font-semibold uppercase tracking-[0.22em] text-teal-300">Blue Wave</p>
             <h1 className="mt-2 text-balance font-serif text-4xl font-bold leading-tight md:text-6xl">
-              Mobile Wellness Lounge
+              Airstream Mobile Wellness Lounge
             </h1>
             <p className="mt-5 text-lg text-slate-200 md:text-xl">{BRAND.tagline}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-700">
-                <a href="#enquire">
-                  Enquire about the lounge <ArrowRight className="h-4 w-4" />
+                <a href="#inquire">
+                  Inquire about the lounge <ArrowRight className="h-4 w-4" />
                 </a>
               </Button>
               <Button
@@ -463,8 +465,8 @@ export default function Airstream() {
         </div>
       </section>
 
-      {/* Enquiry form */}
-      <section id="enquire" className="mx-auto max-w-3xl px-5 py-20">
+      {/* Inquiry form */}
+      <section id="inquire" className="mx-auto max-w-3xl px-5 py-20">
         <div className="text-center">
           <h2 className="font-serif text-3xl font-bold md:text-4xl">Bring the lounge to your event</h2>
           <p className="mt-4 text-slate-600">
@@ -541,7 +543,7 @@ export default function Airstream() {
             <Textarea id="message" rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
           </div>
           <Button type="submit" size="lg" disabled={submitting} className="bg-teal-700 hover:bg-teal-800">
-            {submitting ? "Sending…" : "Send enquiry"}
+            {submitting ? "Sending…" : "Send inquiry"}
           </Button>
           <p className="flex items-center justify-center gap-2 text-center text-xs text-slate-500">
             <CheckCircle2 className="h-3.5 w-3.5" /> Goes straight to the Blue Wave team · no obligation
@@ -562,8 +564,8 @@ export default function Airstream() {
           <div className="flex flex-col gap-1 text-sm text-slate-600">
             <a href={`mailto:${BRAND.email}`} className="hover:text-slate-900">{BRAND.email}</a>
             <a href={`tel:${BRAND.phoneHref}`} className="hover:text-slate-900">{BRAND.phoneDisplay}</a>
-            <a href="#enquire" className="inline-flex items-center gap-1 text-teal-700 hover:text-teal-800">
-              <CalendarDays className="h-3.5 w-3.5" /> Enquire about your event
+            <a href="#inquire" className="inline-flex items-center gap-1 text-teal-700 hover:text-teal-800">
+              <CalendarDays className="h-3.5 w-3.5" /> Inquire about your event
             </a>
           </div>
         </div>

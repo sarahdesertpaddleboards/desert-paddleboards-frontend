@@ -1,24 +1,39 @@
 import { Link } from "react-router-dom";
-import { Menu, X, Phone } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+
+const navigation = [
+  { name: "Home", href: "/" },
+  { name: "Floating Sessions", href: "/locations" },
+  { name: "Community Events", href: "/community-events" },
+  { name: "Private Events", href: "/private-events" },
+  { name: "Rentals", href: "/rentals" },
+  { name: "Shop", href: "/shop" },
+  { name: "Adventures", href: "/adventures" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+];
+
+const moreLinks = [
+  { name: "Airstream Lounge", href: "/airstream" },
+  { name: "Blog", href: "/blog" },
+  { name: "FAQ", href: "/faq" },
+];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
-  const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Floating Sessions", href: "/locations" },
-    { name: "Community Events", href: "/community-events" },
-    { name: "Private Events", href: "/private-events" },
-    { name: "Rentals", href: "/rentals" },
-    { name: "Shop", href: "/shop" },
-    { name: "Adventures", href: "/adventures" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    // Blog, FAQ + Membership are kept live but out of the top nav (Blog + FAQ
-    // are in the footer) to keep the menu to one tidy row.
-
-  ];
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -39,6 +54,30 @@ export default function Header() {
               </span>
             </Link>
           ))}
+
+          {/* More dropdown */}
+          <div ref={moreRef} className="relative">
+            <button
+              onClick={() => setMoreOpen((o) => !o)}
+              className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
+            >
+              More <ChevronDown className={`h-3.5 w-3.5 transition-transform ${moreOpen ? "rotate-180" : ""}`} />
+            </button>
+            {moreOpen && (
+              <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-border bg-background shadow-lg py-1 z-50">
+                {moreLinks.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setMoreOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted transition-colors"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="hidden md:flex items-center gap-4">
@@ -65,6 +104,16 @@ export default function Header() {
         <div className="md:hidden border-t border-border bg-background">
           <div className="container py-4 space-y-4">
             {navigation.map((item) => (
+              <Link key={item.name} to={item.href}>
+                <div
+                  className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </div>
+              </Link>
+            ))}
+            {moreLinks.map((item) => (
               <Link key={item.name} to={item.href}>
                 <div
                   className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
