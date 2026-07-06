@@ -107,11 +107,10 @@ export default function CommunityEvents() {
             Community events
           </p>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Community events are our bread and butter — beautiful pools across
-            Arizona, filled with neighbours floating on the water to live music
-            as the sun goes down. It's a full turnkey experience your residents
-            won't stop talking about, and most events sell out the day they're
-            announced.
+            Community events are what we do best—bringing neighbors together for
+            unforgettable evenings of floating, live music, and relaxation. It's
+            an experience that sparks new friendships and creates the kind of
+            community people are proud to call home.
           </p>
         </section>
 
