@@ -50,6 +50,10 @@ export interface Experience {
   /** Venue coordinates (from FareHarbor primary_location) for the map + distance */
   lat: number;
   lng: number;
+  /** Full street address (from the catalog), for "Get directions". "" if none. */
+  address: string;
+  /** Google Place ID (from the catalog) — pinpoints the venue in Maps. "" if none. */
+  placeId: string;
   kind: ExperienceKind;
   /** Evergreen description — DRAFT, pending Sarah's review */
   blurb: string;
@@ -328,6 +332,12 @@ function cleanName(name: string): string {
 function toExperience(cat: CatalogItem, o?: Overlay): Experience {
   const venue = o?.venue ?? cat.venue;
   const city = o?.city ?? cat.city;
+  // Full address for "Get directions" — only when FareHarbor gives us a street.
+  const address = cat.street
+    ? [cat.street, city, [cat.state, cat.postalCode].filter(Boolean).join(" ")]
+        .filter(Boolean)
+        .join(", ")
+    : "";
   return {
     itemId: cat.itemId,
     slug: o?.slug ?? slugify(`${cleanName(cat.name)}-${city}`),
@@ -337,6 +347,8 @@ function toExperience(cat: CatalogItem, o?: Overlay): Experience {
     state: cat.state || "AZ",
     lat: o?.lat ?? cat.lat ?? 0,
     lng: o?.lng ?? cat.lng ?? 0,
+    address,
+    placeId: cat.googlePlaceId ?? "",
     kind: o?.kind ?? "soundbath",
     blurb:
       o?.blurb ??
@@ -402,6 +414,8 @@ export const membership: Experience = {
   state: "AZ",
   lat: 33.4484,
   lng: -112.074,
+  address: "",
+  placeId: "",
   kind: "membership",
   blurb:
     "Classes every Tuesday. $80 a month, no commitment — or $25 per class, so the membership saves you $20. Cancel anytime.",

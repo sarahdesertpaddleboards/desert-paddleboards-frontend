@@ -1,7 +1,15 @@
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import { QRCodeSVG } from "qrcode.react";
+import { MapPin, Navigation } from "lucide-react";
 import { getExperienceBySlug, fareHarborBookUrl } from "@/data/locations";
 import { getCityClassBySlug } from "@/data/city-classes";
+import {
+  directionsUrl,
+  hasRoutableLocation,
+  venueDestination,
+  cityClassDestination,
+} from "@/lib/directions";
 import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
 import Seo from "@/components/Seo";
@@ -80,6 +88,14 @@ export default function LocationDetail() {
   // Booking flips to FareHarbor whenever an item id exists — a real FareHarbor
   // venue, OR a city class migrated into FareHarbor via `fareharborItemId`.
   const fhItemId = exp ? exp.itemId : city!.fareharborItemId;
+
+  // "Getting there" — directions destination for this venue, if we can route.
+  const dest = exp
+    ? venueDestination(exp)
+    : city
+      ? cityClassDestination(city)
+      : null;
+  const showDirections = dest ? hasRoutableLocation(dest) : false;
 
   const longDescription = locationContent[view.slug];
 
@@ -211,9 +227,10 @@ export default function LocationDetail() {
           ) : null}
         </div>
 
-        {/* Booking card */}
+        {/* Booking card + "Getting there" */}
         <aside className="lg:col-span-1">
-          <div className="sticky top-24 space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div className="sticky top-24 space-y-4">
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
             {fhItemId ? (
               <>
                 <h2 className="text-xl font-bold">Book this experience</h2>
@@ -250,6 +267,43 @@ export default function LocationDetail() {
                 ) : null}
               </>
             )}
+          </div>
+
+          {/* Getting there — one-tap directions + a QR to send to your phone. */}
+          {showDirections && dest ? (
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-brand" />
+                <h2 className="text-lg font-bold">Getting there</h2>
+              </div>
+              <p className="mt-2 text-sm font-medium text-foreground">
+                {view.venue}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {dest.address ?? `${view.city}, ${view.state}`}
+              </p>
+              <a
+                href={directionsUrl(dest)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("directions_click", { venue: dest.label })
+                }
+                className="mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              >
+                <Navigation className="h-4 w-4" />
+                Get directions
+              </a>
+              {/* On a phone the button above already opens Maps, so the QR is
+                  only useful on a larger screen — scan to open it on your phone. */}
+              <div className="mt-5 hidden flex-col items-center border-t border-border pt-5 sm:flex">
+                <QRCodeSVG value={directionsUrl(dest)} size={128} />
+                <p className="mt-3 text-center text-xs text-muted-foreground">
+                  Scan to open directions on your phone
+                </p>
+              </div>
+            </div>
+          ) : null}
           </div>
         </aside>
       </div>

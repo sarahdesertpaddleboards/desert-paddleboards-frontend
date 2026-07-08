@@ -3,11 +3,18 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { MapView } from "@/components/Map";
 import FareHarborButton from "@/components/FareHarborButton";
+import DirectionsButton from "@/components/DirectionsButton";
 import { experiences, type Experience } from "@/data/locations";
 import { cityClassVenues, type CityClass } from "@/data/city-classes";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
+import {
+  directionsUrl,
+  hasRoutableLocation,
+  venueDestination,
+  cityClassDestination,
+} from "@/lib/directions";
 // Homepage hero — sunset floating soundbath at a resort pool: branded floats
 // on the water at golden hour with a musician playing crystal bowls and gong
 // (self-hosted in /public).
@@ -55,12 +62,16 @@ function venueInfoHtml(exp: Experience, next?: UpcomingSession): string {
   const when = next
     ? `Next: <strong>${fmtDate(next.startAt)}</strong> · ${fmtTime(next.startAt)}`
     : "See calendar for dates";
+  const dest = venueDestination(exp);
+  const directions = hasRoutableLocation(dest)
+    ? `<a href="${escapeHtml(directionsUrl(dest))}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;margin-left:12px;font-size:13px;font-weight:700;color:#3e7c84;text-decoration:underline">Directions →</a>`
+    : "";
   return `<div style="max-width:230px;line-height:1.35;font-family:inherit">
     <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#3e7c84">${escapeHtml(exp.city)}, ${escapeHtml(exp.state)}</div>
     <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(exp.title)}</div>
     ${venue}
     <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
-    <a href="/locations/${exp.slug}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>
+    <a href="/locations/${exp.slug}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>${directions}
   </div>`;
 }
 
@@ -78,12 +89,16 @@ function cityVenueInfoHtml(c: CityClass, nextIso?: string): string {
   const when = nextIso
     ? `Next: <strong>${fmtDate(nextIso)}</strong> · ${fmtTime(nextIso)}`
     : "See calendar for dates";
+  const dest = cityClassDestination(c);
+  const directions = hasRoutableLocation(dest)
+    ? `<a href="${escapeHtml(directionsUrl(dest))}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;margin-left:12px;font-size:13px;font-weight:700;color:#3e7c84;text-decoration:underline">Directions →</a>`
+    : "";
   return `<div style="max-width:230px;line-height:1.35;font-family:inherit">
     <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#1f3a4d">${escapeHtml(c.city)}, ${escapeHtml(c.state)} · ${c.fareharborItemId ? "Featured event" : "City class"}</div>
     <div style="font-size:15px;font-weight:700;color:#0f172a;margin-top:2px">${escapeHtml(c.title)}</div>
     <div style="font-size:13px;color:#475569;margin-top:1px">${escapeHtml(c.venue)}</div>
     <div style="font-size:13px;color:#334155;margin-top:6px">${when}</div>
-    <a href="/locations/${escapeHtml(c.slug)}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>
+    <a href="/locations/${escapeHtml(c.slug)}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:#1f3a4d;text-decoration:underline">View details →</a>${directions}
   </div>`;
 }
 
@@ -540,23 +555,21 @@ function VenueCard({
           {exp.city}
         </p>
 
+        <div className="mt-2 text-sm">
+          {next ? (
+            <span className="text-foreground">
+              Next: <span className="font-medium">{fmtDate(next.startAt)}</span>{" "}
+              · {fmtTime(next.startAt)}
+              {typeof next.spotsLeft === "number" && next.spotsLeft > 0 ? (
+                <span className="text-muted-foreground"> · {next.spotsLeft} spots</span>
+              ) : null}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">See calendar for dates</span>
+          )}
+        </div>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm">
-            {next ? (
-              <span className="text-foreground">
-                Next: <span className="font-medium">{fmtDate(next.startAt)}</span>{" "}
-                · {fmtTime(next.startAt)}
-                {typeof next.spotsLeft === "number" && next.spotsLeft > 0 ? (
-                  <span className="text-muted-foreground">
-                    {" "}
-                    · {next.spotsLeft} spots
-                  </span>
-                ) : null}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">See calendar for dates</span>
-            )}
-          </div>
+          <DirectionsButton dest={venueDestination(exp)} />
           <FareHarborButton
             itemId={exp.itemId}
             className="cursor-pointer rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
@@ -617,17 +630,22 @@ function CityVenueCard({
           </p>
         ) : null}
 
+        <div className="mt-2 text-sm">
+          {next ? (
+            <span className="text-foreground">
+              Next: <span className="font-medium">{fmtDate(next.startAt)}</span>{" "}
+              · {fmtTime(next.startAt)}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">See calendar for dates</span>
+          )}
+        </div>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm">
-            {next ? (
-              <span className="text-foreground">
-                Next: <span className="font-medium">{fmtDate(next.startAt)}</span>{" "}
-                · {fmtTime(next.startAt)}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">See calendar for dates</span>
-            )}
-          </div>
+          {hasRoutableLocation(cityClassDestination(c)) ? (
+            <DirectionsButton dest={cityClassDestination(c)} />
+          ) : (
+            <span />
+          )}
           {c.fareharborItemId ? (
             <FareHarborButton
               itemId={c.fareharborItemId}
