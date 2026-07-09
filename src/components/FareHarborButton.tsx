@@ -44,11 +44,24 @@ export default function FareHarborButton({
 }: FareHarborButtonProps) {
   useFareHarborEmbed();
 
+  // NOTE: don't track on onClick. FareHarbor's autolightframe script registers a
+  // CAPTURE-phase click listener on `document` and calls stopPropagation(), so
+  // the click never reaches this element and React's onClick never runs — which
+  // silently dropped nearly every "book_click" (GA4 showed ~1 in 28 days despite
+  // hundreds reaching the booking form). pointerdown (mouse/touch, fires before
+  // the click) and Enter keydown aren't intercepted, so track on those instead.
+  const track = () => trackEvent("book_click", { item_id: itemId });
+
   return (
     <a
       href={appendUtms(fareHarborBookUrl(itemId))}
       className={className ?? defaultClassName}
-      onClick={() => trackEvent("book_click", { item_id: itemId })}
+      onPointerDown={(e) => {
+        if (e.button === 0) track(); // primary button / touch only
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") track(); // keyboard activation of the link
+      }}
     >
       {children}
     </a>
