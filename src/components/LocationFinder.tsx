@@ -44,6 +44,17 @@ function fmtTime(iso: string): string {
   });
 }
 
+/** Short "Jul 21" used for the extra upcoming dates on a venue card. */
+function fmtMonthDay(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", {
+    timeZone: TZ,
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function escapeHtml(s: string): string {
   return s.replace(
     /[&<>"']/g,
@@ -108,6 +119,9 @@ interface FinderRow {
   kind: "fareharbor" | "city";
   city: string;
   next?: { startAt: string; spotsLeft?: number | null };
+  /** All upcoming session dates (ISO, sorted) at this venue — so recurring
+   *  classes show more than just their soonest date. */
+  dates?: string[];
   dist?: number;
   exp?: Experience;
   cityClass?: CityClass;
@@ -173,6 +187,22 @@ export default function LocationFinder({
     return map;
   }, [sessions]);
 
+  // itemId -> ALL upcoming session dates (ISO, sorted). Recurring classes (e.g.
+  // weekly water aerobics) run several dates at one venue; showing only "Next"
+  // hid the rest, so the card lists the next few dates too.
+  const upcomingByItem = useMemo(() => {
+    const now = Date.now();
+    const map = new Map<number, string[]>();
+    for (const s of sessions) {
+      if (Date.parse(s.startAt) <= now) continue;
+      const arr = map.get(s.itemId) ?? [];
+      arr.push(s.startAt);
+      map.set(s.itemId, arr);
+    }
+    for (const arr of map.values()) arr.sort((a, b) => a.localeCompare(b));
+    return map;
+  }, [sessions]);
+
   // Live ref to the sessions map so marker click handlers (created once, when
   // the map loads) read the latest "next session" data without stale closures.
   const nextByItemRef = useRef(nextByItem);
@@ -233,16 +263,22 @@ export default function LocationFinder({
         kind: "fareharbor" as const,
         city: e.city,
         next: nextByItem.get(e.itemId),
+        dates: upcomingByItem.get(e.itemId),
         dist: distanceByItem.get(e.itemId),
         exp: e,
       })),
       ...cityClassVenues.map((c) => {
-        const iso = nextCityIso(c);
+        const now = Date.now();
+        const dates = c.sessions
+          .map((s) => s.startAt)
+          .filter((iso) => Date.parse(iso) > now)
+          .sort((a, b) => a.localeCompare(b));
         return {
           key: c.id,
           kind: "city" as const,
           city: c.city,
-          next: iso ? { startAt: iso } : undefined,
+          next: dates[0] ? { startAt: dates[0] } : undefined,
+          dates,
           dist: cityDistanceById.get(c.id),
           cityClass: c,
         };
@@ -257,7 +293,14 @@ export default function LocationFinder({
       if (origin) return (a.dist ?? Infinity) - (b.dist ?? Infinity);
       return (a.next?.startAt ?? "9999").localeCompare(b.next?.startAt ?? "9999");
     });
-  }, [selectedCity, origin, distanceByItem, cityDistanceById, nextByItem]);
+  }, [
+    selectedCity,
+    origin,
+    distanceByItem,
+    cityDistanceById,
+    nextByItem,
+    upcomingByItem,
+  ]);
 
   function handleMapReady(map: google.maps.Map) {
     mapRef.current = map;
@@ -500,6 +543,7 @@ export default function LocationFinder({
                   key={row.key}
                   exp={row.exp}
                   next={row.next}
+                  dates={row.dates}
                   distanceMi={row.dist}
                 />
               ) : row.cityClass ? (
@@ -507,6 +551,7 @@ export default function LocationFinder({
                   key={row.key}
                   c={row.cityClass}
                   next={row.next}
+                  dates={row.dates}
                   distanceMi={row.dist}
                 />
               ) : null,
@@ -518,13 +563,32 @@ export default function LocationFinder({
   );
 }
 
+/** The next few upcoming dates beyond the soonest ("Next") — so a recurring
+ *  venue (e.g. weekly water aerobics) shows more than one date. Renders nothing
+ *  for single-date venues. */
+function MoreDates({ dates }: { dates?: string[] }) {
+  if (!dates || dates.length <= 1) return null;
+  const extra = dates.slice(1); // dates[0] is already shown as "Next"
+  const shown = extra.slice(0, 3);
+  const remaining = extra.length - shown.length;
+  return (
+    <p className="mt-1 text-xs text-muted-foreground">
+      <span className="font-medium text-brand-dark">More dates:</span>{" "}
+      {shown.map(fmtMonthDay).join(" · ")}
+      {remaining > 0 ? ` · +${remaining} more` : ""}
+    </p>
+  );
+}
+
 function VenueCard({
   exp,
   next,
+  dates,
   distanceMi,
 }: {
   exp: Experience;
   next?: { startAt: string; spotsLeft?: number | null };
+  dates?: string[];
   distanceMi?: number;
 }) {
   return (
@@ -568,6 +632,7 @@ function VenueCard({
             <span className="text-muted-foreground">See calendar for dates</span>
           )}
         </div>
+        <MoreDates dates={dates} />
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <DirectionsButton dest={venueDestination(exp)} />
           <FareHarborButton
@@ -589,10 +654,12 @@ const CITY_CARD_IMAGE = "/floating-boards-sunset.jpg";
 function CityVenueCard({
   c,
   next,
+  dates,
   distanceMi,
 }: {
   c: CityClass;
   next?: { startAt: string };
+  dates?: string[];
   distanceMi?: number;
 }) {
   return (
@@ -640,6 +707,7 @@ function CityVenueCard({
             <span className="text-muted-foreground">See calendar for dates</span>
           )}
         </div>
+        <MoreDates dates={dates} />
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           {hasRoutableLocation(cityClassDestination(c)) ? (
             <DirectionsButton dest={cityClassDestination(c)} />
