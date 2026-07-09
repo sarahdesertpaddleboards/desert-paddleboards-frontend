@@ -135,7 +135,7 @@ export default function Rentals() {
                 <Link to="/airstream">Explore the Blue Wave Lounge →</Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link to="/contact?subject=Blue%20Wave%20Airstream">Enquire about a date</Link>
+                <Link to="/contact?subject=Blue%20Wave%20Airstream">Inquire about a date</Link>
               </Button>
             </div>
             <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">

@@ -33,11 +33,11 @@ declare global {
   }
 }
 
-// Map our internal event names to Meta's standard events (which Meta optimises
+// Map our internal event names to Meta's standard events (which Meta optimizes
 // ad delivery for). Anything not listed is sent as a Meta custom event.
 const META_STANDARD_EVENTS: Record<string, string> = {
   book_click: "Schedule", // heading to FareHarbor to book a session
-  generate_lead: "Lead", // private-events enquiry submitted
+  generate_lead: "Lead", // private-events inquiry submitted
   shop_click: "InitiateCheckout", // heading to Stripe checkout
 };
 

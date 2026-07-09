@@ -168,7 +168,7 @@ export function MapView({
     }
     // The Maps API can silently fail to render (no error) on an account/billing
     // issue. If no tiles appear shortly, treat the map as unavailable so the
-    // parent hides the empty box instead of showing a broken grey rectangle.
+    // parent hides the empty box instead of showing a broken gray rectangle.
     window.setTimeout(() => {
       if (mapContainer.current && !mapContainer.current.querySelector(".gm-style")) {
         onUnavailable?.();

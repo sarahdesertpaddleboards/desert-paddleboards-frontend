@@ -13,7 +13,7 @@
  *    appears on the site automatically (with a derived title/blurb) even
  *    before anyone writes an overlay for it — see AUTO-SURFACED below.
  *
- * Honouring visibility: items flagged Unlisted/Private/Archived/retail in
+ * Honoring visibility: items flagged Unlisted/Private/Archived/retail in
  * FareHarbor are excluded — even if they have an overlay entry. So unlisting
  * a venue in the dashboard removes it from the site on the next build.
  *

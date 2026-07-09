@@ -522,7 +522,7 @@ export default function LocationFinder({
           }`}
         >
           {/* Map — hidden if the Maps API is unavailable, so we never show an
-              empty grey box; the search + list still work without it. */}
+              empty gray box; the search + list still work without it. */}
           {mapAvailable ? (
             <div className="lg:sticky lg:top-24 lg:h-[560px]">
               <MapView

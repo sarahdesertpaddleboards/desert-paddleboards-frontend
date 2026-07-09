@@ -112,7 +112,7 @@ const CONFIGURATIONS = [
   {
     icon: Star,
     title: "Branded activation",
-    body: "A head-turning, fully brandable centrepiece that makes your activation impossible to miss.",
+    body: "A head-turning, fully brandable centerpiece that makes your activation impossible to miss.",
   },
 ];
 
@@ -275,7 +275,7 @@ export default function Airstream() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/55 to-slate-900/35" />
         {/* Right-edge shadow — keeps the eye on the lounge and quietly suppresses
-            the bit of neighbouring yard visible past the right-hand chair. */}
+            the bit of neighboring yard visible past the right-hand chair. */}
         <div className="absolute inset-0 bg-gradient-to-l from-slate-950/60 via-transparent to-transparent" />
         <div className="relative mx-auto max-w-6xl px-5 py-28 md:py-36">
           <div className="max-w-2xl text-slate-50">
@@ -482,7 +482,7 @@ export default function Airstream() {
               <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="company">Company / organisation</Label>
+              <Label htmlFor="company">Company / organization</Label>
               <Input id="company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
             </div>
             <div className="grid gap-2">

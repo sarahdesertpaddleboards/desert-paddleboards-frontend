@@ -46,7 +46,7 @@ export default function PrivateEvents() {
     e.preventDefault();
     setSubmitting(true);
 
-    const subject = `Private event enquiry${formData.eventType ? ` — ${formData.eventType}` : ""}`;
+    const subject = `Private event inquiry${formData.eventType ? ` — ${formData.eventType}` : ""}`;
 
     // Preferred path: deliver straight to Sarah's inbox via Web3Forms.
     const result = await submitWeb3Form({
@@ -67,7 +67,7 @@ export default function PrivateEvents() {
 
     if (result.success) {
       trackEvent("generate_lead", { form: "private-events" });
-      toast.success("Thank you! Your enquiry has been sent — we'll reply within 24 hours.");
+      toast.success("Thank you! Your inquiry has been sent — we'll reply within 24 hours.");
       resetForm();
       return;
     }
@@ -89,7 +89,7 @@ export default function PrivateEvents() {
     window.location.href = `mailto:sarah@desertpaddleboards.com?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
-    toast.message("Opening your email app so you can send your enquiry directly…");
+    toast.message("Opening your email app so you can send your inquiry directly…");
   };
 
   const eventTypes = [

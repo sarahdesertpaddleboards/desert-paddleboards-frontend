@@ -35,8 +35,8 @@ export default function Contact() {
     setSubmitting(true);
 
     const subject = presetSubject
-      ? `Website enquiry — ${presetSubject}`
-      : "Website enquiry";
+      ? `Website inquiry — ${presetSubject}`
+      : "Website inquiry";
 
     // Preferred path: deliver straight to Sarah's inbox via Web3Forms.
     const result = await submitWeb3Form({
@@ -46,7 +46,7 @@ export default function Contact() {
       name: formData.name,
       email: formData.email,
       phone: formData.phone || "—",
-      enquiry_about: presetSubject || "General",
+      inquiry_about: presetSubject || "General",
       message: formData.message || "—",
     });
 

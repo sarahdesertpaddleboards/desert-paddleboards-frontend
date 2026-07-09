@@ -4,7 +4,7 @@
  * Written as a comprehensive, plain-English starting point tailored to a small
  * Arizona water-wellness / experiences business that uses FareHarbor
  * (bookings), Stripe (payments), Google (Maps/Analytics/Reviews), the Meta
- * Pixel (ads), Flodesk (email) and Web3Forms (enquiry delivery).
+ * Pixel (ads), Flodesk (email) and Web3Forms (inquiry delivery).
  *
  * ⚠️ NOT LEGAL ADVICE. These are sensible drafts — Sarah should have them
  * reviewed by a professional before relying on them, ESPECIALLY the
@@ -28,7 +28,7 @@ website or services, you agree to this policy.
 ## Information we collect
 
 **Information you give us directly**
-- Contact details — your name, email address and phone number — when you book, enquire, sign up for updates, or message us.
+- Contact details — your name, email address and phone number — when you book, inquire, sign up for updates, or message us.
 - Booking and event details — the experience, date, group size and any preferences or notes you share.
 - Purchase details — what you order from our shop.
 
@@ -39,7 +39,7 @@ website or services, you agree to this policy.
 - When you book or pay, our booking and payment partners (FareHarbor and Stripe) collect your details directly and share limited confirmation information with us. We never see or store your full payment-card details.
 
 ## How we use your information
-- To take, confirm and manage your bookings, purchases and enquiries.
+- To take, confirm and manage your bookings, purchases and inquiries.
 - To send booking confirmations, reminders, photos from your session and customer-service messages.
 - To send updates or marketing **only if you have opted in** — you can unsubscribe at any time.
 - To understand how the site is used and to improve our website, services and marketing.
@@ -50,7 +50,7 @@ Our site uses cookies and similar technologies for essential functionality, to m
 - **Analytics** — Google Analytics helps us understand which pages are popular and how visitors find us.
 - **Advertising** — the Meta (Facebook) Pixel helps us measure and improve our Facebook and Instagram ads and reach people who have visited our site.
 
-You can control or block cookies in your browser settings (some features may not work without them). You can also opt out of Google Analytics using Google's browser add-on, and manage ad personalisation in your Facebook and Instagram settings.
+You can control or block cookies in your browser settings (some features may not work without them). You can also opt out of Google Analytics using Google's browser add-on, and manage ad personalization in your Facebook and Instagram settings.
 
 ## How we share your information
 We share information only with the trusted providers that help us run our business, and only as needed:
@@ -59,7 +59,7 @@ We share information only with the trusted providers that help us run our busine
 - **Google** — website analytics, maps and customer reviews.
 - **Meta (Facebook / Instagram)** — advertising measurement and audiences.
 - **Flodesk** — our email and customer-update tool.
-- **Web3Forms** — delivers website enquiry forms to our inbox.
+- **Web3Forms** — delivers website inquiry forms to our inbox.
 
 We may also disclose information where required by law, or to protect the rights, safety and property of Desert Paddleboards, our customers or others. **We do not sell your personal information.**
 
@@ -70,13 +70,13 @@ We often photograph and film our experiences for our photo albums, website and s
 If you opt in to our emails, you can unsubscribe at any time using the link in any message or by emailing us. We will still send essential booking and service messages such as confirmations.
 
 ## Data retention
-We keep your information only as long as needed to provide our services, run our business and meet legal and accounting requirements, after which we delete or anonymise it.
+We keep your information only as long as needed to provide our services, run our business and meet legal and accounting requirements, after which we delete or anonymize it.
 
 ## Data security
 We take reasonable steps to protect your information and work with reputable providers (such as Stripe and FareHarbor) that maintain strong security standards. No website or online service can be guaranteed completely secure.
 
 ## Your privacy choices
-You can ask us to access, correct, update or delete the personal information we hold about you, or to stop sending you marketing, by emailing **sarah@desertpaddleboards.com**. Depending on where you live you may have additional rights under your local privacy laws, and we will honour those rights where they apply.
+You can ask us to access, correct, update or delete the personal information we hold about you, or to stop sending you marketing, by emailing **sarah@desertpaddleboards.com**. Depending on where you live you may have additional rights under your local privacy laws, and we will honor those rights where they apply.
 
 ## Children's privacy
 Our website is intended for adults. While our in-person events welcome families, we do not knowingly collect personal information online from children under 13. If you believe a child has provided us information through the site, please contact us and we will remove it.
@@ -112,8 +112,8 @@ Desert Paddleboards provides floating soundbaths, floating yoga and water-fitnes
 - The cancellation and refund policy for each experience is shown at the time of booking and is managed through FareHarbor — please review it before you book.
 - If you need to cancel or reschedule, contact us as early as possible and we will do our best to help, subject to that policy.
 - City-run classes follow the cancellation and refund policy of the city you booked with.
-- Memberships, where offered, are billed on a recurring basis and may be cancelled at any time; we are generally unable to refund or provide make-ups for missed sessions.
-- Occasionally an event may be rescheduled or cancelled due to weather, venue issues or other circumstances beyond our control. In that case we will offer a reschedule or, where appropriate, a refund or credit.
+- Memberships, where offered, are billed on a recurring basis and may be canceled at any time; we are generally unable to refund or provide make-ups for missed sessions.
+- Occasionally an event may be rescheduled or canceled due to weather, venue issues or other circumstances beyond our control. In that case we will offer a reschedule or, where appropriate, a refund or credit.
 
 ## Health, safety and assumption of risk
 Our experiences take place on and around water and involve physical activity. **You take part voluntarily and assume all risks** associated with participation, including slips, falls, injury and — as with any water activity — drowning.

@@ -5,7 +5,7 @@
  *
  * `body` is the post's original Markdown, reproduced faithfully. `image` is the
  * cover image — currently hot-linked from GoDaddy's CDN (img1.wsimg.com).
- * TODO (before cancelling GoDaddy): self-host these images so they don't break.
+ * TODO (before canceling GoDaddy): self-host these images so they don't break.
  */
 
 export interface BlogPost {
