@@ -1,9 +1,8 @@
 {
   "cityClasses": [
     {
-      "id": "queen-creek-friday-floats",
-      "slug": "lazy-river-floating-soundbath-queen-creek",
       "title": "Lazy River Floating Soundbath",
+      "slug": "lazy-river-floating-soundbath-queen-creek",
       "venue": "Queen Creek Recreation Pool",
       "city": "Queen Creek",
       "state": "AZ",
@@ -13,48 +12,77 @@
       "image": "/queen-creek-lazy-river.jpg",
       "note": "Floated in the resort-style lazy river — the current is switched off during the soundbath, so you drift on calm, still water. Booked through the Town of Queen Creek (search \"swimming\" activities).",
       "sessions": [
-        { "date": "2026-07-10", "time": "20:00" },
-        { "date": "2026-07-24", "time": "20:00" },
-        { "date": "2026-08-07", "time": "20:00" },
-        { "date": "2026-08-21", "time": "20:00" }
-      ]
+        {
+          "date": "2026-07-10",
+          "time": "20:00"
+        },
+        {
+          "date": "2026-07-24",
+          "time": "20:00"
+        },
+        {
+          "date": "2026-08-07",
+          "time": "20:00"
+        },
+        {
+          "date": "2026-08-21",
+          "time": "20:00"
+        }
+      ],
+      "id": "queen-creek-friday-floats"
     },
     {
-      "id": "sedona-soundbath",
-      "slug": "floating-soundbath-sedona",
       "title": "Sedona Floating Soundbath",
+      "slug": "floating-soundbath-sedona",
       "venue": "Sedona Community Pool",
       "city": "Sedona",
       "state": "AZ",
-      "image": "/sedona-soundbath.jpg",
       "address": "570 Posse Ground Rd, Sedona, AZ 86336",
       "bookingUrl": "https://sedonarecreation.activityreg.com/selectActivity",
       "bookingLabel": "Register with City of Sedona",
+      "image": "/sedona-soundbath.jpg",
       "note": "Booked through the City of Sedona — search \"swimming\" activities.",
       "sessions": [
-        { "date": "2026-07-11", "time": "19:30" },
-        { "date": "2026-08-01", "time": "19:30" },
-        { "date": "2026-09-12", "time": "19:00" },
-        { "date": "2026-10-10", "time": "19:00" }
-      ]
+        {
+          "date": "2026-07-11",
+          "time": "19:30"
+        },
+        {
+          "date": "2026-08-01",
+          "time": "19:30"
+        },
+        {
+          "date": "2026-09-12",
+          "time": "19:00"
+        },
+        {
+          "date": "2026-10-10",
+          "time": "19:00"
+        }
+      ],
+      "id": "sedona-soundbath"
     },
     {
-      "id": "avondale-soundbath",
-      "slug": "floating-soundbath-avondale",
       "title": "Avondale Floating Soundbath",
+      "slug": "floating-soundbath-avondale",
       "venue": "City of Avondale",
       "city": "Avondale",
       "state": "AZ",
-      "address": "",
-      "bookingUrl": "https://secure.rec1.com/AZ/city-of-avondale-parks-recreation/catalog/index/215ec2ec018114c4b5719d803890ffeb?filter=c2VhcmNoPXNvdW5kYmF0aA==",
+      "address": "1275 W. Civic Center Drive • Avondale, AZ 85323",
+      "bookingUrl": "https://secure.rec1.com/AZ/city-of-avondale-parks-recreation/catalog/index/ac688ee32c125a4dbba07dd5a93f54aa?filter=c2VhcmNoPWZsb2F0aW5nJTIwc291bmRiYXRo",
       "bookingLabel": "Register with City of Avondale",
       "note": "Booked through the City of Avondale — search \"soundbath\".",
-      "sessions": []
+      "sessions": [
+        {
+          "date": "2026-09-19",
+          "time": "18:00"
+        }
+      ],
+      "id": "avondale-soundbath"
     },
     {
-      "id": "witches-regatta",
-      "slug": "witches-regatta-tempe-town-lake",
       "title": "Witches Regatta SUP Event",
+      "slug": "witches-regatta-tempe-town-lake",
       "venue": "Tempe Town Lake",
       "city": "Tempe",
       "state": "AZ",
@@ -62,23 +90,30 @@
       "image": "/witches-regatta.jpg",
       "note": "Our annual Halloween paddleboard gathering on Tempe Town Lake — wear your best witch or warlock cloak and float the lake as a coven. It's wildly popular and capacity is limited, so book early.",
       "sessions": [
-        { "date": "2026-10-24", "time": "10:00" }
-      ]
+        {
+          "date": "2026-10-24",
+          "time": "10:00"
+        }
+      ],
+      "id": "witches-regatta"
     },
     {
-      "id": "salt-river-outing",
-      "slug": "salt-river-paddleboarding-outing",
       "title": "Salt River Paddleboarding Outing",
+      "slug": "salt-river-paddleboarding-outing",
       "venue": "Salt River",
       "city": "Mesa",
       "state": "AZ",
-      "image": "/salt-river-outing.jpg",
-      "fareharborItemId": 146393,
       "address": "3624 N Power Rd, Mesa, AZ 85215",
+      "fareharborItemId": 146393,
+      "image": "/salt-river-outing.jpg",
       "note": "A guided paddleboard outing on the lower Salt River — glide past saguaros, cottonwoods and the wild horses on calm desert water. Best of all, you'll paddle alongside our friendly golden retriever — an introvert's dream and the perfect companion (and conversation starter) on the water. Boards and guide included. Meeting point: the Walgreens at 3624 N Power Rd, Mesa — we head to the river together from there.",
       "sessions": [
-        { "date": "2026-07-24", "time": "07:00" }
-      ]
+        {
+          "date": "2026-07-24",
+          "time": "07:00"
+        }
+      ],
+      "id": "salt-river-outing"
     }
   ]
 }
