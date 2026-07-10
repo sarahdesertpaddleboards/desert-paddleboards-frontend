@@ -11,6 +11,7 @@
  * automatically.
  */
 import data from "./city-classes.json";
+import generatedCoords from "./city-venue-coords.generated.json";
 
 const AZ_OFFSET = "-07:00"; // Arizona does not observe daylight saving.
 
@@ -47,16 +48,37 @@ export interface CityClass {
   fareharborItemId?: number;
 }
 
-// Geocoded venue coordinates, kept in CODE (not the CMS-editable JSON) so that
-// saving city-class edits through Pages CMS can never drop them. Add an entry
-// when a new city venue gets a confirmed address.
+// PRECISE, hand-set venue coordinates, kept in CODE (not the CMS-editable JSON)
+// so saving city-class edits through Pages CMS can never drop them. These WIN
+// over the auto-geocoded coords below — use one when a plain address would land
+// the pin in the wrong spot (e.g. Tempe Town Lake, or the Salt River meeting
+// point) or when you want pixel-accuracy. Otherwise you don't need to add
+// anything: a CMS `address` is geocoded automatically (see next).
 const CITY_VENUE_COORDS: Record<string, { lat: number; lng: number }> = {
   "queen-creek-friday-floats": { lat: 33.26759, lng: -111.60122 }, // Queen Creek Recreation Pool
   "sedona-soundbath": { lat: 34.87137, lng: -111.78573 }, // Sedona Community Pool
-  "witches-regatta": { lat: 33.43344, lng: -111.94048 }, // Tempe Town Lake
+  "witches-regatta": { lat: 33.43344, lng: -111.94048 }, // Tempe Town Lake (not just "Tempe")
   "salt-river-outing": { lat: 33.4671, lng: -111.6856 }, // meeting point: Walgreens, 3624 N Power Rd, Mesa
-  // "avondale-soundbath": add when the venue/address is confirmed
 };
+
+// Auto-geocoded coordinates for any city class that has an `address` in the CMS
+// but no precise override above. Produced at build time by
+// scripts/generate-venue-coords.mjs (Google Places) → committed as a snapshot.
+// This is what makes a CMS-added venue appear on the map with no code change.
+const GEOCODED_COORDS = generatedCoords as Record<
+  string,
+  { lat: number; lng: number; address?: string; name?: string }
+>;
+
+/** Best coordinates for a venue: precise override first, then geocoded address. */
+function coordsFor(id: string): { lat: number; lng: number } | Record<string, never> {
+  if (CITY_VENUE_COORDS[id]) return CITY_VENUE_COORDS[id];
+  const g = GEOCODED_COORDS[id];
+  if (g && typeof g.lat === "number" && typeof g.lng === "number") {
+    return { lat: g.lat, lng: g.lng };
+  }
+  return {};
+}
 
 interface RawSession {
   date: string;
@@ -72,7 +94,7 @@ function toIso(date: string, time: string): string {
 
 export const cityClasses: CityClass[] = data.cityClasses.map((c) => ({
   ...c,
-  ...(CITY_VENUE_COORDS[c.id] ?? {}),
+  ...coordsFor(c.id),
   sessions: (c.sessions as RawSession[])
     .filter((s) => s && s.date && s.time)
     .map((s) => ({
@@ -92,11 +114,11 @@ export function getCityClassBySlug(slug: string): CityClass | undefined {
   return cityClasses.find((c) => c.slug === slug);
 }
 
-/** Slugs of city classes that should get a prerendered detail page — those
- *  with at least one session on the calendar. */
-export const cityClassDetailSlugs = cityClasses
-  .filter((c) => c.sessions.length > 0)
-  .map((c) => c.slug);
+/** Slugs of city classes that should get a prerendered detail page. We
+ *  prerender EVERY city class (not just ones with sessions) so the "More info"
+ *  link on the homepage/finder cards always resolves — a CMS-added venue is
+ *  reachable the moment it's saved, even before its dates are entered. */
+export const cityClassDetailSlugs = cityClasses.map((c) => c.slug);
 
 /** Soonest still-upcoming session for a city class (ISO), if any. */
 export function nextCitySessionIso(c: CityClass): string | undefined {
