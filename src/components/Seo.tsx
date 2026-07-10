@@ -22,6 +22,8 @@ interface SeoProps {
   image?: string;
   /** og:type — "website" (default) or "article" for blog posts. */
   type?: "website" | "article";
+  /** Keep this page out of search results (unlisted / preview pages). */
+  noindex?: boolean;
 }
 
 function absoluteImage(image?: string): string {
@@ -30,7 +32,13 @@ function absoluteImage(image?: string): string {
   return `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
 }
 
-export default function Seo({ title, description, image, type = "website" }: SeoProps) {
+export default function Seo({
+  title,
+  description,
+  image,
+  type = "website",
+  noindex = false,
+}: SeoProps) {
   const { pathname } = useLocation();
   const path = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
   const url = `${SITE_URL}${path}`;
@@ -40,6 +48,7 @@ export default function Seo({ title, description, image, type = "website" }: Seo
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
       <link rel="canonical" href={url} />
       <meta property="og:type" content={type} />
       <meta property="og:title" content={title} />

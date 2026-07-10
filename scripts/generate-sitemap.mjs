@@ -19,6 +19,7 @@ const EXCLUDE = [
   /^success$/,
   /^404$/,
   /^mockups(\/|$)/, // temporary design mockups, never index
+  /^custom-boards$/, // unlisted preview page — remove when it goes live
 ];
 
 function walk(dir) {

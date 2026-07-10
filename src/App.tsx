@@ -21,6 +21,7 @@ import BlogPost from "./pages/blog/[slug]";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CustomBoards from "./pages/CustomBoards";
 import Airstream from "./pages/Airstream";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -67,6 +68,12 @@ export const routes: RouteRecord[] = [
       { path: "contact", element: <Contact /> },
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
+
+      // UNLISTED preview page — reachable by direct URL only (has header/footer),
+      // deliberately NOT linked from nav/homepage/footer/shop yet, and noindex +
+      // sitemap-excluded. To launch: add the nav/shop/footer links, remove
+      // `noindex` in CustomBoards.tsx, and drop the sitemap exclusion.
+      { path: "custom-boards", element: <CustomBoards /> },
 
       // App-only routes (excluded from pre-render in vite.config.ts)
       { path: "admin", element: <Admin /> },
