@@ -33,8 +33,8 @@ const faqData: { category: string; items: FAQItem[] }[] = [
     category: "What to Bring & Wear",
     items: [
       {
-        question: "What should I wear?",
-        answer: "Wear comfortable swimwear that you can relax in for 60-90 minutes. We recommend a one-piece swimsuit or athletic swimwear. Bring a cover-up or comfortable clothes to change into afterward. For evening sessions, consider bringing a light jacket or towel for warmth."
+        question: "What should I wear? Do I have to wear a swimsuit?",
+        answer: "Wear whatever makes you feel comfortable! A swimsuit is totally optional — quick-drying workout clothes (like yoga or athletic wear) work just as well, and plenty of our guests wear exactly that. On the stable paddleboards it's mostly just your feet and hands near the water, so many people stay almost completely dry; and if you'd rather not get wet at all, that's absolutely fine and easy to do. If you do prefer a swimsuit, we recommend a one-piece or athletic swimwear you can relax in for 60-90 minutes. Bring a cover-up or comfortable clothes for afterward, and a light layer or towel for warmth on evening sessions."
       },
       {
         question: "What should I bring?",
@@ -72,6 +72,10 @@ const faqData: { category: string; items: FAQItem[] }[] = [
       {
         question: "What if I have physical limitations or injuries?",
         answer: "Floating soundbaths are gentle and accessible for most people. The water provides natural support, making it easier on joints and muscles than floor-based classes. However, please inform us of any physical limitations, recent surgeries, or health concerns when booking so we can ensure your safety and comfort."
+      },
+      {
+        question: "It's an evening session in the Arizona heat — will I get overheated?",
+        answer: "Great question, especially if you or a guest aren't used to the Arizona heat. Evening sessions are timed for when the day is cooling down, and being on the water keeps things noticeably more comfortable than being on land — you're floating on cool water the whole time, and many guests find it refreshing rather than hot. We still recommend arriving hydrated, bringing a water bottle, and wearing light, breathable clothing or a swimsuit. If at any point you feel too warm, you can cool off in the water or take a break on the deck — just let your instructor know. We keep an eye on everyone throughout the session, and on days of genuine extreme heat we adjust or reschedule for safety."
       }
     ]
   },
