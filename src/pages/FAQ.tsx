@@ -75,7 +75,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
       },
       {
         question: "It's an evening session in the Arizona heat — will I get overheated?",
-        answer: "Great question, especially if you or a guest aren't used to the Arizona heat. Evening sessions are timed for when the day is cooling down, and being on the water keeps things noticeably more comfortable than being on land — you're floating on cool water the whole time, and many guests find it refreshing rather than hot. We still recommend arriving hydrated, bringing a water bottle, and wearing light, breathable clothing or a swimsuit. If at any point you feel too warm, you can cool off in the water or take a break on the deck — just let your instructor know. We keep an eye on everyone throughout the session, and on days of genuine extreme heat we adjust or reschedule for safety."
+        answer: "Great question, especially if you or a guest aren't used to the Arizona heat. Evening sessions are timed for when the day is cooling down, and being on the water keeps things noticeably more comfortable than being on land — you're floating on cool water the whole time, and many guests find it refreshing rather than hot. We still recommend arriving hydrated, bringing a water bottle, and wearing light, breathable clothing or a swimsuit. You're also welcome to get in the water before class or dip your towel in the water and drape it over your neck to cool off. If at any point you feel too warm, you can cool off in the water or take a break on the deck — just let your instructor know. We keep an eye on everyone throughout the session, and on days of genuine extreme heat we adjust or reschedule for safety."
       }
     ]
   },
