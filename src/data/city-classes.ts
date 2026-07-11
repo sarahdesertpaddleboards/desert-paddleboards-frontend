@@ -57,7 +57,7 @@ export interface CityClass {
 const CITY_VENUE_COORDS: Record<string, { lat: number; lng: number }> = {
   "queen-creek-friday-floats": { lat: 33.26759, lng: -111.60122 }, // Queen Creek Recreation Pool
   "sedona-soundbath": { lat: 34.87137, lng: -111.78573 }, // Sedona Community Pool
-  "witches-regatta": { lat: 33.43344, lng: -111.94048 }, // Tempe Town Lake (not just "Tempe")
+  "witches-regatta": { lat: 33.4342, lng: -111.93278 }, // Tempe Town Lake Boat Marina, north shore
   "salt-river-outing": { lat: 33.4671, lng: -111.6856 }, // meeting point: Walgreens, 3624 N Power Rd, Mesa
   "avondale-soundbath": { lat: 33.44367, lng: -112.30071 }, // 11275 W Civic Center Dr, Avondale
 };
