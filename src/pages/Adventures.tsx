@@ -82,7 +82,7 @@ export default function Adventures() {
       <Seo
         title="Paddleboard Adventures & Trips | Desert Paddleboards"
         description="Upcoming intentional small-group trips — Greenland, Thailand and the Alps — plus our private Colorado River clear-paddleboard tour through the Black Canyon."
-        image="/images/blog/paddleboarding-the-salt-river.webp"
+        image="/images/adventures/black-canyon-hot-springs.jpg"
       />
       <JsonLd data={structuredData} />
 
@@ -90,11 +90,11 @@ export default function Adventures() {
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden bg-sky-900">
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35 z-10" />
         <img
-          src="/images/blog/paddleboarding-the-salt-river.webp"
-          alt="Paddleboarding adventure on the Salt River in Arizona"
+          src="/images/adventures/black-canyon-hot-springs.jpg"
+          alt="Group soaking in the Black Canyon hot springs on a Colorado River paddleboard adventure"
           loading="eager"
           fetchPriority="high"
-          className="absolute inset-0 w-full h-full object-cover object-[center_45%]"
+          className="absolute inset-0 w-full h-full object-cover object-[center_35%]"
         />
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Adventures</h1>
