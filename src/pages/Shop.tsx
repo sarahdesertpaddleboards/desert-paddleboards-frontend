@@ -106,13 +106,14 @@ export default function Shop() {
       {/* Cross-links to other offerings */}
       <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Link
-          to="/rentals"
+          to="/custom-boards"
           className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
         >
           <h2 className="text-lg font-bold">Need a whole fleet?</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Rent paddleboards for your group or event — delivered, set up and picked up.{" "}
-            <span className="font-medium text-primary">See rentals →</span>
+            We design &amp; manufacture custom boards — order in bulk with your
+            logo, colors and wording, or start your own floating business.{" "}
+            <span className="font-medium text-primary">Custom &amp; branded boards →</span>
           </p>
         </Link>
         <Link
