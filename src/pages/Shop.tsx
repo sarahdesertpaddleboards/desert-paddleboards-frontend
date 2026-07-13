@@ -129,23 +129,37 @@ export default function Shop() {
   );
 }
 
-/** Promo tile in the Boards & gear grid → the custom / bulk boards request page. */
+/** Promo tile in the Boards & gear grid → the custom / bulk boards request page.
+ *  Same image-on-top shape as a product card so it sits naturally in the grid. */
 function FleetPromoCard() {
   return (
     <Link
       to="/custom-boards"
       onClick={() => trackEvent("shop_click", { product: "Custom boards — fleet" })}
-      className="flex flex-col justify-center gap-3 rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/10 to-secondary/10 p-6 text-center transition-colors hover:border-brand"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/10 to-secondary/10 transition-colors hover:border-brand"
     >
-      <span className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
-        Need a fleet?
-      </span>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        We can also produce{" "}
-        <span className="font-medium text-foreground">branded boards sold in bulk</span>{" "}
-        and delivered direct to you (continental US).
-      </p>
-      <span className="text-sm font-semibold text-primary">Make a request →</span>
+      <div className="relative aspect-square overflow-hidden bg-muted">
+        <img
+          src="/custom-boards/branded-board-dogtopia.jpg"
+          alt="A custom-branded paddleboard with a logo printed edge-to-edge"
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
+        <span className="absolute left-3 top-3 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">
+          Custom &amp; branded
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-5 text-center">
+        <span className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
+          Need a fleet?
+        </span>
+        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+          We can also produce{" "}
+          <span className="font-medium text-foreground">branded boards sold in bulk</span>{" "}
+          and delivered direct to you (continental US).
+        </p>
+        <span className="text-sm font-semibold text-primary">Make a request →</span>
+      </div>
     </Link>
   );
 }
