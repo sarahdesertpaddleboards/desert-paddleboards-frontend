@@ -33,6 +33,11 @@ const gallery = [
     alt: "A branded paddleboard fleet in use at the beach, one with a dog aboard",
     caption: "A branded fleet, out in the world",
   },
+  {
+    src: "/custom-boards/branded-board-beach.jpg",
+    alt: "A custom-branded paddleboard carried at the water's edge, logo and lettering along the deck",
+    caption: "Full-deck custom branding",
+  },
 ];
 
 const whoFor = [
@@ -235,7 +240,7 @@ export default function CustomBoards() {
         {/* Our work gallery */}
         <section className="space-y-6">
           <h2 className="text-3xl italic">Our work</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {gallery.map((g) => (
               <figure key={g.src} className="overflow-hidden rounded-2xl border border-border bg-card">
                 <img
