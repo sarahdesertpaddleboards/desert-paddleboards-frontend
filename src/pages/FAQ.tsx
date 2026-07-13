@@ -91,8 +91,8 @@ const faqData: { category: string; items: FAQItem[] }[] = [
         answer: "We understand plans change! You can cancel or reschedule up to 24 hours before your session for a full refund or credit toward a future session. Cancellations made less than 24 hours before the session are non-refundable, though we'll do our best to accommodate emergencies on a case-by-case basis."
       },
       {
-        question: "What happens if the session is canceled due to weather?",
-        answer: "For outdoor sessions, we monitor weather conditions closely. If we need to cancel due to unsafe weather (lightning, extreme heat, high winds), you'll receive a full refund or the option to transfer to another date. We'll notify you as early as possible, typically at least 2-3 hours before session time."
+        question: "What if there's bad weather?",
+        answer: "We keep a close eye on the weather, and the clouds usually part! If we do need to cancel because of unsafe conditions (lightning, high winds or extreme heat), we'll let you know at least an hour before the event. And if we have to cancel, you'll always get a rain check or a full refund of your money."
       },
       {
         question: "Can I purchase a gift certificate?",
