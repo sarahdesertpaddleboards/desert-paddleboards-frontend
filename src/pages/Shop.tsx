@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
@@ -76,7 +77,15 @@ export default function Shop() {
             </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((p) => (
-                <ProductCard key={p.slug} product={p} />
+                <Fragment key={p.slug}>
+                  <ProductCard product={p} />
+                  {/* "Need a fleet?" promo sits right after the meditation board
+                      (between it and the Beach Tote) in the Boards & gear grid. */}
+                  {section.kind === "physical" &&
+                  p.slug === "floating-meditation-board" ? (
+                    <FleetPromoCard />
+                  ) : null}
+                </Fragment>
               ))}
             </div>
           </section>
@@ -106,17 +115,6 @@ export default function Shop() {
       {/* Cross-links to other offerings */}
       <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Link
-          to="/custom-boards"
-          className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
-        >
-          <h2 className="text-lg font-bold">Need a whole fleet?</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            We design &amp; manufacture custom boards — order in bulk with your
-            logo, colors and wording, or start your own floating business.{" "}
-            <span className="font-medium text-primary">Custom &amp; branded boards →</span>
-          </p>
-        </Link>
-        <Link
           to="/coaching"
           className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
         >
@@ -128,6 +126,27 @@ export default function Shop() {
         </Link>
       </section>
     </main>
+  );
+}
+
+/** Promo tile in the Boards & gear grid → the custom / bulk boards request page. */
+function FleetPromoCard() {
+  return (
+    <Link
+      to="/custom-boards"
+      onClick={() => trackEvent("shop_click", { product: "Custom boards — fleet" })}
+      className="flex flex-col justify-center gap-3 rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/10 to-secondary/10 p-6 text-center transition-colors hover:border-brand"
+    >
+      <span className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
+        Need a fleet?
+      </span>
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        We can also produce{" "}
+        <span className="font-medium text-foreground">branded boards sold in bulk</span>{" "}
+        and delivered direct to you (continental US).
+      </p>
+      <span className="text-sm font-semibold text-primary">Make a request →</span>
+    </Link>
   );
 }
 
