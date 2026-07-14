@@ -290,6 +290,32 @@ export default function PrivateEvents() {
         </div>
       </section>
 
+      {/* Group Celebrations feature — real rooftop floating-yoga class */}
+      <section className="py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <img
+            src="/private-events/rooftop-group-celebration.jpg"
+            alt="A group floating-yoga class on paddleboards at a rooftop pool overlooking the desert"
+            loading="lazy"
+            className="w-full rounded-2xl object-cover shadow-sm"
+          />
+          <div>
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Users className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Group Celebrations
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Birthdays, anniversaries, reunions — make any celebration extra special
+              on the water. Gather your group for a floating experience with a view,
+              like this rooftop-pool class overlooking the desert. We bring everything
+              and make it effortless.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* What's Included */}
       <section className="bg-accent/20 py-16">
         <div className="container">
