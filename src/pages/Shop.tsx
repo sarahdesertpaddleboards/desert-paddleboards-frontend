@@ -151,14 +151,15 @@ function FleetPromoCard() {
       </div>
       <div className="flex flex-1 flex-col gap-2 p-5 text-center">
         <span className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
-          Need a fleet?
+          Custom Boards
         </span>
         <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
-          We can also produce{" "}
-          <span className="font-medium text-foreground">branded boards sold in bulk</span>{" "}
-          and delivered direct to you (continental US).
+          Put your own logo on the water. We design and produce{" "}
+          <span className="font-medium text-foreground">fully branded boards</span>{" "}
+          for businesses, studios and resorts — single boards or a full fleet,
+          delivered direct to you (continental US).
         </p>
-        <span className="text-sm font-semibold text-primary">Make a request →</span>
+        <span className="text-sm font-semibold text-primary">Brand your board →</span>
       </div>
     </Link>
   );

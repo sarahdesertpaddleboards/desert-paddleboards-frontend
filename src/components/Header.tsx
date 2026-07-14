@@ -15,6 +15,7 @@ const navigation = [
 ];
 
 const moreLinks = [
+  { name: "Custom Boards", href: "/custom-boards" },
   { name: "Airstream Lounge", href: "/airstream" },
   { name: "Blog", href: "/blog" },
   { name: "FAQ", href: "/faq" },

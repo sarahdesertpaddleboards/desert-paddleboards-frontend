@@ -180,11 +180,7 @@ export default function CustomBoards() {
 
   return (
     <main>
-      {/* Unlisted while in preview: noindex + no nav/homepage/footer links (only
-          linked from the Shop). To fully launch: add nav/footer links, remove
-          `noindex`, and drop the sitemap exclusion in generate-sitemap.mjs. */}
       <Seo
-        noindex
         title="Custom &amp; Branded Paddleboards | Desert Paddleboards"
         description="We design and manufacture custom, branded paddleboards and floating mats for businesses, studios and resorts — order in bulk, put your logo on the water, and we'll help you get started."
         image={heroImage}
