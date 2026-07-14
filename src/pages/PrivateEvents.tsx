@@ -292,6 +292,32 @@ export default function PrivateEvents() {
         </div>
       </section>
 
+      {/* Corporate Wellness feature — original JW Marriott group event */}
+      <section className="py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <img
+            src="https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw"
+            alt="A corporate group floating soundbath at the JW Marriott"
+            loading="lazy"
+            className="w-full rounded-2xl object-cover shadow-sm"
+          />
+          <div>
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Briefcase className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Corporate Wellness
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Boost team morale and melt away stress with a group soundbath or
+              floating yoga session — like this event we hosted at the JW Marriott.
+              It's a memorable way to invest in your team's wellbeing, and we handle
+              everything from setup to sound.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* What's Included */}
       <section className="bg-accent/20 py-16">
         <div className="container">
