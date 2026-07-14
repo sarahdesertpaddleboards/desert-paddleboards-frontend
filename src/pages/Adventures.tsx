@@ -37,6 +37,7 @@ export default function Adventures() {
       title: "Thailand — Limited Groups",
       blurb:
         "Intentional small-group travel with an optional Cambodia extension. These trips require a short conversation before booking, so we can make sure it's the right fit.",
+      image: "/images/adventures/thailand.jpg",
     },
     {
       when: "March 2027",
