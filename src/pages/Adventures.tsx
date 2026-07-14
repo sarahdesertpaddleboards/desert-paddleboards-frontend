@@ -22,6 +22,7 @@ export default function Adventures() {
     blurb: string;
     image?: string;
     href?: string;
+    ctaSubject?: string;
   }[] = [
     {
       when: "August 2027 · exact dates coming soon",
@@ -33,11 +34,12 @@ export default function Adventures() {
       href: "https://www.wetravel.com/trips/3006797775",
     },
     {
-      when: "Oct 27, 2026 & Nov 10, 2026",
+      when: "Nov 10, 2026",
       title: "Thailand — Limited Groups",
       blurb:
-        "Intentional small-group travel with an optional Cambodia extension. These trips require a short conversation before booking, so we can make sure it's the right fit.",
+        "Intentional small-group travel with an optional 3-day Cambodia extension. These trips require a short conversation before booking, so we can make sure it's the right fit.",
       image: "/images/adventures/thailand.jpg",
+      ctaSubject: "Thailand trip",
     },
     {
       when: "March 2027",
@@ -206,6 +208,15 @@ export default function Adventures() {
                   </div>
                   <h3 className="font-bold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground flex-1">{t.blurb}</p>
+                  {t.ctaSubject && (
+                    <div className="mt-4">
+                      <Button asChild>
+                        <Link to={`/contact?subject=${encodeURIComponent(t.ctaSubject)}`}>
+                          Ask about this trip
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
