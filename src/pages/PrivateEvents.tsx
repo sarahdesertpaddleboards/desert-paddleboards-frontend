@@ -208,6 +208,34 @@ export default function PrivateEvents() {
         </div>
       </section>
 
+      {/* Bachelorette Parties feature — real backyard-pool event */}
+      <section className="py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <div className="md:order-2">
+            <img
+              src="/private-events/bachelorette-party.jpg"
+              alt="A bachelorette group floating on paddleboards at a backyard-pool soundbath"
+              loading="lazy"
+              className="w-full rounded-2xl object-cover shadow-sm"
+            />
+          </div>
+          <div className="md:order-1">
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Heart className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Bachelorette Parties
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Give the bride-to-be and her crew a celebration they'll never forget —
+              floating together as live sound washes over you, right in a private
+              backyard pool or the venue of your choice. We bring the boards,
+              musicians and all the magic.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Gyms & Member Appreciation feature — real event at Lifetime Fitness */}
       <section className="bg-accent/20 py-16">
         <div className="container grid items-center gap-8 md:grid-cols-2">
