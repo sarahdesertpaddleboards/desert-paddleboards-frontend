@@ -262,6 +262,34 @@ export default function PrivateEvents() {
         </div>
       </section>
 
+      {/* Small Business & Team Events feature — real event at Optima */}
+      <section className="py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <div className="md:order-2">
+            <img
+              src="/private-events/optima-team-event.jpg"
+              alt="A candlelit evening floating soundbath team event at Optima"
+              loading="lazy"
+              className="w-full rounded-2xl object-cover shadow-sm"
+            />
+          </div>
+          <div className="md:order-1">
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Building2 className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Small Business &amp; Team Events
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Give your team a wellness experience that's nothing like the usual
+              offsite — like this candlelit evening soundbath we hosted poolside at
+              Optima. It's the perfect reset for stressed-out teams, and we handle
+              every detail.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* What's Included */}
       <section className="bg-accent/20 py-16">
         <div className="container">
