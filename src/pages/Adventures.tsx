@@ -194,7 +194,7 @@ export default function Adventures() {
 
         {/* Other upcoming trips */}
         {moreTrips.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-8 max-w-5xl mx-auto mt-8">
             {moreTrips.map((t) => (
               <Card key={t.title} className="overflow-hidden flex flex-col">
                 <div className="relative aspect-[16/9] bg-muted">
