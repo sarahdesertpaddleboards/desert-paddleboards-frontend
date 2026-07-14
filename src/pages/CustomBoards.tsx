@@ -34,8 +34,8 @@ const gallery = [
     caption: "A branded fleet, out in the world",
   },
   {
-    src: "/custom-boards/branded-board-beach.jpg",
-    alt: "A custom-branded paddleboard carried at the water's edge, logo and lettering along the deck",
+    src: "/custom-boards/custom-board-dock.jpg",
+    alt: "A custom-branded 'Life is Better on the Water' paddleboard standing on a dock by the water",
     caption: "Full-deck custom branding",
   },
 ];
