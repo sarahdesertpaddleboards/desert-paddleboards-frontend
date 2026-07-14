@@ -56,6 +56,24 @@ export default function Adventures() {
         "Price is based on double occupancy and does not include international airfare to/from Bangkok, visa or immigration costs, or travel/medical insurance (strongly recommended). Included hotels are 4–5 star with breakfast; all flights within Thailand are included. Plan for ~2 extra days of travel time each way. Itinerary and pricing are subject to change.",
     },
     {
+      when: "Feb 26 – Mar 1, 2027",
+      title: "Whitefish — Ski & Snowboard Trip",
+      blurb:
+        "A long winter weekend in Whitefish, Montana. Fly into Kalispell, settle into a ski-in/ski-out house at Whitefish Mountain Resort, and hit the slopes — or simply hang out. The skiing and snowboarding is completely optional.",
+      image: "/images/adventures/whitefish.jpg",
+      ctaSubject: "Whitefish ski & snowboard trip",
+      price: "$375 per person (shuttles & lodging)",
+      highlights: [
+        "Fly into Kalispell on Feb 26 — with the option of night skiing that evening (~$50)",
+        "Stay in a ski-in/ski-out house at Whitefish Mountain Resort (6 people per house)",
+        "Ski & snowboard on the 27th & 28th — or just relax; it's totally optional",
+        "Prefer something different? Head to Glacier National Park or go snowmobiling (additional charge)",
+        "Fly home March 1",
+      ],
+      disclosure:
+        "Trip price of $375 includes shuttles and lodging. Not included: airfare, two-day lift tickets (~$180), optional night skiing (~$50), and alternate activities such as Glacier National Park or snowmobiling. Six people per house; this trip is limited to 18 people. Itinerary and pricing are subject to change.",
+    },
+    {
       when: "March 2027",
       title: "A Winter Wellness Escape in the Alps",
       blurb:
