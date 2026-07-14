@@ -25,6 +25,8 @@ export default function Adventures() {
     ctaSubject?: string;
     price?: string;
     disclosure?: string;
+    highlights?: string[];
+    extension?: string;
   }[] = [
     {
       when: "August 2027 · exact dates coming soon",
@@ -36,15 +38,22 @@ export default function Adventures() {
       href: "https://www.wetravel.com/trips/3006797775",
     },
     {
-      when: "Nov 10, 2026",
+      when: "Nov 10–19, 2026",
       title: "Thailand — Limited Groups",
       blurb:
-        "Intentional small-group travel with an optional 3-day Cambodia extension. These trips require a short conversation before booking, so we can make sure it's the right fit.",
+        "An intentional small-group journey through Bangkok, Chiang Mai and Krabi — nine days of temples, jungle, elephants and island seas. These trips require a short conversation before booking, so we can make sure it's the right fit.",
       image: "/images/adventures/thailand.jpg",
       ctaSubject: "Thailand trip",
-      price: "$2,995 per person",
+      price: "$2,995 per person (double occupancy)",
+      highlights: [
+        "Bangkok: long-tail boat to Wat Pho's Reclining Buddha, plus an evening bike-and-boat tour through Chinatown's canals",
+        "Chiang Mai: hands-on Thai cooking class, Tiger Kingdom, the Sticky Waterfall climb, and \"Elephant Owner for a Day\" at a sanctuary",
+        "Krabi: a private island snorkel tour and a century-old junk-ship sunset cruise on the Andaman Sea — paddleboards and a bioluminescent-plankton night swim included",
+      ],
+      extension:
+        "Optional 3-day Cambodia extension (+$1,000): Siem Reap's Angkor Wat and ancient temples, plus an ATV ride through villages, rice fields and jungle.",
       disclosure:
-        "Price does not include airfare. A deposit reserves your spot, with the balance due before departure. Travel insurance is strongly recommended. Valid passport required; travelers are responsible for any visa requirements. Itinerary and pricing are subject to change.",
+        "Price is based on double occupancy and does not include international airfare to/from Bangkok, visa or immigration costs, or travel/medical insurance (strongly recommended). Included hotels are 4–5 star with breakfast; all flights within Thailand are included. Plan for ~2 extra days of travel time each way. Itinerary and pricing are subject to change.",
     },
     {
       when: "March 2027",
@@ -212,9 +221,25 @@ export default function Adventures() {
                     {t.when}
                   </div>
                   <h3 className="font-bold text-lg mb-2">{t.title}</h3>
-                  <p className="text-sm text-muted-foreground flex-1">{t.blurb}</p>
+                  <p className="text-sm text-muted-foreground">{t.blurb}</p>
+                  {t.highlights && (
+                    <ul className="mt-4 space-y-2">
+                      {t.highlights.map((h) => (
+                        <li key={h} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {t.extension && (
+                    <p className="mt-4 rounded-lg bg-accent/30 p-3 text-sm text-foreground">
+                      {t.extension}
+                    </p>
+                  )}
+                  <div className="flex-1" />
                   {t.price && (
-                    <p className="mt-3 text-base font-bold text-primary">{t.price}</p>
+                    <p className="mt-4 text-base font-bold text-primary">{t.price}</p>
                   )}
                   {t.disclosure && (
                     <p className="mt-2 text-xs text-muted-foreground">{t.disclosure}</p>
