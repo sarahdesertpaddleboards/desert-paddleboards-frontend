@@ -237,7 +237,7 @@ export default function PrivateEvents() {
       </section>
 
       {/* Gyms & Member Appreciation feature — real event at Lifetime Fitness */}
-      <section className="bg-accent/20 py-16">
+      <section className="py-16">
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <img
             src="/private-events/lifetime-fitness-soundbath.jpg"
@@ -311,6 +311,34 @@ export default function PrivateEvents() {
               on the water. Gather your group for a floating experience with a view,
               like this rooftop-pool class overlooking the desert. We bring everything
               and make it effortless.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Retreats & Workshops feature — real twilight backyard-pool soundbath */}
+      <section className="py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <div className="md:order-2">
+            <img
+              src="/private-events/backyard-retreat.jpg"
+              alt="A twilight candlelit floating soundbath in a backyard pool"
+              loading="lazy"
+              className="max-h-[520px] w-full rounded-2xl object-cover shadow-sm"
+            />
+          </div>
+          <div className="md:order-1">
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Sparkles className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Retreats &amp; Workshops
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              A magical addition to wellness retreats, yoga teacher trainings and
+              mindfulness workshops — like this candlelit twilight soundbath under the
+              stars. We create an unforgettable, restorative experience your
+              participants will be talking about long after.
             </p>
           </div>
         </div>
