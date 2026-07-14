@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LocationFinder from "@/components/LocationFinder";
 import JsonLd from "@/components/JsonLd";
 import Seo from "@/components/Seo";
@@ -53,6 +54,37 @@ export default function Home() {
 
       {/* Google reviews — real text, baked in at build time */}
       <GoogleReviews max={3} heading="Loved across Arizona" />
+
+      {/* Custom Boards promo banner — drives interest in branded/custom boards */}
+      <section className="border-t border-border">
+        <Link
+          to="/custom-boards"
+          className="group mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-12 sm:flex-row"
+        >
+          <img
+            src="/custom-boards/branded-board-dogtopia.jpg"
+            alt="A custom-branded paddleboard with a logo printed edge-to-edge"
+            loading="lazy"
+            className="h-40 w-40 flex-shrink-0 rounded-2xl object-cover shadow-sm"
+          />
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+              Custom Boards
+            </p>
+            <h2 className="mt-2 text-2xl font-bold md:text-3xl">
+              Put your own logo on the water
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              We design and produce fully branded paddleboards for businesses,
+              studios and resorts — a single board or a whole fleet, delivered to
+              your door.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:underline">
+              Brand your board →
+            </span>
+          </div>
+        </Link>
+      </section>
 
       {/* Videos — click-to-play YouTube facade */}
       <VideoSection heading="See it in action" className="py-16" />
