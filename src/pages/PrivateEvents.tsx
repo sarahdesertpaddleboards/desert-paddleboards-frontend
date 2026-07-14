@@ -92,39 +92,6 @@ export default function PrivateEvents() {
     toast.message("Opening your email app so you can send your inquiry directly…");
   };
 
-  const eventTypes = [
-    {
-      icon: Heart,
-      title: "Bachelorette Parties",
-      description: "Create unforgettable memories with a unique floating experience for the bride-to-be and her crew."
-    },
-    {
-      icon: Briefcase,
-      title: "Corporate Wellness",
-      description: "Boost team morale and reduce stress with a relaxing group soundbath or yoga session."
-    },
-    {
-      icon: Sparkles,
-      title: "Retreats & Workshops",
-      description: "Perfect addition to wellness retreats, yoga teacher trainings, and mindfulness workshops."
-    },
-    {
-      icon: Users,
-      title: "Group Celebrations",
-      description: "Birthdays, anniversaries, reunions - make any celebration extra special on the water."
-    },
-    {
-      icon: Dumbbell,
-      title: "Gyms & Member Appreciation",
-      description: "Treat your members to an unforgettable floating soundbath — we bring everything, or just drop off the boards for your own instructors."
-    },
-    {
-      icon: Building2,
-      title: "Small Business & Team Events",
-      description: "A memorable team-wellness experience that's nothing like the usual offsite — perfect for stressed-out teams."
-    }
-  ];
-
   const includedFeatures = [
     "Customized experience tailored to your group",
     "Professional instructors and sound healers",
@@ -179,33 +146,14 @@ export default function PrivateEvents() {
         </div>
       </section>
 
-      {/* Event Types */}
-      <section className="container py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Perfect For Any Occasion
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            We customize each experience to match your group's needs and preferences
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {eventTypes.map((type) => {
-            const Icon = type.icon;
-            return (
-              <Card key={type.title} className="text-center">
-                <CardContent className="pt-8 pb-6">
-                  <div className="inline-flex p-4 rounded-full bg-primary/10 text-primary mb-4">
-                    <Icon className="h-8 w-8" />
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{type.title}</h3>
-                  <p className="text-sm text-muted-foreground">{type.description}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+      {/* Intro heading — leads into the real-event feature bands below */}
+      <section className="container pt-16 pb-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Perfect For Any Occasion
+        </h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          We customize each experience to match your group's needs and preferences
+        </p>
       </section>
 
       {/* Bachelorette Parties feature — real backyard-pool event */}
