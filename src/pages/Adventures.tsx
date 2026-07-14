@@ -23,6 +23,8 @@ export default function Adventures() {
     image?: string;
     href?: string;
     ctaSubject?: string;
+    price?: string;
+    disclosure?: string;
   }[] = [
     {
       when: "August 2027 · exact dates coming soon",
@@ -40,6 +42,9 @@ export default function Adventures() {
         "Intentional small-group travel with an optional 3-day Cambodia extension. These trips require a short conversation before booking, so we can make sure it's the right fit.",
       image: "/images/adventures/thailand.jpg",
       ctaSubject: "Thailand trip",
+      price: "$2,995 per person",
+      disclosure:
+        "Price does not include airfare. A deposit reserves your spot, with the balance due before departure. Travel insurance is strongly recommended. Valid passport required; travelers are responsible for any visa requirements. Itinerary and pricing are subject to change.",
     },
     {
       when: "March 2027",
@@ -208,6 +213,12 @@ export default function Adventures() {
                   </div>
                   <h3 className="font-bold text-lg mb-2">{t.title}</h3>
                   <p className="text-sm text-muted-foreground flex-1">{t.blurb}</p>
+                  {t.price && (
+                    <p className="mt-3 text-base font-bold text-primary">{t.price}</p>
+                  )}
+                  {t.disclosure && (
+                    <p className="mt-2 text-xs text-muted-foreground">{t.disclosure}</p>
+                  )}
                   {t.ctaSubject && (
                     <div className="mt-4">
                       <Button asChild>
