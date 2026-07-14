@@ -163,8 +163,10 @@ export default function PrivateEvents() {
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
-          src="https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw"
-          alt="Private floating soundbath group event in Arizona"
+          src="/private-events/phx-country-club-soundbath.jpg"
+          alt="Floating soundbath at sunset by the pool at Phoenix Country Club"
+          loading="eager"
+          fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 container text-center text-white">
@@ -203,6 +205,32 @@ export default function PrivateEvents() {
               </Card>
             );
           })}
+        </div>
+      </section>
+
+      {/* Gyms & Member Appreciation feature — real event at Lifetime Fitness */}
+      <section className="bg-accent/20 py-16">
+        <div className="container grid items-center gap-8 md:grid-cols-2">
+          <img
+            src="/private-events/lifetime-fitness-soundbath.jpg"
+            alt="Poolside candlelit floating soundbath member-appreciation event at Lifetime Fitness"
+            loading="lazy"
+            className="w-full rounded-2xl object-cover shadow-sm"
+          />
+          <div>
+            <div className="mb-4 inline-flex rounded-full bg-primary/10 p-4 text-primary">
+              <Dumbbell className="h-8 w-8" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Gyms &amp; Member Appreciation
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Treat your members to an unforgettable floating soundbath — like this
+              candlelit evening we hosted poolside at Lifetime Fitness. We bring
+              everything and run the whole experience, or simply drop off the boards
+              for your own instructors.
+            </p>
+          </div>
         </div>
       </section>
 
