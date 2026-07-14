@@ -151,7 +151,7 @@ export default function Adventures() {
                     src={featuredTrip.image}
                     alt={featuredTrip.title}
                     loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover object-top"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
