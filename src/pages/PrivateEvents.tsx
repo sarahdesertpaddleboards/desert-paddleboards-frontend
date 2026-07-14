@@ -10,11 +10,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
-import FareHarborButton from "@/components/FareHarborButton";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
-import { PRIVATE_SOUNDBATH_ITEM_ID } from "@/data/locations";
 import { SITE_URL, business } from "@/data/site";
 
 export default function PrivateEvents() {
@@ -347,21 +345,6 @@ export default function PrivateEvents() {
             <p className="text-lg text-muted-foreground">
               Tell us about your event and we'll create a custom package for your group
             </p>
-          </div>
-
-          <div className="mb-8 flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <p className="font-semibold">Know what you want? Book a private soundbath online.</p>
-              <p className="text-sm text-muted-foreground">
-                Pick a date and reserve your private floating soundbath directly — or use the form below for a custom quote.
-              </p>
-            </div>
-            <FareHarborButton
-              itemId={PRIVATE_SOUNDBATH_ITEM_ID}
-              className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-            >
-              Book a private experience
-            </FareHarborButton>
           </div>
 
           <Card>
