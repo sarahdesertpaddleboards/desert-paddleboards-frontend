@@ -27,6 +27,7 @@ export default function Adventures() {
     disclosure?: string;
     highlights?: string[];
     extension?: string;
+    paymentLinks?: { label: string; href: string }[];
   }[] = [
     {
       when: "August 2027 · exact dates coming soon",
@@ -70,8 +71,12 @@ export default function Adventures() {
         "Prefer something different? Head to Glacier National Park or go snowmobiling (additional charge)",
         "Fly home March 1",
       ],
+      paymentLinks: [
+        { label: "Reserve with $200 deposit", href: "https://buy.stripe.com/dRm00j09jceIf8l9k56oo06" },
+        { label: "Pay in full ($375)", href: "https://buy.stripe.com/00waEX3lv2E82lz2VH6oo07" },
+      ],
       disclosure:
-        "Trip price of $375 includes shuttles and lodging. Not included: airfare, two-day lift tickets (~$180), optional night skiing (~$50), and alternate activities such as Glacier National Park or snowmobiling. Six people per house; this trip is limited to 18 people. Itinerary and pricing are subject to change.",
+        "Trip price of $375 includes shuttles and lodging. Not included: airfare, two-day lift tickets (~$180), optional night skiing (~$50), and alternate activities such as Glacier National Park or snowmobiling. A $200 deposit reserves your spot, with final payment due by January 1, 2027. Six people per house; this trip is limited to 18 people. Itinerary and pricing are subject to change.",
     },
     {
       when: "March 2027",
@@ -262,13 +267,27 @@ export default function Adventures() {
                   {t.disclosure && (
                     <p className="mt-2 text-xs text-muted-foreground">{t.disclosure}</p>
                   )}
-                  {t.ctaSubject && (
-                    <div className="mt-4">
-                      <Button asChild>
-                        <Link to={`/contact?subject=${encodeURIComponent(t.ctaSubject)}`}>
-                          Ask about this trip
-                        </Link>
-                      </Button>
+                  {(t.paymentLinks || t.ctaSubject) && (
+                    <div className="mt-4 flex flex-col gap-2">
+                      {t.paymentLinks?.map((pl) => (
+                        <Button key={pl.href} asChild>
+                          <a
+                            href={pl.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => trackEvent("adventure_deposit", { trip: t.title, option: pl.label })}
+                          >
+                            {pl.label}
+                          </a>
+                        </Button>
+                      ))}
+                      {t.ctaSubject && (
+                        <Button variant={t.paymentLinks ? "outline" : "default"} asChild>
+                          <Link to={`/contact?subject=${encodeURIComponent(t.ctaSubject)}`}>
+                            Ask about this trip
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   )}
                 </CardContent>
