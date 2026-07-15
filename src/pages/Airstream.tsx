@@ -85,6 +85,9 @@ const PHOTOS: { src: string; alt: string; wide?: boolean }[] = [
   { src: "/airstream/gallery-awning.jpg", alt: "The Airstream lounge with its striped awning extended over deck seating" },
   { src: "/airstream/interior.jpg", alt: "Warm, climate-controlled interior of the wellness lounge at sunset" },
   { src: "/airstream/gallery-bed.jpg", alt: "The made-up bed inside the Airstream lounge" },
+  { src: "/airstream/gallery-stove.jpg", alt: "The Airstream lounge's kitchen with cooktop and oven" },
+  { src: "/airstream/gallery-fridge.jpg", alt: "The stainless-steel refrigerator inside the Airstream lounge" },
+  { src: "/airstream/gallery-tv.jpg", alt: "A mounted flat-screen TV in the Airstream lounge" },
 ];
 
 /* One lounge, many roles. */
