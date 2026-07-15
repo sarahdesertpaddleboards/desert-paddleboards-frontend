@@ -93,26 +93,31 @@ const CONFIGURATIONS = [
     icon: Sparkles,
     title: "VIP hospitality suite",
     body: "An elevated space to host your most important guests, sponsors and partners away from the crowd.",
+    image: "/airstream/interior.jpg",
   },
   {
     icon: Briefcase,
     title: "Executive retreat space",
     body: "An intimate, distraction-free setting for leadership conversations, strategy and connection.",
+    image: "/airstream/config-executive.jpg",
   },
   {
     icon: Mic,
     title: "Speaker & talent green room",
     body: "A calm, private place for speakers and talent to prepare, recharge and reset between sessions.",
+    image: "/airstream/config-greenroom.jpg",
   },
   {
     icon: Waves,
     title: "Wellness lounge",
     body: "A dedicated recovery space where guests can step away, breathe and genuinely relax.",
+    image: "/airstream/soundbowls.jpg",
   },
   {
     icon: Star,
     title: "Branded activation",
     body: "A head-turning, fully brandable centerpiece that makes your activation impossible to miss.",
+    image: "/airstream/exterior.jpg",
   },
 ];
 
@@ -330,17 +335,24 @@ export default function Airstream() {
               One lounge, many roles
             </span>
             <h2 className="mt-3 font-serif text-3xl font-bold md:text-4xl">
-              Configure it for your event
+              A space for every part of your event
             </h2>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {CONFIGURATIONS.map((c) => (
-              <div key={c.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <div className="mb-4 inline-flex rounded-xl bg-teal-50 p-3 text-teal-700">
-                  <c.icon className="h-6 w-6" />
+              <div key={c.title} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                <Photo
+                  src={c.image}
+                  alt={c.title}
+                  className="aspect-[4/3] w-full object-cover"
+                />
+                <div className="p-6">
+                  <div className="mb-4 inline-flex rounded-xl bg-teal-50 p-3 text-teal-700">
+                    <c.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold">{c.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600">{c.body}</p>
                 </div>
-                <h3 className="text-lg font-semibold">{c.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{c.body}</p>
               </div>
             ))}
           </div>
