@@ -128,6 +128,22 @@ export function eventLd(exp: Experience, session: UpcomingSession) {
   };
 }
 
+/** FAQPage — enables rich Q&A results in search. */
+export function faqPageLd(items: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 /** Wrap multiple LD nodes in a single @graph for one <script> tag. */
 export function graph(nodes: object[]) {
   return { "@context": "https://schema.org", "@graph": nodes };

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Seo from "@/components/Seo";
+import JsonLd from "@/components/JsonLd";
+import { faqPageLd } from "@/lib/jsonld";
 
 interface FAQItem {
   question: string;
@@ -163,6 +165,7 @@ export default function FAQ() {
         title="Floating Soundbath FAQ — Booking &amp; What to Expect"
         description="Answers about floating soundbaths, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event."
       />
+      <JsonLd data={faqPageLd(faqData.flatMap((section) => section.items))} />
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">

@@ -130,8 +130,8 @@ export default function Adventures() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Greenland Expedition & Small-Group Adventures | Desert Paddleboards"
-        description="Join our 14-day Greenland & Arctic Iceland small-group expedition — icebergs, fjords and hot springs, limited to 12 guests. Plus Thailand, Whitefish ski trips and our private Colorado River Black Canyon tour."
+        title="Greenland Expedition & Group Trips | Desert Paddleboards"
+        description="Join our 14-day Greenland & Arctic Iceland small-group expedition — icebergs, fjords and hot springs, limited to 12. Plus Thailand and Whitefish ski trips."
         image="/images/adventures/black-canyon-hot-springs.jpg"
       />
       <JsonLd data={structuredData} />
