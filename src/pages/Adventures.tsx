@@ -30,10 +30,20 @@ export default function Adventures() {
     paymentLinks?: { label: string; href: string }[];
   }[] = [
     {
-      when: "August 2027 · exact dates coming soon",
+      when: "14 days · August 2027",
       title: "Greenland — Small-Group Expedition",
       blurb:
-        "Our newest intentional trip: icebergs, fjords and Arctic skies with a small, like-minded group. Spots are limited and this one takes a short conversation before booking, so we can make sure it's the right fit.",
+        "Our flagship intentional trip: a 14-day small-group expedition through Greenland and Arctic Iceland — icebergs, fjords, hot springs and Arctic skies with a like-minded group. Limited to 12 guests, so it stays personal.",
+      highlights: [
+        "Greenland: explore Nuuk, cruise the fjords, and hike Tasermiut Fjord — the \"Patagonia of the Arctic\"",
+        "Soak in the Uunartoq hot springs among floating icebergs, kayak, and share a traditional Kaffemik with a local family",
+        "Iceland: the Golden Circle, highland off-road adventure, whale watching in Húsavík and Lake Mývatn",
+        "Optional yoga & meditation sessions along the way",
+        "All lodging, most meals, local guides and the Greenland-to-Iceland flight included",
+      ],
+      price: "$8,950 per person",
+      disclosure:
+        "14 days, limited to 12 guests. A $500 deposit reserves your spot. Price does not include international airfare, alcoholic beverages, guide tips or optional add-ons (e.g. Blue Lagoon). Dates are approximate for August 2027 — reach out for exact dates and availability.",
       // Save the photo to public/images/adventures/greenland.jpg to switch this on.
       image: "/images/adventures/greenland.jpg",
       href: "https://www.wetravel.com/trips/3006797775",
@@ -120,8 +130,8 @@ export default function Adventures() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Paddleboard Adventures & Trips | Desert Paddleboards"
-        description="Upcoming intentional small-group trips — Greenland, Thailand and the Alps — plus our private Colorado River clear-paddleboard tour through the Black Canyon."
+        title="Greenland Expedition & Small-Group Adventures | Desert Paddleboards"
+        description="Join our 14-day Greenland & Arctic Iceland small-group expedition — icebergs, fjords and hot springs, limited to 12 guests. Plus Thailand, Whitefish ski trips and our private Colorado River Black Canyon tour."
         image="/images/adventures/black-canyon-hot-springs.jpg"
       />
       <JsonLd data={structuredData} />
@@ -189,9 +199,25 @@ export default function Adventures() {
                   {featuredTrip.when}
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-3">{featuredTrip.title}</h3>
-                <p className="text-muted-foreground mb-6">{featuredTrip.blurb}</p>
-                <div>
-                  {featuredTrip.href ? (
+                <p className="text-muted-foreground mb-4">{featuredTrip.blurb}</p>
+                {featuredTrip.highlights && (
+                  <ul className="mb-4 space-y-2">
+                    {featuredTrip.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {featuredTrip.price && (
+                  <p className="mb-1 text-lg font-bold text-primary">{featuredTrip.price}</p>
+                )}
+                {featuredTrip.disclosure && (
+                  <p className="mb-4 text-xs text-muted-foreground">{featuredTrip.disclosure}</p>
+                )}
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  {featuredTrip.href && (
                     <Button size="lg" asChild>
                       <a
                         href={featuredTrip.href}
@@ -204,11 +230,10 @@ export default function Adventures() {
                         View trip &amp; book
                       </a>
                     </Button>
-                  ) : (
-                    <Button size="lg" asChild>
-                      <Link to="/contact?subject=Greenland%20trip">Ask about this trip</Link>
-                    </Button>
                   )}
+                  <Button size="lg" variant={featuredTrip.href ? "outline" : "default"} asChild>
+                    <Link to="/contact?subject=Greenland%20trip">Ask about this trip</Link>
+                  </Button>
                 </div>
               </CardContent>
             </div>

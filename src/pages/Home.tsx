@@ -55,6 +55,37 @@ export default function Home() {
       {/* Google reviews — real text, baked in at build time */}
       <GoogleReviews max={3} heading="Loved across Arizona" />
 
+      {/* Greenland expedition promo banner — flagship trip, top priority */}
+      <section className="border-t border-border bg-gradient-to-br from-primary/5 to-accent/20">
+        <Link
+          to="/adventures"
+          className="group mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-12 md:flex-row"
+        >
+          <img
+            src="/images/adventures/greenland.jpg"
+            alt="Two travelers on a Greenland small-group expedition"
+            loading="lazy"
+            className="h-56 w-full rounded-2xl object-cover object-top shadow-sm md:h-64 md:w-80"
+          />
+          <div className="flex-1 text-center md:text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+              Featured expedition · limited to 12
+            </p>
+            <h2 className="mt-2 text-2xl font-bold md:text-3xl">
+              Greenland & Arctic Iceland — August 2027
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              A 14-day small-group journey through icebergs, fjords and hot springs.
+              Kayak past glaciers, soak among floating ice, and share a Kaffemik with a
+              local family. Spots are limited — reserve early.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:underline">
+              Explore the Greenland expedition →
+            </span>
+          </div>
+        </Link>
+      </section>
+
       {/* Custom Boards promo banner — drives interest in branded/custom boards */}
       <section className="border-t border-border">
         <Link
