@@ -86,6 +86,7 @@ const PHOTOS: { src: string; alt: string; wide?: boolean }[] = [
   { src: "/airstream/interior.jpg", alt: "Warm, climate-controlled interior of the wellness lounge at sunset" },
   { src: "/airstream/gallery-bed.jpg", alt: "The made-up bed inside the Airstream lounge" },
   { src: "/airstream/gallery-stove.jpg", alt: "The Airstream lounge's kitchen with cooktop and oven" },
+  { src: "/airstream/gallery-hallway.jpg", alt: "The interior hallway of the Airstream lounge looking through to the bed" },
   { src: "/airstream/gallery-tv.jpg", alt: "A mounted flat-screen TV in the Airstream lounge" },
 ];
 
