@@ -8,6 +8,7 @@ export default function Membership() {
   return (
     <main>
       <Seo
+        noindex
         title={`${membership.title} | Desert Paddleboards`}
         description={membership.blurb}
         image="/hero-pool-soundbath.webp"

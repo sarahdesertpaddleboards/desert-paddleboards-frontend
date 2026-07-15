@@ -19,6 +19,8 @@ const EXCLUDE = [
   /^success$/,
   /^404$/,
   /^mockups(\/|$)/, // temporary design mockups, never index
+  /^membership$/, // not currently offered — noindexed
+  /^santa-paddle$/, // seasonal — noindexed until the holidays
 ];
 
 function walk(dir) {

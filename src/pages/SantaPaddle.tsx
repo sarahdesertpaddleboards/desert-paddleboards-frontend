@@ -28,6 +28,7 @@ export default function SantaPaddle() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-green-50">
       <Seo
+        noindex
         title="Santa Paddle — Holiday Floating Soundbath in Tempe"
         description="Join the Desert Paddleboards Santa Paddle on Tempe Town Lake — a festive holiday paddleboard event with costumes, music and good cheer on the water."
         image={photos[0].url}

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { experiences, membership } from "@/data/locations";
+import { experiences } from "@/data/locations";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import GoogleReviews from "@/components/GoogleReviews";
@@ -56,21 +56,6 @@ export default function LocationsIndex() {
         ))}
       </section>
 
-      {/* Membership callout */}
-      <section className="mt-16 overflow-hidden rounded-2xl bg-brand/10 p-8 md:flex md:items-center md:gap-8">
-        <div className="flex-1 space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
-            Save all summer
-          </p>
-          <h2 className="text-2xl font-bold">{membership.title}</h2>
-          <p className="text-muted-foreground">{membership.blurb}</p>
-          <Link to={`/membership`}>
-            <span className="inline-flex cursor-pointer items-center font-semibold text-brand hover:text-brand-dark">
-              Learn more &rarr;
-            </span>
-          </Link>
-        </div>
-      </section>
 
       <GoogleReviews
         max={3}
