@@ -82,9 +82,9 @@ const SOUNDBOWLS_IMG = "/airstream/soundbowls.jpg";
 
 const PHOTOS: { src: string; alt: string; wide?: boolean }[] = [
   { src: "/airstream/hero.jpg", alt: "The Blue Wave lounge and fire pit set up at twilight", wide: true },
-  { src: "/airstream/exterior.jpg", alt: "The polished Airstream lounge against a desert sunset" },
+  { src: "/airstream/gallery-awning.jpg", alt: "The Airstream lounge with its striped awning extended over deck seating" },
   { src: "/airstream/interior.jpg", alt: "Warm, climate-controlled interior of the wellness lounge at sunset" },
-  { src: "/airstream/detail.jpg", alt: "Curated styling detail on the lounge deck" },
+  { src: "/airstream/gallery-bed.jpg", alt: "The made-up bed inside the Airstream lounge" },
 ];
 
 /* One lounge, many roles. */
@@ -117,7 +117,7 @@ const CONFIGURATIONS = [
     icon: Star,
     title: "Branded activation",
     body: "A head-turning, fully brandable centerpiece that makes your activation impossible to miss.",
-    image: "/airstream/exterior.jpg",
+    image: "/airstream/config-branded.jpg",
   },
 ];
 
