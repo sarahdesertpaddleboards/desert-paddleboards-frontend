@@ -16,7 +16,7 @@ export default function Home() {
       <Seo
         title="Floating Soundbaths in Arizona | Desert Paddleboards"
         description="Float weightlessly as live sound washes over you. Find a floating soundbath near you across Phoenix, Mesa, Scottsdale, Tempe and more — and book online."
-        image="/floating-soundbath-sunset-hero.jpg"
+        image="/marriott-night-soundbath.jpg"
       />
       <JsonLd data={localBusinessLd()} />
       {/* Calendar sits above the map/list finder (date-first entry point) */}

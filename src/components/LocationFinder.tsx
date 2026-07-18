@@ -15,10 +15,10 @@ import {
   venueDestination,
   cityClassDestination,
 } from "@/lib/directions";
-// Homepage hero — sunset floating soundbath at a resort pool: branded floats
-// on the water at golden hour with a musician playing crystal bowls and gong
-// (self-hosted in /public).
-const heroImage = "/floating-soundbath-sunset-hero.jpg";
+// Homepage hero — real twilight floating soundbath at the JW Marriott: a
+// candlelit resort pool with guests floating on mats and crystal sound bowls
+// in the foreground (self-hosted in /public).
+const heroImage = "/marriott-night-soundbath.jpg";
 
 const TZ = "America/Phoenix";
 const PHOENIX_CENTER = { lat: 33.45, lng: -111.85 };
