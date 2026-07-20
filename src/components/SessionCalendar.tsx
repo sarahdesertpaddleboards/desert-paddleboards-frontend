@@ -262,7 +262,9 @@ export default function SessionCalendar({
                     setTouched(true);
                   }}
                   className={[
-                    "relative aspect-square rounded-lg text-sm transition-colors",
+                    // min-h keeps the tap target at the 44px accessibility
+                    // minimum on phones (width still flexes with the grid).
+                    "relative aspect-square min-h-[44px] rounded-lg text-sm transition-colors",
                     isSelected
                       ? "bg-primary font-bold text-primary-foreground"
                       : has
