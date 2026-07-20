@@ -212,7 +212,9 @@ export default function SessionCalendar({
         ) : null}
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+        {/* Left column: month grid, then a CTA so the column isn't left empty */}
+        <div className="space-y-6">
         {/* Calendar grid */}
         <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
           <div className="mb-4 flex items-center justify-between">
@@ -277,6 +279,32 @@ export default function SessionCalendar({
                 </button>
               );
             })}
+          </div>
+        </div>
+
+          {/* Fills the space beside the sessions list and points people
+              somewhere useful if no listed date works for them. */}
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <h3 className="text-lg font-bold">Don't see a date that works?</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              We host private floating soundbaths for bachelorette parties, corporate
+              wellness days, birthdays and team events — at your venue or ours. Tell us
+              what you have in mind and we'll build it around your group.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                to="/private-events"
+                className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                Plan a private event
+              </Link>
+              <Link
+                to="/locations"
+                className="inline-flex cursor-pointer items-center justify-center rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/10"
+              >
+                Browse all venues
+              </Link>
+            </div>
           </div>
         </div>
 
