@@ -73,6 +73,7 @@ export default function CommunityEvents() {
       <Seo
         title="Floating Soundbath Events for HOAs &amp; 55+ Communities"
         description="Turnkey floating soundbath events for HOAs, 55+ communities and corporate wellness across Arizona. We bring the boards, musicians and team — you pick the date."
+        image="/venues/mulberry.jpg"
       />
       <JsonLd data={structuredData} />
 

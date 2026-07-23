@@ -164,6 +164,7 @@ export default function FAQ() {
       <Seo
         title="Floating Soundbath FAQ — Booking &amp; What to Expect"
         description="Answers about floating soundbaths, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event."
+        image="/venues/doubletree.jpg"
       />
       <JsonLd data={faqPageLd(faqData.flatMap((section) => section.items))} />
       {/* Hero Section */}

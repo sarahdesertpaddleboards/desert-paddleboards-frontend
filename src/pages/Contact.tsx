@@ -89,6 +89,7 @@ export default function Contact() {
       <Seo
         title="Contact Us | Desert Paddleboards"
         description="Get in touch with Desert Paddleboards — questions about floating soundbaths, water-fitness classes, rentals, adventures, coaching or private events in Arizona."
+        image="/venues/skyline-pool.jpg"
       />
       <JsonLd data={structuredData} />
 

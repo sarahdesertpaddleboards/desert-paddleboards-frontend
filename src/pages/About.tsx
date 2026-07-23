@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Award, Heart, Tv, Users } from "lucide-react";
 import Seo from "@/components/Seo";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbLd, graph, organizationLd } from "@/lib/jsonld";
+import { SITE_URL } from "@/data/site";
 
 export default function About() {
   const achievements = [
@@ -43,6 +46,26 @@ export default function About() {
         title="About Sarah Williams | Desert Paddleboards"
         description="Meet Sarah Williams, founder of Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011."
         image="/about-sarah-class.webp"
+      />
+      <JsonLd
+        data={graph([
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "About", path: "/about" },
+          ]),
+          organizationLd(),
+          {
+            "@type": "Person",
+            "@id": `${SITE_URL}/#sarah`,
+            name: "Sarah Williams",
+            jobTitle: "Founder",
+            worksFor: { "@id": `${SITE_URL}/#organization` },
+            url: `${SITE_URL}/about`,
+            image: `${SITE_URL}/about-sarah-class.webp`,
+            description:
+              "Founder of Desert Paddleboards — floating soundbaths, paddleboard yoga and water-wellness experiences across Arizona since 2011.",
+          },
+        ])}
       />
       {/* Hero */}
       <section className="relative h-[400px] flex items-center justify-center overflow-hidden">

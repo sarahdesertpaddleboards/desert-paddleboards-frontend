@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import LocationFinder from "@/components/LocationFinder";
 import JsonLd from "@/components/JsonLd";
 import Seo from "@/components/Seo";
-import { localBusinessLd } from "@/lib/jsonld";
+import { graph, localBusinessLd, organizationLd, webSiteLd } from "@/lib/jsonld";
 import GoogleReviews, { reviewSummary } from "@/components/GoogleReviews";
 import SessionCalendar from "@/components/SessionCalendar";
 import FeaturedEvent from "@/components/FeaturedEvent";
@@ -18,7 +18,7 @@ export default function Home() {
         description="Float weightlessly as live sound washes over you. Find a floating soundbath near you across Phoenix, Mesa, Scottsdale, Tempe and more — and book online."
         image="/marriott-night-soundbath.jpg"
       />
-      <JsonLd data={localBusinessLd()} />
+      <JsonLd data={graph([organizationLd(), webSiteLd(), localBusinessLd()])} />
       {/* Calendar sits above the map/list finder (date-first entry point) */}
       <LocationFinder
         afterHero={

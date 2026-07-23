@@ -121,6 +121,7 @@ export default function PrivateEvents() {
       <Seo
         title="Private Events — Bachelorette &amp; Corporate Wellness"
         description="Private floating soundbath events across Arizona — bachelorette parties, corporate offsites, retreats and celebrations. We bring the boards, musicians and team."
+        image="/private-events/phx-country-club-soundbath.jpg"
       />
       <JsonLd data={structuredData} />
 
