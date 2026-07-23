@@ -14,7 +14,7 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
 
-const heroImage = "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg";
+const heroImage = "/venues/mulberry.jpg";
 
 const perfectFor = [
   {

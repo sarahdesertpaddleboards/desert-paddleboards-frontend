@@ -146,7 +146,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Canopy by Hilton",
     blurb:
       "Float weightlessly on the water as live sound washes over you, high above the city on the Canopy by Hilton rooftop pool in Tempe.",
-    image: "https://cdn.filestackcontent.com/i0Np2qm1SHa2nzK9wMXx",
+    image: "/venues/canopy-hilton.jpg",
     featured: true,
   },
   {
@@ -156,7 +156,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Skyline Pool",
     blurb:
       "The Floating Nap™ — as seen on TikTok. A sunset soundbath on the water at Skyline Pool in Mesa.",
-    image: "https://cdn.filestackcontent.com/yKfM7hUnRuexWsM6b0KL",
+    image: "/venues/skyline-pool.jpg",
     featured: true,
   },
   {
@@ -166,7 +166,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Hotel Adeline",
     blurb:
       "A floating meditation set to live music at Hotel Adeline in Scottsdale — drift, breathe, and let go.",
-    image: "https://cdn.filestackcontent.com/f1OgGIzzRFmzbAYHYnqW",
+    image: "/venues/hotel-adeline.jpg",
   },
   {
     itemId: 728366,
@@ -175,7 +175,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "DoubleTree by Hilton",
     blurb:
       "Unwind on the water with a floating meditation and live music at the DoubleTree by Hilton in Gilbert.",
-    image: "https://cdn.filestackcontent.com/N1IhadaQJur3pehMENXg",
+    image: "/venues/doubletree.jpg",
   },
   {
     itemId: 578969,
@@ -184,7 +184,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "JW Marriott Desert Ridge — Revive Spa",
     blurb:
       "A spa-day soundbath at the Revive Spa pool, JW Marriott Desert Ridge in Phoenix. Float, restore, and reset.",
-    image: "https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw",
+    image: "/venues/jw-marriott.jpg",
   },
   {
     itemId: 626146,
@@ -197,7 +197,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     lng: -111.9930353,
     blurb:
       "A serene floating soundbath at Aji Spa, Sheraton Grand at Wild Horse Pass — desert calm on the water.",
-    image: "https://cdn.filestackcontent.com/VPmBIgASEyIo57cg78j9",
+    image: "/venues/aji-spa.jpg",
   },
   {
     itemId: 636156,
@@ -206,7 +206,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "LeMonds Spa — The Wigwam",
     blurb:
       "A floating soundbath at the historic Wigwam resort's LeMonds Spa in Litchfield Park.",
-    image: "https://cdn.filestackcontent.com/8vc5VkiQUqWSg9yG0WFF",
+    image: "/venues/wigwam.jpg",
   },
   {
     itemId: 344396,
@@ -215,7 +215,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Superstition Shadows",
     blurb:
       "Float beneath the Superstition Mountains as the desert light fades — a soundbath in Apache Junction.",
-    image: "https://cdn.filestackcontent.com/sqrTR58YQq2Ru4MBETmC",
+    image: "/venues/superstition.jpg",
   },
   {
     itemId: 648798,
@@ -224,7 +224,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Mulberry Community",
     blurb:
       "A community floating soundbath at Mulberry in Mesa — now open to the public.",
-    image: "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg",
+    image: "/venues/mulberry.jpg",
   },
   {
     itemId: 712901,
@@ -421,7 +421,7 @@ export const membership: Experience = {
   blurb:
     "Classes every Tuesday. $80 a month, no commitment — or $25 per class, so the membership saves you $20. Cancel anytime.",
   image:
-    byId.get(633768)?.image || "https://cdn.filestackcontent.com/C3V95cP7Tmqsirm0hh8A",
+    byId.get(633768)?.image || "/venues/membership-tuesdays.jpg",
   featured: true,
 };
 

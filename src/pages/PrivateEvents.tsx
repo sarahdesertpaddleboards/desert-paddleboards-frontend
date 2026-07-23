@@ -294,7 +294,7 @@ export default function PrivateEvents() {
       <section className="py-16">
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <img
-            src="https://cdn.filestackcontent.com/CU4nIYeOQodsGhrhZBBw"
+            src="/venues/jw-marriott.jpg"
             alt="A corporate group floating soundbath at the JW Marriott"
             loading="lazy"
             className="w-full rounded-2xl object-cover shadow-sm"
