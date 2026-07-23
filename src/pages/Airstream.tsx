@@ -247,8 +247,8 @@ export default function Airstream() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased">
       <Seo
-        title={`Airstream Corporate Wellness Lounge for Hire | ${BRAND.areas}`}
-        description={`A luxury Airstream mobile wellness lounge available for corporate events, conferences, executive retreats, film & TV production sets, resort activations and private gatherings across ${BRAND.areas}. Pair with floating sound baths, meditation and breathwork.`}
+        title="Airstream Mobile Wellness Lounge for Corporate Events"
+        description="A luxury Airstream transformed into a mobile wellness lounge for corporate events, film sets and resort activations across Arizona and Southern California."
         image={HERO_IMG}
       />
       <JsonLd data={serviceLd} />
