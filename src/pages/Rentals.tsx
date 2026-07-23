@@ -34,7 +34,7 @@ export default function Rentals() {
     <div className="min-h-screen">
       <Seo
         title="Paddleboard &amp; Airstream Rentals — Arizona"
-        description="Rent a fleet of paddleboards across metro Phoenix, or bring the Blue Wave Mobile Wellness Lounge — our luxury Airstream wellness activation — to your event across AZ &amp; SoCal."
+        description="Rent a fleet of paddleboards across metro Phoenix, or bring our luxury Airstream mobile wellness lounge to your event in Arizona or Southern California."
         image="/floating-boards-sunset.jpg"
       />
       <JsonLd data={structuredData} />

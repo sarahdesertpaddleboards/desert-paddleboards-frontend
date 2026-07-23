@@ -181,8 +181,8 @@ export default function CustomBoards() {
   return (
     <main>
       <Seo
-        title="Custom &amp; Branded Paddleboards | Desert Paddleboards"
-        description="We design and manufacture custom, branded paddleboards and floating mats for businesses, studios and resorts — order in bulk, put your logo on the water, and we'll help you get started."
+        title="Custom Floating Soundbath Boards &amp; Branded Paddleboards"
+        description="We design and produce custom floating soundbath boards and branded paddleboards for studios, resorts and businesses — your logo on the water, in any quantity."
         image={heroImage}
       />
       <JsonLd data={structuredData} />
@@ -204,9 +204,9 @@ export default function CustomBoards() {
               Custom &amp; branded boards
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">
-              Did you know we design and manufacture our own paddleboards and
-              floating mats? Order in bulk, put your brand on the water — and
-              we'll help you get started.
+              Did you know we design and manufacture our own floating soundbath
+              boards and paddleboards? Order in bulk, put your brand on the
+              water — and we'll help you get started.
             </p>
             <a
               href="#quote"
