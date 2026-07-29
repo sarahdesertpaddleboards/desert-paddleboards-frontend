@@ -212,11 +212,12 @@ export default function SessionCalendar({
         ) : null}
       </div>
 
+      {/* Mobile stacks calendar → sessions → CTA (order classes) so the class
+          list is never pushed below the fold by the CTA; on md+ the CTA sits
+          under the calendar in the left column via explicit grid placement. */}
       <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-        {/* Left column: month grid, then a CTA so the column isn't left empty */}
-        <div className="space-y-6">
         {/* Calendar grid */}
-        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
+        <div className="order-1 rounded-2xl border border-border bg-card p-4 sm:p-6 md:col-start-1 md:row-start-1">
           <div className="mb-4 flex items-center justify-between">
             <button
               type="button"
@@ -284,9 +285,10 @@ export default function SessionCalendar({
           </div>
         </div>
 
-          {/* Fills the space beside the sessions list and points people
-              somewhere useful if no listed date works for them. */}
-          <div className="rounded-2xl border border-border bg-card p-6">
+        {/* Fills the space beside the sessions list and points people
+            somewhere useful if no listed date works for them. Ordered last on
+            mobile so it never sits between the calendar and the class list. */}
+        <div className="order-3 rounded-2xl border border-border bg-card p-6 md:order-none md:col-start-1 md:row-start-2">
             <h3 className="text-lg font-bold">Don't see a date that works?</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               We host private floating soundbaths for bachelorette parties, corporate
@@ -307,11 +309,10 @@ export default function SessionCalendar({
                 Browse all venues
               </Link>
             </div>
-          </div>
         </div>
 
         {/* Upcoming sessions (next 7 days by default; a single day when clicked) */}
-        <div>
+        <div className="order-2 md:order-none md:col-start-2 md:row-span-2 md:row-start-1">
           <div className="mb-3 flex items-center justify-between gap-2">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-brand">
               {selected
