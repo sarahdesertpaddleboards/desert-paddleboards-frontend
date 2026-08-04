@@ -100,6 +100,7 @@ const FORCE_LOCATION_IDS = new Set<number>([626146]);
  * bookings — this just removes them from the website.)
  */
 const EXCLUDED_ITEM_IDS = new Set<number>([
+  655636, // SwimHaus (Gilbert) — nothing scheduled in the near future (Shellie, Aug 2026)
   // (Arizona Grand Resort & Spa, 714583, was hidden Jun 2026 but is running
   //  again as of Jul 2026 — restored.)
 ]);

@@ -188,7 +188,7 @@ export default function PrivateEvents() {
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <img
             src="/private-events/lifetime-fitness-soundbath.jpg"
-            alt="Poolside candlelit floating soundbath member-appreciation event at Lifetime Fitness"
+            alt="A floating soundbath member-appreciation event at Lifetime Fitness"
             loading="lazy"
             className="w-full rounded-2xl object-cover shadow-sm"
           />
@@ -200,10 +200,11 @@ export default function PrivateEvents() {
               Gyms &amp; Member Appreciation
             </h2>
             <p className="text-lg text-muted-foreground">
-              Treat your members to an unforgettable floating soundbath — like this
-              candlelit evening we hosted poolside at Lifetime Fitness. We bring
-              everything and run the whole experience, or simply drop off the boards
-              for your own instructors.
+              Give your members something they won&apos;t find in a typical fitness
+              class. A floating soundbath is a unique way to celebrate milestones, or
+              create a memorable member appreciation event. We can bring everything and
+              run the entire experience — or simply drop off the boards for your own
+              instructors.
             </p>
           </div>
         </div>
@@ -215,7 +216,7 @@ export default function PrivateEvents() {
           <div className="md:order-2">
             <img
               src="/private-events/optima-team-event.jpg"
-              alt="A candlelit evening floating soundbath team event at Optima"
+              alt="A floating soundbath team event at Optima"
               loading="lazy"
               className="w-full rounded-2xl object-cover shadow-sm"
             />
@@ -228,10 +229,10 @@ export default function PrivateEvents() {
               Small Business &amp; Team Events
             </h2>
             <p className="text-lg text-muted-foreground">
-              Give your team a wellness experience that's nothing like the usual
-              offsite — like this candlelit evening soundbath we hosted poolside at
-              Optima. It's the perfect reset for stressed-out teams, and we handle
-              every detail.
+              Treat your team to an experience that&apos;s nothing like the usual
+              offsite. Floating soundbaths offer a relaxing, memorable way to bring
+              your team together. We take care of the setup, equipment, and experience
+              so your group can simply show up and enjoy.
             </p>
           </div>
         </div>

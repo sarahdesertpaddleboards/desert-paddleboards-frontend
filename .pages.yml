@@ -40,6 +40,7 @@ content:
               - { name: date, label: Date, type: date }
               - { name: time, label: "Start time (24-hour, e.g. 20:00 = 8 PM)", type: string }
               - { name: endTime, label: "End time (optional, 24-hour)", type: string }
+              - { name: bookingUrl, label: "Direct registration link for THIS date (optional)", type: string }
           - { name: id, label: "ID (do not change)", type: string }
 
   - name: videos
