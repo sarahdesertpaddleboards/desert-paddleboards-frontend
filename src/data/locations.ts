@@ -276,6 +276,16 @@ const LOCATION_OVERLAYS: Overlay[] = [
       "An indoor floating soundbath at SwimHaus in Gilbert — climate-controlled calm on the water, any time of year.",
   },
   {
+    itemId: 578505,
+    slug: "indoor-floating-soundbath-kiwanis-tempe",
+    title: "Indoor Floating Soundbath",
+    venue: "Kiwanis Recreation Center",
+    city: "Tempe",
+    blurb:
+      "An indoor floating soundbath at the Kiwanis Recreation Center in Tempe — climate-controlled calm on the water, any time of year.",
+    image: "https://cdn.filestackcontent.com/Xt429UiQLy2eDICcGtFn",
+  },
+  {
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
     title: "Community Floating Soundbath",
