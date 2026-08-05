@@ -18,6 +18,9 @@ const AZ_OFFSET = "-07:00"; // Arizona does not observe daylight saving.
 export interface CityClassSession {
   startAt: string;
   endAt?: string;
+  /** Direct registration link for THIS date (overrides the class-level
+   *  bookingUrl). Used when a city posts a separate listing per session. */
+  bookingUrl?: string;
 }
 
 export interface CityClass {
@@ -85,6 +88,7 @@ interface RawSession {
   date: string;
   time: string;
   endTime?: string;
+  bookingUrl?: string;
 }
 
 /** "2026-07-10" + "20:00" → "2026-07-10T20:00:00-07:00" */
@@ -101,6 +105,7 @@ export const cityClasses: CityClass[] = data.cityClasses.map((c) => ({
     .map((s) => ({
       startAt: toIso(s.date, s.time),
       ...(s.endTime ? { endAt: toIso(s.date, s.endTime) } : {}),
+      ...(s.bookingUrl ? { bookingUrl: s.bookingUrl } : {}),
     })),
 }));
 

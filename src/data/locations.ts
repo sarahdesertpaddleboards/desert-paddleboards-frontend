@@ -100,6 +100,7 @@ const FORCE_LOCATION_IDS = new Set<number>([626146]);
  * bookings — this just removes them from the website.)
  */
 const EXCLUDED_ITEM_IDS = new Set<number>([
+  655636, // SwimHaus (Gilbert) — nothing scheduled in the near future (Shellie, Aug 2026)
   // (Arizona Grand Resort & Spa, 714583, was hidden Jun 2026 but is running
   //  again as of Jul 2026 — restored.)
 ]);
@@ -273,6 +274,16 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "SwimHaus Swim School",
     blurb:
       "An indoor floating soundbath at SwimHaus in Gilbert — climate-controlled calm on the water, any time of year.",
+  },
+  {
+    itemId: 578505,
+    slug: "indoor-floating-soundbath-kiwanis-tempe",
+    title: "Indoor Floating Soundbath",
+    venue: "Kiwanis Recreation Center",
+    city: "Tempe",
+    blurb:
+      "An indoor floating soundbath at the Kiwanis Recreation Center in Tempe — climate-controlled calm on the water, any time of year.",
+    image: "https://cdn.filestackcontent.com/Xt429UiQLy2eDICcGtFn",
   },
   {
     itemId: 692276,

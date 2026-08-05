@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T10:29:02.597Z",
+  "generatedAt": "2026-08-04T22:35:50.059Z",
   "items": [
     {
       "itemId": 146393,
@@ -150,6 +150,21 @@
       "lat": null,
       "lng": null,
       "image": "https://cdn.filestackcontent.com/nc22dYuXSCejxnlBdmZQ"
+    },
+    {
+      "itemId": 578505,
+      "name": "Kiwanis Indoor Floating Soundbath - Tempe",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Kiwanis Recreation Center",
+      "city": "Tempe",
+      "state": "AZ",
+      "street": "6111 South All America Way",
+      "postalCode": "85283",
+      "googlePlaceId": "ChIJuSZUkhMGK4cR8K0A0ZBeIg8",
+      "lat": 33.366751,
+      "lng": -111.935225,
+      "image": "https://cdn.filestackcontent.com/MMY6x3KzQ6eHNGvnc95D"
     },
     {
       "itemId": 578969,
@@ -363,10 +378,10 @@
     },
     {
       "itemId": 714583,
-      "name": "Arizona Grand Resort and Spa",
+      "name": "Arizona Grand Resort",
       "isUnlisted": false,
       "isRetail": false,
-      "venue": "Arizona Grand Resort & Spa",
+      "venue": "Arizona Grand Resort",
       "city": "Phoenix",
       "state": "AZ",
       "street": "8000 Arizona Grand Parkway",
@@ -374,7 +389,7 @@
       "googlePlaceId": "ChIJQbNnQPQFK4cRQJGcmG7bbjE",
       "lat": 33.373882,
       "lng": -111.970219,
-      "image": "https://cdn.filestackcontent.com/HPzk22atQuCGB76YgxQZ"
+      "image": "https://cdn.filestackcontent.com/GUkpZEjwSYqDQVP3g2fV"
     },
     {
       "itemId": 722096,
@@ -435,6 +450,21 @@
       "lat": null,
       "lng": null,
       "image": "https://cdn.filestackcontent.com/TLTgsaMrTkC8ktOWu9Sa"
+    },
+    {
+      "itemId": 746500,
+      "name": "Water Aerobics at Mulberry",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "",
+      "city": "",
+      "state": "AZ",
+      "street": "",
+      "postalCode": "",
+      "googlePlaceId": "",
+      "lat": null,
+      "lng": null,
+      "image": "https://cdn.filestackcontent.com/uzc4cSaYQia5XGMInsPS"
     }
   ]
 }

@@ -18,15 +18,14 @@
  */
 
 const SHORTNAME = "desertpaddleboards";
-const MAX_MONTHS_AHEAD = 2; // ceiling: current month + this many following months
-// Each item-month is one fetch (subrequest). Cloudflare's FREE Workers plan
-// caps a single request at 50 subrequests; exceeding it makes the overflow
-// fetches throw and get silently swallowed (.catch(() => [])), which drops
-// whole venues' sessions from the feed. So we never schedule more than this
-// many item-month fetches — the number of months auto-shrinks as venues grow
-// (every venue always gets at least the current month). Raise this only on the
-// Workers PAID plan (1000 subrequests) — see the note in the deploy docs.
-const SUBREQUEST_BUDGET = 45;
+const MAX_MONTHS_AHEAD = 5; // ceiling: current month + this many following months (~6 months)
+// Each item-month is one fetch (subrequest). We're on the Workers PAID plan
+// (1000-subrequest cap; the free plan's 50 previously squeezed the feed to
+// ~1 month ahead and hid far-future sessions). This budget stays well under
+// 1000 with headroom, and the number of months still auto-shrinks if venues
+// ever grow enough to approach it (every venue always gets at least the current
+// month). If the site is ever downgraded to the free plan, drop this back to 45.
+const SUBREQUEST_BUDGET = 900; // Workers PAID plan (1000 cap); ~20 venues × 6 months ≈ 120
 const CACHE_TTL_S = 30 * 60; // 30 minutes
 
 // Fixed-location venues whose FareHarbor primary_location has no lat/lng.

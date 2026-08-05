@@ -131,7 +131,9 @@ export function useMergedSessions(): CalSession[] {
           out.push({
             ...base,
             source: "city",
-            bookingUrl: c.bookingUrl,
+            // Per-date link wins (a city may post one listing per session),
+            // else the class-level registration link.
+            bookingUrl: cs.bookingUrl ?? c.bookingUrl,
             bookingLabel: c.bookingLabel,
           });
         }
