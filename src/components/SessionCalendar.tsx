@@ -120,6 +120,21 @@ function SessionRow({ s, showDate }: { s: CalSession; showDate?: boolean }) {
 }
 
 /**
+ * Time-boxed promo for the slot under the calendar. While `until` is in the
+ * future it replaces the evergreen private-events card, then auto-reverts —
+ * no code change needed when it expires. Times are Phoenix (UTC-07:00).
+ * Currently: boosting the Sat Aug 8 Kino Aquatic Center class.
+ */
+const SLOT_PROMO = {
+  itemId: 171055,
+  until: "2026-08-09T02:00:00-07:00", // through Saturday night
+  eyebrow: "This Saturday",
+  title: "Floating Soundbath at Kino Aquatic Center",
+  body: "Saturday, Aug 8 at 7:30 PM in Mesa — float under the summer night sky while live sound carries you. Spots are open, and evening on the water is the coolest place in town.",
+  learnMoreHref: "/locations/floating-soundbath-kino-aquatics-mesa",
+};
+
+/**
  * Visual month-grid calendar + an upcoming list. By default the right panel
  * shows the next 7 days of sessions (falling back to the next 5 if the coming
  * week is empty); clicking a day in the grid drills into that day. Merges
@@ -285,30 +300,57 @@ export default function SessionCalendar({
           </div>
         </div>
 
-        {/* Fills the space beside the sessions list and points people
-            somewhere useful if no listed date works for them. Ordered last on
-            mobile so it never sits between the calendar and the class list. */}
+        {/* Fills the space beside the sessions list. Shows the time-boxed
+            SLOT_PROMO while active, else the evergreen private-events card.
+            Ordered last on mobile so it never sits between the calendar and
+            the class list. */}
         <div className="order-3 rounded-2xl border border-border bg-card p-6 md:order-none md:col-start-1 md:row-start-2">
-            <h3 className="text-lg font-bold">Don't see a date that works?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              We host private floating soundbaths for bachelorette parties, corporate
-              wellness days, birthdays and team events — at your venue or ours. Tell us
-              what you have in mind and we'll build it around your group.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                to="/private-events"
-                className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-              >
-                Plan a private event
-              </Link>
-              <Link
-                to="/locations"
-                className="inline-flex cursor-pointer items-center justify-center rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/10"
-              >
-                Browse all venues
-              </Link>
-            </div>
+          {Date.now() < Date.parse(SLOT_PROMO.until) ? (
+            <>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+                {SLOT_PROMO.eyebrow}
+              </p>
+              <h3 className="mt-1 text-lg font-bold">{SLOT_PROMO.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{SLOT_PROMO.body}</p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <FareHarborButton
+                  itemId={SLOT_PROMO.itemId}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Book your spot
+                </FareHarborButton>
+                <Link
+                  to={SLOT_PROMO.learnMoreHref}
+                  className="inline-flex cursor-pointer items-center justify-center rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/10"
+                >
+                  Learn more →
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-lg font-bold">Don't see a date that works?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                We host private floating soundbaths for bachelorette parties, corporate
+                wellness days, birthdays and team events — at your venue or ours. Tell us
+                what you have in mind and we'll build it around your group.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  to="/private-events"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Plan a private event
+                </Link>
+                <Link
+                  to="/locations"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/10"
+                >
+                  Browse all venues
+                </Link>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Upcoming sessions (next 7 days by default; a single day when clicked) */}
