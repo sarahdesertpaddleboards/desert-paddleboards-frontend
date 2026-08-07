@@ -130,6 +130,24 @@
       "id": "witches-regatta"
     },
     {
+      "title": "Witches Regatta — Board + T-Shirt Bundle",
+      "slug": "witches-regatta-board-tshirt-bundle",
+      "venue": "Tempe Town Lake Boat Marina",
+      "city": "Tempe",
+      "state": "AZ",
+      "address": "Tempe Town Lake Boat Marina (north shore), 550 Tempe Town Lake, Tempe, AZ 85281",
+      "fareharborItemId": 743948,
+      "image": "/witches-regatta.jpg",
+      "note": "Need a board? This bundle pairs an inflatable paddleboard rental with a Witches Regatta t-shirt so you can show up empty-handed and still float the lake in style. Same date and meeting spot as the Regatta — the hill by the boat marina on the north side of Tempe Town Lake. Capacity is limited, so book early.",
+      "sessions": [
+        {
+          "date": "2026-10-24",
+          "time": "10:00"
+        }
+      ],
+      "id": "witches-regatta-bundle"
+    },
+    {
       "title": "Salt River Paddleboarding Outing",
       "slug": "salt-river-paddleboarding-outing",
       "venue": "Salt River",
