@@ -45,22 +45,21 @@ export default function SupPupsSection() {
         <div className="grid gap-10 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#DCC7A6]">
-              For dog daycares &amp; multi-location pet brands
+              For businesses, studios &amp; multi-location brands
             </p>
 
             <h2
               id="sup-pups-heading"
               className="mt-5 text-4xl font-black uppercase leading-[0.95] tracking-tight md:text-6xl"
             >
-              SUP&nbsp;Pups
+              Custom&nbsp;Printed
               <span className="mt-1 block text-[#FF5B33]">Branded Boards</span>
             </h2>
 
             <p className="mt-5 max-w-md text-lg text-[#C6D6DC]">
-              We design and manufacture custom-printed paddleboards for dog
-              daycares and franchise groups. Your logo, your colors, and each
-              location&rsquo;s own phone number — printed into the board, not
-              stuck on it.
+              We design and manufacture custom-printed paddleboards for your
+              business. Your logo, your colors, and each location&rsquo;s own
+              phone number — printed into the board, not stuck on it.
             </p>
 
             <dl className="mt-8 grid max-w-md grid-cols-2 gap-px overflow-hidden rounded border border-white/15 bg-white/15">
@@ -143,7 +142,7 @@ export default function SupPupsSection() {
             Watch
           </p>
           <h3 className="mt-3 text-2xl font-black uppercase tracking-tight md:text-4xl">
-            SUP Pups in action
+            Boards in action
           </h3>
 
           <div className="mt-10 grid gap-8 md:grid-cols-2">

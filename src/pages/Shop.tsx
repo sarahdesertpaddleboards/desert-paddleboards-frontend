@@ -50,8 +50,8 @@ export default function Shop() {
   return (
     <>
       <Seo
-        title="SUP Pups Branded Boards &amp; Float Merch | Desert Paddleboards"
-        description="SUP Pups branded paddleboards for dog daycares and multi-location pet brands — your logo, your colors, each location's own phone number. Orders from 10 boards, 4–8 week lead time."
+        title="Custom Branded Paddleboards &amp; Float Merch | Desert Paddleboards"
+        description="Custom-printed branded paddleboards for your business — your logo, your colors, each location's own phone number. Orders from 10 boards, 4–8 week lead time."
         image="/images/sup-pups/hero-mission-board.jpg"
       />
       <SupPupsSection />
