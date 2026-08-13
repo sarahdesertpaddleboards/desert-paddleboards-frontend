@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import SupPupsSection from "@/components/SupPupsSection";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
@@ -47,12 +48,14 @@ export default function Shop() {
   ]);
 
   return (
-    <main className="container py-16">
+    <>
       <Seo
-        title="Shop — Desert Paddleboards"
-        description="Desert Paddleboards shop — floating meditation boards, the Sonoran Echoes album, river paddleboarding guides and beach totes. Secure checkout via Stripe."
-        image="/floating-boards-sunset.jpg"
+        title="SUP Pups Branded Boards &amp; Float Merch | Desert Paddleboards"
+        description="SUP Pups branded paddleboards for dog daycares and multi-location pet brands — your logo, your colors, each location's own phone number. Orders from 10 boards, 4–8 week lead time."
+        image="/images/sup-pups/hero-mission-board.jpg"
       />
+      <SupPupsSection />
+    <main className="container py-16">
       <JsonLd data={structuredData} />
 
       <header className="max-w-2xl space-y-4">
@@ -126,6 +129,7 @@ export default function Shop() {
         </Link>
       </section>
     </main>
+    </>
   );
 }
 
