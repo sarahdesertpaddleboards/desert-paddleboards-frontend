@@ -8,39 +8,64 @@ import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
 
 /**
- * /coaching — Adventure Life Coaching + motivational speaking with Sarah Williams.
- * Redirect target for the old GoDaddy /adventure-life-coaching page.
- * Pricing/copy carried over from the old site — flagged for Sarah to confirm.
+ * /coaching — business coaching for wellness professionals (instructors, studio
+ * owners, wellness entrepreneurs) + motivational speaking with Sarah Williams.
+ * Repositioned Aug 2026 from "Adventure Life Coaching"; adventure/life coaching
+ * is kept as a secondary offer. Still the redirect target for the old GoDaddy
+ * /adventure-life-coaching page.
  */
 export default function Coaching() {
-  const packages = [
+  /**
+   * Packages are quote-led for now: the previous $75–$750 session bundles were
+   * life-coaching rates that undercut this positioning, and Sarah hasn't set
+   * the new numbers yet. Add a `price` to any tier to show it on the card.
+   */
+  const packages: {
+    name: string;
+    price?: string;
+    note?: string;
+    detail: string;
+    featured?: boolean;
+  }[] = [
     {
-      name: "Single Session",
-      price: "$75",
-      detail: "One 45-minute session — a low-commitment way to try coaching and talk through where you want to go.",
+      name: "Strategy Session",
+      detail:
+        "One 60-minute deep dive into your business. Leave with a clear plan for your signature experience and the first three moves to make.",
     },
     {
-      name: "Three Sessions",
-      price: "$210",
-      note: "5% off",
-      detail: "Three 45-minute sessions with Adventure Life Coach Sarah Williams. Perfect for getting started and exploring your options.",
-    },
-    {
-      name: "Six Sessions",
-      price: "$400",
-      note: "10% off",
-      detail: "Six 45-minute sessions for those committed to making real progress toward their adventure goals.",
+      name: "Launch",
+      note: "Most popular",
+      detail:
+        "Six sessions over three months. We design your signature experience, price and package it, and get it in front of real customers.",
       featured: true,
     },
     {
-      name: "Twelve Sessions",
-      price: "$750",
-      note: "15% off — best value",
-      detail: "Twelve 45-minute sessions for those who want to fully commit to their personal-growth and transformation journey.",
+      name: "Scale",
+      detail:
+        "Twelve sessions over six months. Venue partnerships, corporate contracts and the systems to run it without you in every class.",
     },
   ];
 
+  const workOn = [
+    "Design your signature experience — the offering with your name on it",
+    "Land venue partnerships: how to approach resorts, hotels and community pools, and what they actually want",
+    "Break into corporate wellness, where the higher-value contracts live",
+    "Price and package your work so you're not underselling it",
+    "Fill it — the marketing that actually works for experience-based businesses",
+  ];
+
+  const whoFor = [
+    "Instructors ready to go independent — yoga, Pilates, fitness, sound healing",
+    "Studio and gym owners who want a signature offering competitors can't copy",
+    "Wellness entrepreneurs chasing their first venue or corporate partnership",
+    "Anyone who's bought boards from us and wants the playbook that goes with them",
+  ];
+
   const credentials = [
+    "Built Desert Paddleboards from one instructor to 21+ Arizona venues since 2011",
+    "Resort and hotel partnerships — JW Marriott, Westin, Sheraton, Grand Hyatt",
+    "Corporate clients including Lifetime Fitness and Optima",
+    "Designed and manufacture our own branded board line, sold to businesses nationwide",
     "20+ years in the fitness industry",
     "Registered Yoga Teacher & certified Pilates instructor",
     "CrossFit & CrossFit Kids trainer, USA Weightlifting Coach",
@@ -57,17 +82,16 @@ export default function Coaching() {
     {
       "@context": "https://schema.org",
       "@type": "Service",
-      name: "Adventure Life Coaching",
-      serviceType: "Life coaching",
+      name: "Business Coaching for Wellness Professionals",
+      serviceType: "Business coaching",
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
       description:
-        "One-on-one adventure life coaching with Sarah Williams — build the confidence and skills to break out of your comfort zone and take on new challenges.",
+        "Business coaching for instructors, studio owners and wellness entrepreneurs — design a signature experience, land venue partnerships and win corporate wellness contracts.",
       offers: {
         "@type": "Offer",
         priceCurrency: "USD",
-        price: "75",
-        description: "45-minute coaching session",
+        description: "Coaching packages quoted on a strategy call",
       },
     },
   ]);
@@ -75,8 +99,8 @@ export default function Coaching() {
   return (
     <div className="min-h-screen">
       <Seo
-        title="Adventure Life Coaching &amp; Speaking | Sarah Williams"
-        description="One-on-one adventure life coaching and motivational speaking with Sarah Williams — build the confidence to step outside your comfort zone, in Arizona."
+        title="Business Coaching for Wellness Pros | Sarah Williams"
+        description="Coaching for instructors, studio owners and wellness entrepreneurs — design a signature experience, land venue partnerships and win corporate wellness contracts."
         image="/about-sarah-class.webp"
       />
       <JsonLd data={structuredData} />
@@ -86,28 +110,70 @@ export default function Coaching() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 to-black/35 z-10" />
         <img
           src="/about-sarah-class.webp"
-          alt="Adventure life coach Sarah Williams leading a class on the water"
+          alt="Sarah Williams leading a floating soundbath class on the water"
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
         <div className="relative z-20 container text-center text-white">
-          <h1 className="text-balance text-4xl md:text-6xl font-bold mb-4">Adventure Life Coaching</h1>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/85">
+            For wellness pros, studio owners &amp; instructors
+          </p>
+          <h1 className="text-balance text-4xl md:text-6xl font-bold mb-4">
+            Turn what you teach into a business
+          </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
-            Build the confidence and skills to break out of your comfort zone — and embark on your next adventure.
+            You&rsquo;re great at what you teach. Building a business around it is a different skill entirely.
           </p>
         </div>
       </section>
 
-      {/* Intro */}
+      {/* The gap */}
       <section className="container py-16">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex p-4 rounded-full bg-primary/10 text-primary mb-6">
             <Compass className="h-8 w-8" />
           </div>
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+            The gap nobody trains you for
+          </h2>
           <p className="text-lg text-muted-foreground">
-            With Adventure Life Coaching you'll gain the confidence and skills needed to break out of your
-            comfort zone and embark on new adventures. Work one-on-one with Sarah to take the first step
-            toward a more fulfilling life — whether that's a personal goal, a big trip, or a whole new chapter.
+            Your certifications taught you to teach. They didn&rsquo;t teach you how to land a resort
+            partnership, price a corporate contract, or build something people seek out by name. That&rsquo;s
+            the gap — and it&rsquo;s why so many talented instructors stay stuck teaching someone else&rsquo;s
+            schedule, in someone else&rsquo;s space.
           </p>
+          <p className="mt-5 text-lg text-muted-foreground">
+            I built Desert Paddleboards from one instructor into floating soundbaths at 21+ Arizona venues,
+            resort partnerships, corporate contracts and our own board manufacturing. I&rsquo;ll show you how
+            to build your own signature experience.
+          </p>
+        </div>
+      </section>
+
+      {/* Who it's for + what we work on */}
+      <section className="container pb-16">
+        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2">
+          <div>
+            <h2 className="mb-5 text-2xl font-bold">Who this is for</h2>
+            <ul className="space-y-3">
+              {whoFor.map((w) => (
+                <li key={w} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+                  <span className="text-muted-foreground">{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="mb-5 text-2xl font-bold">What we work on</h2>
+            <ul className="space-y-3">
+              {workOn.map((w) => (
+                <li key={w} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+                  <span className="text-muted-foreground">{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -115,12 +181,13 @@ export default function Coaching() {
       <section className="bg-accent/20 py-16">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Sessions &amp; Packages</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ways to work together</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Start with a single session or commit to a package — the more you book, the more you save.
+              Every business starts in a different place. We&rsquo;ll talk through where yours is and pick the
+              right fit — pricing is quoted on our first call.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
             {packages.map((pkg) => (
               <Card
                 key={pkg.name}
@@ -133,7 +200,9 @@ export default function Coaching() {
                 )}
                 <CardContent className="pt-8 pb-6 text-center flex flex-col h-full">
                   <h3 className="font-bold text-lg mb-1">{pkg.name}</h3>
-                  <div className="text-3xl font-bold text-primary mb-1">{pkg.price}</div>
+                  {pkg.price && (
+                    <div className="text-3xl font-bold text-primary mb-1">{pkg.price}</div>
+                  )}
                   {pkg.note && (
                     <div className="text-xs font-semibold uppercase tracking-wide text-primary/80 mb-3">
                       {pkg.note}
@@ -146,8 +215,8 @@ export default function Coaching() {
           </div>
           <div className="text-center mt-10">
             <Button size="lg" asChild>
-              <Link to="/contact?subject=Life%20coaching">
-                Book your coaching package
+              <Link to="/contact?subject=Business%20coaching%20strategy%20call">
+                Book a strategy call
               </Link>
             </Button>
           </div>
@@ -205,15 +274,27 @@ export default function Coaching() {
         <div className="container max-w-3xl text-center">
           <Mountain className="h-10 w-10 mx-auto mb-4 opacity-90" />
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            Ready to put coaching into action?
+            Looking for adventure life coaching?
           </h2>
           <p className="text-lg opacity-90 mb-8">
-            Sarah's guided paddleboard adventures and retreats are the perfect place to step outside your
-            comfort zone — on the water, in good company.
+            Still offered — one-on-one work on confidence and getting outside your comfort zone. And Sarah's
+            guided paddleboard adventures and retreats are the perfect place to put it into practice.
           </p>
-          <Button size="lg" variant="secondary" asChild>
-            <Link to="/adventures">Explore our adventures</Link>
-          </Button>
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button size="lg" variant="secondary" asChild>
+              <Link to="/contact?subject=Adventure%20life%20coaching">
+                Ask about life coaching
+              </Link>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+              asChild
+            >
+              <Link to="/adventures">Explore our adventures</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
