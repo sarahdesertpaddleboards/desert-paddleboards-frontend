@@ -37,9 +37,31 @@ declare global {
 // ad delivery for). Anything not listed is sent as a Meta custom event.
 const META_STANDARD_EVENTS: Record<string, string> = {
   book_click: "Schedule", // heading to FareHarbor to book a session
-  generate_lead: "Lead", // private-events inquiry submitted
+  generate_lead: "Lead", // event/contact inquiry submitted
+  lead_contact_click: "Contact", // tapped the phone CTA on an event page
   shop_click: "InitiateCheckout", // heading to Stripe checkout
 };
+
+/**
+ * Events the site emits, for reference when configuring GA4. Registering the
+ * conversions as *key events* is a GA4 dashboard step (Admin → Events → mark as
+ * key event) — it can't be done from code.
+ *
+ *   generate_lead       KEY EVENT. Params: form, event_type, headcount_bucket,
+ *                       preferred_venue, page_path
+ *   lead_contact_click  Phone CTA tapped. Params: method, form, page_path
+ *   form_start          First field interaction — pair with generate_lead to get
+ *                       form abandonment. Params: form, page_path
+ *   book_click          Opening the FareHarbor booking lightframe
+ *   shop_click          Heading to Stripe checkout
+ */
+export const TRACKED_EVENTS = [
+  "generate_lead",
+  "lead_contact_click",
+  "form_start",
+  "book_click",
+  "shop_click",
+] as const;
 
 let loaded = false;
 

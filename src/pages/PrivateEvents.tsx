@@ -1,95 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, Heart, Briefcase, Sparkles, CheckCircle2, Building2, Dumbbell } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
+import EventInquiryForm from "@/components/EventInquiryForm";
+import VenueProof from "@/components/VenueProof";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
-import { submitWeb3Form } from "@/lib/web3forms";
-import { trackEvent } from "@/lib/analytics";
 import { SITE_URL, business } from "@/data/site";
 
 export default function PrivateEvents() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    eventType: "",
-    numberOfGuests: "",
-    preferredDate: "",
-    location: "",
-    message: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  const resetForm = () =>
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      eventType: "",
-      numberOfGuests: "",
-      preferredDate: "",
-      location: "",
-      message: "",
-    });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-
-    const subject = `Private event inquiry${formData.eventType ? ` — ${formData.eventType}` : ""}`;
-
-    // Preferred path: deliver straight to Sarah's inbox via Web3Forms.
-    const result = await submitWeb3Form({
-      subject,
-      from_name: "Desert Paddleboards website",
-      replyto: formData.email,
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || "—",
-      event_type: formData.eventType || "—",
-      guests: formData.numberOfGuests || "—",
-      preferred_date: formData.preferredDate || "—",
-      preferred_location: formData.location || "—",
-      message: formData.message || "—",
-    });
-
-    setSubmitting(false);
-
-    if (result.success) {
-      trackEvent("generate_lead", { form: "private-events" });
-      toast.success("Thank you! Your inquiry has been sent — we'll reply within 24 hours.");
-      resetForm();
-      return;
-    }
-
-    // Fallback (no key configured yet, or the request failed): hand off to the
-    // visitor's mail client with everything pre-filled so the lead isn't lost.
-    const body = [
-      `Name: ${formData.name}`,
-      `Email: ${formData.email}`,
-      `Phone: ${formData.phone || "—"}`,
-      `Event type: ${formData.eventType || "—"}`,
-      `Number of guests: ${formData.numberOfGuests || "—"}`,
-      `Preferred date: ${formData.preferredDate || "—"}`,
-      `Preferred location: ${formData.location || "—"}`,
-      "",
-      "Details:",
-      formData.message || "—",
-    ].join("\n");
-    window.location.href = `mailto:sarah@desertpaddleboards.com?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
-    toast.message("Opening your email app so you can send your inquiry directly…");
-  };
-
   const includedFeatures = [
     "Customized experience tailored to your group",
     "Professional instructors and sound healers",
@@ -145,14 +64,56 @@ export default function PrivateEvents() {
         </div>
       </section>
 
-      {/* Intro heading — leads into the real-event feature bands below */}
-      <section className="container pt-16 pb-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          Perfect For Any Occasion
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          We customize each experience to match your group's needs and preferences
-        </p>
+      {/* Lead capture above the fold — most of this page's traffic arrives from
+          social on a phone and previously had to scroll past six photo bands to
+          reach the form. */}
+      <section id="inquiry" className="container py-14">
+        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:items-start">
+          <div className="order-2 space-y-4 lg:order-1">
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Perfect For Any Occasion
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              We customize each experience to match your group's needs and preferences —
+              bachelorette parties, corporate offsites, retreats, member-appreciation
+              days and celebrations of every kind.
+            </p>
+            <p className="text-lg text-muted-foreground">
+              We bring the boards, the live musicians and the whole team, to your venue
+              or ours. Tell us what you have in mind and we'll build it around your group.
+            </p>
+          </div>
+          <div className="order-1 lg:order-2">
+            <EventInquiryForm />
+          </div>
+        </div>
+      </section>
+
+      <VenueProof />
+
+      {/* Why it works for teams — links the best-converting blog post (51%
+          session key-event rate) into the corporate buyer's path. */}
+      <section className="container py-14">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-7">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
+            For teams
+          </p>
+          <h2 className="mt-2 text-2xl font-bold md:text-3xl">
+            Why this works for corporate groups
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            A floating soundbath does what a catered lunch or an escape room can&rsquo;t:
+            it actually lowers stress. Teams leave calmer than they arrived, and they
+            remember it. It works for every fitness level, nobody has to be good at
+            anything, and it photographs beautifully for your internal comms.
+          </p>
+          <Link
+            to="/blog/floating-sound-baths-the-ultimate-corporate-wellness-event"
+            className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline"
+          >
+            Read: floating soundbaths as a corporate wellness event &rarr;
+          </Link>
+        </div>
       </section>
 
       {/* Bachelorette Parties feature — real backyard-pool event */}
@@ -338,145 +299,9 @@ export default function PrivateEvents() {
       </section>
 
       {/* Inquiry Form */}
-      <section className="container py-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Request a Quote
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Tell us about your event and we'll create a custom package for your group
-            </p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Event Inquiry Form</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Your Name *</Label>
-                    <Input
-                      id="name"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Sarah Williams"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="you@example.com"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="(602) 555-0123"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="eventType">Event Type *</Label>
-                    <Select
-                      value={formData.eventType}
-                      onValueChange={(value) => setFormData({ ...formData, eventType: value })}
-                      required
-                    >
-                      <SelectTrigger id="eventType">
-                        <SelectValue placeholder="Select event type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="bachelorette">Bachelorette Party</SelectItem>
-                        <SelectItem value="corporate">Corporate Wellness</SelectItem>
-                        <SelectItem value="retreat">Retreat/Workshop</SelectItem>
-                        <SelectItem value="celebration">Group Celebration</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="numberOfGuests">Number of Guests</Label>
-                    <Input
-                      id="numberOfGuests"
-                      type="number"
-                      min="1"
-                      value={formData.numberOfGuests}
-                      onChange={(e) => setFormData({ ...formData, numberOfGuests: e.target.value })}
-                      placeholder="20"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="preferredDate">Preferred Date</Label>
-                    <Input
-                      id="preferredDate"
-                      type="date"
-                      value={formData.preferredDate}
-                      onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="location">Preferred Location</Label>
-                    <Select
-                      value={formData.location}
-                      onValueChange={(value) => setFormData({ ...formData, location: value })}
-                    >
-                      <SelectTrigger id="location">
-                        <SelectValue placeholder="Select a location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="phoenix">Phoenix Area</SelectItem>
-                        <SelectItem value="scottsdale">Scottsdale</SelectItem>
-                        <SelectItem value="san-diego">San Diego</SelectItem>
-                        <SelectItem value="flexible">Flexible</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message">Tell Us About Your Event</Label>
-                  <Textarea
-                    id="message"
-                    rows={5}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Share any details about your event, special requests, or questions..."
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button type="submit" size="lg" className="flex-1" disabled={submitting}>
-                    {submitting ? "Sending…" : "Submit Inquiry"}
-                  </Button>
-                  <Button type="button" variant="outline" size="lg" asChild>
-                    <a href="tel:6024560884">Or Call 602.456.0884</a>
-                  </Button>
-                </div>
-
-                <p className="text-sm text-muted-foreground text-center">
-                  We typically respond within 24 hours with a custom quote for your event
-                </p>
-              </form>
-            </CardContent>
-          </Card>
+      <section id="inquiry" className="container py-16">
+        <div className="mx-auto max-w-3xl">
+          <EventInquiryForm />
         </div>
       </section>
 

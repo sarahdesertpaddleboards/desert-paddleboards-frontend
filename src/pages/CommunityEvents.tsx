@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
+import EventInquiryForm from "@/components/EventInquiryForm";
+import VenueProof from "@/components/VenueProof";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
 
@@ -102,17 +104,28 @@ export default function CommunityEvents() {
       </div>
 
       <div className="container space-y-16 py-14">
-        {/* Intro */}
-        <section className="max-w-3xl space-y-4">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
-            Community events
-          </p>
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            Community events are what we do best—bringing neighbors together for
-            unforgettable evenings of floating, live music, and relaxation. It's
-            an experience that sparks new friendships and creates the kind of
-            community people are proud to call home.
-          </p>
+        {/* Intro + inquiry form. The form sits above the fold on purpose: this
+            page previously had no conversion path at all, and most of its
+            traffic arrives from social on a phone. */}
+        <section id="inquiry" className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:items-start">
+          <div className="order-2 max-w-3xl space-y-4 lg:order-1">
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
+              Community events
+            </p>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              Community events are what we do best—bringing neighbors together for
+              unforgettable evenings of floating, live music, and relaxation. It's
+              an experience that sparks new friendships and creates the kind of
+              community people are proud to call home.
+            </p>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              We bring everything: the boards, the musicians and the whole team.
+              You pick the date.
+            </p>
+          </div>
+          <div className="order-1 lg:order-2">
+            <EventInquiryForm variant="community" />
+          </div>
         </section>
 
         {/* Perfect for */}
@@ -135,6 +148,11 @@ export default function CommunityEvents() {
             ))}
           </div>
         </section>
+
+        {/* Venue proof — the resort/hotel names that already host us. */}
+        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+          <VenueProof />
+        </div>
 
         {/* What's included + comfort */}
         <section className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -215,12 +233,12 @@ export default function CommunityEvents() {
             custom quote — usually within 24 hours.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              to="/contact?subject=Community%20event"
+            <a
+              href="#inquiry"
               className="inline-flex items-center justify-center rounded-full bg-secondary px-7 py-3 text-sm font-semibold text-secondary-foreground hover:bg-secondary/90"
             >
-              Email us about your community
-            </Link>
+              Tell us about your community
+            </a>
             <a
               href="tel:6024560884"
               className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10"
