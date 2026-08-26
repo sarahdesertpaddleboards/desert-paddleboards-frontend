@@ -54,11 +54,12 @@ export default function BlogPostPage() {
     <main className="container max-w-3xl py-16">
       <Seo
         title={
-          post.title.length <= 40
+          post.seoTitle ??
+          (post.title.length <= 40
             ? `${post.title} | Desert Paddleboards`
-            : post.title
+            : post.title)
         }
-        description={post.excerpt}
+        description={post.seoDescription ?? post.excerpt}
         image={post.image || undefined}
         type="article"
       />

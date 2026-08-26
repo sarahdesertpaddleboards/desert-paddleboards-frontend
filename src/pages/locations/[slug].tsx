@@ -12,6 +12,8 @@ import {
 } from "@/lib/directions";
 import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
+import VolunteerSignup from "@/components/VolunteerSignup";
+import RegattaRegistration from "@/components/RegattaRegistration";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
@@ -62,10 +64,12 @@ export default function LocationDetail() {
         image: exp.image,
         blurb: exp.blurb,
         isCity: false,
+        address: exp.address || undefined,
+        isFree: false,
         bookingUrl: undefined as string | undefined,
         bookingLabel: undefined as string | undefined,
         note: undefined as string | undefined,
-        sessions: [] as { startAt: string }[],
+        sessions: [] as { startAt: string; endAt?: string }[],
       }
     : {
         slug: city!.slug,
@@ -77,6 +81,8 @@ export default function LocationDetail() {
         blurb:
           city!.note ?? `A floating soundbath at ${city!.venue} in ${city!.city}.`,
         isCity: true,
+        address: city!.address,
+        isFree: Boolean(city!.isFree),
         bookingUrl: city!.bookingUrl,
         bookingLabel: city!.bookingLabel,
         note: city!.note,
@@ -120,11 +126,15 @@ export default function LocationDetail() {
           startDate: s.startAt,
           eventStatus: "https://schema.org/EventScheduled",
           eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          ...(s.endAt ? { endDate: s.endAt } : {}),
           location: {
             "@type": "Place",
             name: view.venue,
             address: {
               "@type": "PostalAddress",
+              // Full street line when we have one — Google needs it to place the
+              // event in local "things to do" results.
+              ...(view.address ? { streetAddress: view.address } : {}),
               addressLocality: view.city,
               addressRegion: view.state,
               addressCountry: "US",
@@ -136,6 +146,11 @@ export default function LocationDetail() {
             "@type": "Offer",
             url: cityEventOfferUrl,
             availability: "https://schema.org/InStock",
+            // A free event must state price 0 explicitly to qualify for
+            // Google's free-event rich results.
+            ...(view.isFree
+              ? { price: "0", priceCurrency: "USD", validFrom: new Date().toISOString().slice(0, 10) }
+              : {}),
           },
         }))
       : [];
@@ -224,6 +239,14 @@ export default function LocationDetail() {
                 ))}
               </ul>
             </div>
+          ) : null}
+
+          {/* Community volunteer + spectator sign-up — Witches Regatta only. */}
+          {city?.id === "witches-regatta" ? (
+            <>
+              <RegattaRegistration className="mt-10" />
+              <VolunteerSignup />
+            </>
           ) : null}
         </div>
 

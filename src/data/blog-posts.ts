@@ -18,6 +18,13 @@ export interface BlogPost {
   image: string;
   /** Markdown body (may start with a cover image — stripped at render). */
   body: string;
+  /**
+   * Optional search-result overrides. Use when the on-page headline should stay
+   * short and human but the <title> needs to carry the keywords people actually
+   * search (e.g. "Halloween events in Arizona").
+   */
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 const posts: BlogPost[] = [
@@ -314,18 +321,72 @@ Overall, paddleboarding on the Salt River is an unforgettable experience that sh
   },
   {
     slug: "witches-regatta",
-    title: "Witches Regatta",
-    date: "2022-09-05",
+    title: "Witches Regatta 2026: Twelve Years of Paddling Tempe Town Lake in a Pointy Hat",
+    date: "2026-08-17",
+    seoTitle:
+      "Witches Regatta 2026 | Free Halloween Paddleboard Event, Tempe AZ",
+    seoDescription:
+      "The 12th annual Witches Regatta returns Saturday, October 24, 2026 at 10 AM — a free Halloween event on Tempe Town Lake, Arizona. 300+ paddlers in costume. Bring a board or rent one.",
     excerpt:
-      "The story behind the Witches Regatta, an annual Halloween paddleboard gathering on Tempe Town Lake where paddlers dress as witches and warlocks.",
+      "One of Arizona's most unusual Halloween events: 300+ paddlers in witch costumes floating Tempe Town Lake. Free to join, Saturday October 24, 2026 at 10 AM.",
     image: "/images/blog/witches-regatta.jpg",
-    body: `Witches Regatta started in 2017 as an enchanting way to haunt Tempe Town Lake every Halloween. Witches are enticed to wear their best cloak and float the eerie reclaimed waters of this urban lake. Bewitching? Yes — beautiful witches (and warlocks) will cast a spell as they fly East and then West around the lake.
+    body: `**Saturday, October 24, 2026 · 10:00 AM · Tempe Town Lake Marina, Phoenix metro**
+**Free to join. Bring a board or rent one from us.**
 
-Grab your black cat and a hat, trade your broom for a paddle! Witches will captivate the crowds that gather to watch this coven fly!
+Twelve years ago, a handful of us put on witch hats, got on paddleboards, and floated around an urban lake in the middle of the desert for no particular reason.
 
-Why is it on a Monday? It's Halloween. It's also REALLY expensive to host an official event at Tempe Town Lake... like $8500! We can't have more than 100 people at a meet-up and this event has become quite popular. There's less traffic on the lake on weekdays.
+This year, more than 300 people will do it. They fly in for this. From across the country. To stand on a board, in a cloak, on a reclaimed lake in Tempe, Arizona, on a Saturday morning in October.
 
-Call in sick — you're bone tired and weary... you deserve to be a witch for a couple hours.`,
+We have stopped trying to explain it.
+
+## What it actually is
+
+A few hundred witches, warlocks, and one or two extremely committed dogs, paddling Tempe Town Lake together in costume. Some people race. Most people drift, take photographs, and admire each other's hats. There is no winner. There is no prize. There is a lot of black tulle getting wet.
+
+It's the rare Halloween event that isn't for children, isn't in a parking lot, and doesn't cost anything to attend.
+
+## The details
+
+**When:** Saturday, October 24, 2026. We gather at 10:00 AM.
+**Where:** Tempe Town Lake Marina, 550 E. Tempe Town Lake, Tempe, AZ 85281. Launch from the marina — the City requires all watercraft to launch from designated facilities.
+**Cost:** Free to join us. See the note on the City's lake permit below.
+**Who:** Anyone. All ages, all abilities. You do not need to be an experienced paddler, and you will not be the least prepared person there.
+
+## What to bring
+
+**A board, kayak, or canoe.** Bring your own, or [reserve a rental from us](/locations/witches-regatta-tempe-town-lake#register) — we'll have it waiting at the marina, so you can arrive with nothing but a costume.
+
+**A costume.** This is not optional in spirit, only in enforcement. Pointy hat minimum. People go extremely hard on this and you will feel underdressed in jeans.
+
+**A Coast Guard-approved life jacket.** Required on board for every paddler. Anyone 12 or under must wear theirs the whole time. Our rentals come with one.
+
+**A Tempe Town Lake boat permit.** This is the one thing that isn't free, and it's the City's requirement, not ours. Every watercraft on the lake needs one — $10 for a day pass, or $25 a year for Tempe residents and $50 for non-residents. Buy it before you arrive so you're not sorting it out on the ramp while 300 witches launch around you.
+
+**Water, sunscreen, and shoes you don't mind soaking.** It is still Arizona in October.
+
+## A few things worth knowing
+
+Swimming in Town Lake isn't allowed, so plan to stay on your board. Paddle counter-clockwise, keep it wakeless, and give other boats a wide berth — the lake has real traffic and the rules aren't ours to bend.
+
+If you have never stood on a paddleboard before, you can kneel or sit the entire time. Nobody will notice, and honestly, sitting is the better photograph.
+
+## Register free
+
+Registration is free and takes a minute. It helps us plan, and it's the only way we can tell you if the weather moves anything.
+
+**[Register for the Witches Regatta →](/locations/witches-regatta-tempe-town-lake#register)**
+
+Questions: sarah@desertpaddleboards.com or 602.456.0884.
+
+## The rest of the year
+
+The Regatta is the loud one. Most of what we do is the opposite.
+
+Desert Paddleboards runs **Floating Soundbaths** across the Phoenix metro — you lie back on a paddleboard, dry and not paddling, while live musicians play crystal bowls, gongs, and Native American flute. Most people fall asleep. We trademarked it: the Floating Nap™.
+
+We run them at JW Marriott Desert Ridge, Grand Hyatt Scottsdale, Westin Kierland, The Wigwam, and about thirty other places across Phoenix, Scottsdale, Tempe, and Sedona — plus paddleboard yoga, private events, and corporate wellness.
+
+[See the full schedule →](/calendar)`,
   },
   {
     slug: "paddleboarding-the-salt-river",

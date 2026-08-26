@@ -127,7 +127,8 @@
           "time": "10:00"
         }
       ],
-      "id": "witches-regatta"
+      "id": "witches-regatta",
+      "isFree": true
     },
     {
       "title": "Witches Regatta — Board + T-Shirt Bundle",

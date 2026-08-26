@@ -36,6 +36,12 @@ export interface CityClass {
   bookingUrl?: string;
   bookingLabel?: string;
   note?: string;
+  /**
+   * Free to attend. Emits price 0 in the Event schema, which is what lets the
+   * page qualify for Google's free-event rich results ("free Halloween events
+   * near me" and similar).
+   */
+  isFree?: boolean;
   /** Venue photo (path under /public or absolute URL). */
   image?: string;
   sessions: CityClassSession[];
