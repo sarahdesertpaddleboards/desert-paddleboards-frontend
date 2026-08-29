@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { experiences } from "@/data/locations";
 import { cityClasses } from "@/data/city-classes";
 import { useMergedSessions, TZ } from "@/lib/sessions";
+import buildTimeUpcoming from "@/data/upcoming.generated.json";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import GoogleReviews from "@/components/GoogleReviews";
@@ -39,9 +40,20 @@ export default function LocationsIndex() {
   const sessions = useMergedSessions();
 
   // Earliest upcoming session per FareHarbor item id and per detail-page slug.
+  //
+  // Seeded from the build-time snapshot so the PRERENDERED html already knows
+  // which venues have dates. useMergedSessions() only fills in on the client,
+  // so without this seed the static page Google crawls would show no FareHarbor
+  // venues at all once we filter dateless ones out.
   const { nextByItem, nextBySlug } = useMemo(() => {
     const byItem = new Map<number, string>();
     const bySlug = new Map<string, string>();
+    const now = Date.now();
+    for (const s of (buildTimeUpcoming.sessions ?? []) as { itemId: number; startAt: string }[]) {
+      if (Date.parse(s.startAt) <= now) continue;
+      const cur = byItem.get(s.itemId);
+      if (!cur || s.startAt < cur) byItem.set(s.itemId, s.startAt);
+    }
     for (const s of sessions) {
       if (typeof s.itemId === "number") {
         const cur = byItem.get(s.itemId);
@@ -81,15 +93,30 @@ export default function LocationsIndex() {
         next: nextBySlug.get(c.slug),
       }));
 
-    // Sort by soonest upcoming date; venues with no known upcoming date go last
-    // (alphabetically). As the FareHarbor feed widens, more sort into place.
-    return [...fromFareHarbor, ...fromCity].sort((a, b) => {
-      const an = a.next ?? "9999";
-      const bn = b.next ?? "9999";
-      if (an !== bn) return an.localeCompare(bn);
-      return a.title.localeCompare(b.title);
-    });
+    // Only surface venues that are actually bookable — a card with no date is a
+    // dead end for someone trying to book. Dateless venues drop to the quiet
+    // list below the grid so their pages keep an internal link (and their SEO).
+    return [...fromFareHarbor, ...fromCity]
+      .filter((v) => Boolean(v.next))
+      .sort((a, b) => {
+        const an = a.next ?? "9999";
+        const bn = b.next ?? "9999";
+        if (an !== bn) return an.localeCompare(bn);
+        return a.title.localeCompare(b.title);
+      });
   }, [nextByItem, nextBySlug]);
+
+  /** Venues with nothing on the books yet — listed, but out of the booking path. */
+  const between = useMemo(() => {
+    const shown = new Set(venues.map((v) => v.slug));
+    const fh = experiences
+      .filter((e) => !shown.has(e.slug))
+      .map((e) => ({ slug: e.slug, label: `${e.venue || e.title} · ${e.city}` }));
+    const city = cityClasses
+      .filter((c) => typeof c.fareharborItemId !== "number" && !shown.has(c.slug))
+      .map((c) => ({ slug: c.slug, label: `${c.venue} · ${c.city}` }));
+    return [...fh, ...city].sort((a, b) => a.label.localeCompare(b.label));
+  }, [venues]);
 
   return (
     <main className="container py-16">
@@ -146,6 +173,28 @@ export default function LocationsIndex() {
           </Link>
         ))}
       </section>
+
+      {between.length > 0 ? (
+        <section className="mt-14 border-t border-border pt-8">
+          <h2 className="text-lg font-semibold">Venues between dates</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We run at these regularly — nothing on the schedule right now. New dates
+            are added often.
+          </p>
+          <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+            {between.map((b) => (
+              <li key={b.slug}>
+                <Link
+                  to={`/locations/${b.slug}`}
+                  className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                >
+                  {b.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <GoogleReviews
         max={3}
