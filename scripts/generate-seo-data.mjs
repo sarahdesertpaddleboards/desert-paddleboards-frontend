@@ -33,7 +33,7 @@ const MONTHS_AHEAD = 2;
 // Items that are fixed-location venues but lack lat/lng in FareHarbor's
 // primary_location (so the coords heuristic alone would miss them). Aji Spa's
 // FareHarbor location has no coordinates; locations.ts supplies them.
-const FORCE_LOCATION_IDS = new Set([626146]);
+const FORCE_LOCATION_IDS = new Set([626146, 746500]);
 
 const UA = { "User-Agent": "DesertPaddleboards-SEO/1.0" };
 

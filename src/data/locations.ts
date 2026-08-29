@@ -92,7 +92,7 @@ const byId = new Map(catalog.map((c) => [c.itemId, c]));
  * the coords heuristic would miss them. Aji Spa's coords are supplied here.
  * Keep in sync with FORCE_LOCATION_IDS in scripts/generate-seo-data.mjs.
  */
-const FORCE_LOCATION_IDS = new Set<number>([626146]);
+const FORCE_LOCATION_IDS = new Set<number>([626146, 746500]);
 
 /**
  * Venues to hide from the site even though FareHarbor still lists them.
@@ -140,6 +140,28 @@ interface Overlay {
  * use FareHarbor's catalog image. Blurbs are DRAFT — Sarah to review.
  */
 const LOCATION_OVERLAYS: Overlay[] = [
+  {
+    itemId: 746500,
+    slug: "paddleboard-yoga-mulberry-mesa",
+    title: "Paddleboard Yoga",
+    venue: "Mulberry Community",
+    city: "Mesa",
+    // FareHarbor has no location set on this item, so it would never surface.
+    // Coords borrowed from the Mulberry soundbath item (648798) — same pool.
+    lat: 33.368099,
+    lng: -111.605824,
+    kind: "class",
+    blurb:
+      "Paddleboard yoga on the water at Mulberry in Mesa — a floating flow that's gentler than it looks, and a lot more fun than a mat on dry land.",
+  },
+  {
+    itemId: 714583,
+    slug: "resort-floating-soundbath-arizona-grand-phoenix",
+    title: "Resort Floating Soundbath",
+    venue: "Arizona Grand Resort",
+    blurb:
+      "A resort floating soundbath at the Arizona Grand in Phoenix — drift on the water while live sound carries you.",
+  },
   {
     itemId: 709135,
     slug: "floating-soundbath-canopy-hilton-tempe",
