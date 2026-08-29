@@ -16,6 +16,8 @@ export interface BlogPost {
   excerpt: string;
   /** Cover image URL ("" if none). */
   image: string;
+  /** Descriptive alt for the cover image. Defaults to the title when absent. */
+  imageAlt?: string;
   /** Markdown body (may start with a cover image — stripped at render). */
   body: string;
   /**
@@ -321,21 +323,25 @@ Overall, paddleboarding on the Salt River is an unforgettable experience that sh
   },
   {
     slug: "witches-regatta",
-    title: "Witches Regatta 2026: Twelve Years of Paddling Tempe Town Lake in a Pointy Hat",
+    title: "Witches Regatta 2026: Ten Years of Paddling Tempe Town Lake in a Pointy Hat",
     date: "2026-08-17",
     seoTitle:
       "Witches Regatta 2026 | Free Halloween Paddleboard Event, Tempe AZ",
     seoDescription:
-      "The 12th annual Witches Regatta returns Saturday, October 24, 2026 at 10 AM — a free Halloween event on Tempe Town Lake, Arizona. 300+ paddlers in costume. Bring a board or rent one.",
+      "The 10th annual Witches Regatta returns Saturday, October 24, 2026 at 10 AM — a free Halloween event on Tempe Town Lake, Arizona. 300+ paddlers in costume. Bring a board or rent one.",
     excerpt:
       "One of Arizona's most unusual Halloween events: 300+ paddlers in witch costumes floating Tempe Town Lake. Free to join, Saturday October 24, 2026 at 10 AM.",
-    image: "/images/blog/witches-regatta.jpg",
+    image: "/images/blog/witches-regatta-on-water.jpg",
+    imageAlt:
+      "Paddlers in witch costumes on stand-up paddleboards on Tempe Town Lake with the Tempe skyline behind them",
     body: `**Saturday, October 24, 2026 · 10:00 AM · Tempe Town Lake Marina, Phoenix metro**
 **Free to join. Bring a board or rent one from us.**
 
-Twelve years ago, a handful of us put on witch hats, got on paddleboards, and floated around an urban lake in the middle of the desert for no particular reason.
+Back in 2017, a handful of us put on witch hats, got on paddleboards, and floated around an urban lake in the middle of the desert for no particular reason.
 
 This year, more than 300 people will do it. They fly in for this. From across the country. To stand on a board, in a cloak, on a reclaimed lake in Tempe, Arizona, on a Saturday morning in October.
+
+![Hundreds of costumed participants at the annual Witches Regatta paddleboard event at Tempe Town Lake in the Phoenix metro area](/images/blog/witches-regatta.jpg)
 
 We have stopped trying to explain it.
 

@@ -79,7 +79,7 @@ export default function BlogPostPage() {
       {post.image ? (
         <img
           src={post.image}
-          alt={post.title}
+          alt={post.imageAlt ?? post.title}
           className="mt-8 aspect-[16/9] w-full rounded-2xl object-cover"
         />
       ) : null}
