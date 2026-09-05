@@ -30,7 +30,7 @@ const CACHE_TTL_S = 30 * 60; // 30 minutes
 
 // Fixed-location venues whose FareHarbor primary_location has no lat/lng.
 // Keep in sync with FORCE_LOCATION_IDS in src/data/locations.ts.
-const FORCE_LOCATION_IDS = new Set([626146]); // Aji Spa
+const FORCE_LOCATION_IDS = new Set([626146, 746500]); // Aji Spa, Mulberry paddleboard yoga
 
 const UA = { "User-Agent": "DesertPaddleboards-Site/1.0" };
 
