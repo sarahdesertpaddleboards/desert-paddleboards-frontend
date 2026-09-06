@@ -1,0 +1,45 @@
+name: Weekly health check
+
+# Two jobs, two different failure modes:
+#   * health — a weekly sweep for things that rot quietly (a FareHarbor session
+#     that never reaches the site, a broken or oversized image, a page that 404s).
+#   * notify-deploy-failure — fires the moment a deploy fails, because a weekly
+#     check would mean up to seven days of pushes silently not going live. That
+#     is exactly what happened in Aug 2026: five failed deploys, two weeks of
+#     work sitting in main and never published.
+
+on:
+  schedule:
+    - cron: "0 15 * * 1" # Mondays 08:00 America/Phoenix (UTC-7, no DST)
+  workflow_dispatch: # run it by hand from the Actions tab any time
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+
+jobs:
+  health:
+    # Only on the schedule or a manual run — not on every deploy.
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run health check
+        run: node scripts/health-check.mjs
+
+  notify-deploy-failure:
+    # Turns a silent red X into a failed run on this workflow, which GitHub
+    # emails about. Keeps working even if the deploy workflow is edited.
+    if: >
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy failed — the site is NOT updating
+        run: |
+          echo "::error::Deploy '${{ github.event.workflow_run.display_title }}' FAILED."
+          echo "::error::desertpaddleboards.com is still serving the previous build."
+          echo "Run: ${{ github.event.workflow_run.html_url }}"
+          exit 1
