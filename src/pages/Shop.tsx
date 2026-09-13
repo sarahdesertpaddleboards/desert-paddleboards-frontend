@@ -108,7 +108,14 @@ export default function Shop() {
         </p>
         <a
           href="https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629"
-          onClick={() => trackEvent("shop_click", { product: "Gift certificate" })}
+          // pointerdown/Enter, not onClick — FareHarbor's autolightframe script
+          // swallows the click (see FareHarborButton).
+          onPointerDown={(e) => {
+            if (e.button === 0) trackEvent("shop_click", { product: "Gift certificate" });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") trackEvent("shop_click", { product: "Gift certificate" });
+          }}
           className="mt-6 inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
         >
           Buy a gift certificate
