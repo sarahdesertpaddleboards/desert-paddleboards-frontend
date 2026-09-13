@@ -19,7 +19,7 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
 import type { UpcomingSession } from "@/lib/experiencesApi";
 import upcoming from "@/data/upcoming.generated.json";
-import { fmtDateHeader, fmtTime } from "@/lib/sessions";
+import { fmtDateHeader, fmtTime, useUpcomingSessions } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
 import { SITE_URL, business } from "@/data/site";
@@ -35,6 +35,7 @@ export default function LocationDetail() {
   const slug = params.slug ?? "";
   const exp = getExperienceBySlug(slug);
   const city = exp ? undefined : getCityClassBySlug(slug);
+  const upcomingSessions = useUpcomingSessions();
 
   if (!exp && !city) {
     return (
@@ -94,6 +95,14 @@ export default function LocationDetail() {
   // Booking flips to FareHarbor whenever an item id exists — a real FareHarbor
   // venue, OR a city class migrated into FareHarbor via `fareharborItemId`.
   const fhItemId = exp ? exp.itemId : city!.fareharborItemId;
+
+  // Anything on the schedule? Static dates (city classes / featured events) or
+  // live FareHarbor sessions. With nothing coming up, the booking card says so
+  // instead of opening an empty FareHarbor calendar.
+  const scheduled =
+    view.sessions.length > 0 ||
+    (typeof fhItemId === "number" &&
+      upcomingSessions.some((s) => s.itemId === fhItemId));
 
   // "Getting there" — directions destination for this venue, if we can route.
   const dest = exp
@@ -254,7 +263,28 @@ export default function LocationDetail() {
         <aside className="lg:col-span-1">
           <div className="sticky top-24 space-y-4">
           <div className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
-            {fhItemId ? (
+            {!scheduled ? (
+              <>
+                <h2 className="text-xl font-bold">Event not currently scheduled</h2>
+                <p className="text-sm text-muted-foreground">
+                  There are no dates on the calendar for this one right now. New
+                  dates are added often — see what&apos;s coming up, or call or
+                  text us.
+                </p>
+                <Link
+                  to="/calendar"
+                  className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+                >
+                  See upcoming events
+                </Link>
+                <a
+                  href="tel:6024560884"
+                  className="inline-flex w-full cursor-pointer items-center justify-center rounded-full border border-border px-8 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  Call or text 602.456.0884
+                </a>
+              </>
+            ) : fhItemId ? (
               <>
                 <h2 className="text-xl font-bold">Book this experience</h2>
                 <p className="text-sm text-muted-foreground">

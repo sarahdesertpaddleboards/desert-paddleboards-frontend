@@ -101,7 +101,7 @@ export default function RegattaRegistration({ className = "" }: { className?: st
           <CheckCircle2 className="mx-auto h-10 w-10 text-primary" />
           <h2 className="mt-4 text-2xl font-bold">You&rsquo;re on the list</h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-            See you Saturday, October 24 at 10:00 AM at the Tempe Town Lake Marina.
+            See you Saturday, October 24 at 4:00 PM at the Tempe Town Lake Marina.
             We&rsquo;ll email you if the weather moves anything. Don&rsquo;t forget your
             $10 City boat permit and a life jacket — and go hard on the costume.
           </p>
@@ -122,7 +122,7 @@ export default function RegattaRegistration({ className = "" }: { className?: st
           <div>
             <h2 className="text-2xl font-bold md:text-3xl">Register free</h2>
             <p className="text-sm text-muted-foreground">
-              Saturday, October 24, 2026 · 10:00 AM · Tempe Town Lake Marina
+              Saturday, October 24, 2026 · 4:00 PM · Tempe Town Lake Marina
             </p>
           </div>
         </div>

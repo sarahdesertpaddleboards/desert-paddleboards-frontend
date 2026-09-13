@@ -2,6 +2,35 @@ import { useEffect, useMemo, useState } from "react";
 import { experiences } from "@/data/locations";
 import { cityClasses } from "@/data/city-classes";
 import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
+import buildTimeUpcoming from "@/data/upcoming.generated.json";
+
+/**
+ * Upcoming FareHarbor sessions. Seeded from the build-time snapshot so the
+ * prerendered HTML already knows which venues have dates, then replaced by the
+ * live feed on the client. getUpcomingSessions() degrades to [] on failure, so
+ * an empty live result keeps the snapshot — a FareHarbor outage must never make
+ * every venue look unscheduled.
+ */
+export function useUpcomingSessions(): UpcomingSession[] {
+  const [sessions, setSessions] = useState<UpcomingSession[]>(() => {
+    const now = Date.now();
+    return (buildTimeUpcoming.sessions as UpcomingSession[]).filter(
+      (s) => Date.parse(s.startAt) > now,
+    );
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    getUpcomingSessions().then((s) => {
+      if (!cancelled && s.length > 0) setSessions(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return sessions;
+}
 
 /** A single bookable session merged from FareHarbor + city-run classes. */
 export interface CalSession {

@@ -6,7 +6,8 @@ import FareHarborButton from "@/components/FareHarborButton";
 import DirectionsButton from "@/components/DirectionsButton";
 import { experiences, type Experience } from "@/data/locations";
 import { cityClassVenues, type CityClass } from "@/data/city-classes";
-import { getUpcomingSessions, type UpcomingSession } from "@/lib/experiencesApi";
+import type { UpcomingSession } from "@/lib/experiencesApi";
+import { useUpcomingSessions } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
 import {
@@ -132,10 +133,11 @@ function nearestVenues(
   g: any,
   point: { lat: number; lng: number },
   n: number,
+  list: Experience[] = experiences,
 ): Experience[] {
-  if (!g?.maps?.geometry?.spherical) return experiences.slice(0, n);
+  if (!g?.maps?.geometry?.spherical) return list.slice(0, n);
   const from = new g.maps.LatLng(point.lat, point.lng);
-  return experiences
+  return list
     .map((e) => ({
       e,
       d: g.maps.geometry.spherical.computeDistanceBetween(
@@ -154,7 +156,8 @@ export default function LocationFinder({
   /** Rendered between the hero and the map/venue-list finder. */
   afterHero?: ReactNode;
 } = {}) {
-  const [sessions, setSessions] = useState<UpcomingSession[]>([]);
+  // Upcoming sessions — build-time snapshot first, then the live feed.
+  const sessions = useUpcomingSessions();
   const [selectedCity, setSelectedCity] = useState("");
   const [query, setQuery] = useState("");
   const [origin, setOrigin] = useState<{ lat: number; lng: number } | null>(null);
@@ -165,17 +168,6 @@ export default function LocationFinder({
   const mapRef = useRef<google.maps.Map | null>(null);
   const originMarkerRef = useRef<any>(null);
   const infoWindowRef = useRef<any>(null);
-
-  // Load live sessions (graceful on failure)
-  useEffect(() => {
-    let cancelled = false;
-    getUpcomingSessions().then((s) => {
-      if (!cancelled) setSessions(s);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   // itemId -> earliest upcoming session
   const nextByItem = useMemo(() => {
@@ -210,15 +202,17 @@ export default function LocationFinder({
     nextByItemRef.current = nextByItem;
   }, [nextByItem]);
 
+  // Only cities with something scheduled — a filter chip that leads to an
+  // empty list is a dead end.
   const cities = useMemo(
     () =>
       [
         ...new Set([
-          ...experiences.map((e) => e.city),
-          ...cityClassVenues.map((c) => c.city),
+          ...experiences.filter((e) => nextByItem.has(e.itemId)).map((e) => e.city),
+          ...cityClassVenues.filter((c) => nextCityIso(c)).map((c) => c.city),
         ]),
       ].sort((a, b) => a.localeCompare(b)),
-    [],
+    [nextByItem],
   );
 
   // Distance (miles) from origin to each venue, when an origin is set
@@ -285,9 +279,11 @@ export default function LocationFinder({
       }),
     ];
 
-    const list = selectedCity
-      ? rows.filter((r) => r.city === selectedCity)
-      : rows;
+    // Venues with nothing scheduled are left out entirely — their Book button
+    // would open an empty FareHarbor calendar.
+    const list = rows.filter(
+      (r) => r.next && (!selectedCity || r.city === selectedCity),
+    );
 
     return list.slice().sort((a, b) => {
       if (origin) return (a.dist ?? Infinity) - (b.dist ?? Infinity);
@@ -312,6 +308,7 @@ export default function LocationFinder({
 
     const bounds = new g.maps.LatLngBounds();
     for (const e of experiences) {
+      if (!nextByItemRef.current.has(e.itemId)) continue; // nothing scheduled
       const marker = new g.maps.marker.AdvancedMarkerElement({
         map,
         position: { lat: e.lat, lng: e.lng },
@@ -333,6 +330,7 @@ export default function LocationFinder({
     // systems, not FareHarbor — distinct navy pins that link out to register.
     for (const c of cityClassVenues) {
       if (typeof c.lat !== "number" || typeof c.lng !== "number") continue;
+      if (!nextCityIso(c)) continue; // nothing scheduled
       const pin = g.maps.marker.PinElement
         ? new g.maps.marker.PinElement({
             background: "#1f3a4d",
@@ -393,7 +391,10 @@ export default function LocationFinder({
           // Frame "you" + the nearest venues so the result is visual.
           const bounds = new g.maps.LatLngBounds();
           bounds.extend(next);
-          for (const e of nearestVenues(g, next, 5)) {
+          const scheduled = experiences.filter((e) =>
+            nextByItemRef.current.has(e.itemId),
+          );
+          for (const e of nearestVenues(g, next, 5, scheduled)) {
             bounds.extend({ lat: e.lat, lng: e.lng });
           }
           map.fitBounds(bounds, 64);
