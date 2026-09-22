@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T22:35:50.059Z",
+  "generatedAt": "2026-09-22T09:07:19.306Z",
   "items": [
     {
       "itemId": 146393,
@@ -126,14 +126,14 @@
       "name": "Witches Regatta SUP Event",
       "isUnlisted": false,
       "isRetail": false,
-      "venue": "",
-      "city": "",
+      "venue": "Tempe Town Lake Marina",
+      "city": "Tempe",
       "state": "AZ",
-      "street": "",
-      "postalCode": "",
-      "googlePlaceId": "",
-      "lat": null,
-      "lng": null,
+      "street": "550 East Tempe Town Lake",
+      "postalCode": "85288",
+      "googlePlaceId": "ChIJLQsWwSMJK4cRamqmD0CMlRc",
+      "lat": 33.433873,
+      "lng": -111.932604,
       "image": "https://cdn.filestackcontent.com/T3mEglHuTjWEnwJRx04D"
     },
     {
@@ -183,7 +183,7 @@
     },
     {
       "itemId": 612512,
-      "name": "🌊 Revel Surf Park Floating Soundbath  - GILBERT 🌙",
+      "name": "🌊 Revel Surf Park Floating Soundbath  - MESA 🌙",
       "isUnlisted": false,
       "isRetail": false,
       "venue": "Revel Surf Park",
@@ -272,21 +272,6 @@
       "image": "https://cdn.filestackcontent.com/T2HXwJYyTRqGNTphF1dD"
     },
     {
-      "itemId": 648798,
-      "name": "Mulberry Community Floating Soundbath - MESA",
-      "isUnlisted": false,
-      "isRetail": false,
-      "venue": "Mulberry Neighborhood",
-      "city": "Mesa",
-      "state": "AZ",
-      "street": "2604 South Benton",
-      "postalCode": "85209",
-      "googlePlaceId": "ChIJUwb4MGWxK4cRWYSw5ggOjAc",
-      "lat": 33.368099,
-      "lng": -111.605824,
-      "image": "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg"
-    },
-    {
       "itemId": 655636,
       "name": "Indoor Floating Soundbath at SwimHaus GILBERT",
       "isUnlisted": false,
@@ -302,21 +287,6 @@
       "image": "https://cdn.filestackcontent.com/Xt429UiQLy2eDICcGtFn"
     },
     {
-      "itemId": 692276,
-      "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
-      "isUnlisted": false,
-      "isRetail": false,
-      "venue": "PebbleCreek Oasis Pool",
-      "city": "Goodyear",
-      "state": "AZ",
-      "street": "16896 West Coronado Road",
-      "postalCode": "85395",
-      "googlePlaceId": "ChIJ52ZyLvlHK4cR6a65XLKA6Zw",
-      "lat": 33.466621,
-      "lng": -112.422759,
-      "image": "https://cdn.filestackcontent.com/iOFnI3FJS0R91fcqstvQ"
-    },
-    {
       "itemId": 698585,
       "name": "Skysill Rooftop Lounge Floating Soundbath - TEMPE",
       "isUnlisted": false,
@@ -330,21 +300,6 @@
       "lat": 33.422961,
       "lng": -111.939266,
       "image": "https://cdn.filestackcontent.com/jDJ62AKhRpqopeFHd7Ip"
-    },
-    {
-      "itemId": 708584,
-      "name": "Omni Hotel Rooftop Floating Soundbath - TEMPE",
-      "isUnlisted": false,
-      "isRetail": false,
-      "venue": "Omni Tempe Hotel Rooftop",
-      "city": "Tempe",
-      "state": "AZ",
-      "street": "7 East University Drive",
-      "postalCode": "85281",
-      "googlePlaceId": "ChIJpaL68dkIK4cRtpHnDncULK4",
-      "lat": 33.421491,
-      "lng": -111.939249,
-      "image": "https://cdn.filestackcontent.com/C5Br4lbURAqOirslAMIh"
     },
     {
       "itemId": 709135,
@@ -450,6 +405,51 @@
       "lat": null,
       "lng": null,
       "image": "https://cdn.filestackcontent.com/TLTgsaMrTkC8ktOWu9Sa"
+    },
+    {
+      "itemId": 648798,
+      "name": "Mulberry Community Floating Soundbath - MESA",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Mulberry Neighborhood",
+      "city": "Mesa",
+      "state": "AZ",
+      "street": "2604 South Benton",
+      "postalCode": "85209",
+      "googlePlaceId": "ChIJUwb4MGWxK4cRWYSw5ggOjAc",
+      "lat": 33.368099,
+      "lng": -111.605824,
+      "image": "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg"
+    },
+    {
+      "itemId": 692276,
+      "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "PebbleCreek Oasis Pool",
+      "city": "Goodyear",
+      "state": "AZ",
+      "street": "16896 West Coronado Road",
+      "postalCode": "85395",
+      "googlePlaceId": "ChIJ52ZyLvlHK4cR6a65XLKA6Zw",
+      "lat": 33.466621,
+      "lng": -112.422759,
+      "image": "https://cdn.filestackcontent.com/iOFnI3FJS0R91fcqstvQ"
+    },
+    {
+      "itemId": 708584,
+      "name": "Omni Hotel Rooftop Floating Soundbath - TEMPE",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Omni Tempe Hotel Rooftop",
+      "city": "Tempe",
+      "state": "AZ",
+      "street": "7 East University Drive",
+      "postalCode": "85281",
+      "googlePlaceId": "ChIJpaL68dkIK4cRtpHnDncULK4",
+      "lat": 33.421491,
+      "lng": -111.939249,
+      "image": "https://cdn.filestackcontent.com/C5Br4lbURAqOirslAMIh"
     },
     {
       "itemId": 746500,

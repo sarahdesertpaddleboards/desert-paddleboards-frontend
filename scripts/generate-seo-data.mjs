@@ -162,6 +162,43 @@ async function fetchUpcoming(itemIds, now) {
 
 // ---------------------------------------------------------------------------
 
+/**
+ * Guard against a PARTIAL item list.
+ *
+ * The empty-list check above only catches a total failure. FareHarbor's
+ * /items/ endpoint has also been seen returning a short list — on 2026-09-22
+ * it served 31 items one minute and 27 the next, stably, with no error. That
+ * silently deletes venues from the site: locations.ts only knows items in this
+ * catalog, and useMergedSessions() drops any live-feed session whose item has
+ * no catalog entry. A build timed against one of those short responses took
+ * PebbleCreek off the calendar along with its two bookable dates.
+ *
+ * So the catalog only ever grows here: an item missing from the fetch is
+ * carried over from the committed snapshot and logged. Nothing stale reaches
+ * customers as a result — venues with no upcoming dates are already hidden
+ * from the finder and the calendar — so retiring an item is a deliberate edit
+ * to the committed file, never a side effect of when a build happened to run.
+ */
+function retainDroppedItems(fetched) {
+  if (!existsSync(ITEMS_OUT)) return fetched;
+  let previous = [];
+  try {
+    previous = JSON.parse(readFileSync(ITEMS_OUT, "utf8")).items ?? [];
+  } catch {
+    return fetched;
+  }
+
+  const fetchedIds = new Set(fetched.map((it) => it.itemId));
+  const dropped = previous.filter((it) => !fetchedIds.has(it.itemId));
+  if (dropped.length === 0) return fetched;
+
+  console.warn(
+    `[seo] ${dropped.length} item(s) missing from this fetch, kept from the ` +
+      `committed catalog: ${dropped.map((it) => `${it.itemId} ${it.title ?? it.name ?? ""}`.trim()).join(", ")}`,
+  );
+  return [...fetched, ...dropped];
+}
+
 async function main() {
   const now = new Date();
 
@@ -171,6 +208,7 @@ async function main() {
   try {
     catalog = await fetchCatalog();
     if (catalog.length === 0) throw new Error("empty item list");
+    catalog = retainDroppedItems(catalog);
     writeFileSync(
       ITEMS_OUT,
       JSON.stringify({ generatedAt: now.toISOString(), items: catalog }, null, 2) + "\n",
