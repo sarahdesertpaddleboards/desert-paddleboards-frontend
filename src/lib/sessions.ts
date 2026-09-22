@@ -123,9 +123,24 @@ export function useMergedSessions(): CalSession[] {
     const now = Date.now();
     const out: CalSession[] = [];
 
+    // A featured event pinned in city-classes.json can ALSO arrive through the
+    // live feed, once its date falls inside the feed's window — that is how the
+    // Witches Regatta came to be listed twice on the calendar. The pinned entry
+    // carries the editorial venue and description, so it wins and the feed copy
+    // is dropped. Keyed by Arizona date rather than exact timestamp: when the
+    // two disagree on the time, the hand-maintained one is the corrected one.
+    const featuredPairs = new Set<string>();
+    for (const c of cityClasses) {
+      if (typeof c.fareharborItemId !== "number") continue;
+      for (const cs of c.sessions) {
+        featuredPairs.add(`${c.fareharborItemId}|${dateKey(cs.startAt)}`);
+      }
+    }
+
     for (const s of fhSessions) {
       const exp = byItemId.get(s.itemId);
       if (!exp) continue;
+      if (featuredPairs.has(`${s.itemId}|${dateKey(s.startAt)}`)) continue;
       out.push({
         startAt: s.startAt,
         title: exp.title,
