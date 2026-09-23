@@ -8,10 +8,12 @@
  * Checks, in order of how badly each one hurts:
  *   1. Is the live site actually serving, and is it the current build?
  *   2. Does every scheduled FareHarbor session appear on the site?
- *   3. Are there venues on the grid with no upcoming date?
- *   4. Do the key pages load, and are any images broken or oversized?
+ *   3. Does every upcoming city-run class appear on the calendar?
+ *   4. Are the per-date city registration links intact?
+ *   5. Are there venues on the grid with no upcoming date?
+ *   6. Do the key pages load, and are any images broken or oversized?
  *
- * Exits non-zero if anything in 1-2 fails, so CI can fail the job on it.
+ * Exits non-zero if anything in 1-4 fails, so CI can fail the job on it.
  */
 
 const SITE = "https://desertpaddleboards.com";
@@ -143,7 +145,184 @@ async function checkSessionsReachTheSite() {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Assets
+// 3. City-run classes vs the site
+// ---------------------------------------------------------------------------
+// City classes (Avondale, Queen Creek, Sedona) never touch the FareHarbor feed
+// — they reach the site only through the static city-classes.json path. Check 2
+// therefore cannot see them at all, so a city class that silently stops
+// rendering would go unnoticed. This closes that gap, and warns before a class
+// runs out of dates and disappears from the site on its own.
+const LOOKAHEAD_DAYS = 21;
+
+function azDateHeader(iso) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    timeZone: "America/Phoenix",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+async function checkCityClassesReachTheSite() {
+  let classes;
+  try {
+    const { default: data } = await import("../src/data/city-classes.json", {
+      with: { type: "json" },
+    });
+    classes = (data.cityClasses ?? []).filter((c) => typeof c.fareharborItemId !== "number");
+  } catch (e) {
+    fail(`Could not read city-classes.json: ${e.message}`);
+    return;
+  }
+
+  let text;
+  try {
+    const html = await (await fetch(`${SITE}/calendar?cb=${Date.now()}`, { headers: UA })).text();
+    text = html.replace(/<!--[\s\S]*?-->/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  } catch (e) {
+    fail(`Calendar page unreachable: ${e.message}`);
+    return;
+  }
+
+  const now = Date.now();
+  const soon = now + LOOKAHEAD_DAYS * 86400_000;
+  let checked = 0;
+
+  for (const c of classes) {
+    const upcoming = (c.sessions ?? [])
+      .filter((s) => s?.date && s?.time)
+      .map((s) => `${s.date}T${s.time}:00-07:00`)
+      .filter((iso) => Date.parse(iso) > now)
+      .sort();
+
+    if (upcoming.length === 0) {
+      warn(`${c.title} has NO upcoming dates — it is not on the calendar at all.`);
+      continue;
+    }
+
+    for (const iso of upcoming) {
+      checked++;
+      const header = azDateHeader(iso);
+      if (!text.includes(c.title)) {
+        fail(`${c.title} is scheduled for ${header} but does not appear on /calendar`);
+        break;
+      }
+      if (!text.includes(header)) {
+        fail(`${c.title} is scheduled for ${header}, but /calendar has no such date`);
+      }
+    }
+
+    if (Date.parse(upcoming[upcoming.length - 1]) < soon) {
+      warn(
+        `${c.title} runs out after ${azDateHeader(upcoming[upcoming.length - 1])} — ` +
+          `add more dates or it will drop off the site.`,
+      );
+    }
+  }
+
+  if (checked) pass(`All ${checked} upcoming city-class session(s) appear on /calendar`);
+}
+
+// ---------------------------------------------------------------------------
+// 4. Per-date city registration links
+// ---------------------------------------------------------------------------
+// Queen Creek posts a separate listing per session, so each date in
+// city-classes.json carries its own bookingUrl (e.g. ...?filter=<base64 of
+// "search=4368636">). A wrong id sends people to the wrong class — or to an
+// empty search — and nothing else on the site would notice.
+//
+// IMPORTANT, and the reason this check is shaped the way it is: rec1.com sits
+// behind a bot challenge and answers automated requests with HTTP 403, so
+// there is NO way to confirm from here that an id resolves to the right class.
+// Fetching them would only ever prove that Cloudflare is still saying no. So
+// this checks what can actually be established — every upcoming date has a
+// link, the links are well-formed, and no two dates share one — and then
+// prints the next date's id for a human to spot-check in one click. Treat a
+// pass as "nothing is structurally broken", never as "the links are correct".
+
+function decodeFilter(url) {
+  const m = /[?&]filter=([^&]+)/.exec(url);
+  if (!m) return null;
+  try {
+    return Buffer.from(decodeURIComponent(m[1]), "base64").toString("utf8");
+  } catch {
+    return null;
+  }
+}
+
+async function checkRegistrationLinks() {
+  let classes;
+  try {
+    const { default: data } = await import("../src/data/city-classes.json", {
+      with: { type: "json" },
+    });
+    classes = (data.cityClasses ?? []).filter((c) => typeof c.fareharborItemId !== "number");
+  } catch (e) {
+    fail(`Could not read city-classes.json for link check: ${e.message}`);
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const problemsBefore = problems.length;
+  let checked = 0;
+  const toSpotCheck = [];
+
+  for (const c of classes) {
+    const upcoming = (c.sessions ?? []).filter((s) => s?.date && s.date >= today);
+    if (upcoming.length === 0) continue;
+
+    // Only classes that use per-date links at all; Sedona posts none and
+    // correctly falls back to its class-level link.
+    const withLinks = upcoming.filter((s) => s.bookingUrl);
+    if (withLinks.length === 0) continue;
+
+    const seen = new Map();
+    for (const s of upcoming) {
+      if (!s.bookingUrl) {
+        fail(
+          `${c.title} ${s.date} has no registration link, but its other dates do — ` +
+            `the site will fall back to the generic catalog for that date.`,
+        );
+        continue;
+      }
+      checked++;
+      const decoded = decodeFilter(s.bookingUrl);
+      if (!decoded || !/^search=\d+$/.test(decoded)) {
+        fail(
+          `${c.title} ${s.date} has a malformed registration link ` +
+            `(decodes to ${decoded === null ? "nothing" : `"${decoded}"`}): ${s.bookingUrl}`,
+        );
+        continue;
+      }
+      const prev = seen.get(s.bookingUrl);
+      if (prev) {
+        fail(
+          `${c.title} uses the same registration link for ${prev} and ${s.date} ` +
+            `(${decoded}) — one of them points at the wrong class.`,
+        );
+      } else {
+        seen.set(s.bookingUrl, s.date);
+      }
+    }
+
+    const next = upcoming.find((s) => s.bookingUrl);
+    if (next) {
+      toSpotCheck.push(
+        `${c.title} — next is ${next.date}, ${decodeFilter(next.bookingUrl)}\n          ${next.bookingUrl}`,
+      );
+    }
+  }
+
+  if (checked && problems.length === problemsBefore) {
+    pass(`All ${checked} per-date registration link(s) are well-formed and unique`);
+  }
+  for (const line of toSpotCheck) {
+    warn(`NOT auto-verifiable (rec1 blocks bots) — open the next one and confirm the class:\n          ${line}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 5. Assets
 // ---------------------------------------------------------------------------
 async function checkImages() {
   try {
@@ -169,6 +348,8 @@ async function checkImages() {
 console.log(`\nDesert Paddleboards health check — ${new Date().toISOString().slice(0, 16)}\n`);
 await checkSiteUp();
 await checkSessionsReachTheSite();
+await checkCityClassesReachTheSite();
+await checkRegistrationLinks();
 await checkImages();
 
 for (const o of ok) console.log(`  OK    ${o}`);
