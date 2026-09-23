@@ -17,6 +17,8 @@
  * homepage must never break because FareHarbor is down.
  */
 
+import catalog from "../../src/data/fareharbor-items.generated.json";
+
 const SHORTNAME = "desertpaddleboards";
 const MAX_MONTHS_AHEAD = 5; // ceiling: current month + this many following months (~6 months)
 // Each item-month is one fetch (subrequest). We're on the Workers PAID plan
@@ -34,7 +36,25 @@ const FORCE_LOCATION_IDS = new Set([626146, 746500]); // Aji Spa, Mulberry paddl
 
 const UA = { "User-Agent": "DesertPaddleboards-Site/1.0" };
 
+// Venue ids from the catalog committed at build time, filtered by the same
+// fixed-location heuristic. FareHarbor's /items/ list has been seen dropping
+// venues that still exist and still have bookable dates — on 2026-09-22 it
+// served 31 items one minute and 27 the next, HTTP 200 either way. PebbleCreek
+// vanished that way with two bookable dates, and because this feed derived its
+// ids solely from that list, its sessions stopped reaching the site: the
+// calendar lost the dates and the venue page fell back to "Event not currently
+// scheduled". Using this as a floor means a venue can only leave the feed when
+// it leaves the committed catalog, which is a deliberate edit.
+const CATALOG_LOCATION_IDS = (catalog?.items ?? [])
+  .filter((it) => {
+    if (it?.isUnlisted || it?.isRetail) return false;
+    const hasCoords = typeof it?.lat === "number" && typeof it?.lng === "number";
+    return hasCoords || FORCE_LOCATION_IDS.has(it?.itemId);
+  })
+  .map((it) => it.itemId);
+
 async function fetchLocationItemIds() {
+  let live = [];
   try {
     const res = await fetch(
       `https://fareharbor.com/api/v1/companies/${SHORTNAME}/items/`,
@@ -42,7 +62,7 @@ async function fetchLocationItemIds() {
     );
     if (!res.ok) throw new Error(`items list HTTP ${res.status}`);
     const json = await res.json();
-    const ids = (json?.items ?? [])
+    live = (json?.items ?? [])
       .filter((it) => {
         if (it?.is_archived || it?.is_private || it?.is_unlisted || it?.is_retail)
           return false;
@@ -52,10 +72,15 @@ async function fetchLocationItemIds() {
         return hasCoords || FORCE_LOCATION_IDS.has(it.pk);
       })
       .map((it) => it.pk);
-    return ids.length > 0 ? ids : [...FORCE_LOCATION_IDS];
   } catch {
-    return [...FORCE_LOCATION_IDS];
+    live = [];
   }
+
+  // Union, so a venue missing from either source still gets its dates fetched:
+  // the live list adds brand-new venues before the next deploy, the committed
+  // catalog keeps the ones FareHarbor drops.
+  const merged = new Set([...CATALOG_LOCATION_IDS, ...live]);
+  return merged.size > 0 ? [...merged] : [...FORCE_LOCATION_IDS];
 }
 
 function monthsToFetch(now, monthsAhead) {
