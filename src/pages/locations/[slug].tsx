@@ -70,7 +70,7 @@ export default function LocationDetail() {
         bookingUrl: undefined as string | undefined,
         bookingLabel: undefined as string | undefined,
         note: undefined as string | undefined,
-        sessions: [] as { startAt: string; endAt?: string }[],
+        sessions: [] as { startAt: string; endAt?: string; bookingUrl?: string }[],
       }
     : {
         slug: city!.slug,
@@ -95,6 +95,17 @@ export default function LocationDetail() {
   // Booking flips to FareHarbor whenever an item id exists — a real FareHarbor
   // venue, OR a city class migrated into FareHarbor via `fareharborItemId`.
   const fhItemId = exp ? exp.itemId : city!.fareharborItemId;
+
+  // Queen Creek posts a separate listing per date, so the class-level link only
+  // reaches the full city catalog and the visitor has to search for the right
+  // class. Point the button at the soonest date that has its own listing, and
+  // fall back to the class-level link for classes that don't post per-date ones.
+  const nextCityBookingUrl = view.isCity
+    ? [...view.sessions]
+        .sort((a, b) => a.startAt.localeCompare(b.startAt))
+        .find((s) => s.bookingUrl)?.bookingUrl
+    : undefined;
+  const cityBookingUrl = nextCityBookingUrl ?? view.bookingUrl;
 
   // Anything on the schedule? Static dates (city classes / featured events) or
   // live FareHarbor sessions. With nothing coming up, the booking card says so
@@ -153,7 +164,7 @@ export default function LocationDetail() {
           organizer: { "@type": "Organization", name: business.name, url: SITE_URL },
           offers: {
             "@type": "Offer",
-            url: cityEventOfferUrl,
+            url: s.bookingUrl ?? cityEventOfferUrl,
             availability: "https://schema.org/InStock",
             // A free event must state price 0 explicitly to qualify for
             // Google's free-event rich results.
@@ -241,8 +252,26 @@ export default function LocationDetail() {
                     <span className="text-sm font-medium">
                       {fmtDateHeader(s.startAt)}
                     </span>
-                    <span className="text-sm text-muted-foreground">
-                      {fmtTime(s.startAt)}
+                    <span className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground">
+                        {fmtTime(s.startAt)}
+                      </span>
+                      {s.bookingUrl ? (
+                        <a
+                          href={appendUtms(s.bookingUrl)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() =>
+                            trackEvent("city_register_click", {
+                              city: view.city,
+                              session: s.startAt.slice(0, 10),
+                            })
+                          }
+                          className="shrink-0 text-sm font-semibold text-primary underline-offset-4 hover:underline"
+                        >
+                          Register →
+                        </a>
+                      ) : null}
                     </span>
                   </li>
                 ))}
@@ -305,7 +334,7 @@ export default function LocationDetail() {
                   registration system. Tap below to reserve your spot.
                 </p>
                 <a
-                  href={appendUtms(view.bookingUrl)}
+                  href={appendUtms(cityBookingUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() =>
