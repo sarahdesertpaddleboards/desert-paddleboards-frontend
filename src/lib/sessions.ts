@@ -102,12 +102,26 @@ export function fmtTime(iso: string): string {
  * and the list so they always agree.
  */
 export function useMergedSessions(): CalSession[] {
-  const [fhSessions, setFhSessions] = useState<UpcomingSession[]>([]);
+  // Seeded from the build-time snapshot, like useUpcomingSessions above, so the
+  // prerendered HTML already lists the FareHarbor sessions and "Next 7 days"
+  // paints with the page instead of waiting on the network. Starting empty cost
+  // every visitor the full round trip, and on a cold edge cache the feed takes
+  // ~10s to build (it fans out to FareHarbor per item-month), so the schedule
+  // could sit blank that long. The live feed still replaces this within a second
+  // and widens the range from ~3 months to ~6.
+  const [fhSessions, setFhSessions] = useState<UpcomingSession[]>(() => {
+    const now = Date.now();
+    return (buildTimeUpcoming.sessions as UpcomingSession[]).filter(
+      (s) => Date.parse(s.startAt) > now,
+    );
+  });
 
   useEffect(() => {
     let cancelled = false;
     getUpcomingSessions().then((s) => {
-      if (!cancelled) setFhSessions(s);
+      // An empty live result is the feed's failure mode — keep the snapshot
+      // rather than blanking a schedule that was already on screen.
+      if (!cancelled && s.length > 0) setFhSessions(s);
     });
     return () => {
       cancelled = true;
