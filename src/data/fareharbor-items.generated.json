@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T09:33:21.020Z",
+  "generatedAt": "2026-09-24T09:38:24.828Z",
   "items": [
     {
       "itemId": 146393,
@@ -405,6 +405,21 @@
       "lat": null,
       "lng": null,
       "image": "https://cdn.filestackcontent.com/TLTgsaMrTkC8ktOWu9Sa"
+    },
+    {
+      "itemId": 762421,
+      "name": "Hilton Phoenix Resort at the Peak",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Hilton Phoenix Resort at the Peak",
+      "city": "Phoenix",
+      "state": "AZ",
+      "street": "7677 North 16th Street",
+      "postalCode": "85020",
+      "googlePlaceId": "ChIJPWkSoOlzK4cRNuabcJEXny0",
+      "lat": 33.548134,
+      "lng": -112.046424,
+      "image": "https://cdn.filestackcontent.com/9K4RJNY4TIig981WkzfI"
     },
     {
       "itemId": 648798,
