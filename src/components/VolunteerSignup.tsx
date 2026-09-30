@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { DELIVERABLE_EMAIL_PATTERN, submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
 import { business } from "@/data/site";
 
@@ -147,6 +147,8 @@ export default function VolunteerSignup() {
                 id="vol-email"
                 type="email"
                 required
+                pattern={DELIVERABLE_EMAIL_PATTERN}
+                title="Enter a full email address, like you@gmail.com"
                 value={form.email}
                 onChange={set("email")}
               />

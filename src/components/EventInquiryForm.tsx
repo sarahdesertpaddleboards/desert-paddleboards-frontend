@@ -8,7 +8,7 @@ import { Phone } from "lucide-react";
 import { toast } from "sonner";
 import { experiences } from "@/data/locations";
 import { cityClassVenues } from "@/data/city-classes";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { isDeliverableEmail, submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
 import { business } from "@/data/site";
 
@@ -100,7 +100,7 @@ export default function EventInquiryForm({
     const next: Errors = {};
     if (!form.name.trim()) next.name = "Please tell us your name.";
     if (!form.email.trim()) next.email = "We need an email to reply to.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
+    else if (!isDeliverableEmail(form.email))
       next.email = "That email doesn't look right.";
     if (!form.eventType) next.eventType = "Pick the closest event type.";
     setErrors(next);

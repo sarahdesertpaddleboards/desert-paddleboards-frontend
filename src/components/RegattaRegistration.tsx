@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarCheck, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { isDeliverableEmail, submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
 import { business } from "@/data/site";
 
@@ -48,7 +48,7 @@ export default function RegattaRegistration({ className = "" }: { className?: st
     const next: typeof errors = {};
     if (!form.name.trim()) next.name = "Please tell us your name.";
     if (!form.email.trim()) next.email = "We need an email to send updates.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
+    else if (!isDeliverableEmail(form.email))
       next.email = "That email doesn't look right.";
     setErrors(next);
     if (Object.keys(next).length) {

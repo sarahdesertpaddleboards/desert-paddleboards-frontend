@@ -12,6 +12,23 @@
  */
 export const WEB3FORMS_ACCESS_KEY = "c4611b11-880b-48ed-b12d-606e0ed4754c";
 
+/**
+ * The browser's own `type="email"` check is too loose to protect a reply
+ * address: the HTML spec allows a single-label domain, so `hoopes2@g` submits
+ * as valid. Web3Forms then silently OMITS the Reply-To header rather than
+ * setting a bad one, Reply falls back to the From address
+ * (notify@web3forms.com), and the answer hard-bounces. Require a dotted domain
+ * before we treat an address as something we can write back to.
+ */
+export const DELIVERABLE_EMAIL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+
+/** Same rule, as a string for an `<input pattern>` attribute. */
+export const DELIVERABLE_EMAIL_PATTERN = "[^\\s@]+@[^\\s@.]+(\\.[^\\s@.]+)+";
+
+export function isDeliverableEmail(value: string): boolean {
+  return DELIVERABLE_EMAIL.test(value.trim());
+}
+
 export interface Web3FormsResult {
   success: boolean;
   /** "not-configured" when no key is set, else the API/error message. */
@@ -23,6 +40,16 @@ export async function submitWeb3Form(
   fields: Record<string, string>,
 ): Promise<Web3FormsResult> {
   if (!WEB3FORMS_ACCESS_KEY) return { success: false, message: "not-configured" };
+
+  // Backstop for every form: never ship an undeliverable reply address. Without
+  // this the lead arrives with no Reply-To at all and hitting Reply bounces, so
+  // flag it in the subject instead — the phone number is then the way back in.
+  const payload = { ...fields };
+  if (payload.replyto && !isDeliverableEmail(payload.replyto)) {
+    payload.subject = `[no reply address] ${payload.subject ?? "Website inquiry"}`;
+    delete payload.replyto;
+  }
+
   try {
     const res = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
@@ -30,7 +57,7 @@ export async function submitWeb3Form(
       body: JSON.stringify({
         access_key: WEB3FORMS_ACCESS_KEY,
         botcheck: "", // honeypot — bots fill this, humans never see it
-        ...fields,
+        ...payload,
       }),
     });
     const data = await res.json();

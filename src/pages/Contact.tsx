@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { isDeliverableEmail, submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
 import { business } from "@/data/site";
 
@@ -27,16 +27,30 @@ export default function Contact() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const resetForm = () =>
+  const [emailError, setEmailError] = useState("");
+
+  const resetForm = () => {
     setFormData({ name: "", email: "", phone: "", message: "" });
+    setEmailError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // The browser accepts half-typed addresses like "diana@g"; we can't reply
+    // to those, so catch it here while the visitor is still on the page.
+    if (!isDeliverableEmail(formData.email)) {
+      setEmailError("Please enter your full email address — we reply by email.");
+      document.getElementById("email")?.focus();
+      return;
+    }
+    setEmailError("");
     setSubmitting(true);
 
-    const subject = presetSubject
-      ? `Website inquiry — ${presetSubject}`
-      : "Website inquiry";
+    // Keep the customer's name in the subject: every inquiry used to arrive as
+    // plain "Website inquiry", so Gmail threaded unrelated people together.
+    const base = presetSubject ? `Website inquiry — ${presetSubject}` : "Website inquiry";
+    const subject = formData.name.trim() ? `${base} — ${formData.name.trim()}` : base;
 
     // Preferred path: deliver straight to Sarah's inbox via Web3Forms.
     const result = await submitWeb3Form({
@@ -165,10 +179,18 @@ export default function Contact() {
                     type="email"
                     required
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    aria-invalid={Boolean(emailError)}
+                    aria-describedby={emailError ? "email-err" : undefined}
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (emailError) setEmailError("");
+                    }}
                   />
+                  {emailError && (
+                    <p id="email-err" className="text-sm font-medium text-destructive">
+                      {emailError}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="phone">Phone (optional)</Label>

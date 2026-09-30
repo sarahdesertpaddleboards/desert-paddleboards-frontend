@@ -14,7 +14,7 @@ import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { DELIVERABLE_EMAIL_PATTERN, submitWeb3Form } from "@/lib/web3forms";
 import { trackEvent } from "@/lib/analytics";
 
 // On-brand hero. Swap for a photo of an actual custom / branded board when a
@@ -351,7 +351,7 @@ export default function CustomBoards() {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">Email *</label>
-                <input required type="email" value={form.email} onChange={set("email")} className={field} />
+                <input required type="email" pattern={DELIVERABLE_EMAIL_PATTERN} title="Enter a full email address, like you@gmail.com" value={form.email} onChange={set("email")} className={field} />
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">Phone</label>

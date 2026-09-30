@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/select";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
-import { submitWeb3Form } from "@/lib/web3forms";
+import { DELIVERABLE_EMAIL_PATTERN, submitWeb3Form } from "@/lib/web3forms";
 import { SITE_URL } from "@/data/site";
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -502,7 +502,7 @@ export default function Airstream() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email *</Label>
-              <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <Input id="email" type="email" required pattern={DELIVERABLE_EMAIL_PATTERN} title="Enter a full email address, like you@gmail.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone</Label>
