@@ -360,7 +360,7 @@ It's the rare Halloween event that isn't for children, isn't in a parking lot, a
 
 ## What to bring
 
-**A board, kayak, or canoe.** Bring your own, or [reserve a rental from us](/locations/witches-regatta-tempe-town-lake#register) — we'll have it waiting at the marina, so you can arrive with nothing but a costume.
+**A board, kayak, or canoe.** Bring your own, or [reserve a rental from us](https://fareharbor.com/embeds/book/desertpaddleboards/items/405030/?full-items=yes) — we'll have it waiting at the marina, so you can arrive with nothing but a costume.
 
 **A costume.** This is not optional in spirit, only in enforcement. Pointy hat minimum. People go extremely hard on this and you will feel underdressed in jeans.
 
@@ -378,9 +378,9 @@ If you have never stood on a paddleboard before, you can kneel or sit the entire
 
 ## Register free
 
-Registration is free and takes a minute. It helps us plan, and it's the only way we can tell you if the weather moves anything.
+Registration is free and takes a minute — pick **"just notifications"** when you sign up. It helps us plan, and it's the only way we can tell you if the weather moves anything.
 
-**[Register for the Witches Regatta →](/locations/witches-regatta-tempe-town-lake#register)**
+**[Register for the Witches Regatta →](https://fareharbor.com/embeds/book/desertpaddleboards/items/405030/?full-items=yes)**
 
 Questions: sarah@desertpaddleboards.com or 602.456.0884.
 

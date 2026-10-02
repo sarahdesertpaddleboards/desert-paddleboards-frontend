@@ -13,7 +13,6 @@ import {
 import { locationContent } from "@/data/location-content";
 import FareHarborButton from "@/components/FareHarborButton";
 import VolunteerSignup from "@/components/VolunteerSignup";
-import RegattaRegistration from "@/components/RegattaRegistration";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
@@ -279,13 +278,9 @@ export default function LocationDetail() {
             </div>
           ) : null}
 
-          {/* Community volunteer + spectator sign-up — Witches Regatta only. */}
-          {city?.id === "witches-regatta" ? (
-            <>
-              <RegattaRegistration className="mt-10" />
-              <VolunteerSignup />
-            </>
-          ) : null}
+          {/* Community volunteer sign-up — Witches Regatta only. Paddler
+              registration goes through FareHarbor (the booking card). */}
+          {city?.id === "witches-regatta" ? <VolunteerSignup /> : null}
         </div>
 
         {/* Booking card + "Getting there" */}
