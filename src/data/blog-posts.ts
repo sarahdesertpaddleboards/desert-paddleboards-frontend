@@ -366,7 +366,7 @@ It's the rare Halloween event that isn't for children, isn't in a parking lot, a
 
 **A Coast Guard-approved life jacket.** Required on board for every paddler. Anyone 12 or under must wear theirs the whole time. Our rentals come with one.
 
-**A Tempe Town Lake boat permit.** This is the one thing that isn't free, and it's the City's requirement, not ours. Every watercraft on the lake needs one — $10 for a day pass, or $25 a year for Tempe residents and $50 for non-residents. Buy it before you arrive so you're not sorting it out on the ramp while 300 witches launch around you.
+**A Tempe Town Lake boat permit.** This is the one thing that isn't free, and it's the City's requirement, not ours. Every watercraft on the lake needs one — $10 for a day pass, or $25 a year for Tempe residents and $50 for non-residents. [Buy the $10 day pass online from the City of Tempe](https://anc.apm.activecommunities.com/tempeopportunities/membership/search/detail/242?onlineSiteId=0&locale=en-US) before you arrive so you're not sorting it out on the ramp while 300 witches launch around you.
 
 **Water, sunscreen, and shoes you don't mind soaking.** It is still Arizona in October.
 
