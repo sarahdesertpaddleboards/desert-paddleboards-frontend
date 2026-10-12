@@ -14,7 +14,7 @@ export default function Footer() {
               Desert Paddleboards
             </h3>
             <p className="text-sm text-muted-foreground">
-              Transformative water-based wellness experiences in Arizona.
+              Floating soundbaths, paddleboarding and community events across Arizona.
             </p>
             <div className="flex gap-4">
               <a
@@ -49,9 +49,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Explore */}
+          {/* Book — the experiences people come here for */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Explore</h4>
+            <h4 className="font-semibold text-foreground mb-4">Book</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/locations" className="text-muted-foreground hover:text-primary transition-colors">
@@ -61,11 +61,6 @@ export default function Footer() {
               <li>
                 <Link to="/calendar" className="text-muted-foreground hover:text-primary transition-colors">
                   Session Calendar
-                </Link>
-              </li>
-              <li>
-                <Link to="/rentals" className="text-muted-foreground hover:text-primary transition-colors">
-                  Rentals
                 </Link>
               </li>
               <li>
@@ -80,24 +75,34 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">
-                  Shop
+                  Gift Certificates
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* More */}
+          {/* Everything else */}
           <div>
             <h4 className="font-semibold text-foreground mb-4">More</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
-                  About
+                <Link to="/rentals" className="text-muted-foreground hover:text-primary transition-colors">
+                  Rentals
                 </Link>
               </li>
               <li>
-                <Link to="/coaching" className="text-muted-foreground hover:text-primary transition-colors">
-                  Coaching
+                <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                  Shop
+                </Link>
+              </li>
+              <li>
+                <Link to="/custom-boards" className="text-muted-foreground hover:text-primary transition-colors">
+                  Custom Boards
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
+                  Our Story
                 </Link>
               </li>
               <li>
@@ -111,8 +116,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contact
+                <Link to="/coaching" className="text-muted-foreground hover:text-primary transition-colors">
+                  Coaching
                 </Link>
               </li>
             </ul>
@@ -132,12 +137,17 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <Link
-                  to="/contact"
+                <a
+                  href="mailto:sarah@desertpaddleboards.com"
                   className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Mail className="h-4 w-4" />
                   <span>sarah@desertpaddleboards.com</span>
+                </a>
+              </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Send us a message →
                 </Link>
               </li>
               <li className="text-muted-foreground pt-2">
