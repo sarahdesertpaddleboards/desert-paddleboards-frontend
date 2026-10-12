@@ -62,7 +62,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <div ref={navRef} className="hidden md:flex flex-wrap items-center gap-x-5 gap-y-1 lg:gap-x-6">
+        <div ref={navRef} className="hidden lg:flex items-center gap-x-5 xl:gap-x-6">
           {navigation.map((item) =>
             "children" in item ? (
               // Dropdown links are always in the DOM (hidden with CSS, not
@@ -107,10 +107,10 @@ export default function Header() {
           )}
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4">
           <a href="tel:6024560884" aria-label="Call 602.456.0884" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             <Phone className="h-4 w-4" />
-            <span className="hidden lg:inline">602.456.0884</span>
+            <span className="hidden xl:inline">602.456.0884</span>
           </a>
           <Link
             to="/calendar"
@@ -121,7 +121,7 @@ export default function Header() {
         </div>
 
         <button
-          className="md:hidden p-2"
+          className="lg:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -134,7 +134,7 @@ export default function Header() {
       </nav>
 
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="lg:hidden border-t border-border bg-background">
           <div className="container py-4 space-y-4">
             {navigation.map((item) =>
               "children" in item ? (
