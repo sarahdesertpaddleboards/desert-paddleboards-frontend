@@ -3,7 +3,7 @@ import { useFareHarborEmbed } from "@/components/FareHarborButton";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
 
-const GIFT_CERTIFICATE_URL =
+export const GIFT_CERTIFICATE_URL =
   "https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629";
 
 /**

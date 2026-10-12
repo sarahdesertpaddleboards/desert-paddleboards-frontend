@@ -40,6 +40,7 @@ const META_STANDARD_EVENTS: Record<string, string> = {
   generate_lead: "Lead", // event/contact inquiry submitted
   lead_contact_click: "Contact", // tapped the phone CTA on an event page
   shop_click: "InitiateCheckout", // heading to Stripe checkout
+  sign_up: "CompleteRegistration", // joined the email list (top banner)
 };
 
 /**
@@ -54,6 +55,7 @@ const META_STANDARD_EVENTS: Record<string, string> = {
  *                       form abandonment. Params: form, page_path
  *   book_click          Opening the FareHarbor booking lightframe
  *   shop_click          Heading to Stripe checkout
+ *   sign_up             KEY EVENT (mark in GA4). Joined the email list. Params: method
  */
 export const TRACKED_EVENTS = [
   "generate_lead",
@@ -61,6 +63,7 @@ export const TRACKED_EVENTS = [
   "form_start",
   "book_click",
   "shop_click",
+  "sign_up",
 ] as const;
 
 let loaded = false;

@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import GiftCertificateBanner from "./components/GiftCertificateBanner";
+import EmailSignupBanner from "./components/EmailSignupBanner";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Analytics from "./components/Analytics";
@@ -39,7 +39,7 @@ export default function Layout() {
             <ScrollToTop />
             <Toaster />
             <Analytics />
-            <GiftCertificateBanner />
+            <EmailSignupBanner />
             <Header />
             <Outlet />
             <Footer />
