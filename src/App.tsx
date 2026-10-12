@@ -68,6 +68,8 @@ export const routes: RouteRecord[] = [
       // once her site has a domain.
       { path: "adventures", element: <Adventures /> },
       { path: "rentals", element: <Rentals /> },
+      // Unlinked: moved to Sarah's personal site as "Consulting for wellness
+      // businesses". 301 this (and /adventure-life-coaching) once it has a domain.
       { path: "coaching", element: <Coaching /> },
       { path: "calendar", element: <Calendar /> },
       { path: "about", element: <About /> },

@@ -115,11 +115,6 @@ export default function Footer() {
                   FAQ
                 </Link>
               </li>
-              <li>
-                <Link to="/coaching" className="text-muted-foreground hover:text-primary transition-colors">
-                  Coaching
-                </Link>
-              </li>
             </ul>
           </div>
 
