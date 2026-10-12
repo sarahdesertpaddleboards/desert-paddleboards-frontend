@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Ghost, Gift, Waves } from "lucide-react";
+import { CheckCircle2, Ghost, Gift, Waves } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import FeaturedEvent from "@/components/FeaturedEvent";
@@ -43,6 +43,14 @@ const traditions = [
   },
 ];
 
+/** Private group trip, moved here from the retired /adventures page. */
+const blackCanyonIncludes = [
+  "Clear or inflatable paddleboard, leash, PFD & paddle",
+  "Dinner and a fun host",
+  "Campsite (sleep in your vehicle, bring a tent, or sleep under the stars on a cot)",
+  "Shuttle back to camp after the float",
+];
+
 export default function CommunityEvents() {
   const structuredData = graph([
     breadcrumbLd([
@@ -55,7 +63,7 @@ export default function CommunityEvents() {
     <main>
       <Seo
         title="Community Paddle Events in Phoenix | Witches Regatta"
-        description="Free and low-cost community paddle events across metro Phoenix: the Witches Regatta on Tempe Town Lake, the Santa Paddle and city pool soundbaths. Come float with us."
+        description="Community paddle events across Arizona: the Witches Regatta on Tempe Town Lake, the Santa Paddle, city pool soundbaths and private Black Canyon group trips."
         image={heroImage}
       />
       <JsonLd data={structuredData} />
@@ -77,8 +85,9 @@ export default function CommunityEvents() {
               Community events on the water
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">
-              The Witches Regatta, the Santa Paddle and the rest of our
-              get-togethers. Show up, get on a board, meet your people.
+              The Witches Regatta, the Santa Paddle, private Black Canyon trips
+              and the rest of our get-togethers. Show up, get on a board, meet
+              your people.
             </p>
           </div>
         </div>
@@ -111,6 +120,48 @@ export default function CommunityEvents() {
                 </span>
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* Black Canyon — private group trip on the Colorado River */}
+        <section
+          id="black-canyon"
+          className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-card md:grid md:grid-cols-2"
+        >
+          <img
+            src="/images/adventures/black-canyon.jpg"
+            alt="Clear-water paddleboarding through the Colorado River's Black Canyon"
+            loading="lazy"
+            className="h-64 w-full object-cover md:h-full"
+          />
+          <div className="space-y-4 p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+              Private group trip · up to 12
+            </p>
+            <h2 className="text-2xl font-bold md:text-3xl">
+              Black Canyon on the Colorado River
+            </h2>
+            <p className="text-muted-foreground">
+              Bring your crew and we'll build the trip around you. Start at the
+              base of the Hoover Dam and paddle about 12 miles through Black
+              Canyon, with walls up to 2,000 feet: turquoise water, hidden coves,
+              hot springs, bighorn sheep and herons. Beginner-friendly, and you
+              can always turn around if you're tired.
+            </p>
+            <ul className="space-y-2">
+              {blackCanyonIncludes.map((line) => (
+                <li key={line} className="flex gap-3 text-sm text-muted-foreground">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-brand" />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              to="/contact?subject=Private%20Black%20Canyon%20trip"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Pick a date for your group
+            </Link>
           </div>
         </section>
 

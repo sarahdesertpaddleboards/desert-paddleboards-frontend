@@ -107,23 +107,26 @@ export default function About() {
           <h2 className="text-3xl md:text-4xl font-bold">Our story</h2>
           <div className="space-y-4 text-lg text-muted-foreground">
             <p>
-              In 2011, most people in Arizona had never seen a stand-up
-              paddleboard. Desert Paddleboards started by putting people on them
-              anyway, out on the river, in a state better known for having no
-              water at all.
+              Back in 2011, hardly anyone here had seen a stand-up paddleboard.
+              Which is wild, because Arizona is full of water: Saguaro Lake,
+              Canyon Lake, Lake Pleasant, Tempe Town Lake, the Salt River, the
+              Colorado. So we started putting people on boards. Turns out they
+              loved it.
             </p>
             <p>
-              The boards stayed. What we do on them grew: paddleboard fitness and
-              yoga, river outings, and then the Floating Nap™, a soundbath on
-              the water, where you lie back on a floating board while live
-              musicians play gongs, singing bowls and Native American flute
-              around you. It sells out at resort pools across Arizona, and it's
-              still the thing people tell their friends about.
+              Then it got weirder, in a good way. Paddleboard yoga. River trips.
+              And then the Floating Nap™: you lie back on a floating board in a
+              gorgeous resort pool while live musicians play gongs, singing bowls
+              and Native American flute around you. Falling asleep is allowed.
+              Encouraged, honestly.
             </p>
             <p>
-              We still design our own boards. Every one you float on at a session
-              is ours, and businesses now order them printed with their own
-              logos.
+              Is it casual? Totally. Is it also a five-star resort pool at sunset?
+              Also yes. We contain multitudes.
+            </p>
+            <p>
+              We design our own boards, too. Every board you float on is ours,
+              and now businesses order them with their own logo on top.
             </p>
           </div>
         </div>
@@ -136,10 +139,10 @@ export default function About() {
             <CardContent className="p-6">
               <h3 className="font-bold text-xl mb-2">Local talent, live</h3>
               <p className="text-muted-foreground">
-                Every soundbath has live musicians, never a playlist. We work with
-                local artists, including award-winning Native American
-                flutist Cody Blackbird, and an in-water team who help every guest
-                on and off their board.
+                Every soundbath has live musicians. Real people, real
+                instruments, no Spotify playlist. That includes award-winning
+                Native American flutist Cody Blackbird. And there's always a crew
+                in the water to help you on and off your board.
               </p>
             </CardContent>
           </Card>
@@ -147,10 +150,11 @@ export default function About() {
             <CardContent className="p-6">
               <h3 className="font-bold text-xl mb-2">Built around community</h3>
               <p className="text-muted-foreground">
-                We started the Witches Regatta on Tempe Town Lake in 2017; it now
-                draws 300+ paddlers in costume. Add the Santa Paddle, soundbaths run
-                with city Parks &amp; Recreation teams, and events for
-                neighborhoods across the Valley.
+                We started the Witches Regatta on Tempe Town Lake in 2017 with a
+                handful of friends in witch hats. Now 300+ paddlers show up in
+                costume. There's also the Santa Paddle (yes, dogs in antlers),
+                soundbaths with city Parks &amp; Rec, and private group trips
+                through the Black Canyon.
               </p>
               <Link
                 to="/community-events"
@@ -164,9 +168,9 @@ export default function About() {
             <CardContent className="p-6">
               <h3 className="font-bold text-xl mb-2">As seen in</h3>
               <p className="text-muted-foreground">
-                The cover of Phoenix Magazine, and regular spots on local news for
-                our floating soundbaths, paddleboard fitness and the Witches
-                Regatta.
+                Phoenix Magazine put us on the cover. Local news keeps coming back
+                for the soundbaths, the paddleboard workouts and, of course, the
+                witches.
               </p>
             </CardContent>
           </Card>
@@ -183,10 +187,9 @@ export default function About() {
             "Life is better on the water!"
           </blockquote>
           <p className="text-lg text-muted-foreground mb-8">
-            Founded by Sarah Williams and run with a crew of local musicians,
-            instructors and in-water assistants. Whether it's your first time on a
-            board or your fiftieth float, come and find out why people keep coming
-            back.
+            Founded by Sarah Williams and run by a crew of local musicians,
+            instructors and in-water helpers. First time on a board or fiftieth
+            float, come hang out with us.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
