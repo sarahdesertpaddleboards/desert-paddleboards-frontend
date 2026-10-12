@@ -28,11 +28,10 @@ const SITE = "https://desertpaddleboards.com";
 const PRESETS = [
   ["/", "Homepage"],
   ["/private-events", "Private events (corporate, bachelorette)"],
-  ["/community-events", "Community events (HOA, 55+)"],
+  ["/community-events", "Community events (Witches Regatta, Santa Paddle)"],
+  ["/community-partners", "HOA & 55+ community pitch (unlisted)"],
   ["/locations", "All venues"],
   ["/calendar", "Session calendar"],
-  ["/adventures", "Adventures & trips"],
-  ["/airstream", "Airstream mobile wellness lounge"],
   ["/custom-boards", "Custom branded boards"],
   ["/shop", "Shop"],
 ];

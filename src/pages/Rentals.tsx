@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Waves, Truck, Sparkles, MapPin } from "lucide-react";
+import { Waves, Truck } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
 
 /**
- * /rentals — paddleboard fleet rentals + a feature for the Blue Wave Mobile
- * Wellness Lounge (the Airstream minisite at /airstream).
- * Redirect target for the old GoDaddy /airstream-rental page.
+ * /rentals — paddleboard fleet rentals.
+ * Redirect target for the old GoDaddy /airstream-rental page. The Airstream
+ * (Blue Wave Mobile Wellness Lounge) is moving to its own standalone site, so
+ * it is deliberately not linked from here.
  */
 export default function Rentals() {
   const structuredData = graph([
@@ -21,20 +22,20 @@ export default function Rentals() {
     {
       "@context": "https://schema.org",
       "@type": "Service",
-      name: "Paddleboard & Airstream Rentals",
-      serviceType: "Equipment & venue rental",
+      name: "Paddleboard Rentals",
+      serviceType: "Paddleboard rental",
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
       description:
-        "Paddleboard fleet rentals for groups and events, plus the Blue Wave Mobile Wellness Lounge — a luxury Airstream wellness activation available across Arizona and Southern California.",
+        "Paddleboard fleet rentals for groups and events across metro Phoenix — up to 20 boards, delivered and picked up.",
     },
   ]);
 
   return (
     <div className="min-h-screen">
       <Seo
-        title="Paddleboard &amp; Airstream Rentals — Arizona"
-        description="Rent a fleet of paddleboards across metro Phoenix, or bring our luxury Airstream mobile wellness lounge to your event in Arizona or Southern California."
+        title="Paddleboard Rentals for Groups &amp; Events — Arizona"
+        description="Rent up to 20 stable, beginner-friendly paddleboards for your group, party or team day — delivered and picked up across metro Phoenix."
         image="/floating-boards-sunset.jpg"
       />
       <JsonLd data={structuredData} />
@@ -50,7 +51,7 @@ export default function Rentals() {
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Rentals</h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
-            Paddleboards for your group or event — plus the Blue Wave Mobile Wellness Lounge Airstream.
+            Paddleboards for your group, party or team day on the water.
           </p>
         </div>
       </section>
@@ -109,53 +110,17 @@ export default function Rentals() {
         </div>
       </section>
 
-      {/* Blue Wave Mobile Wellness Lounge — featured; full details on /airstream */}
-      <section className="bg-accent/20 py-16">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="inline-flex p-3 rounded-full bg-primary/10 text-primary">
-                <Sparkles className="h-6 w-6" />
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold">
-                Blue Wave Mobile Wellness Lounge
-              </h2>
-            </div>
-            <p className="text-lg font-medium mb-2">
-              Our luxury Airstream wellness activation — Arizona &amp; Southern California
-            </p>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              A beautifully restored Airstream, reimagined as a mobile wellness lounge — brought
-              to your event, retreat, festival or private gathering. A serene, show-stopping space
-              for sound healing, recovery and relaxation, delivered and styled for you.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <Button size="lg" asChild>
-                <Link to="/airstream">Explore the Blue Wave Lounge →</Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/contact?subject=Blue%20Wave%20Airstream">Inquire about a date</Link>
-              </Button>
-            </div>
-            <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4" /> Available across Arizona &amp; Southern California
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Cross-link */}
       <section className="container py-16">
         <div className="max-w-3xl mx-auto text-center">
           <Truck className="h-10 w-10 mx-auto mb-4 text-primary" />
           <h2 className="text-2xl md:text-3xl font-bold mb-4">More ways to get on the water</h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Join one of our guided paddleboard adventures, or find a floating soundbath near you.
+            Join a community paddle, or find a floating soundbath near you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link to="/adventures">Guided adventures</Link>
+              <Link to="/community-events">Community events</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <Link to="/locations">Floating soundbaths</Link>

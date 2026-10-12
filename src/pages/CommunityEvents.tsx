@@ -1,55 +1,46 @@
 import { Link } from "react-router-dom";
-import {
-  Building2,
-  Users,
-  Briefcase,
-  Music2,
-  ShieldCheck,
-  Clock,
-  Waves,
-  CheckCircle2,
-} from "lucide-react";
+import { Ghost, Gift, Waves } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
-import EventInquiryForm from "@/components/EventInquiryForm";
-import VenueProof from "@/components/VenueProof";
+import FeaturedEvent from "@/components/FeaturedEvent";
+import SocialFollow from "@/components/SocialFollow";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
-import { SITE_URL, business } from "@/data/site";
 
-const heroImage = "/venues/mulberry.jpg";
+/**
+ * /community-events — public, show-up-and-join events for anyone who found us
+ * on social: the Witches Regatta, the Santa Paddle, city pool soundbaths.
+ *
+ * Not to be confused with /community-partners, the unlinked pitch to HOAs and
+ * 55+ communities that book a private soundbath for their residents.
+ */
 
-const perfectFor = [
+const heroImage = "/images/blog/witches-regatta-on-water.jpg";
+
+const traditions = [
   {
-    icon: Building2,
-    title: "HOAs & residential communities",
-    body: "A standout amenity day at your community pool. Most events sell out the day they're posted.",
+    icon: Ghost,
+    when: "Every October · Tempe Town Lake",
+    title: "Witches Regatta",
+    body: "Hundreds of paddlers in pointy hats floating Tempe Town Lake at sunset. Free to join since 2017. Bring a board or rent one from us.",
+    href: "/locations/witches-regatta-tempe-town-lake",
+    cta: "See this year's details",
   },
   {
-    icon: Users,
-    title: "55+ & senior living",
-    body: "Beautiful pools and clubhouses, residents who love something new to do — and it's suitable for all ages and fitness levels.",
+    icon: Gift,
+    when: "Every December · Tempe Town Lake",
+    title: "Santa Paddle",
+    body: "Santas, elves, reindeer and dogs in antlers on paddleboards and kayaks. Not a race. Pure holiday chaos on the lake.",
+    href: "/santa-paddle",
+    cta: "About the Santa Paddle",
   },
   {
-    icon: Briefcase,
-    title: "Corporate wellness & member appreciation",
-    body: "Gyms, resorts and workplaces use a floating soundbath as an unforgettable member-appreciation or team-wellness event.",
+    icon: Waves,
+    when: "Year-round · city pools",
+    title: "Soundbaths at your city pool",
+    body: "Floating soundbaths run with local Parks & Recreation departments, booked straight through your city.",
+    href: "/calendar",
+    cta: "Find a date near you",
   },
-];
-
-const included = [
-  "Two live musicians — a meditative concert, not a recording",
-  "Floating boards for everyone, set up and ready",
-  "Lavender eye masks",
-  "In-water assistants helping guests on and off the boards",
-  "Full setup and teardown — we handle everything",
-];
-
-const comfort = [
-  "Stay completely dry if you prefer — you don't have to get wet",
-  "Non-swimmers are welcome and safe",
-  "Poolside lounger options for anyone who'd rather not float",
-  "Assistants are in the water at all times",
-  "Suitable for all ages and fitness levels",
 ];
 
 export default function CommunityEvents() {
@@ -58,24 +49,14 @@ export default function CommunityEvents() {
       { name: "Home", path: "/" },
       { name: "Community Events", path: "/community-events" },
     ]),
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      name: "Community & Senior-Living Floating Soundbath Events",
-      serviceType: "Community wellness event",
-      provider: { "@type": "Organization", name: business.name, url: SITE_URL },
-      areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
-      description:
-        "Turnkey floating soundbath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona.",
-    },
   ]);
 
   return (
     <main>
       <Seo
-        title="Floating Soundbath Events for HOAs &amp; 55+ Communities"
-        description="Turnkey floating soundbath events for HOAs, 55+ communities and corporate wellness across Arizona. We bring the boards, musicians and team — you pick the date."
-        image="/venues/mulberry.jpg"
+        title="Community Paddle Events in Phoenix | Witches Regatta"
+        description="Free and low-cost community paddle events across metro Phoenix: the Witches Regatta on Tempe Town Lake, the Santa Paddle and city pool soundbaths. Come float with us."
+        image={heroImage}
       />
       <JsonLd data={structuredData} />
 
@@ -83,178 +64,80 @@ export default function CommunityEvents() {
       <div className="relative h-[44vh] min-h-[340px] w-full overflow-hidden bg-muted">
         <img
           src={heroImage}
-          alt="Community floating soundbath event at a pool in Arizona"
+          alt="Paddlers in witch costumes on paddleboards on Tempe Town Lake"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-brand-dark/55" />
         <div className="relative z-10 flex h-full items-end">
           <div className="container pb-10 text-white">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
-              For HOAs · 55+ communities · workplaces
+              Open to everyone · costumes encouraged
             </p>
             <h1 className="mt-2 max-w-3xl text-balance text-4xl italic leading-tight md:text-5xl">
-              Bring the floating soundbath to your community
+              Community events on the water
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">
-              We bring the boards, the live musicians and the whole team. You
-              just pick a date — we handle the rest.
+              The Witches Regatta, the Santa Paddle and the rest of our
+              get-togethers. Show up, get on a board, meet your people.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="container space-y-16 py-14">
-        {/* Intro + inquiry form. The form sits above the fold on purpose: this
-            page previously had no conversion path at all, and most of its
-            traffic arrives from social on a phone. */}
-        <section id="inquiry" className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:items-start">
-          <div className="order-2 max-w-3xl space-y-4 lg:order-1">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
-              Community events
-            </p>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              Community events are what we do best—bringing neighbors together for
-              unforgettable evenings of floating, live music, and relaxation. It's
-              an experience that sparks new friendships and creates the kind of
-              community people are proud to call home.
-            </p>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              We bring everything: the boards, the musicians and the whole team.
-              You pick the date.
-            </p>
-          </div>
-          <div className="order-1 lg:order-2">
-            <EventInquiryForm variant="community" />
-          </div>
-        </section>
+      {/* Next dated events (Witches Regatta etc.) — renders nothing if none are upcoming */}
+      <FeaturedEvent className="py-12" />
 
-        {/* Perfect for */}
+      <div className="container space-y-16 py-14">
+        {/* Annual traditions */}
         <section className="space-y-8">
-          <h2 className="text-3xl italic">Perfect for</h2>
+          <h2 className="text-3xl italic">Our traditions</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {perfectFor.map((item) => (
-              <div
-                key={item.title}
-                className="space-y-3 rounded-2xl border border-border bg-card p-6"
+            {traditions.map((t) => (
+              <Link
+                key={t.title}
+                to={t.href}
+                className="group flex flex-col space-y-3 rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
               >
-                <item.icon className="h-7 w-7 text-brand" />
-                <h3 className="text-lg font-semibold not-italic">
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {item.body}
+                <t.icon className="h-7 w-7 text-brand" />
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  {t.when}
                 </p>
-              </div>
+                <h3 className="text-lg font-semibold not-italic">{t.title}</h3>
+                <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {t.body}
+                </p>
+                <span className="text-sm font-semibold text-primary group-hover:underline">
+                  {t.cta} →
+                </span>
+              </Link>
             ))}
           </div>
         </section>
 
-        {/* Venue proof — the resort/hotel names that already host us. */}
-        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
-          <VenueProof />
-        </div>
-
-        {/* What's included + comfort */}
-        <section className="grid grid-cols-1 gap-10 md:grid-cols-2">
-          <div className="space-y-5">
-            <div className="flex items-center gap-3">
-              <Music2 className="h-6 w-6 text-brand" />
-              <h2 className="text-2xl italic">What's included</h2>
-            </div>
-            <ul className="space-y-3">
-              {included.map((line) => (
-                <li key={line} className="flex gap-3 text-muted-foreground">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-brand" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-5">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-6 w-6 text-brand" />
-              <h2 className="text-2xl italic">Comfortable for everyone</h2>
-            </div>
-            <ul className="space-y-3">
-              {comfort.map((line) => (
-                <li key={line} className="flex gap-3 text-muted-foreground">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-brand" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section className="space-y-8">
-          <h2 className="text-3xl italic">How it works</h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="space-y-3 rounded-2xl bg-brand/10 p-6">
-              <Clock className="h-7 w-7 text-brand" />
-              <h3 className="text-lg font-semibold not-italic">
-                One hour, fully run
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                A one-hour experience. We need about 45 minutes to set up and 30
-                to clean up — your team doesn't lift a finger.
-              </p>
-            </div>
-            <div className="space-y-3 rounded-2xl bg-brand/10 p-6">
-              <Waves className="h-7 w-7 text-brand" />
-              <h3 className="text-lg font-semibold not-italic">
-                Simple flat rate
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                One flat rate covers everything — no ticket sales or marketing to
-                worry about. We'll send a custom quote for your pool and group
-                size.
-              </p>
-            </div>
-            <div className="space-y-3 rounded-2xl bg-brand/10 p-6">
-              <Users className="h-7 w-7 text-brand" />
-              <h3 className="text-lg font-semibold not-italic">
-                Your call on tickets
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                Offer it free to residents, add a small ticket price to raise
-                funds, or let us set up a private registration link so guests
-                sign up directly.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="rounded-2xl bg-brand-dark px-8 py-10 text-center text-white">
-          <h2 className="text-3xl italic">Request your community's date</h2>
-          <p className="mx-auto mt-3 max-w-xl text-white/85">
-            Tell us about your community and pool, and we'll come back with a
-            custom quote — usually within 24 hours.
+        <section className="rounded-2xl bg-brand/10 p-8 text-center">
+          <h2 className="text-2xl italic">Read the Witches Regatta story</h2>
+          <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
+            How a handful of us in witch hats on an urban lake turned into one of
+            Arizona's most unusual Halloween traditions.
           </p>
-          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#inquiry"
-              className="inline-flex items-center justify-center rounded-full bg-secondary px-7 py-3 text-sm font-semibold text-secondary-foreground hover:bg-secondary/90"
-            >
-              Tell us about your community
-            </a>
-            <a
-              href="tel:6024560884"
-              className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Or call 602.456.0884
-            </a>
-          </div>
+          <Link
+            to="/blog/witches-regatta"
+            className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Read the story
+          </Link>
         </section>
 
         <p className="text-center text-sm text-muted-foreground">
-          Looking for something more active for your group?{" "}
-          <Link to="/adventures" className="font-medium text-primary hover:underline">
-            Explore our guided paddleboard adventures →
+          Want a floating soundbath just for your group?{" "}
+          <Link to="/private-events" className="font-medium text-primary hover:underline">
+            Plan a private event →
           </Link>
         </p>
       </div>
+
+      {/* New dates are announced on Instagram first */}
+      <SocialFollow />
     </main>
   );
 }

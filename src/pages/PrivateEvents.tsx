@@ -315,14 +315,23 @@ export default function PrivateEvents() {
         </div>
       </section>
 
-      {/* Cross-link */}
+      {/* HOAs & senior living — the full pitch lives on the unlinked /community-partners page */}
       <section className="container py-12">
-        <p className="text-center text-muted-foreground">
-          Want a bigger adventure for your group?{" "}
-          <Link to="/adventures" className="font-medium text-primary hover:underline">
-            Explore our guided paddleboard trips and retreats →
+        <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 text-center">
+          <Building2 className="mx-auto mb-3 h-7 w-7 text-primary" />
+          <h2 className="text-xl font-bold">HOAs, 55+ and assisted-living communities</h2>
+          <p className="mt-2 text-muted-foreground">
+            We also bring the floating soundbath to residential communities, with
+            the boards, live musicians and in-water team all included. If you'd
+            like to set one up for your residents, get in touch.
+          </p>
+          <Link
+            to="/community-partners"
+            className="mt-4 inline-block font-medium text-primary hover:underline"
+          >
+            See how community events work →
           </Link>
-        </p>
+        </div>
       </section>
     </div>
   );

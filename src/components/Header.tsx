@@ -9,14 +9,12 @@ const navigation = [
   { name: "Private Events", href: "/private-events" },
   { name: "Rentals", href: "/rentals" },
   { name: "Shop", href: "/shop" },
-  { name: "Adventures", href: "/adventures" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
 
 const moreLinks = [
   { name: "Custom Boards", href: "/custom-boards" },
-  { name: "Airstream Lounge", href: "/airstream" },
   { name: "Blog", href: "/blog" },
   { name: "FAQ", href: "/faq" },
 ];

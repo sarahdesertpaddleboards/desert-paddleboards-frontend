@@ -277,22 +277,13 @@ export default function Coaching() {
             Looking for adventure life coaching?
           </h2>
           <p className="text-lg opacity-90 mb-8">
-            Still offered — one-on-one work on confidence and getting outside your comfort zone. And Sarah's
-            guided paddleboard adventures and retreats are the perfect place to put it into practice.
+            Still offered — one-on-one work on confidence and getting outside your comfort zone.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button size="lg" variant="secondary" asChild>
               <Link to="/contact?subject=Adventure%20life%20coaching">
                 Ask about life coaching
               </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
-              asChild
-            >
-              <Link to="/adventures">Explore our adventures</Link>
             </Button>
           </div>
         </div>

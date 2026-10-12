@@ -49,7 +49,7 @@ function monthsAhead(n) {
 // 1. Is the site up?
 // ---------------------------------------------------------------------------
 async function checkSiteUp() {
-  const pages = ["/", "/locations", "/calendar", "/private-events", "/community-events", "/adventures", "/shop"];
+  const pages = ["/", "/locations", "/calendar", "/private-events", "/community-events", "/community-partners", "/shop"];
   for (const p of pages) {
     try {
       const res = await fetch(SITE + p, { headers: UA });

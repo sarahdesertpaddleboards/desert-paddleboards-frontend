@@ -7,6 +7,7 @@ import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import PrivateEvents from "./pages/PrivateEvents";
 import CommunityEvents from "./pages/CommunityEvents";
+import CommunityPartners from "./pages/CommunityPartners";
 import Adventures from "./pages/Adventures";
 import Rentals from "./pages/Rentals";
 import Coaching from "./pages/Coaching";
@@ -59,7 +60,12 @@ export const routes: RouteRecord[] = [
         getStaticPaths: () => blogPosts.map((p) => `/blog/${p.slug}`),
       },
       { path: "community-events", element: <CommunityEvents /> },
+      // Unlinked B2B pitch for HOAs / 55+ communities (see CommunityPartners.tsx).
+      { path: "community-partners", element: <CommunityPartners /> },
       { path: "private-events", element: <PrivateEvents /> },
+      // Unlinked: trips are moving to Sarah's personal site. Kept live only so
+      // old links and ads don't 404 — replace with a 301 in public/_redirects
+      // once her site has a domain.
       { path: "adventures", element: <Adventures /> },
       { path: "rentals", element: <Rentals /> },
       { path: "coaching", element: <Coaching /> },
@@ -69,10 +75,6 @@ export const routes: RouteRecord[] = [
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
 
-      // UNLISTED preview page — reachable by direct URL only (has header/footer),
-      // deliberately NOT linked from nav/homepage/footer/shop yet, and noindex +
-      // sitemap-excluded. To launch: add the nav/shop/footer links, remove
-      // `noindex` in CustomBoards.tsx, and drop the sitemap exclusion.
       { path: "custom-boards", element: <CustomBoards /> },
 
       // App-only routes (excluded from pre-render in vite.config.ts)
@@ -85,10 +87,9 @@ export const routes: RouteRecord[] = [
     ],
   },
 
-  // Standalone hidden minisite — Sarah's Backyard Airstream corporate rental.
-  // Deliberately NOT a child of <Layout>, so it renders without the Desert
-  // Paddleboards header/footer/nav (its own self-contained site) and is not
-  // linked from anywhere on the main site. Still pre-rendered → SEO-indexable.
+  // Standalone hidden minisite — Blue Wave Mobile Wellness Lounge (Airstream).
+  // Moving to its own website; until then it lives here, NOT a child of
+  // <Layout> and not linked from anywhere on the main site.
   { path: "/airstream", element: <Airstream /> },
 ];
 
