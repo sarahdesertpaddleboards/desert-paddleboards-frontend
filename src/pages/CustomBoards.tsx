@@ -38,6 +38,34 @@ const gallery = [
     alt: "A custom-branded 'Life is Better on the Water' paddleboard standing on a dock by the water",
     caption: "Full-deck custom branding",
   },
+  {
+    src: "/images/sup-pups/board-deck.jpg",
+    alt: "Paddleboard deck printed with a dog daycare logo, tagline and mission line",
+    caption: "Logo, tagline and mission, printed on the deck",
+  },
+  {
+    src: "/images/sup-pups/delivery-day.jpg",
+    alt: "Branded board bags delivered outside a dog daycare before opening day",
+    caption: "Delivery day, branded bags included",
+  },
+  {
+    src: "/images/sup-pups/branded-bandanas.jpg",
+    alt: "Two golden retrievers in matching branded bandanas on a paddleboard",
+    caption: "Matching branded bandanas",
+  },
+];
+
+const specs = [
+  ["Standard size", "10'6\" × 32\""],
+  ["Custom sizes", "Made to spec"],
+  ["Orders from", "10 boards"],
+  ["Lead time", "4–8 weeks"],
+];
+
+/** Titles taken from the YouTube uploads themselves. */
+const clips = [
+  { id: "WOVI0_3TRYg", title: "SUP Pups Christmas Paddle" },
+  { id: "KoGT7HWGMb0", title: "Paddleboarding with Dogs" },
 ];
 
 const whoFor = [
@@ -61,6 +89,8 @@ const whoFor = [
 const included = [
   "Custom artwork and branding, printed edge-to-edge on premium wide yoga & fitness boards",
   "Your logo, wording and colors — designed and mocked up for your approval before anything is made",
+  "Each location's own phone number printed on its boards, for multi-site brands",
+  "Matching branded extras: bandanas, totes and board bags",
   "Pumps, accessories and branded packaging available",
   "Guidance from a working operator: Sarah runs floating experiences at 30+ venues across Arizona",
 ];
@@ -231,6 +261,16 @@ export default function CustomBoards() {
             floating soundbath or paddleboard-yoga business. Boards and brains,
             done with you.
           </p>
+          <dl className="grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
+            {specs.map(([term, value]) => (
+              <div key={term} className="bg-card p-4">
+                <dt className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand">
+                  {term}
+                </dt>
+                <dd className="mt-1 text-sm font-medium">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
         {/* Our work gallery */}
@@ -248,6 +288,28 @@ export default function CustomBoards() {
                 <figcaption className="px-4 py-3 text-sm font-medium text-muted-foreground">
                   {g.caption}
                 </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        {/* Boards in action */}
+        <section className="space-y-6">
+          <h2 className="text-3xl italic">Boards in action</h2>
+          <div className="grid gap-8 md:grid-cols-2">
+            {clips.map((clip) => (
+              <figure key={clip.id}>
+                <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border bg-muted">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${clip.id}`}
+                    title={clip.title}
+                    loading="lazy"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="h-full w-full"
+                  />
+                </div>
+                <figcaption className="mt-3 text-sm text-muted-foreground">{clip.title}</figcaption>
               </figure>
             ))}
           </div>

@@ -1,7 +1,5 @@
-import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
-import SupPupsSection from "@/components/SupPupsSection";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL } from "@/data/site";
@@ -13,7 +11,7 @@ const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
     kind: "physical",
     title: "Boards & gear",
-    blurb: "Take a little of the water home with you.",
+    blurb: "The board we float on at every soundbath, new or gently used, and the tote to carry your stuff to the water.",
   },
   {
     kind: "digital",
@@ -50,11 +48,10 @@ export default function Shop() {
   return (
     <>
       <Seo
-        title="Custom Branded Paddleboards &amp; Float Merch | Desert Paddleboards"
-        description="Custom-printed branded paddleboards for your business — your logo, your colors, each location's own phone number. Orders from 10 boards, 4–8 week lead time."
-        image="/images/sup-pups/hero-mission-board.jpg"
+        title="Shop Paddleboards, Totes &amp; Custom Boards | Desert Paddleboards"
+        description="Buy the floating board we use at every soundbath, new or used, plus our beach tote. Or put your own logo on a custom-printed board, with matching bandanas."
+        image="/floating-meditation-board.jpg"
       />
-      <SupPupsSection />
     <main className="container py-16">
       <JsonLd data={structuredData} />
 
@@ -62,12 +59,14 @@ export default function Shop() {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand">
           Shop
         </p>
-        <h1 className="text-4xl font-bold leading-tight">Float merch</h1>
+        <h1 className="text-4xl font-bold leading-tight">Boards, totes &amp; custom gear</h1>
         <p className="text-lg text-muted-foreground">
-          Boards, music and guides from the water. Secure checkout is handled by
+          Take a little of the water home with you. Secure checkout is handled by
           Stripe — your card details never touch our site.
         </p>
       </header>
+
+      <CustomBoardsBanner />
 
       {SECTIONS.map((section) => {
         const items = live.filter((p) => p.kind === section.kind);
@@ -80,15 +79,7 @@ export default function Shop() {
             </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((p) => (
-                <Fragment key={p.slug}>
-                  <ProductCard product={p} />
-                  {/* "Need a fleet?" promo sits right after the meditation board
-                      (between it and the Beach Tote) in the Boards & gear grid. */}
-                  {section.kind === "physical" &&
-                  p.slug === "floating-meditation-board" ? (
-                    <FleetPromoCard />
-                  ) : null}
-                </Fragment>
+                <ProductCard key={p.slug} product={p} />
               ))}
             </div>
           </section>
@@ -122,55 +113,42 @@ export default function Shop() {
         </a>
       </section>
 
-      {/* Cross-links to other offerings */}
-      <section className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <Link
-          to="/coaching"
-          className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary"
-        >
-          <h2 className="text-lg font-bold">Want to go deeper?</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Work one-on-one with Sarah through Adventure Life Coaching.{" "}
-            <span className="font-medium text-primary">Explore coaching →</span>
-          </p>
-        </Link>
-      </section>
     </main>
     </>
   );
 }
 
-/** Promo tile in the Boards & gear grid → the custom / bulk boards request page.
- *  Same image-on-top shape as a product card so it sits naturally in the grid. */
-function FleetPromoCard() {
+/** Custom & branded boards, condensed to one banner. The full pitch, gallery,
+ *  videos and quote form live on /custom-boards. */
+function CustomBoardsBanner() {
   return (
     <Link
       to="/custom-boards"
-      onClick={() => trackEvent("shop_click", { product: "Custom boards — fleet" })}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/10 to-secondary/10 transition-colors hover:border-brand"
+      onClick={() => trackEvent("shop_click", { product: "Custom boards" })}
+      className="group mt-10 flex flex-col overflow-hidden rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/10 to-secondary/10 transition-colors hover:border-brand sm:flex-row"
     >
-      <div className="relative aspect-square overflow-hidden bg-muted">
-        <img
-          src="/custom-boards/branded-board-dogtopia.jpg"
-          alt="A custom-branded paddleboard with a logo printed edge-to-edge"
-          loading="lazy"
-          className="h-full w-full object-cover"
-        />
-        <span className="absolute left-3 top-3 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">
-          Custom &amp; branded
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col gap-2 p-5 text-center">
+      <img
+        src="/images/sup-pups/hero-mission-board.jpg"
+        alt="A dog sitting on a custom-printed paddleboard at the water's edge"
+        loading="lazy"
+        className="h-56 w-full object-cover object-[center_42%] sm:h-auto sm:w-64"
+      />
+      <div className="flex flex-1 flex-col justify-center gap-2 p-6 sm:p-8">
         <span className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
-          Custom Boards
+          Custom &amp; branded boards
         </span>
-        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
-          Put your own logo on the water. We design and produce{" "}
-          <span className="font-medium text-foreground">fully branded boards</span>{" "}
-          for businesses, studios and resorts — single boards or a full fleet,
-          delivered direct to you (continental US).
+        <h2 className="text-2xl font-bold">Put your logo on the water</h2>
+        <p className="text-muted-foreground">
+          We design and print boards for businesses, studios and resorts: your
+          logo, your colors, printed into the board, not stuck on it. Add
+          matching branded bandanas and totes to the order.
         </p>
-        <span className="text-sm font-semibold text-primary">Brand your board →</span>
+        <p className="text-sm text-muted-foreground">
+          Orders from 10 boards · 4–8 weeks · shipped across the continental US
+        </p>
+        <span className="mt-1 text-sm font-semibold text-primary group-hover:underline">
+          Design your boards →
+        </span>
       </div>
     </Link>
   );
