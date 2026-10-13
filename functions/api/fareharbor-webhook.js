@@ -66,8 +66,8 @@ export async function onRequestPost({ request, env }) {
     });
   } catch (err) {
     console.error("fareharbor webhook: flodesk failed", String(err));
-    // 502 so FareHarbor retries if it supports retries.
-    return new Response("upstream error", { status: 502 });
+    // 500 so FareHarbor retries if it supports retries (Cloudflare masks 502s).
+    return new Response("upstream error", { status: 500 });
   }
   return new Response("ok", { status: 200 });
 }
