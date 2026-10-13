@@ -15,7 +15,7 @@ import { DELIVERABLE_EMAIL_PATTERN, isDeliverableEmail } from "@/lib/web3forms";
  *     published with that code in it
  * While false, the plain gift-certificate banner shows instead.
  */
-export const EMAIL_SIGNUP_LIVE = false;
+export const EMAIL_SIGNUP_LIVE = true;
 
 type Status = "idle" | "sending" | "done" | "error";
 
