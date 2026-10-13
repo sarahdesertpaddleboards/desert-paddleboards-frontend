@@ -10,8 +10,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-foreground">
-              Desert Paddleboards
+            <h3>
+              <img
+                src="/logo.webp"
+                alt="Desert Paddleboards"
+                width={500}
+                height={155}
+                loading="lazy"
+                className="h-12 w-auto"
+              />
             </h3>
             <p className="text-sm text-muted-foreground">
               Floating soundbaths, paddleboarding and community events across Arizona.

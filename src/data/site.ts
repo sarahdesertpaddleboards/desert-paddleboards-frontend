@@ -9,7 +9,7 @@ export const business = {
   email: "sarah@desertpaddleboards.com",
   description:
     "Floating soundbaths, paddleboard yoga and water-based wellness experiences across Arizona.",
-  logo: `${SITE_URL}/hero-main.webp`,
+  logo: `${SITE_URL}/logo.png`,
   sameAs: [
     "https://www.instagram.com/desertpaddleboards/",
     "https://www.facebook.com/desertpaddleboards",

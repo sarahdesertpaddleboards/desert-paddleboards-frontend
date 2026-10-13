@@ -54,12 +54,14 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <nav className="container flex items-center justify-between py-4">
-        <Link to="/">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <div className="text-2xl font-bold text-primary">
-              <span>Desert Paddleboards</span>
-            </div>
-          </div>
+        <Link to="/" aria-label="Desert Paddleboards home" className="shrink-0">
+          <img
+            src="/logo.webp"
+            alt="Desert Paddleboards"
+            width={500}
+            height={155}
+            className="h-10 w-auto lg:h-12"
+          />
         </Link>
 
         <div ref={navRef} className="hidden lg:flex items-center gap-x-5 xl:gap-x-6">
