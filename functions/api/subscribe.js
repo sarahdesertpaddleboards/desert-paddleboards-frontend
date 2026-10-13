@@ -39,7 +39,7 @@ export async function onRequestPost({ request, env }) {
     console.error("subscribe failed", String(err));
     // 500, not 502: Cloudflare swaps 502s for its own error page, hiding this.
     const m = String(err).match(/Flodesk (\w+) (\d{3}): ?(.*)/) || [];
-    return json(500, { error: "upstream", step: m[1] || null, upstream: Number(m[2]) || null, detail: (m[3] || "").slice(0, 160) });
+    return json(500, { error: "upstream", step: m[1] || null, upstream: Number(m[2]) || null });
   }
   return json(200, { ok: true });
 }

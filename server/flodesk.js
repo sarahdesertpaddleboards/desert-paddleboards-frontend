@@ -49,8 +49,11 @@ export async function upsertSubscriber(env, { email, firstName, lastName, segmen
   if (!created.ok) {
     throw new Error(`Flodesk create ${created.status}: ${(await created.text()).slice(0, 300)}`);
   }
+  // The segments call 404s when given an email, so use the id Flodesk returns.
+  const { id } = await created.json();
+  if (!id) throw new Error("Flodesk create 200: no subscriber id in response");
 
-  const segmented = await fetch(`${API}/subscribers/${encodeURIComponent(email)}/segments`, {
+  const segmented = await fetch(`${API}/subscribers/${encodeURIComponent(id)}/segments`, {
     method: "POST",
     headers,
     body: JSON.stringify({ segment_ids: segmentIds }),
