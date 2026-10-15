@@ -106,7 +106,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
       },
       {
         question: "What's the difference between resort and public pool sessions?",
-        answer: "Resort sessions ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering luxury amenities, beautiful settings, and often include access to resort facilities. Public pool sessions ($40) are held at community aquatic centers, providing the same high-quality soundbath experience at a more accessible price point."
+        answer: "Resort sessions ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering beautiful settings and a premium experience. Resort spa and pool amenities are not included with your ticket, though some resorts offer sound bath guests special pricing (for example, at JW Marriott Desert Ridge you can get a $50 Revive Spa day pass or 20% off spa services when you mention the sound bath while booking). Public pool sessions ($40) are held at community aquatic centers, providing the same high-quality soundbath experience at a more accessible price point."
       }
     ]
   },
