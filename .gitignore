@@ -34,3 +34,6 @@ coverage/
 
 # Local dev notes (don't commit these)
 *.txt
+
+# Wrangler local secrets (staff tool)
+.dev.vars

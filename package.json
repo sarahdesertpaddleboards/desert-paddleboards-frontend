@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node scripts/generate-seo-data.mjs && node scripts/generate-venue-coords.mjs && node scripts/generate-reviews.mjs && vite-react-ssg dev",
     "build": "node scripts/generate-seo-data.mjs && node scripts/generate-venue-coords.mjs && node scripts/generate-reviews.mjs && vite-react-ssg build && node scripts/generate-sitemap.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "staff:api": "wrangler pages dev public --port 8788",
+    "staff:db:local": "wrangler d1 migrations apply dpb-staff --local"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

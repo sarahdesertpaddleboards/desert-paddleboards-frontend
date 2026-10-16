@@ -13,7 +13,10 @@ name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    # `staff` deploys as a Cloudflare Pages *preview* (staff.desert-paddleboards.pages.dev)
+    # with the [env.preview] bindings in wrangler.toml — a safe place to test the
+    # staff tool before it reaches main/production. See docs/staff-tool.md.
+    branches: [main, staff]
   workflow_dispatch: # lets you trigger a deploy by hand from the Actions tab
 
 env:
@@ -77,4 +80,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 6daebc6bd3ea63b3ac731f40be37534b
-          command: pages deploy dist --project-name=desert-paddleboards --branch=main
+          command: pages deploy dist --project-name=desert-paddleboards --branch=${{ github.ref_name }}

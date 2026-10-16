@@ -4,3 +4,37 @@
 name = "desert-paddleboards"
 compatibility_date = "2026-06-01"
 pages_build_output_dir = "dist"
+
+# --- Staff scheduling tool (/staff + /staff-api) -----------------------------
+# Cloudflare D1 (SQLite) database for staff, shifts, applications and payments.
+# Schema lives in migrations/ — apply with:
+#   wrangler d1 migrations apply dpb-staff --local            (local dev)
+#   wrangler d1 migrations apply dpb-staff-preview --remote   (preview branch)
+#   wrangler d1 migrations apply dpb-staff --remote           (production)
+# Secrets (set per environment in the Pages dashboard or `wrangler pages secret put`):
+#   RESEND_API_KEY                — sends login links + confirmations
+#   STAFF_BOOTSTRAP_ADMIN_EMAILS  — comma list; these emails become admins on first login
+# Vars: STAFF_EMAIL_FROM, STAFF_EMAIL_REPLY_TO (see [vars]).
+#
+# `database_id` values must match databases created in the Desert Paddleboards
+# Cloudflare account (admin@desertpaddleboards.com). Placeholders until then —
+# local dev (`wrangler pages dev`) ignores the id and uses a local SQLite file.
+
+[vars]
+STAFF_EMAIL_FROM = "Desert Paddleboards <sarah@desertpaddleboards.com>"
+STAFF_EMAIL_REPLY_TO = "sarah@desertpaddleboards.com"
+
+[[d1_databases]]
+binding = "STAFF_DB"
+database_name = "dpb-staff"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[env.preview]
+[env.preview.vars]
+STAFF_EMAIL_FROM = "Desert Paddleboards (test) <sarah@desertpaddleboards.com>"
+STAFF_EMAIL_REPLY_TO = "sarah@desertpaddleboards.com"
+
+[[env.preview.d1_databases]]
+binding = "STAFF_DB"
+database_name = "dpb-staff-preview"
+database_id = "00000000-0000-0000-0000-000000000001"

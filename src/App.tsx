@@ -28,6 +28,14 @@ import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
+import StaffLayout from "./staff/StaffLayout";
+import StaffHome from "./staff/pages/Home";
+import StaffLogin from "./staff/pages/Login";
+import StaffVerify from "./staff/pages/Verify";
+import StaffProfile from "./staff/pages/Profile";
+import StaffPeople from "./staff/pages/People";
+import StaffNotFound from "./staff/pages/NotFound";
+
 import { experiences } from "./data/locations";
 import { cityClassDetailSlugs } from "./data/city-classes";
 import { blogPosts } from "./data/blog-posts";
@@ -93,6 +101,22 @@ export const routes: RouteRecord[] = [
   // Moving to its own website; until then it lives here, NOT a child of
   // <Layout> and not linked from anywhere on the main site.
   { path: "/airstream", element: <Airstream /> },
+
+  // Staff scheduling tool (ConnectTeam replacement). Own shell, noindex,
+  // client-rendered against /staff-api (Cloudflare Pages Functions + D1).
+  // Pre-rendered only as empty shells so Pages can serve the routes directly.
+  {
+    path: "/staff",
+    element: <StaffLayout />,
+    children: [
+      { index: true, element: <StaffHome /> },
+      { path: "login", element: <StaffLogin /> },
+      { path: "verify", element: <StaffVerify /> },
+      { path: "profile", element: <StaffProfile /> },
+      { path: "admin/people", element: <StaffPeople /> },
+      { path: "*", element: <StaffNotFound /> },
+    ],
+  },
 ];
 
 export default routes;

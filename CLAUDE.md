@@ -53,6 +53,10 @@ happen on FareHarbor**, merch checkout on **Stripe**.
   (`useMergedSessions` = FareHarbor feed + city classes), `utm.ts`, `jsonld.ts`.
 - `functions/experiences/upcoming.js` — live FareHarbor feed (Cloudflare
   Function).
+- **Staff scheduling tool** (`/staff`, ConnectTeam replacement): UI in
+  `src/staff/`, API in `functions/staff-api/` + `server/staff/`, D1 schema in
+  `migrations/`. Private, noindexed, own shell. Full guide: `docs/staff-tool.md`
+  (local dev = `pnpm staff:api` + `pnpm dev`; `staff` branch = Pages preview).
 - `scripts/` — build-time generators (SEO data, Google reviews, sitemap).
 - `.pages.yml` — Pages CMS config (no-code editing → commits to this repo).
 
