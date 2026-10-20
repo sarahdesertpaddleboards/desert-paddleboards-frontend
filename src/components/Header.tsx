@@ -16,6 +16,7 @@ const navigation: NavItem[] = [
       { name: "Rentals", href: "/rentals" },
       { name: "Shop", href: "/shop" },
       { name: "Custom Boards", href: "/custom-boards" },
+      { name: "Business Coaching", href: "/coaching" },
     ],
   },
   {

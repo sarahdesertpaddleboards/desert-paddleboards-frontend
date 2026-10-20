@@ -16,10 +16,11 @@ import { SITE_URL, business } from "@/data/site";
  */
 export default function Coaching() {
   /**
-   * Packages are quote-led for now: the previous $75–$750 session bundles were
-   * life-coaching rates that undercut this positioning, and Sarah hasn't set
-   * the new numbers yet. Add a `price` to any tier to show it on the card.
+   * Coaching is billed at an hourly rate (set Oct 2026). Package totals aren't
+   * set yet, so only the single session shows a price; add a `price` to any
+   * tier to show it on the card.
    */
+  const HOURLY_RATE = 150;
   const packages: {
     name: string;
     price?: string;
@@ -29,6 +30,8 @@ export default function Coaching() {
   }[] = [
     {
       name: "Strategy Session",
+      price: `$${HOURLY_RATE}`,
+      note: "60 minutes",
       detail:
         "One 60-minute deep dive into your business. Leave with a clear plan for your signature experience and the first three moves to make.",
     },
@@ -91,7 +94,14 @@ export default function Coaching() {
       offers: {
         "@type": "Offer",
         priceCurrency: "USD",
-        description: "Coaching packages quoted on a strategy call",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: HOURLY_RATE,
+          priceCurrency: "USD",
+          unitCode: "HUR",
+          unitText: "hour",
+        },
+        description: `Business coaching with Sarah Williams, $${HOURLY_RATE} per hour`,
       },
     },
   ]);
@@ -182,9 +192,10 @@ export default function Coaching() {
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ways to work together</h2>
+            <p className="mb-4 text-2xl font-bold text-primary">${HOURLY_RATE} / hour</p>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Every business starts in a different place. We&rsquo;ll talk through where yours is and pick the
-              right fit — pricing is quoted on our first call.
+              One-on-one business coaching with Sarah Williams. Every business starts in a different place —
+              book a single session, or we&rsquo;ll talk through where yours is and pick the right package.
             </p>
           </div>
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
