@@ -30,6 +30,24 @@
       "blurb": "A roomy, water-ready canvas tote that hauls your towel, water and sunscreen to the pool deck and back — with 'Life is Better on the Water' printed on the side. Free US shipping.",
       "image": "/beach-tote.jpg",
       "paymentLink": "https://buy.stripe.com/14A14ng8h5Qk9O1dAl6oo02"
+    },
+    {
+      "slug": "guide-lees-ferry-horseshoe-bend",
+      "name": "Guide: Lees Ferry to Horseshoe Bend",
+      "kind": "digital",
+      "priceUsd": 5,
+      "blurb": "Everything you need to paddle the legendary Lees Ferry → Horseshoe Bend stretch of the Colorado River — launch points, timing, what to pack and what to expect. Instant digital download.",
+      "image": "/guide-lees-ferry.jpg",
+      "paymentLink": "https://buy.stripe.com/9B69AT6xHdiM2lz53P6oo04"
+    },
+    {
+      "slug": "guide-black-canyon",
+      "name": "Guide: Black Canyon Paddleboarding Adventure",
+      "kind": "digital",
+      "priceUsd": 5,
+      "blurb": "Your field guide to the Black Canyon paddle below Hoover Dam — hidden hot springs, slot canyons and emerald water, plus the logistics to do it right. Instant digital download.",
+      "image": "/guide-black-canyon.jpg",
+      "paymentLink": "https://buy.stripe.com/6oUdR91dna6A6BPfIt6oo03"
     }
   ]
 }

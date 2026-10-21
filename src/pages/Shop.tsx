@@ -16,7 +16,7 @@ const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
     kind: "digital",
     title: "Digital downloads",
-    blurb: "Music and guides — delivered straight to your inbox after checkout.",
+    blurb: "Our paddling guides to two of the Colorado River's best stretches, delivered to your inbox after checkout.",
   },
 ];
 
