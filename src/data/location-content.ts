@@ -223,9 +223,9 @@ No experience is necessary. Simply lay back, float, and let the sounds wash over
 `,
 
   "floating-soundbath-pebblecreek-goodyear": `
-**Stay warm, float effortlessly, and experience a meditative concert on the water.**
+**Float effortlessly and experience a meditative concert on the water.**
 
-Join us at PebbleCreek's spacious indoor pool for a unique Floating Sound Bath designed to help you relax, recharge, and unwind. This winter-only location features warm water, comfortable indoor temperatures, and excellent acoustics that let the sounds and vibrations surround you throughout the experience.
+Join us at PebbleCreek in Goodyear for a unique Floating Sound Bath designed to help you relax, recharge, and unwind, with the sounds and vibrations surrounding you as you drift.
 
 Guided by local sound bath practitioners, you'll enjoy gentle breathwork, meditation, and a live performance featuring a variety of instruments including crystal singing bowls, gongs, chimes, flutes, drums, and more.
 
@@ -235,7 +235,6 @@ Guided by local sound bath practitioners, you'll enjoy gentle breathwork, medita
 - Blanket and lavender eye mask
 - Guided meditation and breathwork
 - Live sound bath performance
-- Warm indoor pool setting
 
 **Perfect for:**
 
@@ -246,7 +245,7 @@ Guided by local sound bath practitioners, you'll enjoy gentle breathwork, medita
 
 No experience is necessary. Simply lay back, float, and enjoy a peaceful evening on the water.
 
-*Warm water. Beautiful music. Deep relaxation.*
+*Beautiful music. Deep relaxation.*
 `,
 
   "floating-soundbath-canopy-hilton-tempe": `

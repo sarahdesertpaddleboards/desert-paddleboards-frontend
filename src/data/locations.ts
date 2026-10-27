@@ -312,9 +312,9 @@ const LOCATION_OVERLAYS: Overlay[] = [
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
     title: "Community Floating Soundbath",
-    venue: "PebbleCreek Oasis Pool",
+    venue: "PebbleCreek",
     blurb:
-      "A floating soundbath at the PebbleCreek Oasis Pool in Goodyear — float, breathe, and let live sound carry you.",
+      "A floating soundbath at PebbleCreek in Goodyear — float, breathe, and let live sound carry you.",
   },
   {
     itemId: 146434,
