@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T09:38:24.828Z",
+  "generatedAt": "2026-10-27T13:05:16.783Z",
   "items": [
     {
       "itemId": 146393,
@@ -60,6 +60,21 @@
       "lat": 33.396339,
       "lng": -111.795887,
       "image": "https://cdn.filestackcontent.com/uzc4cSaYQia5XGMInsPS"
+    },
+    {
+      "itemId": 146502,
+      "name": "Santa Paddle HO-HO-Holiday fun",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Tempe Town Lake Marina",
+      "city": "Tempe",
+      "state": "AZ",
+      "street": "550 East Tempe Town Lake",
+      "postalCode": "85288",
+      "googlePlaceId": "ChIJLQsWwSMJK4cRamqmD0CMlRc",
+      "lat": 33.433873,
+      "lng": -111.932604,
+      "image": "https://cdn.filestackcontent.com/coYTA5HcRnawNqtnDR3K"
     },
     {
       "itemId": 161553,
@@ -126,15 +141,15 @@
       "name": "Witches Regatta SUP Event",
       "isUnlisted": false,
       "isRetail": false,
-      "venue": "Tempe Town Lake Marina",
-      "city": "Tempe",
+      "venue": "",
+      "city": "",
       "state": "AZ",
-      "street": "550 East Tempe Town Lake",
-      "postalCode": "85288",
-      "googlePlaceId": "ChIJLQsWwSMJK4cRamqmD0CMlRc",
-      "lat": 33.433873,
-      "lng": -111.932604,
-      "image": "https://cdn.filestackcontent.com/T3mEglHuTjWEnwJRx04D"
+      "street": "",
+      "postalCode": "",
+      "googlePlaceId": "",
+      "lat": null,
+      "lng": null,
+      "image": "https://cdn.filestackcontent.com/XrfaGHvPQH6nGcKbu3Yf"
     },
     {
       "itemId": 573676,
@@ -194,7 +209,7 @@
       "googlePlaceId": "ChIJxXAhLeatK4cR_93XyoR-E2A",
       "lat": 33.3343,
       "lng": -111.68686,
-      "image": "https://cdn.filestackcontent.com/RFXV06kNQXOzVTjIEeGA"
+      "image": "https://cdn.filestackcontent.com/wncXYKQ9STRzPeODeDGA"
     },
     {
       "itemId": 626146,
@@ -287,6 +302,21 @@
       "image": "https://cdn.filestackcontent.com/Xt429UiQLy2eDICcGtFn"
     },
     {
+      "itemId": 692276,
+      "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Tuscany Falls Sport & Aquatic Center",
+      "city": "Goodyear",
+      "state": "AZ",
+      "street": "16150 West Clubhouse Drive",
+      "postalCode": "85395",
+      "googlePlaceId": "ChIJuSV-luxHK4cRVTz6ysse0Tg",
+      "lat": 33.481368,
+      "lng": -112.40702,
+      "image": "https://cdn.filestackcontent.com/iOFnI3FJS0R91fcqstvQ"
+    },
+    {
       "itemId": 698585,
       "name": "Westin-Skysill Rooftop Floating Soundbath - TEMPE",
       "isUnlisted": false,
@@ -299,7 +329,7 @@
       "googlePlaceId": "ChIJwds3z9kIK4cRa9sDx0zGG20",
       "lat": 33.422961,
       "lng": -111.939266,
-      "image": "https://cdn.filestackcontent.com/jDJ62AKhRpqopeFHd7Ip"
+      "image": "https://cdn.filestackcontent.com/ewBTfk1FQRSPigUGDhE4"
     },
     {
       "itemId": 709135,
@@ -393,7 +423,7 @@
     },
     {
       "itemId": 743948,
-      "name": "Witches Regatta — Paddleboard Rental + T-Shirt Bundle",
+      "name": "Witches Regatta — Tank Top",
       "isUnlisted": false,
       "isRetail": false,
       "venue": "",
@@ -404,7 +434,7 @@
       "googlePlaceId": "",
       "lat": null,
       "lng": null,
-      "image": "https://cdn.filestackcontent.com/TLTgsaMrTkC8ktOWu9Sa"
+      "image": "https://cdn.filestackcontent.com/0RDX0U8VQpydlLhudFZa"
     },
     {
       "itemId": 762421,
@@ -419,6 +449,21 @@
       "googlePlaceId": "ChIJPWkSoOlzK4cRNuabcJEXny0",
       "lat": 33.548134,
       "lng": -112.046424,
+      "image": "https://cdn.filestackcontent.com/0KnjAOR2yBLcGUqBnUuw"
+    },
+    {
+      "itemId": 762628,
+      "name": "Hilton Villas Scottsdale Floating Sound Bath",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "Hilton Scottsdale Resort and Villas",
+      "city": "Scottsdale",
+      "state": "AZ",
+      "street": "6333 North Scottsdale Road",
+      "postalCode": "85250",
+      "googlePlaceId": "ChIJp4PbdRQLK4cRcG0m7TciBko",
+      "lat": 33.53055,
+      "lng": -111.924291,
       "image": "https://cdn.filestackcontent.com/9K4RJNY4TIig981WkzfI"
     },
     {
@@ -435,21 +480,6 @@
       "lat": 33.368099,
       "lng": -111.605824,
       "image": "https://cdn.filestackcontent.com/qJlOZtLS8b3MwCH5Wjtg"
-    },
-    {
-      "itemId": 692276,
-      "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
-      "isUnlisted": false,
-      "isRetail": false,
-      "venue": "PebbleCreek Oasis Pool",
-      "city": "Goodyear",
-      "state": "AZ",
-      "street": "16896 West Coronado Road",
-      "postalCode": "85395",
-      "googlePlaceId": "ChIJ52ZyLvlHK4cR6a65XLKA6Zw",
-      "lat": 33.466621,
-      "lng": -112.422759,
-      "image": "https://cdn.filestackcontent.com/iOFnI3FJS0R91fcqstvQ"
     },
     {
       "itemId": 708584,

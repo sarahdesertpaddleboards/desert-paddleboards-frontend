@@ -22,8 +22,8 @@ const traditions = [
     when: "Every October · Tempe Town Lake",
     title: "Witches Regatta",
     body: "Hundreds of paddlers in pointy hats floating Tempe Town Lake at sunset. Free to join since 2017. Bring a board or rent one from us.",
-    href: "/blog/witches-regatta",
-    cta: "The Witches Regatta story",
+    href: "/witches-regatta",
+    cta: "2026 photos & video",
   },
   {
     icon: Gift,
@@ -171,12 +171,20 @@ export default function CommunityEvents() {
             How a handful of us in witch hats on an urban lake turned into one of
             Arizona's most unusual Halloween traditions.
           </p>
-          <Link
-            to="/blog/witches-regatta"
-            className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            Read the story
-          </Link>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/blog/witches-regatta"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Read the story
+            </Link>
+            <Link
+              to="/witches-regatta"
+              className="inline-flex items-center justify-center rounded-full border border-brand-dark px-7 py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark/5"
+            >
+              2026 photos &amp; video
+            </Link>
+          </div>
         </section>
 
         <p className="text-center text-sm text-muted-foreground">

@@ -22,7 +22,7 @@
 /airstream-rental             /rentals          301
 /adventure-life-coaching      /coaching         301
 /sedona-floating              /locations        301
-/witches-regatta-year-11      /community-events 301
+/witches-regatta-year-11      /witches-regatta 301
 
 # --- Blog (GoDaddy used /blog/f/<slug>; new site uses /blog/<slug>) ----------
 /blog/f/*                     /blog/:splat      301

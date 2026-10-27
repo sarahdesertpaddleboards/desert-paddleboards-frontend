@@ -280,7 +280,18 @@ export default function LocationDetail() {
 
           {/* Community volunteer sign-up — Witches Regatta only. Paddler
               registration goes through FareHarbor (the booking card). */}
-          {city?.id === "witches-regatta" ? <VolunteerSignup /> : null}
+          {city?.id === "witches-regatta" ? (
+            <>
+              <Link
+                to="/witches-regatta"
+                className="block rounded-2xl bg-brand-dark p-6 text-white hover:bg-brand-dark/90"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/80">Witches Regatta 2026</p>
+                <p className="mt-1 text-xl italic">See the photos and drone video →</p>
+              </Link>
+              <VolunteerSignup />
+            </>
+          ) : null}
         </div>
 
         {/* Booking card + "Getting there" */}
