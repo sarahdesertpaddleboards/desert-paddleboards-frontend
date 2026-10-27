@@ -173,6 +173,26 @@
         }
       ],
       "id": "salt-river-outing"
+    },
+    {
+      "title": "Santa Paddle",
+      "slug": "santa-paddle-tempe-town-lake",
+      "venue": "Tempe Town Lake Boat Marina",
+      "city": "Tempe",
+      "state": "AZ",
+      "address": "Tempe Town Lake Boat Marina (north shore), 550 Tempe Town Lake, Tempe, AZ 85281",
+      "fareharborItemId": 146502,
+      "image": "/santa-paddle/santas-under-bridge.jpg",
+      "note": "Our free holiday paddle on Tempe Town Lake. Santas, elves, reindeer and dogs in antlers on paddleboards and kayaks. Bring your own board or kayak and a life jacket, put on your silliest costume, and meet us on the hill by the boat marina on the north side of the lake.",
+      "sessions": [
+        {
+          "date": "2026-12-12",
+          "time": "10:00",
+          "endTime": "12:00"
+        }
+      ],
+      "id": "santa-paddle",
+      "isFree": true
     }
   ]
 }
