@@ -27,10 +27,14 @@ const hero = {
 };
 
 const photos = [
-  { src: "/santa-paddle/santa-and-dog.jpg", alt: "A Santa, Mrs. Claus and a golden retriever in a Santa suit by Tempe Town Lake" },
-  { src: "/santa-paddle/paddlers-mill-ave-bridge.jpg", alt: "A crowd of paddleboarders in holiday costumes on Tempe Town Lake" },
+  { src: "/santa-paddle/sarah-and-dog-santa.webp", alt: "Sarah in a Santa dress on her paddleboard with her golden retriever in a Santa suit" },
+  { src: "/santa-paddle/santas-under-mill-ave-bridge.webp", alt: "Santas on decorated paddleboards gathering under the Mill Avenue bridge" },
+  { src: "/santa-paddle/dog-in-tinsel.webp", alt: "A golden retriever in tinsel and a Santa vest riding a paddleboard" },
+  { src: "/santa-paddle/mrs-claus-paddling.webp", alt: "A Mrs. Claus paddling a garland-covered board across Tempe Town Lake" },
+  { src: "/santa-paddle/santas-and-dog-skyline.webp", alt: "Santas standing on paddleboards with a dog in front of the Tempe skyline" },
+  { src: "/santa-paddle/under-the-bridge-with-dog.webp", alt: "A dog in a Happy Holidays sweater watching Santas paddle under the bridge" },
   { src: "/santa-paddle/kayak-with-dog.jpg", alt: "A paddler in a Santa hat in a red kayak with a dog in an elf sweater" },
-  { src: "/santa-paddle/kayak-and-paddleboard.jpg", alt: "An elf on a paddleboard next to a kayaker on Tempe Town Lake" },
+  { src: "/santa-paddle/santa-and-dog.jpg", alt: "A Santa, Mrs. Claus and a golden retriever in a Santa suit by Tempe Town Lake" },
 ];
 
 const expect = [
@@ -109,7 +113,7 @@ export default function SantaPaddle() {
               The Santa Paddle
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90 md:text-lg">
-              Dress up. Show up. Paddle into holiday chaos.
+              Dress up, hop on your board and fly across the lake like Santa's sleigh.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <FareHarborButton itemId={SANTA_ITEM_ID} className={rsvpClass}>

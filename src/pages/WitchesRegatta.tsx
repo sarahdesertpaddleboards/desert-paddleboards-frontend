@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Facebook, Gift, Instagram, Pause, Play } from "lucide-react";
+import { Calendar, Download, Facebook, Gift, Instagram, Pause, Play } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import FareHarborButton, { useFareHarborEmbed } from "@/components/FareHarborButton";
@@ -13,6 +13,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * /witches-regatta — the 2026 recap: drone + camera montage, a photo
@@ -21,11 +22,15 @@ import { breadcrumbLd, graph } from "@/lib/jsonld";
  * Dropbox folder.
  *
  * Photos are 1600px WebP (~90KB) with 640px "-sm" variants in
- * public/witches-regatta-2026/; the montage is a silent 720p loop.
+ * public/witches-regatta-2026/; the montage is a silent 720p loop. Sarah
+ * wants people to keep their photos, so the full-size JPGs live in
+ * download/ (one per slide) plus a zip of all of them.
  */
 
 const SANTA_ITEM_ID = 146502;
 const DIR = "/witches-regatta-2026";
+
+const ZIP = { href: `${DIR}/witches-regatta-2026-photos.zip`, label: "Download all 30 photos (19MB)" };
 
 const video = { src: `${DIR}/montage.mp4`, poster: `${DIR}/montage-poster.jpg` };
 
@@ -149,7 +154,7 @@ function PhotoCarousel() {
     <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="mx-auto md:px-12">
       <CarouselContent>
         {photos.map(([n, landscape, alt], i) => (
-          <CarouselItem key={n} className="basis-auto">
+          <CarouselItem key={n} className="relative basis-auto">
             <img
               src={`${DIR}/${n}-sm.webp`}
               srcSet={`${DIR}/${n}-sm.webp 640w, ${DIR}/${n}.webp 1600w`}
@@ -163,6 +168,16 @@ function PhotoCarousel() {
                 landscape ? "aspect-[3/2]" : "aspect-[2/3]"
               }`}
             />
+            <a
+              href={`${DIR}/download/witches-regatta-2026-${n}.jpg`}
+              download
+              onClick={() => trackEvent("photo_download", { event: "witches_regatta_2026", photo: n })}
+              className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-2 text-xs font-semibold text-brand-dark shadow hover:bg-white"
+              aria-label={`Download photo ${Number(n)}: ${alt}`}
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              Download
+            </a>
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -235,11 +250,13 @@ export default function WitchesRegatta() {
       <div className="container space-y-16 py-14">
         {/* Photos */}
         <section id="photos" className="scroll-mt-24 space-y-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
             <h2 className="text-3xl italic">Find yourself on the lake</h2>
             <p className="mt-2 text-muted-foreground">
-              A few favourites from the dock, the water and that sunset. Spot
-              yourself? Share it and tag us{" "}
+              A few favourites from the dock, the water and that sunset. They're
+              yours to keep: hit Download on any photo, or grab the lot. Share
+              them and tag us{" "}
               <a
                 href="https://www.instagram.com/desertpaddleboards/"
                 target="_blank"
@@ -251,6 +268,16 @@ export default function WitchesRegatta() {
               .
             </p>
           </div>
+            <a
+              href={ZIP.href}
+              download
+              onClick={() => trackEvent("photo_download", { event: "witches_regatta_2026", photo: "all" })}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              {ZIP.label}
+            </a>
+          </div>
           <PhotoCarousel />
         </section>
 
@@ -260,22 +287,23 @@ export default function WitchesRegatta() {
           className="scroll-mt-24 overflow-hidden rounded-3xl bg-brand-dark text-white md:grid md:grid-cols-2"
         >
           <img
-            src="/santa-paddle/santas-under-bridge.jpg"
-            alt="Paddlers dressed as Santa and elves under the Mill Avenue bridge on Tempe Town Lake"
+            src="/santa-paddle/sarah-and-dog-santa.webp"
+            alt="Sarah in a Santa dress on her paddleboard with her golden retriever in a Santa suit on Tempe Town Lake"
             loading="lazy"
-            className="h-64 w-full object-cover md:h-full"
+            className="h-80 w-full object-cover object-[center_35%] md:h-full"
           />
           <div className="p-8 md:p-12">
             <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/80">
               <Calendar className="h-4 w-4" aria-hidden="true" />
               Next up · Sat Dec 12 · 10am · Free
             </p>
-            <h2 className="mt-3 text-3xl italic md:text-4xl">Swap the broom for a Santa hat</h2>
+            <h2 className="mt-3 text-3xl italic md:text-4xl">Swap the broomstick for a sleigh</h2>
             <p className="mt-3 text-white/85">
               Our next free community paddle is the Santa Paddle on Tempe Town
               Lake: Santas, elves, reindeer and dogs in antlers on paddleboards
-              and kayaks. Same lake, same crew, more tinsel. RSVP so we can send
-              you meeting-spot and weather updates.
+              and kayaks, flying across the lake in formation. Same lake, same
+              crew, more tinsel. RSVP so we can send you meeting-spot and
+              weather updates.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <FareHarborButton
