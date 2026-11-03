@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PAYOUT_METHOD_LABELS, staffApi, type Application, type ShiftDetail, type Staff } from "../../api";
+import MarkPaidControl from "../../components/MarkPaidControl";
 import ShiftForm, { shiftInputFrom, shiftValuesFrom, type ShiftFormValues } from "../../components/ShiftForm";
-import { dayLabel, errMessage, money, timeRange, venueLine } from "../../format";
+import { dayLabel, describePaid, errMessage, money, shortDay, timeRange, venueLine } from "../../format";
 import { useStaff } from "../../StaffContext";
 import { ShiftBadges } from "./Shifts";
 
@@ -203,11 +204,47 @@ export default function AdminShiftDetail() {
               {confirmed.map((a) => (
                 <li key={a.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <Person row={a} />
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <span className="font-semibold">{money(a.payCents)}</span>
                     {a.paidAt ? (
-                      <Badge className="bg-brand text-white hover:bg-brand">Paid</Badge>
+                      <>
+                        <Badge className="bg-brand text-white hover:bg-brand">Paid {shortDay(a.paidAt)}</Badge>
+                        {a.paidNote ? <span className="text-xs text-muted-foreground">{a.paidNote}</span> : null}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-muted-foreground"
+                          disabled={busy}
+                          onClick={() => {
+                            if (window.confirm("Undo this payment? Any email already sent stays sent.")) {
+                              void run(async () => {
+                                await staffApi.admin.undoPaid(a.id);
+                                return staffApi.admin.getEvent(event.id);
+                              }, "Payment undone.");
+                            }
+                          }}
+                        >
+                          Undo
+                        </Button>
+                      </>
                     ) : (
+                      <>
+                      {event.isPast && event.status !== "cancelled" ? (
+                        <MarkPaidControl
+                          label="Mark paid"
+                          disabled={busy}
+                          onSubmit={async (note, notify) => {
+                            let ok = false;
+                            await run(async () => {
+                              const res = await staffApi.admin.markPaid({ applicationIds: [a.id], note: note || undefined, notify });
+                              setNotice(describePaid(res, notify));
+                              ok = true;
+                              return staffApi.admin.getEvent(event.id);
+                            });
+                            return ok;
+                          }}
+                        />
+                      ) : null}
                       <Button
                         size="sm"
                         variant="ghost"
@@ -221,6 +258,7 @@ export default function AdminShiftDetail() {
                       >
                         Remove
                       </Button>
+                      </>
                     )}
                   </div>
                 </li>

@@ -10,7 +10,7 @@ import { json } from "../../../server/staff/http.js";
 import { EVENT_WITH_COUNTS, toPublicApplication, toPublicEvent } from "../../../server/staff/shifts.js";
 
 function forStaff(row) {
-  const { defaultPayCents, ...event } = toPublicEvent(row);
+  const { defaultPayCents, unpaidCount, ...event } = toPublicEvent(row);
   return event;
 }
 

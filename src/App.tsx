@@ -39,6 +39,8 @@ import StaffNotFound from "./staff/pages/NotFound";
 import StaffAdminShifts from "./staff/pages/admin/Shifts";
 import StaffAdminShiftNew from "./staff/pages/admin/ShiftNew";
 import StaffAdminShiftDetail from "./staff/pages/admin/ShiftDetail";
+import StaffAdminPayroll from "./staff/pages/admin/Payroll";
+import StaffEarnings from "./staff/pages/Earnings";
 
 import { experiences } from "./data/locations";
 import { cityClassDetailSlugs } from "./data/city-classes";
@@ -118,7 +120,9 @@ export const routes: RouteRecord[] = [
       { path: "login", element: <StaffLogin /> },
       { path: "verify", element: <StaffVerify /> },
       { path: "profile", element: <StaffProfile /> },
+      { path: "earnings", element: <StaffEarnings /> },
       { path: "admin/people", element: <StaffPeople /> },
+      { path: "admin/payroll", element: <StaffAdminPayroll /> },
       { path: "admin/shifts", element: <StaffAdminShifts /> },
       { path: "admin/shifts/new", element: <StaffAdminShiftNew /> },
       { path: "admin/shift", element: <StaffAdminShiftDetail /> }, // ?id=… (static path: Pages serves prerendered shells only)

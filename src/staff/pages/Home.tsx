@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { staffApi, type Application, type Shift } from "../api";
-import { dayLabel, errMessage, money, shortDay, timeRange, venueLine } from "../format";
+import { summarizeEarnings, type MyShift } from "../earnings";
+import { dayLabel, errMessage, money, timeRange, venueLine } from "../format";
 import { useStaff } from "../StaffContext";
 
 type OpenShift = Shift & { my: Application | null };
-type MyShift = { application: Application; event: Shift };
 
 /**
  * Staff home: your upcoming shifts (applied / confirmed), open shifts to put
- * your name down for, and past shifts with the pay Sarah locked in.
+ * your name down for, and a summary of your pay (full history on /staff/earnings).
  */
 export default function StaffHome() {
   const { staff } = useStaff();
@@ -42,9 +42,8 @@ export default function StaffHome() {
   const upcomingMine = mine
     .filter((m) => !m.event.isPast && m.application.status !== "declined")
     .sort((a, b) => a.event.startAt.localeCompare(b.event.startAt));
-  const pastMine = mine.filter((m) => m.event.isPast && m.application.status === "confirmed");
   const openToApply = (open ?? []).filter((s) => !s.my || s.my.status === "withdrawn");
-  const earned = pastMine.reduce((sum, m) => sum + (m.application.payCents ?? 0), 0);
+  const earnings = summarizeEarnings(mine);
 
   return (
     <div className="space-y-6">
@@ -119,39 +118,45 @@ export default function StaffHome() {
         ))}
       </Section>
 
-      {pastMine.length ? (
-        <Section title="Past shifts" description={`${pastMine.length} worked · ${money(earned)} total`}>
-          {pastMine.map(({ application, event }) => (
-            <li key={application.id} className="flex items-center justify-between gap-3 p-4 text-sm">
-              <div className="min-w-0">
-                <p className="font-medium">{event.title}</p>
-                <p className="text-muted-foreground">
-                  {shortDay(event.startAt)}
-                  {venueLine(event) ? ` · ${venueLine(event)}` : ""}
-                </p>
+      {earnings.history.length || earnings.upcomingCount ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Your pay</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <dl className="grid grid-cols-3 gap-3 text-sm">
+              <div>
+                <dt className="text-muted-foreground">Not paid yet</dt>
+                <dd className="text-xl font-bold text-brand-dark">{money(earnings.owedCents)}</dd>
               </div>
-              <div className="shrink-0 text-right">
-                <p className="font-semibold">{money(application.payCents)}</p>
-                {application.paidAt ? (
-                  <Badge className="bg-brand text-white hover:bg-brand">Paid</Badge>
-                ) : (
-                  <Badge variant="outline">Not paid yet</Badge>
-                )}
+              <div>
+                <dt className="text-muted-foreground">Coming up</dt>
+                <dd className="text-xl font-bold text-brand-dark">{money(earnings.upcomingCents)}</dd>
               </div>
-            </li>
-          ))}
-        </Section>
+              <div>
+                <dt className="text-muted-foreground">Paid in {earnings.thisYear}</dt>
+                <dd className="text-xl font-bold text-brand-dark">{money(earnings.paidThisYearCents)}</dd>
+              </div>
+            </dl>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/staff/earnings">See all earnings</Link>
+            </Button>
+          </CardContent>
+        </Card>
       ) : null}
 
       {staff.role === "admin" ? (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Admin</CardTitle>
-            <CardDescription>Post shifts, confirm people with their pay, and manage the team.</CardDescription>
+            <CardDescription>Post shifts, confirm people with their pay, mark pay sent, and manage the team.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
             <Button asChild>
               <Link to="/staff/admin/shifts">Schedule</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/staff/admin/payroll">Payroll</Link>
             </Button>
             <Button asChild variant="outline">
               <Link to="/staff/admin/people">People</Link>

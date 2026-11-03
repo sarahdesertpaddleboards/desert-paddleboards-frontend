@@ -1,6 +1,6 @@
 /** Display + form helpers for shifts. Everything is Arizona time (no DST). */
 import { fmtDateHeader, fmtTime, TZ } from "@/lib/sessions";
-import { ApiError } from "./api";
+import { ApiError, type MarkPaidResult } from "./api";
 
 export function money(cents: number | null | undefined): string {
   if (cents == null) return "";
@@ -54,4 +54,30 @@ export function venueLine(s: { venue: string | null; city: string | null }): str
 
 export function errMessage(err: unknown, fallback: string): string {
   return err instanceof ApiError && err.message && err.message !== err.code ? err.message : fallback;
+}
+
+/** Arizona calendar year of an instant, e.g. 2026. */
+export function azYear(iso: string | number = Date.now()): number {
+  return Number(new Date(iso).toLocaleDateString("en-US", { timeZone: TZ, year: "numeric" }));
+}
+
+/** "2026-11" in Arizona, for grouping and comparing months. */
+export function azMonthKey(iso: string | number = Date.now()): string {
+  return toInputs(new Date(iso).toISOString()).date.slice(0, 7);
+}
+
+/** "November 2026" */
+export function monthLabel(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", { timeZone: TZ, month: "long", year: "numeric" });
+}
+
+/** Feedback line after marking shifts paid. */
+export function describePaid(res: MarkPaidResult, notify: boolean): string {
+  const what = `${money(res.totalCents)} marked paid (${res.paidCount} shift${res.paidCount === 1 ? "" : "s"}).`;
+  if (!notify) return `${what} No email sent.`;
+  if (res.localMode) return `${what} Local dev: no email sent.`;
+  if (res.emailErrors.length) {
+    return `${what} The email to ${res.emailErrors.map((e) => e.name).join(", ")} failed, so let them know directly.`;
+  }
+  return `${what} ${res.emailed === 1 ? "They've" : "Everyone's"} been emailed.`;
 }

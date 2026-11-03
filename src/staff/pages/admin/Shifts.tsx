@@ -107,6 +107,11 @@ export function ShiftBadges({ shift: e }: { shift: Shift }) {
           {e.appliedCount} applied
         </Badge>
       ) : null}
+      {e.isPast && e.unpaidCount ? (
+        <Badge className="bg-amber-100 text-amber-900 hover:bg-amber-100">{e.unpaidCount} to pay</Badge>
+      ) : e.isPast && e.confirmedCount > 0 ? (
+        <Badge variant="outline">All paid</Badge>
+      ) : null}
     </>
   );
 }

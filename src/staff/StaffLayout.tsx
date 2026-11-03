@@ -33,16 +33,19 @@ export default function StaffLayout() {
   );
 }
 
-function Shell({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
+function Shell({ children, nav, action }: { children: React.ReactNode; nav?: React.ReactNode; action?: React.ReactNode }) {
+  // Phone: logo + log out on the first row, nav full width underneath.
+  // Wider: logo, nav, log out in one row.
   return (
     <>
       <header className="border-b border-border bg-white">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-2 gap-y-1 px-4 py-3">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-3 md:flex-nowrap">
           <Link to="/staff" className="flex shrink-0 items-center gap-2 sm:gap-3">
             <img src="/logo.webp" alt="Desert Paddleboards" className="h-8 w-auto sm:h-9" />
             <span className="hidden text-xs font-bold uppercase tracking-[0.14em] text-brand sm:inline">Staff</span>
           </Link>
-          {right}
+          {action ? <div className="ml-auto md:order-last md:ml-0">{action}</div> : null}
+          {nav ? <div className="w-full min-w-0 md:ml-auto md:w-auto">{nav}</div> : null}
         </div>
       </header>
       <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:py-8">{children}</main>
@@ -67,32 +70,37 @@ function Chrome() {
   }, [loading, staff, isPublic, location.pathname, location.search, navigate]);
 
   const nav = staff ? (
-    <nav className="-mx-2 flex max-w-full items-center gap-0.5 overflow-x-auto text-sm sm:mx-0 sm:gap-1">
+    <nav className="-mx-2 flex max-w-full items-center gap-0.5 overflow-x-auto text-sm md:mx-0 md:gap-1">
       <NavItem to="/staff" end>
         Shifts
       </NavItem>
+      <NavItem to="/staff/earnings">Earnings</NavItem>
       <NavItem to="/staff/profile">Profile</NavItem>
       {staff.role === "admin" ? (
         <>
           <NavItem to="/staff/admin/shifts">Schedule</NavItem>
+          <NavItem to="/staff/admin/payroll">Payroll</NavItem>
           <NavItem to="/staff/admin/people">People</NavItem>
         </>
       ) : null}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="px-2 text-muted-foreground sm:px-3"
-        onClick={() => {
-          void logout().then(() => navigate("/staff/login", { replace: true }));
-        }}
-      >
-        Log out
-      </Button>
     </nav>
   ) : null;
 
+  const action = staff ? (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="px-2 text-muted-foreground sm:px-3"
+      onClick={() => {
+        void logout().then(() => navigate("/staff/login", { replace: true }));
+      }}
+    >
+      Log out
+    </Button>
+  ) : null;
+
   return (
-    <Shell right={nav}>
+    <Shell nav={nav} action={action}>
       {loading && !isPublic ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
       ) : !staff && !isPublic ? null : (
@@ -108,7 +116,7 @@ function NavItem({ to, end, children }: { to: string; end?: boolean; children: R
       to={to}
       end={end}
       className={({ isActive }) =>
-        `rounded-md px-2 py-1.5 font-medium transition-colors sm:px-3 ${
+        `shrink-0 rounded-md px-2 py-1.5 font-medium transition-colors md:px-3 ${
           isActive ? "bg-brand-dark text-white" : "text-foreground hover:bg-black/5"
         }`
       }

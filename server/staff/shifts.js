@@ -120,17 +120,19 @@ export function toPublicEvent(row) {
     status: row.status,
     confirmedCount: confirmed,
     appliedCount: row.applied_count ?? 0,
+    unpaidCount: row.unpaid_count ?? 0,
     isFull: confirmed >= row.staff_needed,
     isPast: Date.parse(row.start_at) < Date.now(),
     createdAt: row.created_at,
   };
 }
 
-/** SQL fragment: events plus live counts of confirmed + pending applications. */
+/** SQL fragment: events plus live counts of confirmed, pending and confirmed-but-unpaid applications. */
 export const EVENT_WITH_COUNTS = `
   SELECT e.*,
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed') AS confirmed_count,
-    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'applied')   AS applied_count
+    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'applied')   AS applied_count,
+    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.paid_at IS NULL) AS unpaid_count
   FROM events e`;
 
 export async function getEventWithCounts(db, id) {

@@ -180,3 +180,45 @@ export function shiftConfirmedEmail({ name, event, payCents, url }) {
       `View your shifts: ${url}\n\nCan't make it after all? Reply to this email or text Sarah so she can find cover.`,
   };
 }
+
+const PAYOUT_LABELS = { venmo: "Venmo", zelle: "Zelle", cashapp: "Cash App", paypal: "PayPal", check: "check", other: "" };
+
+/** "Your pay is on its way" — sent when Sarah marks one or more shifts paid. */
+export function paymentSentEmail({ name, items, note, payoutMethod, payoutHandle, url }) {
+  const first = name ? name.split(" ")[0] : null;
+  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+  const total = formatMoney(items.reduce((sum, i) => sum + (i.payCents ?? 0), 0));
+  const day = (iso) =>
+    new Date(iso).toLocaleDateString("en-US", { timeZone: "America/Phoenix", weekday: "short", month: "short", day: "numeric" });
+  const via = PAYOUT_LABELS[payoutMethod] ? `${PAYOUT_LABELS[payoutMethod]}${payoutHandle ? ` (${payoutHandle})` : ""}` : null;
+  const rows = items
+    .map(
+      (i) =>
+        `<tr><td style="padding:6px 16px 6px 0;color:#6b7280;white-space:nowrap;">${escapeHtml(day(i.startAt))}</td><td style="padding:6px 16px 6px 0;">${escapeHtml(i.title)}</td><td style="padding:6px 0;text-align:right;font-weight:600;">${escapeHtml(formatMoney(i.payCents))}</td></tr>`,
+    )
+    .join("");
+  const totalRow =
+    items.length > 1
+      ? `<tr><td></td><td style="padding:10px 16px 0 0;border-top:1px solid #e5e7eb;font-weight:600;">Total</td><td style="padding:10px 0 0;border-top:1px solid #e5e7eb;text-align:right;font-weight:700;">${escapeHtml(total)}</td></tr>`
+      : "";
+  const noteHtml = note
+    ? `<p style="margin:16px 0 0;padding:12px 14px;background:#f4f6f7;border-radius:10px;">Note from Sarah: ${escapeHtml(note)}</p>`
+    : "";
+  return {
+    subject: `Paid: ${total} from Desert Paddleboards`,
+    html: layout({
+      heading: "Your pay is on its way",
+      bodyHtml: `<p>${hi}</p><p>Sarah has sent <strong>${escapeHtml(total)}</strong>${via ? ` by ${escapeHtml(via)}` : ""} for:</p>
+        <table style="border-collapse:collapse;font-size:16px;margin:8px 0 0;width:100%;">${rows}${totalRow}</table>${noteHtml}
+        <p style="margin-top:16px;">It may take a little while to show up, depending on how it was sent. Thanks for your work!</p>`,
+      buttonLabel: "See my earnings",
+      buttonUrl: url,
+      footnote: "Something not right, or it hasn't arrived in a couple of days? Reply to this email.",
+    }),
+    text:
+      `${first ? `Hi ${first},` : "Hi,"}\n\nSarah has sent ${total}${via ? ` by ${via}` : ""} for:\n\n` +
+      items.map((i) => `- ${day(i.startAt)}: ${i.title}, ${formatMoney(i.payCents)}`).join("\n") +
+      `${items.length > 1 ? `\nTotal: ${total}` : ""}\n${note ? `\nNote from Sarah: ${note}\n` : ""}` +
+      `\nSee your earnings: ${url}\n\nSomething not right, or it hasn't arrived in a couple of days? Reply to this email.`,
+  };
+}

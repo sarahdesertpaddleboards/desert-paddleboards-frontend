@@ -42,6 +42,8 @@ export interface Shift {
   status: "open" | "filled" | "completed" | "cancelled";
   confirmedCount: number;
   appliedCount: number;
+  /** Confirmed people not yet marked paid (admin responses only). */
+  unpaidCount?: number;
   isFull: boolean;
   isPast: boolean;
   createdAt: string;
@@ -81,6 +83,28 @@ export interface ShiftInput {
   source?: "manual" | "fareharbor" | "city";
   fareharborItemId?: number | null;
   fareharborAvailabilityPk?: number | null;
+}
+
+/** A confirmed shift on Sarah's payroll: the application plus its shift and person. */
+export interface LedgerRow extends Application {
+  paidByName: string | null;
+  event: Pick<Shift, "id" | "title" | "venue" | "city" | "startAt" | "endAt" | "status" | "isPast">;
+  staff: Pick<Staff, "id" | "email" | "name" | "phone" | "payoutMethod" | "payoutHandle">;
+}
+
+export interface Payroll {
+  year: number;
+  owed: LedgerRow[];
+  upcoming: { count: number; totalCents: number };
+  paid: LedgerRow[];
+}
+
+export interface MarkPaidResult {
+  paidCount: number;
+  totalCents: number;
+  emailed: number;
+  emailErrors: { name: string; error: string }[];
+  localMode: boolean;
 }
 
 type ConfirmResult = ShiftDetail & { emailed: boolean; emailError?: string; localMode?: boolean };
@@ -151,6 +175,10 @@ export const staffApi = {
     confirm: (id: string, staffId: string, pay: string) =>
       call<ConfirmResult>("POST", `/admin/events/${id}/confirm`, { staffId, pay }),
     decline: (id: string, staffId: string) => call<ShiftDetail>("POST", `/admin/events/${id}/decline`, { staffId }),
+    payroll: (year?: number) => call<Payroll>("GET", `/admin/pay${year ? `?year=${year}` : ""}`),
+    markPaid: (input: { applicationIds: string[]; note?: string; notify: boolean }) =>
+      call<MarkPaidResult>("POST", "/admin/pay/mark-paid", input),
+    undoPaid: (applicationId: string) => call<{ ok: true }>("POST", "/admin/pay/undo", { applicationId }),
   },
 };
 
