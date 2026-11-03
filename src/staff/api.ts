@@ -15,8 +15,6 @@ export interface RoleSlot {
   needed: number;
   confirmed: number;
   applied: number;
-  /** Usual pay for the role (admin responses only). */
-  payCents?: number | null;
 }
 
 export interface Staff {
@@ -51,14 +49,10 @@ export interface Shift {
   fareharborItemId: number | null;
   fareharborAvailabilityPk: number | null;
   staffNeeded: number;
-  /** Admin responses only (legacy; pay now lives on each role). */
-  defaultPayCents?: number | null;
   roles: RoleSlot[];
   trailerNeeded: number;
   trailerConfirmed: number;
   trailerOpen: boolean;
-  /** Admin responses only. */
-  trailerPayCents?: number | null;
   /** Posted automatically from the public calendar. */
   autoPosted: boolean;
   /** Admin responses only: the session has left the public calendar. */
@@ -84,8 +78,6 @@ export interface Application {
   role: Role;
   /** Applied to / confirmed to also drive the trailer. */
   trailer: boolean;
-  /** The trailer part of payCents (payCents is the total). */
-  trailerPayCents: number | null;
   payCents: number | null;
   staffNote: string | null;
   confirmedAt: string | null;
@@ -106,9 +98,8 @@ export interface ShiftInput {
   endAt?: string | null;
   venue?: string | null;
   city?: string | null;
-  roles?: { role: Role; needed: number; pay?: string | number | null }[];
+  roles?: { role: Role; needed: number }[];
   trailerNeeded?: number;
-  trailerPay?: string | number | null;
   notes?: string | null;
   status?: "open" | "completed" | "cancelled";
   source?: "manual" | "fareharbor" | "city";
@@ -155,18 +146,17 @@ export interface ConfirmInput {
   email?: string;
   name?: string;
   role: Role;
+  /** This person's pay for this shift (covers the trailer too, if they're driving). */
   pay: string;
   trailer?: boolean;
-  trailerPay?: string;
 }
 
 export interface ShiftTemplate {
   id: string;
   name: string;
   keywords: string[];
-  roles: { role: Role; needed: number; payCents: number | null }[];
+  roles: { role: Role; needed: number }[];
   trailerNeeded: number;
-  trailerPayCents: number | null;
   notes: string | null;
   autoPost: boolean;
   isDefault: boolean;
@@ -176,9 +166,8 @@ export interface ShiftTemplate {
 export interface TemplateInput {
   name?: string;
   keywords?: string[];
-  roles?: { role: Role; needed: number; pay?: string | number | null }[];
+  roles?: { role: Role; needed: number }[];
   trailerNeeded?: number;
-  trailerPay?: string | number | null;
   notes?: string | null;
   autoPost?: boolean;
 }

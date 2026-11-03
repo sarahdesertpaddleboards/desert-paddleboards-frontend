@@ -2,7 +2,7 @@
  * GET    /staff-api/admin/events/:id — the shift plus everyone who applied or was
  *        confirmed, with their contact and payment details.
  * PATCH  /staff-api/admin/events/:id — edit title/time/venue/city/notes,
- *        roles [{role, needed, pay?}], trailerNeeded/trailerPay,
+ *        roles [{role, needed}], trailerNeeded,
  *        or status: 'open' | 'cancelled' | 'completed'.
  * DELETE /staff-api/admin/events/:id — only while nobody is on it (else cancel).
  *        A deleted calendar shift is remembered so auto-posting won't bring it back.
@@ -10,7 +10,7 @@
 import { requireAdmin } from "../../../../server/staff/auth.js";
 import { HttpError, json, nowIso, readJson } from "../../../../server/staff/http.js";
 import { readRolesInput, saveRoles } from "../../../../server/staff/roles.js";
-import { getEventWithCounts, loadEventDetail, parsePayCents, readEventInput } from "../../../../server/staff/shifts.js";
+import { getEventWithCounts, loadEventDetail, readEventInput } from "../../../../server/staff/shifts.js";
 
 export async function onRequestGet(context) {
   requireAdmin(context);
@@ -26,10 +26,9 @@ export async function onRequestPatch(context) {
 
   const body = await readJson(context.request);
   const updates = readEventInput(body, { partial: true });
-  // Head count and pay now live on the roles.
+  // Head count lives on the roles.
   delete updates.staff_needed;
-  delete updates.default_pay_cents;
-  const roles = readRolesInput(body.roles, (v) => parsePayCents(v));
+  const roles = readRolesInput(body.roles);
   if (updates.trailer_needed !== undefined) {
     const { trailer_confirmed } = await getEventWithCounts(db, id);
     if (updates.trailer_needed < trailer_confirmed) {

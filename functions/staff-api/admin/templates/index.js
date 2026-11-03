@@ -1,6 +1,6 @@
 /**
  * GET  /staff-api/admin/templates — staffing templates (roles + trailer per kind of session).
- * POST /staff-api/admin/templates — add one { name, keywords, roles, trailerNeeded?, trailerPay?, notes?, autoPost? }
+ * POST /staff-api/admin/templates — add one { name, keywords, roles, trailerNeeded?, notes?, autoPost? }
  */
 import { requireAdmin } from "../../../../server/staff/auth.js";
 import { json, newId, readJson } from "../../../../server/staff/http.js";

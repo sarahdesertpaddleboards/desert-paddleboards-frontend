@@ -1,10 +1,11 @@
 /**
  * Roles on a shift (event_roles) and the trailer add-on.
  *
- * A shift needs N people per role, each role with its own usual pay. Trailer
- * driver isn't a role: it's an add-on to one person's role (the driver always
- * works the event too) with extra pay. Locked pay on an application is the
- * total; trailer_pay_cents is the trailer part of it.
+ * A shift needs N people per role. Trailer driver isn't a role: it's an add-on
+ * to one person's role (the driver always works the event too). There is no
+ * preset pay: Sarah types each person's pay when she confirms them (it varies
+ * by person and event), and that one amount covers the trailer too. The
+ * pay_cents / trailer_pay_cents columns on roles and events are unused.
  */
 import { HttpError } from "./http.js";
 
@@ -34,10 +35,10 @@ export function readRole(raw) {
 }
 
 /**
- * Validate a roles list from a request: [{ role, needed, pay? }]. Returns null
- * when the body doesn't mention roles. `parsePay` turns dollars into cents.
+ * Validate a roles list from a request: [{ role, needed }]. Returns null when
+ * the body doesn't mention roles.
  */
-export function readRolesInput(raw, parsePay) {
+export function readRolesInput(raw) {
   if (raw === undefined) return null;
   if (!Array.isArray(raw) || raw.length === 0) {
     throw new HttpError(400, "roles_required", "A shift needs at least one role.");
@@ -52,7 +53,7 @@ export function readRolesInput(raw, parsePay) {
     if (!Number.isInteger(needed) || needed < 1 || needed > 50) {
       throw new HttpError(400, "invalid_needed", `How many ${ROLE_LABELS[role].toLowerCase()} people? Use 1 to 50.`);
     }
-    out.push({ role, needed, payCents: parsePay(r?.pay ?? (r?.payCents != null ? r.payCents / 100 : null)) });
+    out.push({ role, needed });
   }
   return out.sort((a, b) => roleOrder(a.role) - roleOrder(b.role));
 }
@@ -75,7 +76,6 @@ export async function loadRoles(db, eventIds) {
     byEvent.get(r.event_id).push({
       role: r.role,
       needed: r.needed,
-      payCents: r.pay_cents,
       confirmed: r.confirmed,
       applied: r.applied,
     });
@@ -116,8 +116,8 @@ export async function saveRoles(db, eventId, roles, { check = true } = {}) {
   for (const r of roles) {
     stmts.push(
       db
-        .prepare("INSERT INTO event_roles (event_id, role, needed, pay_cents) VALUES (?1, ?2, ?3, ?4)")
-        .bind(eventId, r.role, r.needed, r.payCents ?? null),
+        .prepare("INSERT INTO event_roles (event_id, role, needed) VALUES (?1, ?2, ?3)")
+        .bind(eventId, r.role, r.needed),
     );
   }
   stmts.push(
@@ -137,9 +137,9 @@ export function insertRoleStatements(db, eventId, roles) {
   return roles.map((r) =>
     db
       .prepare(
-        `INSERT INTO event_roles (event_id, role, needed, pay_cents)
-         SELECT ?1, ?2, ?3, ?4 WHERE EXISTS (SELECT 1 FROM events WHERE id = ?1)`,
+        `INSERT INTO event_roles (event_id, role, needed)
+         SELECT ?1, ?2, ?3 WHERE EXISTS (SELECT 1 FROM events WHERE id = ?1)`,
       )
-      .bind(eventId, r.role, r.needed, r.payCents ?? null),
+      .bind(eventId, r.role, r.needed),
   );
 }

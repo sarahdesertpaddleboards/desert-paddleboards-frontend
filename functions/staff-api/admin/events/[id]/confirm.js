@@ -1,12 +1,13 @@
 /**
  * POST /staff-api/admin/events/:id/confirm
- *   { staffId | email (+ name), role, pay, trailer?, trailerPay? }
+ *   { staffId | email (+ name), role, pay, trailer? }
  * Put someone on the shift in a role at a locked-in pay and email them. Works
  * for an applicant, as a direct assignment, or for someone not on the team yet
  * (by email): they're added to the roster and get one email with the shift and
- * a link to set up their profile. Trailer driving is an add-on with its own
- * pay; the locked pay is the total. Pay can't be changed once confirmed:
- * remove them and confirm again.
+ * a link to set up their profile. Sarah types the pay for this person on this
+ * shift (it varies by person and event); if they're also driving the trailer,
+ * that one amount covers it. Pay can't be changed once confirmed: remove them
+ * and confirm again.
  */
 import { createLoginToken, requireAdmin } from "../../../../../server/staff/auth.js";
 import { assignedInviteEmail, isLocalMode, sendEmail, shiftConfirmedEmail } from "../../../../../server/staff/email.js";
@@ -53,7 +54,6 @@ export async function onRequestPost(context) {
   if (!slot) throw new HttpError(400, "role_not_on_shift", `This shift doesn't have a ${ROLE_LABELS[role].toLowerCase()} spot. Edit the shift to add one.`);
   const payCents = parsePayCents(body.pay, { required: true });
   const trailer = body.trailer ? 1 : 0;
-  const trailerPayCents = trailer ? parsePayCents(body.trailerPay ?? 0) ?? 0 : null;
   if (trailer && !event.trailerOpen) {
     throw new HttpError(409, "trailer_full", event.trailerNeeded ? "Someone is already driving the trailer." : "This shift doesn't need a trailer driver. Edit the shift first.");
   }
@@ -77,23 +77,22 @@ export async function onRequestPost(context) {
   }
 
   const now = nowIso();
-  const total = payCents + (trailerPayCents ?? 0);
   if (existing) {
     await db
       .prepare(
-        `UPDATE applications SET status = 'confirmed', role = ?1, trailer = ?2, pay_cents = ?3, trailer_pay_cents = ?4,
-                confirmed_at = ?5, confirmed_by = ?6, updated_at = ?5
-          WHERE id = ?7`,
+        `UPDATE applications SET status = 'confirmed', role = ?1, trailer = ?2, pay_cents = ?3, trailer_pay_cents = NULL,
+                confirmed_at = ?4, confirmed_by = ?5, updated_at = ?4
+          WHERE id = ?6`,
       )
-      .bind(role, trailer, total, trailerPayCents, now, admin.id, existing.id)
+      .bind(role, trailer, payCents, now, admin.id, existing.id)
       .run();
   } else {
     await db
       .prepare(
-        `INSERT INTO applications (id, event_id, staff_id, status, role, trailer, pay_cents, trailer_pay_cents, confirmed_at, confirmed_by)
-         VALUES (?1, ?2, ?3, 'confirmed', ?4, ?5, ?6, ?7, ?8, ?9)`,
+        `INSERT INTO applications (id, event_id, staff_id, status, role, trailer, pay_cents, confirmed_at, confirmed_by)
+         VALUES (?1, ?2, ?3, 'confirmed', ?4, ?5, ?6, ?7, ?8)`,
       )
-      .bind(newId("app"), event.id, person.id, role, trailer, total, trailerPayCents, now, admin.id)
+      .bind(newId("app"), event.id, person.id, role, trailer, payCents, now, admin.id)
       .run();
   }
 
@@ -101,13 +100,13 @@ export async function onRequestPost(context) {
   const origin = new URL(request.url).origin;
   const needsInvite = person.status === "invited";
   const token = needsInvite ? await createLoginToken(db, person.id, "invite") : null;
-  const details = { name: person.name, event: row, payCents: total, role, trailerPayCents };
+  const details = { name: person.name, event: row, payCents, role, trailer: Boolean(trailer) };
   let emailed = false;
   let emailError;
   let devLink;
   if (isLocalMode(env)) {
     devLink = token ? `${origin}/staff/verify?token=${token}` : undefined;
-    console.log(`[staff-api] LOCAL confirmation for ${person.email}: ${event.title} as ${role} at ${total} cents${devLink ? ` — invite ${devLink}` : ""}`);
+    console.log(`[staff-api] LOCAL confirmation for ${person.email}: ${event.title} as ${role} at ${payCents} cents${devLink ? ` — invite ${devLink}` : ""}`);
   } else {
     const mail = token
       ? assignedInviteEmail({ ...details, url: `${origin}/staff/verify?token=${token}`, invitedBy: admin.name })

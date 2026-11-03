@@ -15,23 +15,19 @@ interface Draft {
   keywords: string;
   roles: RoleRow[];
   trailer: boolean;
-  trailerPay: string;
   notes: string;
   autoPost: boolean;
 }
-
-const dollars = (cents: number | null | undefined) => (cents != null ? String(cents / 100) : "");
 
 function draftFrom(t?: ShiftTemplate): Draft {
   return {
     name: t?.name ?? "",
     keywords: t?.keywords.join(", ") ?? "",
-    roles: t?.roles.map((r) => ({ role: r.role, needed: String(r.needed), pay: dollars(r.payCents) })) ?? [
-      { role: "lead", needed: "1", pay: "" },
-      { role: "general", needed: "1", pay: "" },
+    roles: t?.roles.map((r) => ({ role: r.role, needed: String(r.needed) })) ?? [
+      { role: "lead", needed: "1" },
+      { role: "general", needed: "1" },
     ],
     trailer: (t?.trailerNeeded ?? 1) > 0,
-    trailerPay: dollars(t?.trailerPayCents),
     notes: t?.notes ?? "",
     autoPost: t?.autoPost ?? true,
   };
@@ -43,7 +39,6 @@ function inputFrom(d: Draft): TemplateInput {
     keywords: d.keywords.split(",").map((k) => k.trim()).filter(Boolean),
     roles: rolesInputFrom(d.roles),
     trailerNeeded: d.trailer ? 1 : 0,
-    trailerPay: d.trailer ? d.trailerPay.trim() || null : null,
     notes: d.notes.trim() || null,
     autoPost: d.autoPost,
   };
@@ -83,7 +78,7 @@ export default function AdminTemplates() {
         </Link>
         <h1 className="mt-2 text-2xl font-bold text-brand-dark sm:text-3xl">Staffing templates</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Who each kind of session needs. When a calendar session is posted automatically, it uses the first template below whose
+          Who each kind of session needs (no pay here: you set each person's pay when you confirm them). When a calendar session is posted automatically, it uses the first template below whose
           keyword is in the session's name (for example "soundbath"), or the default at the bottom. Changes apply to shifts posted
           from now on; existing shifts keep their roles.
         </p>
@@ -192,8 +187,6 @@ function TemplateCard({
             onRoles={(roles) => setD({ ...d, roles })}
             trailer={d.trailer}
             onTrailer={(trailer) => setD({ ...d, trailer })}
-            trailerPay={d.trailerPay}
-            onTrailerPay={(trailerPay) => setD({ ...d, trailerPay })}
           />
           <div className="space-y-2">
             <Label htmlFor={`${id}-notes`}>Notes for staff (optional)</Label>

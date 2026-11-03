@@ -89,13 +89,11 @@ export function readEventInput(body, { partial = false } = {}) {
     }
     out.staff_needed = n;
   }
-  if (has("defaultPay")) out.default_pay_cents = parsePayCents(body.defaultPay);
   if (has("trailerNeeded")) {
     const n = Number(body.trailerNeeded === true ? 1 : body.trailerNeeded === false ? 0 : body.trailerNeeded);
     if (!Number.isInteger(n) || n < 0 || n > 5) throw new HttpError(400, "invalid_trailer", "Trailer drivers should be 0 to 5.");
     out.trailer_needed = n;
   }
-  if (has("trailerPay")) out.trailer_pay_cents = parsePayCents(body.trailerPay);
   if (has("status")) {
     if (!["open", "completed", "cancelled"].includes(body.status)) throw new HttpError(400, "invalid_status");
     out.status = body.status;
@@ -124,10 +122,8 @@ export function toPublicEvent(row) {
     fareharborItemId: row.fareharbor_item_id,
     fareharborAvailabilityPk: row.fareharbor_availability_pk,
     staffNeeded: row.staff_needed,
-    defaultPayCents: row.default_pay_cents,
     roles: row.roles ?? [],
     trailerNeeded,
-    trailerPayCents: row.trailer_pay_cents ?? null,
     trailerConfirmed,
     trailerOpen: trailerNeeded > trailerConfirmed,
     autoPosted: Boolean(row.auto_posted),
@@ -143,10 +139,9 @@ export function toPublicEvent(row) {
   };
 }
 
-/** What staff may see of a shift: no pay suggestions or admin-only counts. */
+/** What staff may see of a shift: no admin-only counts. */
 export function toStaffEvent(row) {
-  const { defaultPayCents, unpaidCount, trailerPayCents, offCalendar, ...event } = toPublicEvent(row);
-  event.roles = event.roles.map(({ payCents, ...r }) => r);
+  const { unpaidCount, offCalendar, ...event } = toPublicEvent(row);
   return event;
 }
 
@@ -180,7 +175,6 @@ export function toPublicApplication(row) {
     status: row.status,
     role: row.role,
     trailer: Boolean(row.trailer),
-    trailerPayCents: row.trailer_pay_cents ?? null,
     payCents: row.pay_cents,
     staffNote: row.staff_note,
     confirmedAt: row.confirmed_at,

@@ -10,7 +10,6 @@ import { ROLE_LABELS, ROLES, SKILL_HINTS } from "../roles";
 export interface RoleRow {
   role: Role;
   needed: string;
-  pay: string;
 }
 
 export interface ShiftFormValues {
@@ -22,11 +21,8 @@ export interface ShiftFormValues {
   city: string;
   roles: RoleRow[];
   trailer: boolean;
-  trailerPay: string;
   notes: string;
 }
-
-const dollars = (cents: number | null | undefined) => (cents != null ? String(cents / 100) : "");
 
 export function emptyShiftValues(): ShiftFormValues {
   return {
@@ -36,9 +32,8 @@ export function emptyShiftValues(): ShiftFormValues {
     end: "",
     venue: "",
     city: "",
-    roles: [{ role: "general", needed: "1", pay: "" }],
+    roles: [{ role: "general", needed: "1" }],
     trailer: false,
-    trailerPay: "",
     notes: "",
   };
 }
@@ -50,9 +45,8 @@ export function shiftValuesFrom(s: {
   endAt?: string | null;
   venue?: string | null;
   city?: string | null;
-  roles?: { role: Role; needed: number; payCents?: number | null }[];
+  roles?: { role: Role; needed: number }[];
   trailerNeeded?: number;
-  trailerPayCents?: number | null;
   notes?: string | null;
 }): ShiftFormValues {
   const start = toInputs(s.startAt);
@@ -65,10 +59,9 @@ export function shiftValuesFrom(s: {
     venue: s.venue ?? "",
     city: s.city ?? "",
     roles: s.roles?.length
-      ? s.roles.map((r) => ({ role: r.role, needed: String(r.needed), pay: dollars(r.payCents) }))
+      ? s.roles.map((r) => ({ role: r.role, needed: String(r.needed) }))
       : emptyShiftValues().roles,
     trailer: (s.trailerNeeded ?? 0) > 0,
-    trailerPay: dollars(s.trailerPayCents),
     notes: s.notes ?? "",
   };
 }
@@ -77,9 +70,8 @@ export function shiftValuesFrom(s: {
 export function applyTemplate(v: ShiftFormValues, t: ShiftTemplate): ShiftFormValues {
   return {
     ...v,
-    roles: t.roles.map((r) => ({ role: r.role, needed: String(r.needed), pay: dollars(r.payCents) })),
+    roles: t.roles.map((r) => ({ role: r.role, needed: String(r.needed) })),
     trailer: t.trailerNeeded > 0,
-    trailerPay: dollars(t.trailerPayCents),
     notes: v.notes || t.notes || "",
   };
 }
@@ -94,7 +86,7 @@ export function matchTemplate(templates: ShiftTemplate[], title: string, venue =
 }
 
 export function rolesInputFrom(rows: RoleRow[]) {
-  return rows.map((r) => ({ role: r.role, needed: Number(r.needed) || 1, pay: r.pay.trim() || null }));
+  return rows.map((r) => ({ role: r.role, needed: Number(r.needed) || 1 }));
 }
 
 export function shiftInputFrom(v: ShiftFormValues): ShiftInput {
@@ -106,31 +98,26 @@ export function shiftInputFrom(v: ShiftFormValues): ShiftInput {
     city: v.city.trim() || null,
     roles: rolesInputFrom(v.roles),
     trailerNeeded: v.trailer ? 1 : 0,
-    trailerPay: v.trailer ? v.trailerPay.trim() || null : null,
     notes: v.notes.trim() || null,
   };
 }
 
 /**
- * Who a shift (or template) needs: one row per role with a head count and the
- * usual pay, plus the trailer add-on. Pay pre-fills the confirm box; staff
- * never see it.
+ * Who a shift (or template) needs: one row per role with a head count, plus
+ * the trailer add-on. No pay here: Sarah sets each person's pay when she
+ * confirms them, because it varies by person and event.
  */
 export function RolesEditor({
   roles,
   onRoles,
   trailer,
   onTrailer,
-  trailerPay,
-  onTrailerPay,
   idPrefix,
 }: {
   roles: RoleRow[];
   onRoles: (rows: RoleRow[]) => void;
   trailer: boolean;
   onTrailer: (on: boolean) => void;
-  trailerPay: string;
-  onTrailerPay: (v: string) => void;
   idPrefix: string;
 }) {
   const unused = ROLES.filter((r) => !roles.some((x) => x.role === r));
@@ -155,17 +142,6 @@ export function RolesEditor({
                 value={r.needed}
                 onChange={(e) => update(i, { needed: e.target.value })}
               />
-              <div className="relative">
-                <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
-                <Input
-                  aria-label={`Usual pay for ${ROLE_LABELS[r.role]}`}
-                  inputMode="decimal"
-                  className="h-8 w-24 pl-6"
-                  placeholder="Pay"
-                  value={r.pay}
-                  onChange={(e) => update(i, { pay: e.target.value })}
-                />
-              </div>
               <Button
                 type="button"
                 size="sm"
@@ -189,14 +165,14 @@ export function RolesEditor({
                 size="sm"
                 variant="outline"
                 className="h-7 text-xs"
-                onClick={() => onRoles([...roles, { role, needed: "1", pay: "" }].sort((a, b) => ROLES.indexOf(a.role) - ROLES.indexOf(b.role)))}
+                onClick={() => onRoles([...roles, { role, needed: "1" }].sort((a, b) => ROLES.indexOf(a.role) - ROLES.indexOf(b.role)))}
               >
                 + {ROLE_LABELS[role]}
               </Button>
             ))}
           </div>
         ) : null}
-        <p className="text-xs text-muted-foreground">Pay pre-fills when you confirm someone. Staff don't see it.</p>
+        <p className="text-xs text-muted-foreground">You set each person's pay when you confirm them.</p>
       </div>
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border p-2.5">
         <label className="flex flex-1 basis-48 items-center gap-2 text-sm">
@@ -209,22 +185,9 @@ export function RolesEditor({
           />
           <span>
             <span className="font-medium">Needs a trailer driver</span>
-            <span className="block text-xs text-muted-foreground">One of the crew also tows the boards there and back, for extra pay</span>
+            <span className="block text-xs text-muted-foreground">One of the crew also tows the boards there and back</span>
           </span>
         </label>
-        {trailer ? (
-          <div className="relative">
-            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">+$</span>
-            <Input
-              aria-label="Extra pay for the trailer driver"
-              inputMode="decimal"
-              className="h-8 w-24 pl-8"
-              placeholder="Extra"
-              value={trailerPay}
-              onChange={(e) => onTrailerPay(e.target.value)}
-            />
-          </div>
-        ) : null}
       </div>
     </div>
   );
@@ -315,8 +278,6 @@ export default function ShiftForm({
         onRoles={(roles) => setV((p) => ({ ...p, roles }))}
         trailer={v.trailer}
         onTrailer={(trailer) => setV((p) => ({ ...p, trailer }))}
-        trailerPay={v.trailerPay}
-        onTrailerPay={(trailerPay) => setV((p) => ({ ...p, trailerPay }))}
       />
       <div className="space-y-2">
         <Label htmlFor="sf-notes">Notes for staff (optional)</Label>

@@ -142,15 +142,12 @@ export function inviteEmail({ name, url, invitedBy }) {
 const ROLE_NAMES = { lead: "Event team leader", teacher: "Teacher", artist: "Artist", general: "General staff" };
 
 /** The shift facts both confirmation emails share, as HTML + text. */
-function shiftDetails({ event, payCents, role, trailerPayCents }) {
+function shiftDetails({ event, payCents, role, trailer }) {
   const when = formatWhen(event.start_at, event.end_at);
   const where = [event.venue, event.city].filter(Boolean).join(", ");
   const pay = formatMoney(payCents);
-  const roleLine = role ? `${ROLE_NAMES[role] || role}${trailerPayCents != null ? " + trailer driver" : ""}` : null;
-  const payLine =
-    trailerPayCents != null
-      ? `${pay} (${formatMoney(payCents - trailerPayCents)} + ${formatMoney(trailerPayCents)} for the trailer)`
-      : pay;
+  const roleLine = role ? `${ROLE_NAMES[role] || role}${trailer ? " + trailer driver" : ""}` : null;
+  const payLine = trailer ? `${pay} (including the trailer)` : pay;
   const row = (label, value) =>
     value
       ? `<tr><td style="padding:6px 16px 6px 0;color:#6b7280;vertical-align:top;white-space:nowrap;">${label}</td><td style="padding:6px 0;font-weight:600;">${escapeHtml(value)}</td></tr>`
@@ -159,7 +156,7 @@ function shiftDetails({ event, payCents, role, trailerPayCents }) {
     ? `<p style="margin:16px 0 0;padding:12px 14px;background:#f4f6f7;border-radius:10px;">${escapeHtml(event.notes)}</p>`
     : "";
   const trailerNote =
-    trailerPayCents != null
+    trailer
       ? `<p style="margin:16px 0 0;">You're also driving the trailer: picking up the boards, towing them to the event and back.</p>`
       : "";
   return {
@@ -170,7 +167,7 @@ function shiftDetails({ event, payCents, role, trailerPayCents }) {
     text:
       `Shift: ${event.title}\n${roleLine ? `Role: ${roleLine}\n` : ""}When: ${when}\n${where ? `Where: ${where}\n` : ""}Pay: ${payLine}\n` +
       `${event.notes ? `\n${event.notes}\n` : ""}` +
-      `${trailerPayCents != null ? "\nYou're also driving the trailer: picking up the boards, towing them to the event and back.\n" : ""}`,
+      `${trailer ? "\nYou're also driving the trailer: picking up the boards, towing them to the event and back.\n" : ""}`,
   };
 }
 
@@ -184,11 +181,11 @@ function shortDateOf(event) {
 }
 
 /** "You're confirmed" — sent from Sarah when she puts someone on a shift. Pay is locked in. */
-export function shiftConfirmedEmail({ name, event, payCents, role, trailerPayCents, url, confirmedBy }) {
+export function shiftConfirmedEmail({ name, event, payCents, role, trailer, url, confirmedBy }) {
   const by = confirmedBy ? confirmedBy.split(" ")[0] : "Sarah";
   const first = name ? name.split(" ")[0] : null;
   const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
-  const d = shiftDetails({ event, payCents, role, trailerPayCents });
+  const d = shiftDetails({ event, payCents, role, trailer });
   return {
     subject: `You're confirmed: ${event.title}, ${shortDateOf(event)}`,
     html: layout({
@@ -211,11 +208,11 @@ export function shiftConfirmedEmail({ name, event, payCents, role, trailerPayCen
  * email. The button is their 14-day invite link; after a quick profile they
  * see the shift under "Your upcoming shifts".
  */
-export function assignedInviteEmail({ name, event, payCents, role, trailerPayCents, url, invitedBy }) {
+export function assignedInviteEmail({ name, event, payCents, role, trailer, url, invitedBy }) {
   const first = name ? name.split(" ")[0] : null;
   const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
   const by = invitedBy ? escapeHtml(invitedBy.split(" ")[0]) : "Sarah";
-  const d = shiftDetails({ event, payCents, role, trailerPayCents });
+  const d = shiftDetails({ event, payCents, role, trailer });
   return {
     subject: `You're on the team: ${event.title}, ${shortDateOf(event)}`,
     html: layout({

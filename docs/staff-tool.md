@@ -103,22 +103,26 @@ UI: admin `/staff/admin/payroll` (To pay / Paid tabs); staff `/staff/earnings` p
 | Method | Path | Who |
 |---|---|---|
 | POST | `/staff-api/shifts/:id/apply` `{role, trailer?, note?}` | logged in |
-| POST | `/staff-api/admin/events/:id/confirm` `{staffId \| email (+name), role, pay, trailer?, trailerPay?}` | admin |
+| POST | `/staff-api/admin/events/:id/confirm` `{staffId \| email (+name), role, pay, trailer?}` | admin |
 | GET / POST | `/staff-api/admin/sync` (last sync / sync now) | admin |
 | GET / POST | `/staff-api/admin/templates` | admin |
 | PATCH / DELETE | `/staff-api/admin/templates/:id` (default can't be deleted) | admin |
 
-Shifts carry `roles: [{role, needed, confirmed, applied, payCents(admin only)}]`, `trailerNeeded`,
-`trailerConfirmed`, `trailerOpen`, `autoPosted`, `offCalendar`. Create/PATCH take `roles` +
-`trailerNeeded`/`trailerPay` (`staffNeeded`/`defaultPay` still accepted on create → general staff).
+Shifts carry `roles: [{role, needed, confirmed, applied}]`, `trailerNeeded`, `trailerConfirmed`,
+`trailerOpen`, `autoPosted`, `offCalendar`. Create/PATCH take `roles` + `trailerNeeded`
+(`staffNeeded` still accepted on create → general staff).
 UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
 
 ### Roles and trailer
 - Roles: event team leader, teacher (yoga/pilates/aerobics), artist (sound bowls/music),
-  general staff. Each shift needs N per role with its own usual pay (pre-fills confirm; staff
-  never see it). `events.staff_needed` = sum of roles.
-- Trailer driver is an **add-on** to one person's role (the driver always works the event too),
-  with extra pay. Locked `pay_cents` = role pay + trailer pay; `trailer_pay_cents` is the part.
+  general staff. Each shift needs N per role. `events.staff_needed` = sum of roles.
+- **No preset pay anywhere** (Sarah, 3 Nov 2026: pay varies per person and per event). Templates,
+  shifts and the schedule carry no pay; Sarah types each person's pay in the confirm box, and it
+  only exists from then on (locked, emailed, on payroll). The `pay_cents` column on
+  `event_roles`, `events.default_pay_cents` / `trailer_pay_cents` and
+  `applications.trailer_pay_cents` are unused leftovers.
+- Trailer driver is an **add-on** tick on one person's role (the driver always works the event
+  too). Sarah's one pay amount covers it; the email says "(including the trailer)".
 - Staff tick skills on their profile (the 4 roles + trailer). Matching open roles are
   highlighted and pre-selected when applying; Sarah sees skills on People and in "Add someone".
 - One person, one role per shift.
@@ -128,7 +132,7 @@ UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
   becomes an open shift, staffed by the first staffing template whose keyword is in the title
   (else the default). Seeded templates: soundbath → lead + artist + general + trailer;
   yoga/pilates/aerobics/fitness → lead + teacher + trailer; default → lead + general + trailer.
-  Pay is blank until Sarah fills it in on the templates.
+  Templates hold roles and trailer only, never pay.
 - Runs lazily (Pages has no cron): in the background at most every 30 min when anyone opens
   the staff area or the Schedule, or on demand ("Sync now"). Keys: `fh:<availability pk>`,
   `fhx:<item>:<start>`, `city:<slug>:<start>` in `events.calendar_key` (unique).
@@ -148,8 +152,8 @@ UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
 - Make Shellie an admin on People ("Make admin").
 
 ### Phase 2 rules (assumptions until Sarah says otherwise)
-- One locked pay per person per shift (role pay + any trailer pay). Usual pay per role
-  pre-fills the confirm box and is never shown to staff.
+- One locked pay per person per shift, typed by Sarah at confirm (covers the trailer if they
+  drive). Staff never see pay on open shifts.
 - Pay is locked once confirmed. To change it, remove the person and confirm again
   (sends a fresh email).
 - Staff see "x of y spots open", never other applicants' names. Full shifts can't be

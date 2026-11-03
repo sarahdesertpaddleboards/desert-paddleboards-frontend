@@ -4,7 +4,6 @@
  */
 import { HttpError, cleanText } from "./http.js";
 import { readRolesInput } from "./roles.js";
-import { parsePayCents } from "./shifts.js";
 
 export async function loadTemplates(db) {
   const { results } = await db.prepare("SELECT * FROM shift_templates ORDER BY is_default, sort_order, name").all();
@@ -22,9 +21,8 @@ export function toPublicTemplate(row) {
     id: row.id,
     name: row.name,
     keywords: row.match_keywords ? row.match_keywords.split(",").map((k) => k.trim()).filter(Boolean) : [],
-    roles: roles.map((r) => ({ role: r.role, needed: r.needed, payCents: r.payCents ?? null })),
+    roles: roles.map((r) => ({ role: r.role, needed: r.needed })),
     trailerNeeded: row.trailer_needed,
-    trailerPayCents: row.trailer_pay_cents,
     notes: row.notes,
     autoPost: Boolean(row.auto_post),
     isDefault: Boolean(row.is_default),
@@ -55,7 +53,7 @@ export function readTemplateInput(body, { partial = false } = {}) {
     out.match_keywords = list.length ? list.join(",") : null;
   }
   if (!partial || has("roles")) {
-    const roles = readRolesInput(body.roles, (v) => parsePayCents(v));
+    const roles = readRolesInput(body.roles);
     if (!roles) throw new HttpError(400, "roles_required", "A template needs at least one role.");
     out.roles_json = JSON.stringify(roles);
   }
@@ -64,7 +62,6 @@ export function readTemplateInput(body, { partial = false } = {}) {
     if (!Number.isInteger(n) || n < 0 || n > 5) throw new HttpError(400, "invalid_trailer", "Trailer drivers should be 0 to 5.");
     out.trailer_needed = n;
   }
-  if (has("trailerPay")) out.trailer_pay_cents = parsePayCents(body.trailerPay);
   if (has("notes")) out.notes = cleanText(body.notes, 1000);
   if (has("autoPost")) out.auto_post = body.autoPost ? 1 : 0;
   if (has("sortOrder")) {

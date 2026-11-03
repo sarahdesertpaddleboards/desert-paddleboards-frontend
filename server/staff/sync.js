@@ -139,14 +139,14 @@ async function runSync(db, request) {
       continue;
     }
     if (created >= MAX_NEW_PER_RUN) continue;
-    const roles = tpl?.roles?.length ? tpl.roles : [{ role: "general", needed: 1, payCents: null }];
+    const roles = tpl?.roles?.length ? tpl.roles : [{ role: "general", needed: 1 }];
     const id = newId("evt");
     stmts.push(
       db
         .prepare(
           `INSERT OR IGNORE INTO events (id, title, venue, city, start_at, end_at, source, fareharbor_item_id,
-             fareharbor_availability_pk, staff_needed, notes, trailer_needed, trailer_pay_cents, calendar_key, auto_posted)
-           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, 1)`,
+             fareharbor_availability_pk, staff_needed, notes, trailer_needed, calendar_key, auto_posted)
+           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 1)`,
         )
         .bind(
           id,
@@ -161,7 +161,6 @@ async function runSync(db, request) {
           roles.reduce((t, r) => t + r.needed, 0),
           tpl?.notes ?? null,
           tpl?.trailerNeeded ?? 0,
-          tpl?.trailerPayCents ?? null,
           key,
         ),
       ...insertRoleStatements(db, id, roles),

@@ -236,12 +236,7 @@ export default function AdminShiftDetail() {
                 <li key={a.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <Person row={a} showRole />
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="font-semibold">
-                      {money(a.payCents)}
-                      {a.trailerPayCents != null ? (
-                        <span className="block text-xs font-normal text-muted-foreground">incl. {money(a.trailerPayCents)} trailer</span>
-                      ) : null}
-                    </span>
+                    <span className="font-semibold">{money(a.payCents)}</span>
                     {a.paidAt ? (
                       <>
                         <Badge className="bg-brand text-white hover:bg-brand">Paid {shortDay(a.paidAt)}</Badge>
@@ -312,7 +307,7 @@ export default function AdminShiftDetail() {
           <CardDescription>
             {event.isFull
               ? "The shift is full. Edit it to add more spots."
-              : "Check the role and pay, then confirm. They get an email from you with the details."}
+              : "Pick the role, type what you'll pay them, then confirm. They get an email from you with the details."}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -399,11 +394,9 @@ function Person({ row, showRole, wants }: { row: Row; showRole?: boolean; wants?
   );
 }
 
-type ConfirmChoice = Pick<ConfirmInput, "role" | "pay" | "trailer" | "trailerPay">;
+type ConfirmChoice = Pick<ConfirmInput, "role" | "pay" | "trailer">;
 
-const dollars = (cents: number | null | undefined) => (cents != null ? String(cents / 100) : "");
-
-/** Who's needed vs confirmed per role, with the usual pay (admin view). */
+/** Who's needed vs confirmed per role. */
 function RolesSummary({ event }: { event: Shift }) {
   return (
     <ul className="flex flex-wrap gap-x-4 gap-y-1 pt-2 text-sm">
@@ -412,7 +405,6 @@ function RolesSummary({ event }: { event: Shift }) {
           <span className={r.confirmed >= r.needed ? "text-brand" : "text-foreground"}>
             {ROLE_LABELS[r.role]} {r.confirmed}/{r.needed}
           </span>
-          {r.payCents != null ? <span className="text-muted-foreground"> · {money(r.payCents)}</span> : null}
         </li>
       ))}
       {event.trailerNeeded > 0 ? (
@@ -420,7 +412,6 @@ function RolesSummary({ event }: { event: Shift }) {
           <span className={event.trailerOpen ? "text-foreground" : "text-brand"}>
             Trailer {event.trailerConfirmed}/{event.trailerNeeded}
           </span>
-          {event.trailerPayCents != null ? <span className="text-muted-foreground"> · +{money(event.trailerPayCents)}</span> : null}
         </li>
       ) : null}
     </ul>
@@ -428,8 +419,8 @@ function RolesSummary({ event }: { event: Shift }) {
 }
 
 /**
- * Role + pay (+ trailer) picker that ends in "Confirm". Pay starts at the
- * role's usual pay and follows the role when it changes.
+ * Role + trailer + pay picker that ends in "Confirm". Pay starts blank: Sarah
+ * types what she'll pay this person for this shift (trailer included).
  */
 function ConfirmControl({
   event,
@@ -448,28 +439,22 @@ function ConfirmControl({
 }) {
   const open = event.roles.filter((r) => r.confirmed < r.needed);
   const startRole = defaultRole && open.some((r) => r.role === defaultRole) ? defaultRole : open[0]?.role ?? event.roles[0]?.role;
-  const payFor = (role?: Role) => dollars(event.roles.find((r) => r.role === role)?.payCents);
   const [role, setRole] = useState<Role | undefined>(startRole);
-  const [pay, setPay] = useState(payFor(startRole));
+  const [pay, setPay] = useState("");
   const [trailer, setTrailer] = useState(Boolean(defaultTrailer && event.trailerOpen));
-  const [trailerPay, setTrailerPay] = useState(dollars(event.trailerPayCents));
   return (
     <form
       className="flex flex-wrap items-center gap-2"
       onSubmit={(e) => {
         e.preventDefault();
-        if (role && pay.trim()) onConfirm({ role, pay: pay.trim(), trailer, trailerPay: trailer ? trailerPay.trim() : undefined });
+        if (role && pay.trim()) onConfirm({ role, pay: pay.trim(), trailer });
       }}
     >
       <select
         aria-label="Role"
         className="border-input h-8 rounded-md border bg-white px-2 text-sm shadow-xs"
         value={role ?? ""}
-        onChange={(e) => {
-          const r = e.target.value as Role;
-          setRole(r);
-          setPay(payFor(r));
-        }}
+        onChange={(e) => setRole(e.target.value as Role)}
       >
         {event.roles.map((r) => (
           <option key={r.role} value={r.role} disabled={r.confirmed >= r.needed}>
@@ -478,29 +463,23 @@ function ConfirmControl({
           </option>
         ))}
       </select>
-      <div className="relative">
-        <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
-        <Input aria-label="Pay" inputMode="decimal" className="h-8 w-20 pl-6" placeholder="Pay" value={pay} onChange={(e) => setPay(e.target.value)} />
-      </div>
       {event.trailerOpen ? (
         <label className="flex items-center gap-1.5 text-sm">
           <input type="checkbox" className="size-4 accent-[#1f3a4d]" checked={trailer} onChange={(e) => setTrailer(e.target.checked)} />
-          Trailer
+          + trailer
         </label>
       ) : null}
-      {trailer ? (
-        <div className="relative">
-          <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">+$</span>
-          <Input
-            aria-label="Trailer pay"
-            inputMode="decimal"
-            className="h-8 w-20 pl-7"
-            placeholder="0"
-            value={trailerPay}
-            onChange={(e) => setTrailerPay(e.target.value)}
-          />
-        </div>
-      ) : null}
+      <div className="relative">
+        <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+        <Input
+          aria-label={trailer ? "Pay, including the trailer" : "Pay"}
+          inputMode="decimal"
+          className="h-8 w-24 pl-6"
+          placeholder={trailer ? "Total pay" : "Pay"}
+          value={pay}
+          onChange={(e) => setPay(e.target.value)}
+        />
+      </div>
       <Button size="sm" type="submit" disabled={disabled || !role || !pay.trim()}>
         {label}
       </Button>

@@ -3,9 +3,10 @@
  *      Upcoming keeps a shift visible until 3 hours after it starts.
  * POST /staff-api/admin/events — post a shift, by hand or from a calendar session:
  *      { title, startAt, endAt?, venue?, city?, notes?,
- *        roles: [{ role, needed, pay? }], trailerNeeded?, trailerPay?,
+ *        roles: [{ role, needed }], trailerNeeded?,
  *        source?: 'manual'|'fareharbor'|'city', fareharborItemId?, fareharborAvailabilityPk? }
- *      (older clients may send staffNeeded + defaultPay instead of roles → general staff)
+ *      (older clients may send staffNeeded instead of roles → general staff)
+ *      No pay here: Sarah sets each person's pay when she confirms them.
  */
 import { requireAdmin } from "../../../../server/staff/auth.js";
 import { HttpError, json, newId, readJson } from "../../../../server/staff/http.js";
@@ -13,7 +14,6 @@ import { insertRoleStatements, readRolesInput, withRoles } from "../../../../ser
 import {
   EVENT_WITH_COUNTS,
   getEventWithCounts,
-  parsePayCents,
   readEventInput,
   toPublicEvent,
 } from "../../../../server/staff/shifts.js";
@@ -48,9 +48,7 @@ export async function onRequestPost(context) {
   const body = await readJson(context.request);
 
   const fields = readEventInput(body);
-  const roles = readRolesInput(body.roles, (v) => parsePayCents(v)) ?? [
-    { role: "general", needed: fields.staff_needed ?? 1, payCents: fields.default_pay_cents ?? null },
-  ];
+  const roles = readRolesInput(body.roles) ?? [{ role: "general", needed: fields.staff_needed ?? 1 }];
   const source = ["fareharbor", "city"].includes(body.source) ? body.source : "manual";
   const itemId = optionalInt(body.fareharborItemId, "item_id");
   const availabilityPk = optionalInt(body.fareharborAvailabilityPk, "availability_pk");
@@ -73,9 +71,9 @@ export async function onRequestPost(context) {
     db
       .prepare(
         `INSERT INTO events (id, title, venue, city, start_at, end_at, source, fareharbor_item_id,
-                             fareharbor_availability_pk, staff_needed, default_pay_cents, notes, created_by,
-                             trailer_needed, trailer_pay_cents, calendar_key)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)`,
+                             fareharbor_availability_pk, staff_needed, notes, created_by,
+                             trailer_needed, calendar_key)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)`,
       )
       .bind(
         id,
@@ -88,11 +86,9 @@ export async function onRequestPost(context) {
         itemId,
         availabilityPk,
         roles.reduce((t, r) => t + r.needed, 0),
-        null,
         fields.notes ?? null,
         admin.id,
         fields.trailer_needed ?? 0,
-        fields.trailer_pay_cents ?? null,
         calendarKey,
       ),
     ...insertRoleStatements(db, id, roles),
