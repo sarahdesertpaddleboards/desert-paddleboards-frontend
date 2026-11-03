@@ -3,13 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMergedSessions, type CalSession } from "@/lib/sessions";
-import { staffApi, type Shift, type ShiftInput } from "../../api";
-import ShiftForm, { emptyShiftValues, shiftInputFrom, shiftValuesFrom, type ShiftFormValues } from "../../components/ShiftForm";
+import { staffApi, type Shift, type ShiftInput, type ShiftTemplate } from "../../api";
+import ShiftForm, {
+  applyTemplate,
+  emptyShiftValues,
+  matchTemplate,
+  shiftInputFrom,
+  shiftValuesFrom,
+  type ShiftFormValues,
+} from "../../components/ShiftForm";
 import { errMessage, shortDay, timeRange, toInputs } from "../../format";
 import { useStaff } from "../../StaffContext";
 
-const DAYS_AHEAD = 60;
-const PAGE = 25;
+const DAYS_AHEAD = 180;
+const PAGE = 15;
 
 const keyOf = (title: string, startAt: string) => {
   const t = toInputs(startAt);
@@ -17,19 +24,22 @@ const keyOf = (title: string, startAt: string) => {
 };
 
 /**
- * Post a shift. The public calendar (FareHarbor + city classes) is listed first
- * so Sarah can turn a session into a shift in one tap; anything else goes in by
- * hand. Sessions that already have a shift are hidden.
+ * Post a shift by hand: private events, community pools, anything not on the
+ * public calendar. (Calendar sessions in the next 90 days are posted
+ * automatically; the list below covers ones further out, or ones a template
+ * skips.) Roles start from the matching staffing template.
  */
 export default function AdminShiftNew() {
   const { staff: me } = useStaff();
   const navigate = useNavigate();
   const sessions = useMergedSessions();
   const [posted, setPosted] = useState<Shift[] | null>(null);
+  const [templates, setTemplates] = useState<ShiftTemplate[]>([]);
   const [picked, setPicked] = useState<CalSession | null>(null);
   const [formKey, setFormKey] = useState(0);
   const [initial, setInitial] = useState<ShiftFormValues>(emptyShiftValues);
   const [shown, setShown] = useState(PAGE);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -39,11 +49,22 @@ export default function AdminShiftNew() {
       .listEvents("upcoming")
       .then((r) => setPosted(r.events))
       .catch(() => setPosted([]));
+    staffApi.admin
+      .templates()
+      .then((r) => {
+        setTemplates(r.templates);
+        const def = r.templates.find((t) => t.isDefault);
+        if (def) {
+          setInitial((v) => applyTemplate(v, def));
+          setFormKey((k) => k + 1);
+        }
+      })
+      .catch(() => setTemplates([]));
   }, []);
 
   const candidates = useMemo(() => {
     const pks = new Set((posted ?? []).map((e) => e.fareharborAvailabilityPk).filter((pk) => pk != null));
-    const keys = new Set((posted ?? []).filter((e) => e.status !== "cancelled").map((e) => keyOf(e.title, e.startAt)));
+    const keys = new Set((posted ?? []).map((e) => keyOf(e.title, e.startAt)));
     const horizon = Date.now() + DAYS_AHEAD * 86_400_000;
     return sessions.filter(
       (s) =>
@@ -58,7 +79,10 @@ export default function AdminShiftNew() {
 
   function pick(s: CalSession) {
     setPicked(s);
-    setInitial(shiftValuesFrom({ title: s.title, startAt: s.startAt, endAt: s.endAt, venue: s.venue, city: s.city }));
+    let values = shiftValuesFrom({ title: s.title, startAt: s.startAt, endAt: s.endAt, venue: s.venue, city: s.city });
+    const t = matchTemplate(templates, s.title, s.venue);
+    if (t) values = applyTemplate(values, t);
+    setInitial(values);
     setFormKey((k) => k + 1);
     setError(null);
     requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -66,7 +90,8 @@ export default function AdminShiftNew() {
 
   function clearPick() {
     setPicked(null);
-    setInitial(emptyShiftValues());
+    const def = templates.find((t) => t.isDefault);
+    setInitial(def ? applyTemplate(emptyShiftValues(), def) : emptyShiftValues());
     setFormKey((k) => k + 1);
   }
 
@@ -95,20 +120,61 @@ export default function AdminShiftNew() {
           ← Schedule
         </Link>
         <h1 className="mt-2 text-2xl font-bold text-brand-dark sm:text-3xl">Post a shift</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Sessions on the public calendar are posted automatically for the next 90 days. Use this for private events, community
+          pools and anything else that isn't on the calendar.
+        </p>
+      </div>
+
+      <div ref={formRef} className="scroll-mt-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Shift details</CardTitle>
+            <CardDescription>
+              {picked ? (
+                <>
+                  Linked to the calendar session on {shortDay(picked.startAt)}.{" "}
+                  <button type="button" className="text-brand underline" onClick={clearPick}>
+                    Start blank instead
+                  </button>
+                </>
+              ) : (
+                "Fill it in by hand. You can also confirm people straight away once it's posted."
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ShiftForm
+              key={formKey}
+              initial={initial}
+              submitLabel="Post shift"
+              busy={busy}
+              error={error}
+              onSubmit={submit}
+              templates={templates}
+            />
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">From the public calendar</CardTitle>
-          <CardDescription>The next {DAYS_AHEAD} days of sessions that don't have a shift yet. Tap one to fill in the details.</CardDescription>
+          <CardTitle className="text-lg">Calendar sessions without a shift</CardTitle>
+          <CardDescription>
+            Sessions further out than 90 days, ones you deleted, or ones a template skips. Tap one to fill in the form.
+          </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          {posted === null ? (
-            <p className="p-6 text-sm text-muted-foreground">Loading…</p>
+          {!showCalendar ? (
+            <div className="px-6 pb-6">
+              <Button size="sm" variant="outline" onClick={() => setShowCalendar(true)} disabled={posted === null}>
+                {posted === null ? "Loading…" : `Show ${candidates.length} session${candidates.length === 1 ? "" : "s"}`}
+              </Button>
+            </div>
           ) : candidates.length === 0 ? (
-            <p className="p-6 text-sm text-muted-foreground">Every upcoming calendar session already has a shift.</p>
+            <p className="px-6 pb-6 text-sm text-muted-foreground">Every calendar session in the next {DAYS_AHEAD} days has a shift.</p>
           ) : (
-            <ul className="divide-y divide-border">
+            <ul className="divide-y divide-border border-t border-border">
               {candidates.slice(0, shown).map((s) => (
                 <li key={`${s.title}|${s.startAt}|${s.availabilityPk ?? ""}`} className="flex items-center justify-between gap-3 px-4 py-3">
                   <div className="min-w-0 text-sm">
@@ -134,29 +200,6 @@ export default function AdminShiftNew() {
           )}
         </CardContent>
       </Card>
-
-      <div ref={formRef} className="scroll-mt-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Shift details</CardTitle>
-            <CardDescription>
-              {picked ? (
-                <>
-                  Linked to the calendar session on {shortDay(picked.startAt)}.{" "}
-                  <button type="button" className="text-brand underline" onClick={clearPick}>
-                    Start blank instead
-                  </button>
-                </>
-              ) : (
-                "Not on the public calendar? Fill it in by hand."
-              )}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ShiftForm key={formKey} initial={initial} submitLabel="Post shift" busy={busy} error={error} onSubmit={submit} />
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }

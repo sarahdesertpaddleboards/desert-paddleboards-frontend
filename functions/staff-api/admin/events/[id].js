@@ -1,13 +1,16 @@
 /**
  * GET    /staff-api/admin/events/:id — the shift plus everyone who applied or was
  *        confirmed, with their contact and payment details.
- * PATCH  /staff-api/admin/events/:id — edit title/time/venue/city/notes/
- *        staffNeeded/defaultPay, or status: 'open' | 'cancelled' | 'completed'.
+ * PATCH  /staff-api/admin/events/:id — edit title/time/venue/city/notes,
+ *        roles [{role, needed, pay?}], trailerNeeded/trailerPay,
+ *        or status: 'open' | 'cancelled' | 'completed'.
  * DELETE /staff-api/admin/events/:id — only while nobody is on it (else cancel).
+ *        A deleted calendar shift is remembered so auto-posting won't bring it back.
  */
 import { requireAdmin } from "../../../../server/staff/auth.js";
 import { HttpError, json, nowIso, readJson } from "../../../../server/staff/http.js";
-import { loadEventDetail, readEventInput } from "../../../../server/staff/shifts.js";
+import { readRolesInput, saveRoles } from "../../../../server/staff/roles.js";
+import { getEventWithCounts, loadEventDetail, parsePayCents, readEventInput } from "../../../../server/staff/shifts.js";
 
 export async function onRequestGet(context) {
   requireAdmin(context);
@@ -23,6 +26,16 @@ export async function onRequestPatch(context) {
 
   const body = await readJson(context.request);
   const updates = readEventInput(body, { partial: true });
+  // Head count and pay now live on the roles.
+  delete updates.staff_needed;
+  delete updates.default_pay_cents;
+  const roles = readRolesInput(body.roles, (v) => parsePayCents(v));
+  if (updates.trailer_needed !== undefined) {
+    const { trailer_confirmed } = await getEventWithCounts(db, id);
+    if (updates.trailer_needed < trailer_confirmed) {
+      throw new HttpError(409, "trailer_in_use", "Someone is confirmed to drive the trailer. Remove them first.");
+    }
+  }
   // Re-check end vs start when only one of them changed.
   const start = updates.start_at ?? existing.start_at;
   const end = updates.end_at !== undefined ? updates.end_at : existing.end_at;
@@ -30,6 +43,13 @@ export async function onRequestPatch(context) {
     throw new HttpError(400, "end_before_start", "The end time needs to be after the start.");
   }
 
+  // Hand-edited times on a calendar shift stick: the sync stops moving them.
+  const timeChanged =
+    (updates.start_at !== undefined && updates.start_at !== existing.start_at) ||
+    (updates.end_at !== undefined && updates.end_at !== existing.end_at);
+  if (existing.calendar_key && timeChanged) updates.times_edited = 1;
+  // Roles first: if they're refused, nothing else has changed.
+  if (roles) await saveRoles(db, id, roles);
   const keys = Object.keys(updates);
   if (keys.length) {
     const sets = keys.map((k, i) => `${k} = ?${i + 1}`).join(", ");
@@ -42,7 +62,7 @@ export async function onRequestPatch(context) {
 }
 
 export async function onRequestDelete(context) {
-  requireAdmin(context);
+  const admin = requireAdmin(context);
   const db = context.env.STAFF_DB;
   const id = context.params.id;
   const { c } = await db
@@ -52,6 +72,15 @@ export async function onRequestDelete(context) {
   if (c > 0) {
     throw new HttpError(409, "has_people", "People have applied or are confirmed. Cancel the shift instead.");
   }
-  await db.prepare("DELETE FROM events WHERE id = ?1").bind(id).run();
+  const ev = await db.prepare("SELECT calendar_key FROM events WHERE id = ?1").bind(id).first();
+  const stmts = [db.prepare("DELETE FROM events WHERE id = ?1").bind(id)];
+  if (ev?.calendar_key) {
+    stmts.unshift(
+      db
+        .prepare("INSERT OR IGNORE INTO calendar_dismissed (calendar_key, dismissed_by) VALUES (?1, ?2)")
+        .bind(ev.calendar_key, admin.id),
+    );
+  }
+  await db.batch(stmts);
   return json(200, { ok: true });
 }

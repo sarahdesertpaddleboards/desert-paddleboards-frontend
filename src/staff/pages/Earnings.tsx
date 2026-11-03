@@ -5,6 +5,7 @@ import { staffApi } from "../api";
 import { summarizeEarnings, type MyShift } from "../earnings";
 import { errMessage, money, monthLabel, shortDay, venueLine } from "../format";
 import StatTile from "../components/StatTile";
+import { applicationRoleLabel } from "../roles";
 import { useStaff } from "../StaffContext";
 
 /** A staff member's money: what they're owed, what's coming, what's been paid. */
@@ -72,7 +73,9 @@ export default function StaffEarnings() {
               {g.rows.map(({ application, event }) => (
                 <li key={application.id} className="flex items-start justify-between gap-3 px-6 py-3 text-sm">
                   <div className="min-w-0">
-                    <p className="font-medium">{event.title}</p>
+                    <p className="font-medium">
+                      {event.title} <span className="font-normal text-muted-foreground">· {applicationRoleLabel(application, true)}</span>
+                    </p>
                     <p className="text-muted-foreground">
                       {shortDay(event.startAt)}
                       {venueLine(event) ? ` · ${venueLine(event)}` : ""}

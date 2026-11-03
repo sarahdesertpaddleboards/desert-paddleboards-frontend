@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ApiError, PAYOUT_HANDLE_HINT, PAYOUT_METHOD_LABELS, staffApi, type PayoutMethod } from "../api";
+import { ApiError, PAYOUT_HANDLE_HINT, PAYOUT_METHOD_LABELS, staffApi, type PayoutMethod, type Skill } from "../api";
+import { SKILLS, SKILL_HINTS, SKILL_LABELS } from "../roles";
 import { useStaff } from "../StaffContext";
 
 export default function StaffProfile() {
@@ -17,6 +18,7 @@ export default function StaffProfile() {
   const [phone, setPhone] = useState("");
   const [payoutMethod, setPayoutMethod] = useState<PayoutMethod | "">("");
   const [payoutHandle, setPayoutHandle] = useState("");
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,7 @@ export default function StaffProfile() {
     setPhone(staff.phone ?? "");
     setPayoutMethod(staff.payoutMethod ?? "");
     setPayoutHandle(staff.payoutHandle ?? "");
+    setSkills(staff.skills ?? []);
   }, [staff]);
 
   if (!staff) return null;
@@ -42,6 +45,7 @@ export default function StaffProfile() {
         phone,
         payoutMethod: payoutMethod || null,
         payoutHandle,
+        skills,
       });
       setStaff(res.staff);
       setSaved(true);
@@ -60,7 +64,7 @@ export default function StaffProfile() {
           <CardTitle className="text-2xl text-brand-dark">{welcome ? "Welcome! Tell us about you" : "Your profile"}</CardTitle>
           <CardDescription>
             {welcome
-              ? "Two minutes: your name, a phone number for day-of texts, and how you'd like to be paid."
+              ? "Two minutes: your name, a phone number for day-of texts, what you can do, and how you'd like to be paid."
               : "Keep this current so confirmations and payments reach you."}
           </CardDescription>
         </CardHeader>
@@ -87,6 +91,28 @@ export default function StaffProfile() {
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium">What can you do?</legend>
+              <p className="text-xs text-muted-foreground">Tick everything that fits. Shifts that need you are highlighted.</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {SKILLS.map((k) => (
+                  <label key={k} className="flex items-start gap-2 rounded-lg border border-border p-2.5 text-sm">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 size-4 accent-[#1f3a4d]"
+                      checked={skills.includes(k)}
+                      onChange={(e) =>
+                        setSkills((prev) => (e.target.checked ? SKILLS.filter((x) => x === k || prev.includes(x)) : prev.filter((x) => x !== k)))
+                      }
+                    />
+                    <span>
+                      <span className="font-medium">{SKILL_LABELS[k]}</span>
+                      <span className="block text-xs text-muted-foreground">{SKILL_HINTS[k]}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <div className="space-y-2">
               <Label htmlFor="payoutMethod">How would you like to be paid?</Label>
               <select

@@ -1,11 +1,12 @@
 /**
  * PATCH /staff-api/admin/staff/:id — admin edits: name, phone, payoutMethod,
- *       payoutHandle, notes, role ('staff'|'admin'), status ('active'|'inactive').
+ *       payoutHandle, notes, skills, role ('staff'|'admin'), status ('active'|'inactive').
  *       You can't demote or deactivate yourself.
  */
 import { requireAdmin, toPublicStaff } from "../../../../server/staff/auth.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../../../server/staff/http.js";
 import { PAYOUT_METHODS } from "../../../../server/staff/invite.js";
+import { parseSkills } from "../../../../server/staff/roles.js";
 
 export async function onRequestPatch(context) {
   const admin = requireAdmin(context);
@@ -30,6 +31,7 @@ export async function onRequestPatch(context) {
   }
   if (body.payoutHandle !== undefined) updates.payout_handle = cleanText(body.payoutHandle, 120);
   if (body.notes !== undefined) updates.notes = cleanText(body.notes, 1000);
+  if (body.skills !== undefined) updates.skills = parseSkills(body.skills).join(",") || null;
   if (body.role !== undefined) {
     if (!["staff", "admin"].includes(body.role)) throw new HttpError(400, "invalid_role");
     if (target.id === admin.id && body.role !== "admin") {

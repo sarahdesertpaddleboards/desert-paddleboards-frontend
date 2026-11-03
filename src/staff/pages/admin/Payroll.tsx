@@ -6,6 +6,7 @@ import { PAYOUT_METHOD_LABELS, staffApi, type LedgerRow, type Payroll } from "..
 import MarkPaidControl from "../../components/MarkPaidControl";
 import { azMonthKey, azYear, describePaid, errMessage, money, shortDay, toInputs, venueLine } from "../../format";
 import StatTile from "../../components/StatTile";
+import { applicationRoleLabel } from "../../roles";
 import { useStaff } from "../../StaffContext";
 
 type Person = LedgerRow["staff"];
@@ -215,6 +216,7 @@ function OwedCard({
               />
               <Link to={`/staff/admin/shift?id=${r.eventId}`} className="min-w-0 flex-1 hover:underline">
                 <span className="font-medium">{shortDay(r.event.startAt)}</span> · {r.event.title}
+                <span className="text-muted-foreground"> · {applicationRoleLabel(r, true)}</span>
                 {venueLine(r.event) ? <span className="block text-muted-foreground">{venueLine(r.event)}</span> : null}
               </Link>
               <span className="shrink-0 font-semibold">{money(r.payCents)}</span>

@@ -139,19 +139,18 @@ export function inviteEmail({ name, url, invitedBy }) {
   };
 }
 
-/** "You're confirmed" — sent from Sarah when she puts someone on a shift. Pay is locked in. */
-export function shiftConfirmedEmail({ name, event, payCents, url }) {
-  const first = name ? name.split(" ")[0] : null;
-  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+const ROLE_NAMES = { lead: "Event team leader", teacher: "Teacher", artist: "Artist", general: "General staff" };
+
+/** The shift facts both confirmation emails share, as HTML + text. */
+function shiftDetails({ event, payCents, role, trailerPayCents }) {
   const when = formatWhen(event.start_at, event.end_at);
   const where = [event.venue, event.city].filter(Boolean).join(", ");
   const pay = formatMoney(payCents);
-  const shortDate = new Date(event.start_at).toLocaleDateString("en-US", {
-    timeZone: "America/Phoenix",
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
+  const roleLine = role ? `${ROLE_NAMES[role] || role}${trailerPayCents != null ? " + trailer driver" : ""}` : null;
+  const payLine =
+    trailerPayCents != null
+      ? `${pay} (${formatMoney(payCents - trailerPayCents)} + ${formatMoney(trailerPayCents)} for the trailer)`
+      : pay;
   const row = (label, value) =>
     value
       ? `<tr><td style="padding:6px 16px 6px 0;color:#6b7280;vertical-align:top;white-space:nowrap;">${label}</td><td style="padding:6px 0;font-weight:600;">${escapeHtml(value)}</td></tr>`
@@ -159,25 +158,79 @@ export function shiftConfirmedEmail({ name, event, payCents, url }) {
   const notes = event.notes
     ? `<p style="margin:16px 0 0;padding:12px 14px;background:#f4f6f7;border-radius:10px;">${escapeHtml(event.notes)}</p>`
     : "";
+  const trailerNote =
+    trailerPayCents != null
+      ? `<p style="margin:16px 0 0;">You're also driving the trailer: picking up the boards, towing them to the event and back.</p>`
+      : "";
   return {
-    subject: `You're confirmed: ${event.title}, ${shortDate}`,
+    pay,
+    html: `<table style="border-collapse:collapse;font-size:16px;margin:8px 0 0;">
+        ${row("Shift", event.title)}${row("Role", roleLine)}${row("When", when)}${row("Where", where)}${row("Pay", payLine)}
+      </table>${notes}${trailerNote}`,
+    text:
+      `Shift: ${event.title}\n${roleLine ? `Role: ${roleLine}\n` : ""}When: ${when}\n${where ? `Where: ${where}\n` : ""}Pay: ${payLine}\n` +
+      `${event.notes ? `\n${event.notes}\n` : ""}` +
+      `${trailerPayCents != null ? "\nYou're also driving the trailer: picking up the boards, towing them to the event and back.\n" : ""}`,
+  };
+}
+
+function shortDateOf(event) {
+  return new Date(event.start_at).toLocaleDateString("en-US", {
+    timeZone: "America/Phoenix",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+/** "You're confirmed" — sent from Sarah when she puts someone on a shift. Pay is locked in. */
+export function shiftConfirmedEmail({ name, event, payCents, role, trailerPayCents, url, confirmedBy }) {
+  const by = confirmedBy ? confirmedBy.split(" ")[0] : "Sarah";
+  const first = name ? name.split(" ")[0] : null;
+  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+  const d = shiftDetails({ event, payCents, role, trailerPayCents });
+  return {
+    subject: `You're confirmed: ${event.title}, ${shortDateOf(event)}`,
     html: layout({
       heading: "You're on the roster",
-      bodyHtml: `<p>${hi}</p><p>Sarah has confirmed you for this shift:</p>
-        <table style="border-collapse:collapse;font-size:16px;margin:8px 0 0;">
-          ${row("Shift", event.title)}${row("When", when)}${row("Where", where)}${row("Pay", pay)}
-        </table>${notes}
-        <p style="margin-top:16px;">Your pay is locked in at <strong>${escapeHtml(pay)}</strong>. Sarah will mark it paid in the staff area once it's sent.</p>`,
+      bodyHtml: `<p>${hi}</p><p>${escapeHtml(by)} has confirmed you for this shift:</p>${d.html}
+        <p style="margin-top:16px;">Your pay is locked in at <strong>${escapeHtml(d.pay)}</strong>. Sarah will mark it paid in the staff area once it's sent.</p>`,
       buttonLabel: "View my shifts",
       buttonUrl: url,
       footnote: "Can't make it after all? Reply to this email or text Sarah as soon as you can so she can find cover.",
     }),
     text:
-      `${first ? `Hi ${first},` : "Hi,"}\n\nSarah has confirmed you for this shift:\n\n` +
-      `Shift: ${event.title}\nWhen: ${when}\n${where ? `Where: ${where}\n` : ""}Pay: ${pay}\n` +
-      `${event.notes ? `\n${event.notes}\n` : ""}` +
-      `\nYour pay is locked in at ${pay}. Sarah will mark it paid in the staff area once it's sent.\n\n` +
+      `${first ? `Hi ${first},` : "Hi,"}\n\n${by} has confirmed you for this shift:\n\n${d.text}` +
+      `\nYour pay is locked in at ${d.pay}. Sarah will mark it paid in the staff area once it's sent.\n\n` +
       `View your shifts: ${url}\n\nCan't make it after all? Reply to this email or text Sarah so she can find cover.`,
+  };
+}
+
+/**
+ * Someone new, put straight on a shift: the confirmation and the invite in one
+ * email. The button is their 14-day invite link; after a quick profile they
+ * see the shift under "Your upcoming shifts".
+ */
+export function assignedInviteEmail({ name, event, payCents, role, trailerPayCents, url, invitedBy }) {
+  const first = name ? name.split(" ")[0] : null;
+  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+  const by = invitedBy ? escapeHtml(invitedBy.split(" ")[0]) : "Sarah";
+  const d = shiftDetails({ event, payCents, role, trailerPayCents });
+  return {
+    subject: `You're on the team: ${event.title}, ${shortDateOf(event)}`,
+    html: layout({
+      heading: "Welcome to the team",
+      bodyHtml: `<p>${hi}</p><p>${by} has put you on this Desert Paddleboards shift:</p>${d.html}
+        <p style="margin-top:16px;">Your pay is locked in at <strong>${escapeHtml(d.pay)}</strong>.</p>
+        <p>Tap the button to set up your staff profile (name, phone, and how you'd like to be paid). That's where you'll see this shift, pick up more, and see when you've been paid.</p>`,
+      buttonLabel: "Set up my profile",
+      buttonUrl: url,
+      footnote: "No passwords: whenever you need to log in, we'll email you a fresh link. This link is valid for 14 days. Can't make the shift? Reply to this email.",
+    }),
+    text:
+      `${first ? `Hi ${first},` : "Hi,"}\n\n${invitedBy ? invitedBy.split(" ")[0] : "Sarah"} has put you on this Desert Paddleboards shift:\n\n${d.text}` +
+      `\nYour pay is locked in at ${d.pay}.\n\nSet up your staff profile (valid 14 days):\n${url}\n\n` +
+      `No passwords: whenever you need to log in, we'll email you a fresh link. Can't make the shift? Reply to this email.`,
   };
 }
 

@@ -1,10 +1,12 @@
 /**
  * GET   /staff-api/me — the logged-in staff member (401 if none).
- * PATCH /staff-api/me — update own profile: name, phone, payoutMethod, payoutHandle.
+ * PATCH /staff-api/me — update own profile: name, phone, payoutMethod, payoutHandle,
+ *       skills (what they can do: lead, teacher, artist, general, trailer).
  */
 import { requireStaff, toPublicStaff } from "../../server/staff/auth.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../server/staff/http.js";
 import { PAYOUT_METHODS } from "../../server/staff/invite.js";
+import { parseSkills } from "../../server/staff/roles.js";
 
 export async function onRequestGet(context) {
   const staff = requireStaff(context);
@@ -36,6 +38,7 @@ export async function onRequestPatch(context) {
               phone = CASE WHEN ?5 THEN ?2 ELSE phone END,
               payout_method = CASE WHEN ?6 THEN ?3 ELSE payout_method END,
               payout_handle = CASE WHEN ?7 THEN ?4 ELSE payout_handle END,
+              skills = CASE WHEN ?10 THEN ?11 ELSE skills END,
               updated_at = ?8
         WHERE id = ?9`,
     )
@@ -49,6 +52,8 @@ export async function onRequestPatch(context) {
       body.payoutHandle !== undefined ? 1 : 0,
       nowIso(),
       staff.id,
+      body.skills !== undefined ? 1 : 0,
+      body.skills !== undefined ? parseSkills(body.skills).join(",") || null : null,
     )
     .run();
 

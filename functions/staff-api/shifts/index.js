@@ -3,27 +3,28 @@
  *   shifts: upcoming open shifts, each with `my` (their application, if any)
  *   mine:   every shift they've applied for or been confirmed on (past too),
  *           newest first, with the pay Sarah locked in and whether it's paid.
- * Staff never see other people's names or Sarah's suggested pay.
+ * Staff never see other people's names or Sarah's suggested pay. Each shift
+ * lists its roles with how many are needed/confirmed, and whether a trailer
+ * driver is still needed.
  */
 import { requireStaff } from "../../../server/staff/auth.js";
 import { json } from "../../../server/staff/http.js";
-import { EVENT_WITH_COUNTS, toPublicApplication, toPublicEvent } from "../../../server/staff/shifts.js";
-
-function forStaff(row) {
-  const { defaultPayCents, unpaidCount, ...event } = toPublicEvent(row);
-  return event;
-}
+import { EVENT_WITH_COUNTS, toPublicApplication, toStaffEvent as forStaff } from "../../../server/staff/shifts.js";
+import { withRoles } from "../../../server/staff/roles.js";
+import { syncCalendar } from "../../../server/staff/sync.js";
 
 export async function onRequestGet(context) {
   const me = requireStaff(context);
   const db = context.env.STAFF_DB;
+  // Keep auto-posted calendar shifts current (throttled; runs after we reply).
+  context.waitUntil(syncCalendar(context.env, context.request));
 
   const [upcoming, apps, appEvents] = await Promise.all([
     db
       .prepare(
         `${EVENT_WITH_COUNTS}
           WHERE e.status = 'open' AND datetime(e.start_at) > datetime('now')
-          ORDER BY e.start_at LIMIT 200`,
+          ORDER BY e.start_at LIMIT 500`,
       )
       .all(),
     db
@@ -39,6 +40,7 @@ export async function onRequestGet(context) {
       .all(),
   ]);
 
+  await withRoles(db, [...upcoming.results, ...appEvents.results]);
   const myByEvent = new Map(apps.results.map((a) => [a.event_id, toPublicApplication(a)]));
   const eventById = new Map(appEvents.results.map((e) => [e.id, forStaff(e)]));
 

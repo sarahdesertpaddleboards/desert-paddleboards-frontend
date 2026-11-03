@@ -8,6 +8,7 @@
  */
 import { toPublicStaff } from "./auth.js";
 import { HttpError, cleanText } from "./http.js";
+import { withRoles } from "./roles.js";
 
 export const TZ = "America/Phoenix";
 const AZ_OFFSET_MIN = -7 * 60;
@@ -89,6 +90,12 @@ export function readEventInput(body, { partial = false } = {}) {
     out.staff_needed = n;
   }
   if (has("defaultPay")) out.default_pay_cents = parsePayCents(body.defaultPay);
+  if (has("trailerNeeded")) {
+    const n = Number(body.trailerNeeded === true ? 1 : body.trailerNeeded === false ? 0 : body.trailerNeeded);
+    if (!Number.isInteger(n) || n < 0 || n > 5) throw new HttpError(400, "invalid_trailer", "Trailer drivers should be 0 to 5.");
+    out.trailer_needed = n;
+  }
+  if (has("trailerPay")) out.trailer_pay_cents = parsePayCents(body.trailerPay);
   if (has("status")) {
     if (!["open", "completed", "cancelled"].includes(body.status)) throw new HttpError(400, "invalid_status");
     out.status = body.status;
@@ -100,10 +107,12 @@ export function readEventInput(body, { partial = false } = {}) {
   return out;
 }
 
-/** events row (+ optional confirmed_count / applied_count) → API shape. */
+/** events row (+ counts from EVENT_WITH_COUNTS and `roles` from withRoles) → API shape. */
 export function toPublicEvent(row) {
   if (!row) return null;
   const confirmed = row.confirmed_count ?? 0;
+  const trailerNeeded = row.trailer_needed ?? 0;
+  const trailerConfirmed = row.trailer_confirmed ?? 0;
   return {
     id: row.id,
     title: row.title,
@@ -116,6 +125,13 @@ export function toPublicEvent(row) {
     fareharborAvailabilityPk: row.fareharbor_availability_pk,
     staffNeeded: row.staff_needed,
     defaultPayCents: row.default_pay_cents,
+    roles: row.roles ?? [],
+    trailerNeeded,
+    trailerPayCents: row.trailer_pay_cents ?? null,
+    trailerConfirmed,
+    trailerOpen: trailerNeeded > trailerConfirmed,
+    autoPosted: Boolean(row.auto_posted),
+    offCalendar: Boolean(row.calendar_missing_at),
     notes: row.notes,
     status: row.status,
     confirmedCount: confirmed,
@@ -127,16 +143,33 @@ export function toPublicEvent(row) {
   };
 }
 
+/** What staff may see of a shift: no pay suggestions or admin-only counts. */
+export function toStaffEvent(row) {
+  const { defaultPayCents, unpaidCount, trailerPayCents, offCalendar, ...event } = toPublicEvent(row);
+  event.roles = event.roles.map(({ payCents, ...r }) => r);
+  return event;
+}
+
 /** SQL fragment: events plus live counts of confirmed, pending and confirmed-but-unpaid applications. */
 export const EVENT_WITH_COUNTS = `
   SELECT e.*,
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed') AS confirmed_count,
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'applied')   AS applied_count,
-    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.paid_at IS NULL) AS unpaid_count
+    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.paid_at IS NULL) AS unpaid_count,
+    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.trailer = 1) AS trailer_confirmed
   FROM events e`;
 
+/** One event row with counts and roles attached (null if missing). */
 export async function getEventWithCounts(db, id) {
-  return db.prepare(`${EVENT_WITH_COUNTS} WHERE e.id = ?1`).bind(id).first();
+  const row = await db.prepare(`${EVENT_WITH_COUNTS} WHERE e.id = ?1`).bind(id).first();
+  if (row) await withRoles(db, [row]);
+  return row;
+}
+
+/** Many event rows (from EVENT_WITH_COUNTS) with roles attached. */
+export async function listEventsWithRoles(db, stmt) {
+  const { results } = await stmt.all();
+  return withRoles(db, results);
 }
 
 export function toPublicApplication(row) {
@@ -145,6 +178,9 @@ export function toPublicApplication(row) {
     eventId: row.event_id,
     staffId: row.staff_id,
     status: row.status,
+    role: row.role,
+    trailer: Boolean(row.trailer),
+    trailerPayCents: row.trailer_pay_cents ?? null,
     payCents: row.pay_cents,
     staffNote: row.staff_note,
     confirmedAt: row.confirmed_at,
@@ -163,7 +199,7 @@ export async function loadEventDetail(db, id) {
   if (!event) throw new HttpError(404, "not_found", "No such shift.");
   const { results } = await db
     .prepare(
-      `SELECT a.*, s.id AS s_id, s.email, s.name, s.phone, s.payout_method, s.payout_handle, s.role, s.status AS s_status
+      `SELECT a.*, s.id AS s_id, s.email, s.name, s.phone, s.payout_method, s.payout_handle, s.role AS s_role, s.skills, s.status AS s_status
          FROM applications a JOIN staff s ON s.id = a.staff_id
         WHERE a.event_id = ?1
         ORDER BY ${STATUS_ORDER}, a.created_at`,
@@ -174,7 +210,7 @@ export async function loadEventDetail(db, id) {
     event: toPublicEvent(event),
     applications: results.map((r) => ({
       ...toPublicApplication(r),
-      staff: toPublicStaff({ ...r, id: r.s_id, status: r.s_status }),
+      staff: toPublicStaff({ ...r, id: r.s_id, role: r.s_role, status: r.s_status }),
     })),
   };
 }

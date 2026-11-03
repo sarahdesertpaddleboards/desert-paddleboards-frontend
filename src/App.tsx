@@ -40,6 +40,7 @@ import StaffAdminShifts from "./staff/pages/admin/Shifts";
 import StaffAdminShiftNew from "./staff/pages/admin/ShiftNew";
 import StaffAdminShiftDetail from "./staff/pages/admin/ShiftDetail";
 import StaffAdminPayroll from "./staff/pages/admin/Payroll";
+import StaffAdminTemplates from "./staff/pages/admin/Templates";
 import StaffEarnings from "./staff/pages/Earnings";
 
 import { experiences } from "./data/locations";
@@ -123,6 +124,7 @@ export const routes: RouteRecord[] = [
       { path: "earnings", element: <StaffEarnings /> },
       { path: "admin/people", element: <StaffPeople /> },
       { path: "admin/payroll", element: <StaffAdminPayroll /> },
+      { path: "admin/templates", element: <StaffAdminTemplates /> },
       { path: "admin/shifts", element: <StaffAdminShifts /> },
       { path: "admin/shifts/new", element: <StaffAdminShiftNew /> },
       { path: "admin/shift", element: <StaffAdminShiftDetail /> }, // ?id=… (static path: Pages serves prerendered shells only)

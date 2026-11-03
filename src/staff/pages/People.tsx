@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ApiError, PAYOUT_METHOD_LABELS, staffApi, type Staff } from "../api";
+import { SKILL_LABELS } from "../roles";
 import { useStaff } from "../StaffContext";
 
 /** Admin roster: invite people, see who has signed up, deactivate / promote. */
@@ -123,6 +124,9 @@ export default function StaffPeople() {
                       {p.role === "admin" ? <Badge variant="outline">Admin</Badge> : null}
                       {p.id === me.id ? <Badge variant="secondary">You</Badge> : null}
                     </div>
+                    {p.skills.length ? (
+                      <p className="mt-0.5 text-xs text-brand-dark">{p.skills.map((k) => SKILL_LABELS[k]).join(" · ")}</p>
+                    ) : null}
                     <p className="truncate text-sm text-muted-foreground">
                       {p.email}
                       {p.phone ? ` · ${p.phone}` : ""}

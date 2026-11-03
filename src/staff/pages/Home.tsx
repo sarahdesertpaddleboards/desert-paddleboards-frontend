@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { staffApi, type Application, type Shift } from "../api";
+import { staffApi, type Application, type Role, type Shift, type Skill } from "../api";
 import { summarizeEarnings, type MyShift } from "../earnings";
 import { dayLabel, errMessage, money, timeRange, venueLine } from "../format";
+import { ROLE_LABELS, ROLE_SHORT, applicationRoleLabel } from "../roles";
 import { useStaff } from "../StaffContext";
 
 type OpenShift = Shift & { my: Application | null };
@@ -79,6 +80,7 @@ export default function StaffHome() {
               key={application.id}
               shift={event}
               badge={<MyStatus application={application} event={event} />}
+              sub={applicationRoleLabel(application)}
               action={
                 application.status === "applied" ? (
                   <WithdrawButton id={event.id} onDone={load} />
@@ -100,18 +102,11 @@ export default function StaffHome() {
           <ShiftRow
             key={s.id}
             shift={s}
-            badge={
-              s.isFull ? (
-                <Badge variant="outline">Full</Badge>
-              ) : (
-                <Badge variant="secondary">
-                  {s.staffNeeded - s.confirmedCount} of {s.staffNeeded} spot{s.staffNeeded === 1 ? "" : "s"} open
-                </Badge>
-              )
-            }
+            badge={s.isFull ? <Badge variant="outline">Full</Badge> : null}
+            roles={<OpenRoles shift={s} skills={staff.skills} />}
             action={
               s.isFull ? null : (
-                <ApplyButton id={s.id} disabled={!staff.profileComplete} onDone={load} />
+                <ApplyButton shift={s} skills={staff.skills} previous={s.my} disabled={!staff.profileComplete} onDone={load} />
               )
             }
           />
@@ -182,7 +177,19 @@ function Section({ title, description, children }: { title: string; description?
   );
 }
 
-function ShiftRow({ shift, badge, action }: { shift: Shift; badge?: React.ReactNode; action?: React.ReactNode }) {
+function ShiftRow({
+  shift,
+  badge,
+  sub,
+  roles,
+  action,
+}: {
+  shift: Shift;
+  badge?: React.ReactNode;
+  sub?: string;
+  roles?: React.ReactNode;
+  action?: React.ReactNode;
+}) {
   return (
     <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0 space-y-1">
@@ -195,6 +202,8 @@ function ShiftRow({ shift, badge, action }: { shift: Shift; badge?: React.ReactN
           {timeRange(shift.startAt, shift.endAt)}
           {venueLine(shift) ? ` · ${venueLine(shift)}` : ""}
         </p>
+        {sub ? <p className="text-sm font-medium text-brand-dark">{sub}</p> : null}
+        {roles}
         {shift.notes ? <p className="text-sm">{shift.notes}</p> : null}
       </div>
       {action ? <div className="shrink-0 sm:pt-5">{action}</div> : null}
@@ -208,41 +217,117 @@ function MyStatus({ application, event }: { application: Application; event: Shi
   return <Badge className="bg-amber-100 text-amber-900 hover:bg-amber-100">Applied · waiting on Sarah</Badge>;
 }
 
-function ApplyButton({ id, disabled, onDone }: { id: string; disabled: boolean; onDone: () => Promise<void> }) {
-  const [step, setStep] = useState<"idle" | "note" | "busy">("idle");
+/** Open spots by role ("Artist · 1 open"), highlighting the ones you can do. */
+function OpenRoles({ shift, skills }: { shift: Shift; skills: Skill[] }) {
+  const open = shift.roles.filter((r) => r.confirmed < r.needed);
+  if (!open.length && !shift.trailerOpen) return null;
+  return (
+    <div className="flex flex-wrap gap-1.5 pt-0.5">
+      {open.map((r) => {
+        const mine = skills.includes(r.role);
+        return (
+          <Badge key={r.role} variant={mine ? "default" : "outline"} className={mine ? "bg-brand text-white hover:bg-brand" : "text-muted-foreground"}>
+            {ROLE_SHORT[r.role]} · {r.needed - r.confirmed} open
+          </Badge>
+        );
+      })}
+      {shift.trailerOpen ? (
+        <Badge
+          variant={skills.includes("trailer") ? "default" : "outline"}
+          className={skills.includes("trailer") ? "bg-brand text-white hover:bg-brand" : "text-muted-foreground"}
+        >
+          Trailer driver needed
+        </Badge>
+      ) : null}
+    </div>
+  );
+}
+
+function ApplyButton({
+  shift,
+  skills,
+  previous,
+  disabled,
+  onDone,
+}: {
+  shift: Shift;
+  skills: Skill[];
+  previous: Application | null;
+  disabled: boolean;
+  onDone: () => Promise<void>;
+}) {
+  const open = shift.roles.filter((r) => r.confirmed < r.needed);
+  // Start on the role they asked for last time, else one they can do, else the first open one.
+  const start =
+    open.find((r) => r.role === previous?.role)?.role ?? open.find((r) => skills.includes(r.role))?.role ?? open[0]?.role;
+  const [step, setStep] = useState<"idle" | "form" | "busy">("idle");
+  const [role, setRole] = useState<Role | undefined>(start);
+  const [trailer, setTrailer] = useState(false);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   async function send() {
+    if (!role) return;
     setStep("busy");
     setError(null);
     try {
-      await staffApi.apply(id, note.trim() || undefined);
+      await staffApi.apply(shift.id, { role, trailer, note: note.trim() || undefined });
       await onDone();
     } catch (err) {
       setError(errMessage(err, "Couldn't apply. Try again."));
-      setStep("note");
+      setStep("form");
     }
   }
 
   if (step === "idle") {
     return (
-      <Button size="sm" disabled={disabled} onClick={() => setStep("note")} title={disabled ? "Finish your profile first" : undefined}>
+      <Button
+        size="sm"
+        disabled={disabled || !open.length}
+        onClick={() => {
+          setTrailer(Boolean(shift.trailerOpen && skills.includes("trailer")));
+          setStep("form");
+        }}
+        title={disabled ? "Finish your profile first" : undefined}
+      >
         I can work this
       </Button>
     );
   }
   return (
     <div className="w-full space-y-2 sm:w-64">
+      {open.length > 1 ? (
+        <select
+          aria-label="Role"
+          className="border-input h-9 w-full rounded-md border bg-white px-3 text-sm shadow-xs"
+          value={role ?? ""}
+          onChange={(e) => setRole(e.target.value as Role)}
+        >
+          {open.map((r) => (
+            <option key={r.role} value={r.role}>
+              {ROLE_LABELS[r.role]}
+            </option>
+          ))}
+        </select>
+      ) : role ? (
+        <p className="text-sm">
+          As <span className="font-medium">{ROLE_LABELS[role].toLowerCase()}</span>
+        </p>
+      ) : null}
+      {shift.trailerOpen ? (
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" className="size-4 accent-[#1f3a4d]" checked={trailer} onChange={(e) => setTrailer(e.target.checked)} />
+          I can also drive the trailer
+        </label>
+      ) : null}
       <Input
         placeholder="Note for Sarah (optional)"
         value={note}
         maxLength={300}
         onChange={(e) => setNote(e.target.value)}
-        autoFocus
       />
       <div className="flex gap-2">
-        <Button size="sm" onClick={send} disabled={step === "busy"}>
+        <Button size="sm" onClick={send} disabled={step === "busy" || !role}>
           {step === "busy" ? "Sending…" : "Put my name down"}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setStep("idle")} disabled={step === "busy"}>

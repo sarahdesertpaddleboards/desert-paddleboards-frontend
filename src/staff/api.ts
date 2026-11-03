@@ -6,6 +6,19 @@
 
 export type PayoutMethod = "venmo" | "zelle" | "cashapp" | "paypal" | "check" | "other";
 
+/** Roles on a shift. Trailer driving is an add-on to one of these, not a role. */
+export type Role = "lead" | "teacher" | "artist" | "general";
+export type Skill = Role | "trailer";
+
+export interface RoleSlot {
+  role: Role;
+  needed: number;
+  confirmed: number;
+  applied: number;
+  /** Usual pay for the role (admin responses only). */
+  payCents?: number | null;
+}
+
 export interface Staff {
   id: string;
   email: string;
@@ -20,6 +33,8 @@ export interface Staff {
   invitedAt: string | null;
   createdAt: string;
   profileComplete: boolean;
+  /** What they can do (they tick these on their profile). */
+  skills: Skill[];
   /** Admin-only field, present on roster responses. */
   notes?: string | null;
 }
@@ -36,8 +51,18 @@ export interface Shift {
   fareharborItemId: number | null;
   fareharborAvailabilityPk: number | null;
   staffNeeded: number;
-  /** Admin responses only. */
+  /** Admin responses only (legacy; pay now lives on each role). */
   defaultPayCents?: number | null;
+  roles: RoleSlot[];
+  trailerNeeded: number;
+  trailerConfirmed: number;
+  trailerOpen: boolean;
+  /** Admin responses only. */
+  trailerPayCents?: number | null;
+  /** Posted automatically from the public calendar. */
+  autoPosted: boolean;
+  /** Admin responses only: the session has left the public calendar. */
+  offCalendar?: boolean;
   notes: string | null;
   status: "open" | "filled" | "completed" | "cancelled";
   confirmedCount: number;
@@ -56,6 +81,11 @@ export interface Application {
   eventId: string;
   staffId: string;
   status: ApplicationStatus;
+  role: Role;
+  /** Applied to / confirmed to also drive the trailer. */
+  trailer: boolean;
+  /** The trailer part of payCents (payCents is the total). */
+  trailerPayCents: number | null;
   payCents: number | null;
   staffNote: string | null;
   confirmedAt: string | null;
@@ -76,8 +106,9 @@ export interface ShiftInput {
   endAt?: string | null;
   venue?: string | null;
   city?: string | null;
-  staffNeeded?: number;
-  defaultPay?: string | number | null;
+  roles?: { role: Role; needed: number; pay?: string | number | null }[];
+  trailerNeeded?: number;
+  trailerPay?: string | number | null;
   notes?: string | null;
   status?: "open" | "completed" | "cancelled";
   source?: "manual" | "fareharbor" | "city";
@@ -107,7 +138,63 @@ export interface MarkPaidResult {
   localMode: boolean;
 }
 
-type ConfirmResult = ShiftDetail & { emailed: boolean; emailError?: string; localMode?: boolean };
+type ConfirmResult = ShiftDetail & {
+  emailed: boolean;
+  emailError?: string;
+  localMode?: boolean;
+  /** They hadn't logged in yet, so the email doubled as their invite. */
+  invited?: boolean;
+  /** A brand-new person added to the roster by email. */
+  addedToTeam?: boolean;
+  devLink?: string;
+};
+
+export interface ConfirmInput {
+  staffId?: string;
+  /** Someone not on the team yet. */
+  email?: string;
+  name?: string;
+  role: Role;
+  pay: string;
+  trailer?: boolean;
+  trailerPay?: string;
+}
+
+export interface ShiftTemplate {
+  id: string;
+  name: string;
+  keywords: string[];
+  roles: { role: Role; needed: number; payCents: number | null }[];
+  trailerNeeded: number;
+  trailerPayCents: number | null;
+  notes: string | null;
+  autoPost: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+}
+
+export interface TemplateInput {
+  name?: string;
+  keywords?: string[];
+  roles?: { role: Role; needed: number; pay?: string | number | null }[];
+  trailerNeeded?: number;
+  trailerPay?: string | number | null;
+  notes?: string | null;
+  autoPost?: boolean;
+}
+
+export interface SyncState {
+  startedAt?: string;
+  finishedAt?: string;
+  ok?: boolean;
+  error?: string;
+  created?: number;
+  moved?: number;
+  missing?: number;
+  skipped?: number;
+  sessions?: number;
+  fareharborOk?: boolean;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -140,7 +227,7 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 
 export const staffApi = {
   me: () => call<{ staff: Staff }>("GET", "/me"),
-  updateMe: (patch: Partial<Pick<Staff, "name" | "phone" | "payoutMethod" | "payoutHandle">>) =>
+  updateMe: (patch: Partial<Pick<Staff, "name" | "phone" | "payoutMethod" | "payoutHandle" | "skills">>) =>
     call<{ staff: Staff }>("PATCH", "/me", patch),
   requestLink: (email: string) =>
     call<{ ok: true; devLink?: string }>("POST", "/auth/request-link", { email }),
@@ -152,7 +239,8 @@ export const staffApi = {
       "GET",
       "/shifts",
     ),
-  apply: (id: string, note?: string) => call<{ application: Application }>("POST", `/shifts/${id}/apply`, { note }),
+  apply: (id: string, input: { role: Role; trailer?: boolean; note?: string }) =>
+    call<{ application: Application }>("POST", `/shifts/${id}/apply`, input),
   withdraw: (id: string) => call<{ application: Application }>("POST", `/shifts/${id}/withdraw`),
 
   admin: {
@@ -172,12 +260,18 @@ export const staffApi = {
     getEvent: (id: string) => call<ShiftDetail>("GET", `/admin/events/${id}`),
     updateEvent: (id: string, patch: ShiftInput) => call<ShiftDetail>("PATCH", `/admin/events/${id}`, patch),
     deleteEvent: (id: string) => call<{ ok: true }>("DELETE", `/admin/events/${id}`),
-    confirm: (id: string, staffId: string, pay: string) =>
-      call<ConfirmResult>("POST", `/admin/events/${id}/confirm`, { staffId, pay }),
+    confirm: (id: string, input: ConfirmInput) => call<ConfirmResult>("POST", `/admin/events/${id}/confirm`, input),
     decline: (id: string, staffId: string) => call<ShiftDetail>("POST", `/admin/events/${id}/decline`, { staffId }),
     payroll: (year?: number) => call<Payroll>("GET", `/admin/pay${year ? `?year=${year}` : ""}`),
     markPaid: (input: { applicationIds: string[]; note?: string; notify: boolean }) =>
       call<MarkPaidResult>("POST", "/admin/pay/mark-paid", input),
+    templates: () => call<{ templates: ShiftTemplate[] }>("GET", "/admin/templates"),
+    createTemplate: (input: TemplateInput) => call<{ template: ShiftTemplate }>("POST", "/admin/templates", input),
+    updateTemplate: (id: string, input: TemplateInput) =>
+      call<{ template: ShiftTemplate }>("PATCH", `/admin/templates/${id}`, input),
+    deleteTemplate: (id: string) => call<{ ok: true }>("DELETE", `/admin/templates/${id}`),
+    syncState: () => call<{ state: SyncState | null; windowDays: number }>("GET", "/admin/sync"),
+    syncNow: () => call<{ state: SyncState; windowDays: number }>("POST", "/admin/sync"),
     undoPaid: (applicationId: string) => call<{ ok: true }>("POST", "/admin/pay/undo", { applicationId }),
   },
 };
