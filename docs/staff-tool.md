@@ -10,7 +10,7 @@ the public session calendar, but is fully separate from the marketing site.
 | Phase | Scope | State |
 |---|---|---|
 | 1 | D1 schema, magic-link login, profile, admin roster + invites | **Live on the preview** (login email tested end to end, 3 Nov 2026) |
-| 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | todo |
+| 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | **Live on the preview** (3 Nov 2026; confirmation email tested end to end) |
 | 3 | Money: earnings view for staff, "mark paid", owed/paid ledger, past events | todo |
 | 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
 
@@ -25,7 +25,7 @@ the public session calendar, but is fully separate from the marketing site.
 - **API:** Cloudflare Pages Functions in `functions/staff-api/` (same origin, so
   the HttpOnly session cookie needs no CORS). Shared logic in `server/staff/`:
   `auth.js` (tokens, sessions, guards), `email.js` (Resend + templates),
-  `invite.js`, `http.js`. `_middleware.js` resolves the session for every route.
+  `invite.js`, `shifts.js` (Arizona times, pay parsing, event/application shapes), `http.js`. `_middleware.js` resolves the session for every route.
 - **Database:** Cloudflare **D1** (SQLite), binding `STAFF_DB`. Schema in
   `migrations/` (`wrangler d1 migrations`). Tables: `staff`, `login_tokens`,
   `sessions`, `events`, `applications`, `email_log`.
@@ -56,6 +56,34 @@ the public session calendar, but is fully separate from the marketing site.
 | GET / POST | `/staff-api/admin/staff` (list / invite) | admin |
 | PATCH | `/staff-api/admin/staff/:id` (name, phone, payout, notes, role, status) | admin |
 | POST | `/staff-api/admin/staff/:id/resend-invite` | admin |
+
+### API (phase 2: shifts)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/staff-api/shifts` (open shifts + my applications, past included) | logged in |
+| POST | `/staff-api/shifts/:id/apply` `{note?}` (needs a complete profile) | logged in |
+| POST | `/staff-api/shifts/:id/withdraw` (only before confirmation) | logged in |
+| GET / POST | `/staff-api/admin/events?scope=upcoming\|past` / post a shift | admin |
+| GET / PATCH / DELETE | `/staff-api/admin/events/:id` (delete only with nobody applied/confirmed) | admin |
+| POST | `/staff-api/admin/events/:id/confirm` `{staffId, pay}` (locks pay, emails confirmation) | admin |
+| POST | `/staff-api/admin/events/:id/decline` `{staffId}` (decline or remove; no email) | admin |
+
+UI: staff home `/staff`; admin `/staff/admin/shifts` (Schedule), `/staff/admin/shifts/new`
+(post, with a picker of the next 60 days of public-calendar sessions not yet posted),
+`/staff/admin/shift?id=…` (detail). The detail page uses a query string because Pages
+only serves pre-rendered paths; a `/shifts/:id` URL would 404 on a fresh load.
+
+### Phase 2 rules (assumptions until Sarah says otherwise)
+- One pay amount per person per shift; no separate roles. "Usual pay" pre-fills the
+  confirm box and is never shown to staff.
+- Pay is locked once confirmed. To change it, remove the person and confirm again
+  (sends a fresh email).
+- Staff see "x of y spots open", never other applicants' names. Full shifts can't be
+  applied for. A declined person can't re-apply; Sarah can still confirm them.
+- Confirmed staff can't withdraw in the app; they reply to the email or text Sarah.
+- No emails for applications, declines, removals, cancellations or time changes yet
+  (phase 4 candidates). Cancelling warns Sarah to tell confirmed people herself.
+- Posting dedupes by FareHarbor availability pk, else by title + start time.
 
 ## Local development
 
