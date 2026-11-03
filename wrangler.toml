@@ -16,9 +16,11 @@ pages_build_output_dir = "dist"
 #   STAFF_BOOTSTRAP_ADMIN_EMAILS  — comma list; these emails become admins on first login
 # Vars: STAFF_EMAIL_FROM, STAFF_EMAIL_REPLY_TO (see [vars]).
 #
-# `database_id` values must match databases created in the Desert Paddleboards
-# Cloudflare account (admin@desertpaddleboards.com). Placeholders until then —
-# local dev (`wrangler pages dev`) ignores the id and uses a local SQLite file.
+# Databases live in the Desert Paddleboards Cloudflare account
+# (admin@desertpaddleboards.com): dpb-staff (production, region WNAM) and
+# dpb-staff-preview (the `staff` branch preview, region WEUR). Local dev
+# (`wrangler pages dev`) ignores these ids and uses a local SQLite file.
+# Use `pnpm cf …` to run wrangler against that account.
 
 [vars]
 STAFF_EMAIL_FROM = "Desert Paddleboards <sarah@desertpaddleboards.com>"
@@ -27,7 +29,7 @@ STAFF_EMAIL_REPLY_TO = "sarah@desertpaddleboards.com"
 [[d1_databases]]
 binding = "STAFF_DB"
 database_name = "dpb-staff"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "7801177c-5e8f-4679-b0dd-319df6027cfe"
 
 [env.preview]
 [env.preview.vars]
@@ -37,4 +39,4 @@ STAFF_EMAIL_REPLY_TO = "sarah@desertpaddleboards.com"
 [[env.preview.d1_databases]]
 binding = "STAFF_DB"
 database_name = "dpb-staff-preview"
-database_id = "00000000-0000-0000-0000-000000000001"
+database_id = "2663c7b1-ab2f-4d74-a2b1-ea4e74d048ea"

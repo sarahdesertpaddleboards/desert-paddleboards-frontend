@@ -78,29 +78,31 @@ The `staff` branch deploys as a **Pages preview** (GitHub Actions, see
 `.github/workflows/deploy.yml`) at `https://staff.desert-paddleboards.pages.dev`,
 using the `[env.preview]` section of `wrangler.toml`. `main` is production.
 
-One-time setup in the Desert Paddleboards Cloudflare account
-(admin@desertpaddleboards.com) — **needs a login or API token for that account;
-Nick's personal wrangler login can't see it**:
+Setup in the Desert Paddleboards Cloudflare account (admin@desertpaddleboards.com).
+Run wrangler against that account with `pnpm cf …` (a separate login stored in the
+gitignored `.wrangler/dpb-config`; `pnpm cf login --browser=false` to sign in again
+and paste the link into a browser signed in to that account).
 
-1. Create the databases and copy the ids into `wrangler.toml`:
+1. ✅ Databases created (3 Nov 2026), ids in `wrangler.toml`:
+   `dpb-staff` (production, WNAM) and `dpb-staff-preview` (WEUR).
+2. ✅ Schema applied to both. For new migrations:
    ```bash
-   wrangler d1 create dpb-staff-preview   # → database_id for [env.preview]
-   wrangler d1 create dpb-staff           # → database_id for production (top level)
+   pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
+   pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main
    ```
-2. Apply the schema:
+3. Secrets, per environment (`--env preview`, later `--env production`):
    ```bash
-   wrangler d1 migrations apply dpb-staff-preview --remote
-   wrangler d1 migrations apply dpb-staff --remote      # before merging to main
+   pnpm cf pages secret put STAFF_BOOTSTRAP_ADMIN_EMAILS --project-name desert-paddleboards --env preview
+   pnpm cf pages secret put RESEND_API_KEY --project-name desert-paddleboards --env preview
    ```
-3. Pages project → Settings → Variables and secrets, for **Preview** and later
-   **Production**:
-   - `RESEND_API_KEY` (secret) — from resend.com; `desertpaddleboards.com` must be a
-     verified sending domain there (SPF/DKIM records in Cloudflare DNS).
-   - `STAFF_BOOTSTRAP_ADMIN_EMAILS` (secret or var) — `sarah@desertpaddleboards.com,<nick's email>`
-   - `STAFF_EMAIL_FROM` / `STAFF_EMAIL_REPLY_TO` already come from `wrangler.toml` `[vars]`.
-4. Push `staff` → Actions builds and deploys the preview. Until step 1 is done the
-   deploy fails on the placeholder D1 ids (that's expected, and it never touches
-   production).
+   - `STAFF_BOOTSTRAP_ADMIN_EMAILS` — `sarah@desertpaddleboards.com,<nick's email>`
+   - `RESEND_API_KEY` — from resend.com, with `desertpaddleboards.com` verified there
+     (Resend's DNS records sit on the `send.` subdomain and `resend._domainkey`, so
+     they don't touch Google Workspace mail).
+   - `STAFF_EMAIL_FROM` / `STAFF_EMAIL_REPLY_TO` come from `wrangler.toml` `[vars]`.
+   Secrets apply to the *next* deployment: re-run the deploy workflow on `staff`
+   (Actions → Deploy to Cloudflare Pages → Run workflow → branch `staff`).
+4. Push `staff` → Actions deploys the preview to `https://staff.desert-paddleboards.pages.dev`.
 
 Do **not** merge `staff` into `main` until the production `dpb-staff` database
 exists, its id is in `wrangler.toml`, and migrations have been applied —
