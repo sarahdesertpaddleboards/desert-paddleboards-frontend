@@ -9,7 +9,7 @@ the public session calendar, but is fully separate from the marketing site.
 
 | Phase | Scope | State |
 |---|---|---|
-| 1 | D1 schema, magic-link login, profile, admin roster + invites | **Built, tested locally** |
+| 1 | D1 schema, magic-link login, profile, admin roster + invites | **Live on the preview** (login email tested end to end, 3 Nov 2026) |
 | 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | todo |
 | 3 | Money: earnings view for staff, "mark paid", owed/paid ledger, past events | todo |
 | 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
@@ -90,7 +90,8 @@ and paste the link into a browser signed in to that account).
    pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
    pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main
    ```
-3. Secrets, per environment (`--env preview`, later `--env production`):
+3. ✅ Preview secrets set (3 Nov 2026). Production still needs them (`--env production`)
+   before merging to `main`:
    ```bash
    pnpm cf pages secret put STAFF_BOOTSTRAP_ADMIN_EMAILS --project-name desert-paddleboards --env preview
    pnpm cf pages secret put RESEND_API_KEY --project-name desert-paddleboards --env preview
@@ -102,11 +103,13 @@ and paste the link into a browser signed in to that account).
    - `STAFF_EMAIL_FROM` / `STAFF_EMAIL_REPLY_TO` come from `wrangler.toml` `[vars]`.
    Secrets apply to the *next* deployment: re-run the deploy workflow on `staff`
    (Actions → Deploy to Cloudflare Pages → Run workflow → branch `staff`).
-4. Push `staff` → Actions deploys the preview to `https://staff.desert-paddleboards.pages.dev`.
+4. ✅ Push `staff` → Actions deploys the preview to `https://staff.desert-paddleboards.pages.dev`.
 
-Do **not** merge `staff` into `main` until the production `dpb-staff` database
-exists, its id is in `wrangler.toml`, and migrations have been applied —
-otherwise the production deploy breaks.
+Do **not** merge `staff` into `main` until the production secrets are set with
+`--env production` (the production database and schema already exist).
+
+Resend: desertpaddleboards.com is verified and sends from sarah@. Test emails land in
+Gmail's Primary inbox. The admin roster page is `/staff/admin/people`.
 
 ## Data notes
 - Payout details are a method (Venmo / Zelle / Cash App / PayPal / check / other)
