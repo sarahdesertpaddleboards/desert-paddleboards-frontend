@@ -8,6 +8,7 @@
     "build": "node scripts/generate-seo-data.mjs && node scripts/generate-venue-coords.mjs && node scripts/generate-reviews.mjs && vite-react-ssg build && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "staff:api": "wrangler pages dev public --port 8788",
+    "cf": "XDG_CONFIG_HOME=.wrangler/dpb-config wrangler",
     "staff:db:local": "wrangler d1 migrations apply dpb-staff --local"
   },
   "dependencies": {
