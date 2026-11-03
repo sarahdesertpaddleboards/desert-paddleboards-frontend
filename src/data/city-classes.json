@@ -13,50 +13,9 @@
       "note": "Floated in the resort-style lazy river — the current is switched off during the soundbath, so you drift on calm, still water. Booked through the Town of Queen Creek (search \"swimming\" activities).",
       "sessions": [
         {
-          "date": "2026-07-10",
-          "time": "20:00"
-        },
-        {
-          "date": "2026-07-24",
-          "time": "20:00"
-        },
-        {
-          "date": "2026-08-07",
-          "time": "20:00"
-        },
-        {
-          "date": "2026-08-21",
-          "time": "20:00"
-        },
-        {
-          "date": "2026-09-11",
-          "time": "20:00",
-          "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2MzU="
-        },
-        {
-          "date": "2026-09-25",
-          "time": "20:00",
-          "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2MzY="
-        },
-        {
-          "date": "2026-10-09",
-          "time": "20:00",
-          "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2Mzc="
-        },
-        {
-          "date": "2026-10-23",
-          "time": "20:00",
-          "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2Mzg="
-        },
-        {
           "date": "2026-11-06",
           "time": "20:00",
           "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2Mzk="
-        },
-        {
-          "date": "2026-11-20",
-          "time": "20:00",
-          "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog?filter=c2VhcmNoPTQzNjg2NDA="
         }
       ],
       "id": "queen-creek-friday-floats"
@@ -173,6 +132,26 @@
         }
       ],
       "id": "salt-river-outing"
+    },
+    {
+      "title": "Santa Paddle",
+      "slug": "santa-paddle-tempe-town-lake",
+      "venue": "Tempe Town Lake Boat Marina",
+      "city": "Tempe",
+      "state": "AZ",
+      "address": "Tempe Town Lake Boat Marina (north shore), 550 Tempe Town Lake, Tempe, AZ 85281",
+      "fareharborItemId": 146502,
+      "image": "/santa-paddle/santas-under-bridge.jpg",
+      "note": "Our free holiday paddle on Tempe Town Lake. Santas, elves, reindeer and dogs in antlers on paddleboards and kayaks. Bring your own board or kayak and a life jacket, put on your silliest costume, and meet us on the hill by the boat marina on the north side of the lake.",
+      "sessions": [
+        {
+          "date": "2026-12-12",
+          "time": "10:00",
+          "endTime": "12:00"
+        }
+      ],
+      "id": "santa-paddle",
+      "isFree": true
     }
   ]
 }

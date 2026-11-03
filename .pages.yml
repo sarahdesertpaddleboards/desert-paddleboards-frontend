@@ -32,6 +32,7 @@ content:
           - { name: fareharborItemId, label: "FareHarbor item ID (only for events booked through FareHarbor — leave blank for city classes)", type: number }
           - { name: image, label: "Venue photo (path or URL, optional)", type: string }
           - { name: note, label: Note (optional), type: text }
+          - { name: isFree, label: "Free event (shows \"Free\" instead of a price)", type: boolean }
           - name: sessions
             label: Upcoming dates
             type: object

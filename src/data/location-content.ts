@@ -223,9 +223,9 @@ No experience is necessary. Simply lay back, float, and let the sounds wash over
 `,
 
   "floating-soundbath-pebblecreek-goodyear": `
-**Stay warm, float effortlessly, and experience a meditative concert on the water.**
+**Float effortlessly and experience a meditative concert on the water.**
 
-Join us at PebbleCreek's spacious indoor pool for a unique Floating Sound Bath designed to help you relax, recharge, and unwind. This winter-only location features warm water, comfortable indoor temperatures, and excellent acoustics that let the sounds and vibrations surround you throughout the experience.
+Join us at PebbleCreek in Goodyear for a unique Floating Sound Bath designed to help you relax, recharge, and unwind, with the sounds and vibrations surrounding you as you drift.
 
 Guided by local sound bath practitioners, you'll enjoy gentle breathwork, meditation, and a live performance featuring a variety of instruments including crystal singing bowls, gongs, chimes, flutes, drums, and more.
 
@@ -235,7 +235,6 @@ Guided by local sound bath practitioners, you'll enjoy gentle breathwork, medita
 - Blanket and lavender eye mask
 - Guided meditation and breathwork
 - Live sound bath performance
-- Warm indoor pool setting
 
 **Perfect for:**
 
@@ -246,7 +245,7 @@ Guided by local sound bath practitioners, you'll enjoy gentle breathwork, medita
 
 No experience is necessary. Simply lay back, float, and enjoy a peaceful evening on the water.
 
-*Warm water. Beautiful music. Deep relaxation.*
+*Beautiful music. Deep relaxation.*
 `,
 
   "floating-soundbath-canopy-hilton-tempe": `
@@ -387,14 +386,16 @@ This is more than a sound bath — it's a floating spa experience. The gentle mo
 - Award-winning Native American flute performance
 - Live sound bath with a variety of instruments
 - Guided breathwork and meditation
-- Access to the beautiful Revive Spa setting
+- A peaceful setting at the Revive Spa pool
 
-**Make a day of it:**
+**Please note:** Revive Spa amenities (pools, locker rooms, and other spa facilities) are not included with your sound bath ticket.
 
-- Enjoy the luxury amenities of JW Marriott Desert Ridge
-- Schedule a massage, facial, or spa treatment
+**Make a day of it — special spa pricing for sound bath guests:**
+
+- A $50 Revive Spa day pass, or
+- 20% off spa services such as massages and facials
+- Just mention you're attending the floating sound bath when you book with Revive Spa
 - Explore the resort's restaurants, lounges, and beautiful grounds
-- Turn your sound bath into the ultimate self-care day
 
 **Perfect for:**
 

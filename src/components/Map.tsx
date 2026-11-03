@@ -167,13 +167,17 @@ export function MapView({
       onMapReady(map.current);
     }
     // The Maps API can silently fail to render (no error) on an account/billing
-    // issue. If no tiles appear shortly, treat the map as unavailable so the
-    // parent hides the empty box instead of showing a broken gray rectangle.
+    // issue, so hide the box if nothing ever draws. Wait for "tilesloaded":
+    // the vector Map ID often takes longer than 4s on a cold first visit, and
+    // the old 4s .gm-style check hid maps that were about to appear.
+    let rendered = false;
+    window.google.maps.event.addListenerOnce(map.current, "tilesloaded", () => {
+      rendered = true;
+    });
     window.setTimeout(() => {
-      if (mapContainer.current && !mapContainer.current.querySelector(".gm-style")) {
-        onUnavailable?.();
-      }
-    }, 4000);
+      if (rendered || mapContainer.current?.querySelector(".gm-style")) return;
+      onUnavailable?.();
+    }, 15000);
   });
 
   useEffect(() => {

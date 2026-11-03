@@ -13,6 +13,7 @@ import Rentals from "./pages/Rentals";
 import Coaching from "./pages/Coaching";
 import Calendar from "./pages/Calendar";
 import SantaPaddle from "./pages/SantaPaddle";
+import WitchesRegatta from "./pages/WitchesRegatta";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
 import Privacy from "./pages/Privacy";
@@ -84,6 +85,7 @@ export const routes: RouteRecord[] = [
       { path: "contact", element: <Contact /> },
       { path: "faq", element: <FAQ /> },
       { path: "santa-paddle", element: <SantaPaddle /> },
+      { path: "witches-regatta", element: <WitchesRegatta /> },
 
       { path: "custom-boards", element: <CustomBoards /> },
 

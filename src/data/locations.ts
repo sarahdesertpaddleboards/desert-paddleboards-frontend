@@ -101,6 +101,7 @@ const FORCE_LOCATION_IDS = new Set<number>([626146, 746500]);
  */
 const EXCLUDED_ITEM_IDS = new Set<number>([
   655636, // SwimHaus (Gilbert) — nothing scheduled in the near future (Shellie, Aug 2026)
+  146502, // Santa Paddle — an annual event, featured via city-classes.json + /santa-paddle
   // (Arizona Grand Resort & Spa, 714583, was hidden Jun 2026 but is running
   //  again as of Jul 2026 — restored.)
 ]);
@@ -311,9 +312,9 @@ const LOCATION_OVERLAYS: Overlay[] = [
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
     title: "Community Floating Soundbath",
-    venue: "PebbleCreek Oasis Pool",
+    venue: "PebbleCreek",
     blurb:
-      "A floating soundbath at the PebbleCreek Oasis Pool in Goodyear — float, breathe, and let live sound carry you.",
+      "A floating soundbath at PebbleCreek in Goodyear — float, breathe, and let live sound carry you.",
   },
   {
     itemId: 146434,
