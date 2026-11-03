@@ -114,6 +114,15 @@ export default function LocationDetail() {
     (typeof fhItemId === "number" &&
       upcomingSessions.some((s) => s.itemId === fhItemId));
 
+  // A FareHarbor venue's own upcoming dates, so visitors see them on the page
+  // instead of only after opening the booking lightframe.
+  const fhDates = exp
+    ? upcomingSessions
+        .filter((s) => s.itemId === exp.itemId && Date.parse(s.startAt) > Date.now())
+        .sort((a, b) => a.startAt.localeCompare(b.startAt))
+        .slice(0, 8)
+    : [];
+
   // "Getting there" — directions destination for this venue, if we can route.
   const dest = exp
     ? venueDestination(exp)
@@ -237,6 +246,53 @@ export default function LocationDetail() {
               {view.blurb}
             </p>
           )}
+
+          {/* Upcoming dates for FareHarbor venues — live feed (seeded from the
+              build-time snapshot, so they're in the prerendered HTML too). */}
+          {fhDates.length > 0 ? (
+            <div className="space-y-3">
+              <h2 className="text-xl font-bold">Upcoming dates</h2>
+              <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border">
+                {fhDates.map((s) => (
+                  <li
+                    key={s.availabilityPk}
+                    className="flex items-center justify-between gap-3 bg-card px-4 py-3"
+                  >
+                    <span className="text-sm font-medium">
+                      {fmtDateHeader(s.startAt)}
+                      <span className="ml-2 font-normal text-muted-foreground">
+                        {fmtTime(s.startAt)}
+                      </span>
+                    </span>
+                    {s.isSoldOut ? (
+                      <a
+                        href="sms:6024560884"
+                        className="shrink-0 text-right text-xs font-semibold text-muted-foreground hover:text-primary"
+                      >
+                        Fully booked — text for waitlist
+                      </a>
+                    ) : s.isBookable === false ? (
+                      // Only the live feed carries isBookable; the build-time
+                      // snapshot omits it, so undefined means bookable.
+                      <a
+                        href="tel:6024560884"
+                        className="shrink-0 text-right text-xs font-semibold text-muted-foreground hover:text-primary"
+                      >
+                        Booking closed — call to book
+                      </a>
+                    ) : (
+                      <FareHarborButton
+                        itemId={exp!.itemId}
+                        className="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                      >
+                        Book
+                      </FareHarborButton>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
           {/* Upcoming dates — shown on-page for city classes (no lightframe). */}
           {view.isCity && view.sessions.length > 0 ? (

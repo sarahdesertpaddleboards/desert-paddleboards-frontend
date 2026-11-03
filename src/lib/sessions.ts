@@ -108,7 +108,7 @@ export function useMergedSessions(): CalSession[] {
   // every visitor the full round trip, and on a cold edge cache the feed takes
   // ~10s to build (it fans out to FareHarbor per item-month), so the schedule
   // could sit blank that long. The live feed still replaces this within a second
-  // and widens the range from ~3 months to ~6.
+  // with fresh availability; both cover ~6 months ahead.
   const [fhSessions, setFhSessions] = useState<UpcomingSession[]>(() => {
     const now = Date.now();
     return (buildTimeUpcoming.sessions as UpcomingSession[]).filter(
