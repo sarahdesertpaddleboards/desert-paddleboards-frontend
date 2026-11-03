@@ -37,7 +37,7 @@ function Shell({ children, right }: { children: React.ReactNode; right?: React.R
   return (
     <>
       <header className="border-b border-border bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-2 gap-y-1 px-4 py-3">
           <Link to="/staff" className="flex shrink-0 items-center gap-2 sm:gap-3">
             <img src="/logo.webp" alt="Desert Paddleboards" className="h-8 w-auto sm:h-9" />
             <span className="hidden text-xs font-bold uppercase tracking-[0.14em] text-brand sm:inline">Staff</span>
@@ -67,12 +67,17 @@ function Chrome() {
   }, [loading, staff, isPublic, location.pathname, location.search, navigate]);
 
   const nav = staff ? (
-    <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
+    <nav className="-mx-2 flex max-w-full items-center gap-0.5 overflow-x-auto text-sm sm:mx-0 sm:gap-1">
       <NavItem to="/staff" end>
         Shifts
       </NavItem>
       <NavItem to="/staff/profile">Profile</NavItem>
-      {staff.role === "admin" ? <NavItem to="/staff/admin/people">People</NavItem> : null}
+      {staff.role === "admin" ? (
+        <>
+          <NavItem to="/staff/admin/shifts">Schedule</NavItem>
+          <NavItem to="/staff/admin/people">People</NavItem>
+        </>
+      ) : null}
       <Button
         variant="ghost"
         size="sm"

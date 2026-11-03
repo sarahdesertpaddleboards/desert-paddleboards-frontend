@@ -53,6 +53,9 @@ export interface CalSession {
   slug?: string;
   /** FareHarbor item id → lightframe "Book". */
   itemId?: number;
+  /** Live FareHarbor feed only: the slot's availability pk + end time (the staff tool links shifts to these). */
+  availabilityPk?: number;
+  endAt?: string;
   /** City class external registration link. */
   bookingUrl?: string;
   bookingLabel?: string;
@@ -167,6 +170,8 @@ export function useMergedSessions(): CalSession[] {
         source: "fareharbor",
         slug: exp.slug,
         itemId: s.itemId,
+        availabilityPk: s.availabilityPk,
+        endAt: s.endAt,
       });
     }
 

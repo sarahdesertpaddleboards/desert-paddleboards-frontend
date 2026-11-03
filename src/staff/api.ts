@@ -24,6 +24,67 @@ export interface Staff {
   notes?: string | null;
 }
 
+export interface Shift {
+  id: string;
+  title: string;
+  venue: string | null;
+  city: string | null;
+  /** Arizona-local ISO with offset, e.g. 2026-11-07T17:30:00-07:00 */
+  startAt: string;
+  endAt: string | null;
+  source: "manual" | "fareharbor" | "city";
+  fareharborItemId: number | null;
+  fareharborAvailabilityPk: number | null;
+  staffNeeded: number;
+  /** Admin responses only. */
+  defaultPayCents?: number | null;
+  notes: string | null;
+  status: "open" | "filled" | "completed" | "cancelled";
+  confirmedCount: number;
+  appliedCount: number;
+  isFull: boolean;
+  isPast: boolean;
+  createdAt: string;
+}
+
+export type ApplicationStatus = "applied" | "confirmed" | "declined" | "withdrawn";
+
+export interface Application {
+  id: string;
+  eventId: string;
+  staffId: string;
+  status: ApplicationStatus;
+  payCents: number | null;
+  staffNote: string | null;
+  confirmedAt: string | null;
+  paidAt: string | null;
+  paidNote: string | null;
+  appliedAt: string;
+  updatedAt: string;
+}
+
+export interface ShiftDetail {
+  event: Shift;
+  applications: (Application & { staff: Staff })[];
+}
+
+export interface ShiftInput {
+  title?: string;
+  startAt?: string;
+  endAt?: string | null;
+  venue?: string | null;
+  city?: string | null;
+  staffNeeded?: number;
+  defaultPay?: string | number | null;
+  notes?: string | null;
+  status?: "open" | "completed" | "cancelled";
+  source?: "manual" | "fareharbor" | "city";
+  fareharborItemId?: number | null;
+  fareharborAvailabilityPk?: number | null;
+}
+
+type ConfirmResult = ShiftDetail & { emailed: boolean; emailError?: string; localMode?: boolean };
+
 export class ApiError extends Error {
   status: number;
   code: string;
@@ -62,6 +123,14 @@ export const staffApi = {
   verify: (token: string) => call<{ ok: true; staff: Staff; next: string }>("POST", "/auth/verify", { token }),
   logout: () => call<{ ok: true }>("POST", "/auth/logout"),
 
+  shifts: () =>
+    call<{ shifts: (Shift & { my: Application | null })[]; mine: { application: Application; event: Shift }[] }>(
+      "GET",
+      "/shifts",
+    ),
+  apply: (id: string, note?: string) => call<{ application: Application }>("POST", `/shifts/${id}/apply`, { note }),
+  withdraw: (id: string) => call<{ application: Application }>("POST", `/shifts/${id}/withdraw`),
+
   admin: {
     listStaff: () => call<{ staff: Staff[] }>("GET", "/admin/staff"),
     invite: (input: { email: string; name?: string; role?: "staff" | "admin" }) =>
@@ -73,6 +142,15 @@ export const staffApi = {
         "POST",
         `/admin/staff/${id}/resend-invite`,
       ),
+    listEvents: (scope: "upcoming" | "past") =>
+      call<{ scope: string; events: Shift[] }>("GET", `/admin/events?scope=${scope}`),
+    createEvent: (input: ShiftInput) => call<{ event: Shift }>("POST", "/admin/events", input),
+    getEvent: (id: string) => call<ShiftDetail>("GET", `/admin/events/${id}`),
+    updateEvent: (id: string, patch: ShiftInput) => call<ShiftDetail>("PATCH", `/admin/events/${id}`, patch),
+    deleteEvent: (id: string) => call<{ ok: true }>("DELETE", `/admin/events/${id}`),
+    confirm: (id: string, staffId: string, pay: string) =>
+      call<ConfirmResult>("POST", `/admin/events/${id}/confirm`, { staffId, pay }),
+    decline: (id: string, staffId: string) => call<ShiftDetail>("POST", `/admin/events/${id}/decline`, { staffId }),
   },
 };
 
