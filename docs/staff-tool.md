@@ -12,6 +12,7 @@ the public session calendar, but is fully separate from the marketing site.
 | 1 | D1 schema, magic-link login, profile, admin roster + invites | **Live on the preview** (login email tested end to end, 3 Nov 2026) |
 | 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | **Live on the preview** (3 Nov 2026; confirmation email tested end to end) |
 | 3 | Money: payroll (owed by person, mark paid + email, paid history, CSV), staff earnings | **Live on the preview** (3 Nov 2026; payment email tested end to end) |
+| 3b | Roles + trailer add-on, calendar auto-posting with staffing templates, staff skills, assign someone new by email | **Live on the preview** (3 Nov 2026; sync posted 23 shifts; invite-by-assign email tested) |
 | 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
 
 ## Architecture
@@ -26,7 +27,10 @@ the public session calendar, but is fully separate from the marketing site.
   the HttpOnly session cookie needs no CORS). Shared logic in `server/staff/`:
   `auth.js` (tokens, sessions, guards), `email.js` (Resend + templates),
   `invite.js`, `shifts.js` (Arizona times, pay parsing, event/application shapes),
-  `pay.js` (payroll ledger query + rules), `http.js`. `_middleware.js` resolves the session for every route.
+  `pay.js` (payroll ledger query + rules), `roles.js` (roles, skills, per-role counts),
+  `templates.js` (staffing templates + matching), `sync.js` (calendar auto-posting), `http.js`.
+  The calendar session list comes from `src/lib/merge-sessions.ts`, the same pure function
+  the public calendar uses (relative imports only, so the Functions bundler can load it). `_middleware.js` resolves the session for every route.
 - **Database:** Cloudflare **D1** (SQLite), binding `STAFF_DB`. Schema in
   `migrations/` (`wrangler d1 migrations`). Tables: `staff`, `login_tokens`,
   `sessions`, `events`, `applications`, `email_log`.
@@ -95,9 +99,57 @@ UI: admin `/staff/admin/payroll` (To pay / Paid tabs); staff `/staff/earnings` p
 - A paid person can't be removed from a shift (undo the payment first).
 - Years are Arizona time. The Paid tab's per-person totals and CSV are for tax time.
 
+### API (phase 3b: roles, templates, auto-posting)
+| Method | Path | Who |
+|---|---|---|
+| POST | `/staff-api/shifts/:id/apply` `{role, trailer?, note?}` | logged in |
+| POST | `/staff-api/admin/events/:id/confirm` `{staffId \| email (+name), role, pay, trailer?, trailerPay?}` | admin |
+| GET / POST | `/staff-api/admin/sync` (last sync / sync now) | admin |
+| GET / POST | `/staff-api/admin/templates` | admin |
+| PATCH / DELETE | `/staff-api/admin/templates/:id` (default can't be deleted) | admin |
+
+Shifts carry `roles: [{role, needed, confirmed, applied, payCents(admin only)}]`, `trailerNeeded`,
+`trailerConfirmed`, `trailerOpen`, `autoPosted`, `offCalendar`. Create/PATCH take `roles` +
+`trailerNeeded`/`trailerPay` (`staffNeeded`/`defaultPay` still accepted on create → general staff).
+UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
+
+### Roles and trailer
+- Roles: event team leader, teacher (yoga/pilates/aerobics), artist (sound bowls/music),
+  general staff. Each shift needs N per role with its own usual pay (pre-fills confirm; staff
+  never see it). `events.staff_needed` = sum of roles.
+- Trailer driver is an **add-on** to one person's role (the driver always works the event too),
+  with extra pay. Locked `pay_cents` = role pay + trailer pay; `trailer_pay_cents` is the part.
+- Staff tick skills on their profile (the 4 roles + trailer). Matching open roles are
+  highlighted and pre-selected when applying; Sarah sees skills on People and in "Add someone".
+- One person, one role per shift.
+
+### Calendar auto-posting
+- Every public-calendar session (same list as the public calendar) in the next **90 days**
+  becomes an open shift, staffed by the first staffing template whose keyword is in the title
+  (else the default). Seeded templates: soundbath → lead + artist + general + trailer;
+  yoga/pilates/aerobics/fitness → lead + teacher + trailer; default → lead + general + trailer.
+  Pay is blank until Sarah fills it in on the templates.
+- Runs lazily (Pages has no cron): in the background at most every 30 min when anyone opens
+  the staff area or the Schedule, or on demand ("Sync now"). Keys: `fh:<availability pk>`,
+  `fhx:<item>:<start>`, `city:<slug>:<start>` in `events.calendar_key` (unique).
+- FareHarbor slot moved → shift times follow, unless Sarah edited the times by hand
+  (`times_edited`). Deleted calendar shifts go in `calendar_dismissed` and aren't re-posted.
+  A session that leaves the calendar flags the shift "Off the calendar" (never auto-cancelled,
+  because the FareHarbor feed occasionally drops items).
+- Post a shift is now for private / off-calendar events; it also lists calendar sessions with
+  no shift (beyond 90 days, dismissed, or skipped by a template).
+
+### Assigning people who haven't applied
+- "Add someone directly" on a shift: anyone on the roster, or **someone new by email**. A new
+  person is added to the roster and confirmed, and gets one email ("You're on the team") with
+  the shift details and a 14-day invite link. Anyone still "invited" (never logged in) gets
+  that same combined email instead of the plain confirmation. Confirmation emails say who
+  confirmed them (Sarah or Shellie), from Sarah's address.
+- Make Shellie an admin on People ("Make admin").
+
 ### Phase 2 rules (assumptions until Sarah says otherwise)
-- One pay amount per person per shift; no separate roles. "Usual pay" pre-fills the
-  confirm box and is never shown to staff.
+- One locked pay per person per shift (role pay + any trailer pay). Usual pay per role
+  pre-fills the confirm box and is never shown to staff.
 - Pay is locked once confirmed. To change it, remove the person and confirm again
   (sends a fresh email).
 - Staff see "x of y spots open", never other applicants' names. Full shifts can't be
@@ -135,7 +187,8 @@ and paste the link into a browser signed in to that account).
 
 1. ✅ Databases created (3 Nov 2026), ids in `wrangler.toml`:
    `dpb-staff` (production, WNAM) and `dpb-staff-preview` (WEUR).
-2. ✅ Schema applied to both. For new migrations:
+2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post) to **preview only** so
+   far. Apply it to production before merging. For new migrations:
    ```bash
    pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
    pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main
