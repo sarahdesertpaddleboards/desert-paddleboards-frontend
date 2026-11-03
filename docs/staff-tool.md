@@ -11,7 +11,7 @@ the public session calendar, but is fully separate from the marketing site.
 |---|---|---|
 | 1 | D1 schema, magic-link login, profile, admin roster + invites | **Live on the preview** (login email tested end to end, 3 Nov 2026) |
 | 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | **Live on the preview** (3 Nov 2026; confirmation email tested end to end) |
-| 3 | Money: earnings view for staff, "mark paid", owed/paid ledger, past events | todo |
+| 3 | Money: payroll (owed by person, mark paid + email, paid history, CSV), staff earnings | **Live on the preview** (3 Nov 2026; payment email tested end to end) |
 | 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
 
 ## Architecture
@@ -25,7 +25,8 @@ the public session calendar, but is fully separate from the marketing site.
 - **API:** Cloudflare Pages Functions in `functions/staff-api/` (same origin, so
   the HttpOnly session cookie needs no CORS). Shared logic in `server/staff/`:
   `auth.js` (tokens, sessions, guards), `email.js` (Resend + templates),
-  `invite.js`, `shifts.js` (Arizona times, pay parsing, event/application shapes), `http.js`. `_middleware.js` resolves the session for every route.
+  `invite.js`, `shifts.js` (Arizona times, pay parsing, event/application shapes),
+  `pay.js` (payroll ledger query + rules), `http.js`. `_middleware.js` resolves the session for every route.
 - **Database:** Cloudflare **D1** (SQLite), binding `STAFF_DB`. Schema in
   `migrations/` (`wrangler d1 migrations`). Tables: `staff`, `login_tokens`,
   `sessions`, `events`, `applications`, `email_log`.
@@ -72,6 +73,27 @@ UI: staff home `/staff`; admin `/staff/admin/shifts` (Schedule), `/staff/admin/s
 (post, with a picker of the next 60 days of public-calendar sessions not yet posted),
 `/staff/admin/shift?id=…` (detail). The detail page uses a query string because Pages
 only serves pre-rendered paths; a `/shifts/:id` URL would 404 on a fresh load.
+
+### API (phase 3: money)
+| Method | Path | Who |
+|---|---|---|
+| GET | `/staff-api/admin/pay?year=2026` (owed, upcoming total, paid in that year) | admin |
+| POST | `/staff-api/admin/pay/mark-paid` `{applicationIds, note?, notify?}` (one email per person) | admin |
+| POST | `/staff-api/admin/pay/undo` `{applicationId}` | admin |
+
+Staff earnings come from `GET /staff-api/shifts` (`mine` already carries pay and paid status).
+UI: admin `/staff/admin/payroll` (To pay / Paid tabs); staff `/staff/earnings` plus a
+"Your pay" card on `/staff`; "Mark paid" / "Undo" on a past shift's page.
+
+### Phase 3 rules
+- Owed = confirmed, not marked paid, shift not cancelled, shift has started.
+  "Coming up" = the same for shifts still ahead. Cancelled shifts never show as owed.
+- Marking paid is bookkeeping only: Sarah sends the money by Venmo/Zelle/etc. first.
+  The note (e.g. "Venmo Nov 9") is shown to the staff member.
+- "Email them" (on by default) sends one "Your pay is on its way" email per person,
+  listing the shifts and total. Undo clears the paid mark but can't unsend the email.
+- A paid person can't be removed from a shift (undo the payment first).
+- Years are Arizona time. The Paid tab's per-person totals and CSV are for tax time.
 
 ### Phase 2 rules (assumptions until Sarah says otherwise)
 - One pay amount per person per shift; no separate roles. "Usual pay" pre-fills the
