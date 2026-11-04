@@ -14,7 +14,7 @@
  * support that but do not replace it. Update the "last updated" date on change.
  */
 
-export const LEGAL_LAST_UPDATED = "June 23, 2026";
+export const LEGAL_LAST_UPDATED = "November 4, 2026";
 
 export const privacyMarkdown = `
 **Last updated: ${LEGAL_LAST_UPDATED}**
@@ -60,6 +60,7 @@ We share information only with the trusted providers that help us run our busine
 - **Meta (Facebook / Instagram)** — advertising measurement and audiences.
 - **Flodesk** — our email and customer-update tool.
 - **Web3Forms** — delivers website inquiry forms to our inbox.
+- **Twilio** — delivers text messages to staff who have opted in (see "Text messages" below).
 
 We may also disclose information where required by law, or to protect the rights, safety and property of Desert Paddleboards, our customers or others. **We do not sell your personal information.**
 
@@ -68,6 +69,11 @@ We often photograph and film our experiences for our photo albums, website and s
 
 ## Marketing communications
 If you opt in to our emails, you can unsubscribe at any time using the link in any message or by emailing us. We will still send essential booking and service messages such as confirmations.
+
+## Text messages
+We send text messages only to members of our event staff who opt in on their staff profile, about the shifts they work (confirmations, changes, reminders and pay) and login links they request. Message frequency varies, and message and data rates may apply. Reply **STOP** to any text to opt out or **HELP** for help. Full details: [Staff text messages](/sms-terms).
+
+Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes. Text-messaging originator opt-in data and consent are excluded from all of the sharing described in this policy and will not be shared with any third party.
 
 ## Data retention
 We keep your information only as long as needed to provide our services, run our business and meet legal and accounting requirements, after which we delete or anonymize it.

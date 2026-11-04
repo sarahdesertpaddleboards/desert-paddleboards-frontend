@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,8 @@ export default function StaffProfile() {
   const [payoutMethod, setPayoutMethod] = useState<PayoutMethod | "">("");
   const [payoutHandle, setPayoutHandle] = useState("");
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [smsOptIn, setSmsOptIn] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export default function StaffProfile() {
     setPayoutMethod(staff.payoutMethod ?? "");
     setPayoutHandle(staff.payoutHandle ?? "");
     setSkills(staff.skills ?? []);
+    setSmsOptIn(staff.smsOptIn ?? false);
   }, [staff]);
 
   if (!staff) return null;
@@ -38,6 +41,7 @@ export default function StaffProfile() {
     e.preventDefault();
     setError(null);
     setSaved(false);
+    setNotice(null);
     setBusy(true);
     try {
       const res = await staffApi.updateMe({
@@ -46,9 +50,11 @@ export default function StaffProfile() {
         payoutMethod: payoutMethod || null,
         payoutHandle,
         skills,
+        smsOptIn,
       });
       setStaff(res.staff);
       setSaved(true);
+      if (res.texted) setNotice("Texts are on. We've sent a welcome text to your phone.");
       if (welcome && res.staff.profileComplete) navigate("/staff", { replace: true });
     } catch (err) {
       setError(err instanceof ApiError && err.message ? err.message : "Couldn't save. Please try again.");
@@ -64,7 +70,7 @@ export default function StaffProfile() {
           <CardTitle className="text-2xl text-brand-dark">{welcome ? "Welcome! Tell us about you" : "Your profile"}</CardTitle>
           <CardDescription>
             {welcome
-              ? "Two minutes: your name, a phone number for day-of texts, what you can do, and how you'd like to be paid."
+              ? "Two minutes: your name, your mobile (tick the box to get shift updates by text), what you can do, and how you'd like to be paid."
               : "Keep this current so confirmations and payments reach you."}
           </CardDescription>
         </CardHeader>
@@ -90,6 +96,30 @@ export default function StaffProfile() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
+              <label className="flex items-start gap-2.5 rounded-lg border border-border p-3 text-sm">
+                <input
+                  id="smsOptIn"
+                  type="checkbox"
+                  className="mt-0.5 size-4 shrink-0 accent-[#1f3a4d]"
+                  checked={smsOptIn}
+                  onChange={(e) => setSmsOptIn(e.target.checked)}
+                />
+                <span>
+                  <span className="font-medium">Text me shift updates</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                    I agree to get automated texts from Desert Paddleboards at this number about my shifts: confirmations,
+                    changes, reminders and pay. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out,
+                    HELP for help. Agreeing isn't a condition of working with us.{" "}
+                    <Link to="/sms-terms" className="text-brand underline" target="_blank">
+                      Text terms
+                    </Link>{" "}
+                    ·{" "}
+                    <Link to="/privacy" className="text-brand underline" target="_blank">
+                      Privacy
+                    </Link>
+                  </span>
+                </span>
+              </label>
             </div>
             <fieldset className="space-y-2">
               <legend className="text-sm font-medium">What can you do?</legend>
@@ -145,7 +175,7 @@ export default function StaffProfile() {
             ) : null}
 
             {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            {saved ? <p className="text-sm text-brand">Saved.</p> : null}
+            {saved ? <p className="text-sm text-brand">{notice ?? "Saved."}</p> : null}
             <Button type="submit" className="w-full sm:w-auto" disabled={busy}>
               {busy ? "Saving…" : welcome ? "Save and continue" : "Save changes"}
             </Button>

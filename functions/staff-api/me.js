@@ -1,12 +1,16 @@
 /**
  * GET   /staff-api/me — the logged-in staff member (401 if none).
  * PATCH /staff-api/me — update own profile: name, phone, payoutMethod, payoutHandle,
- *       skills (what they can do: lead, teacher, artist, general, trailer).
+ *       skills (what they can do: lead, teacher, artist, general, trailer),
+ *       smsOptIn (their own consent to shift texts; only they can turn it on).
+ *       Turning texts on (or changing the number while on) sends a welcome
+ *       text with the STOP/HELP wording carriers require.
  */
 import { requireStaff, toPublicStaff } from "../../server/staff/auth.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../server/staff/http.js";
 import { PAYOUT_METHODS } from "../../server/staff/invite.js";
 import { parseSkills } from "../../server/staff/roles.js";
+import { sendSms, toE164, welcomeText } from "../../server/staff/sms.js";
 
 export async function onRequestGet(context) {
   const staff = requireStaff(context);
@@ -29,6 +33,11 @@ export async function onRequestPatch(context) {
   }
   if (payoutMethod && !PAYOUT_METHODS.includes(payoutMethod)) {
     throw new HttpError(400, "invalid_payout_method", "Pick a payment method from the list.");
+  }
+
+  // Check text consent before saving anything, so a refusal changes nothing.
+  if (body.smsOptIn && !toE164(body.phone !== undefined ? phone : staff.phone)) {
+    throw new HttpError(400, "phone_required_for_texts", "Add a US mobile number to get texts.");
   }
 
   await db
@@ -57,6 +66,29 @@ export async function onRequestPatch(context) {
     )
     .run();
 
-  const fresh = await db.prepare("SELECT * FROM staff WHERE id = ?1").bind(staff.id).first();
-  return json(200, { staff: toPublicStaff(fresh) });
+  let fresh = await db.prepare("SELECT * FROM staff WHERE id = ?1").bind(staff.id).first();
+
+  // Text consent. Checked after the phone update so "add my number and turn
+  // texts on" works in one save.
+  let texted;
+  if (body.smsOptIn !== undefined) {
+    const on = Boolean(body.smsOptIn);
+    const now = nowIso();
+    const phoneChanged = toE164(fresh.phone) !== toE164(staff.phone);
+    if (on && (!fresh.sms_opt_in || phoneChanged)) {
+      await db
+        .prepare("UPDATE staff SET sms_opt_in = 1, sms_consent_at = ?1, sms_opted_out_at = NULL, updated_at = ?1 WHERE id = ?2")
+        .bind(now, staff.id)
+        .run();
+      const result = await sendSms(context.env, db, { to: fresh.phone, body: welcomeText(), kind: "welcome", staffId: staff.id });
+      texted = result.ok;
+    } else if (!on && fresh.sms_opt_in) {
+      await db
+        .prepare("UPDATE staff SET sms_opt_in = 0, sms_opted_out_at = ?1, updated_at = ?1 WHERE id = ?2")
+        .bind(now, staff.id)
+        .run();
+    }
+    fresh = await db.prepare("SELECT * FROM staff WHERE id = ?1").bind(staff.id).first();
+  }
+  return json(200, { staff: toPublicStaff(fresh), texted });
 }

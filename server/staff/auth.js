@@ -24,7 +24,7 @@ const INVITE_LINK_DAYS = 14;
 const MAX_LINKS_PER_HOUR = 5;
 
 export const PUBLIC_STAFF_FIELDS =
-  "id, email, name, phone, payout_method, payout_handle, role, status, skills, first_login_at, last_login_at, invited_at, created_at";
+  "id, email, name, phone, payout_method, payout_handle, role, status, skills, sms_opt_in, first_login_at, last_login_at, invited_at, created_at";
 
 /** True when the staff member has filled in what we need to pay them. */
 export function isProfileComplete(staff) {
@@ -47,6 +47,7 @@ export function toPublicStaff(row) {
     invitedAt: row.invited_at,
     createdAt: row.created_at,
     skills: parseSkills(row.skills),
+    smsOptIn: Boolean(row.sms_opt_in),
     profileComplete: isProfileComplete(row),
   };
 }

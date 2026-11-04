@@ -13,6 +13,7 @@ the public session calendar, but is fully separate from the marketing site.
 | 2 | Shifts: create from the calendar feed or by hand, apply, confirm with pay → confirmation email | **Live on the preview** (3 Nov 2026; confirmation email tested end to end) |
 | 3 | Money: payroll (owed by person, mark paid + email, paid history, CSV), staff earnings | **Live on the preview** (3 Nov 2026; payment email tested end to end) |
 | 3b | Roles + trailer add-on, calendar auto-posting with staffing templates, staff skills, assign someone new by email | **Live on the preview** (3 Nov 2026; sync posted 23 shifts; invite-by-assign email tested) |
+| 3c | Texts alongside email (Twilio): opt-in on profile, confirmation + pay texts, login by text, public `/sms-terms` page | **Code on the preview** (4 Nov 2026); nothing sends until the Twilio secrets are set and the toll-free number is verified |
 | 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
 
 ## Architecture
@@ -151,6 +152,31 @@ UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
   confirmed them (Sarah or Shellie), from Sarah's address.
 - Make Shellie an admin on People ("Make admin").
 
+### Text messages (Twilio)
+Most staff check their phone, not email, so the key emails also go out as texts.
+- **Consent first.** Texts go only to people who tick "Text me shift updates" on their
+  own profile (`staff.sms_opt_in`). It is unticked by default and admins can't turn it on
+  for someone. Turning it on (or changing the number while on) sends a welcome text with
+  the STOP/HELP wording. Replying STOP is handled by Twilio; if a send then fails with
+  error 21610 the opt-in is switched off here too.
+- **What's texted:** the shift confirmation (not the new-person invite: they haven't
+  consented yet), "pay sent", and login links. Login by text: the login page has "Text me
+  a link instead"; it matches the number on the profile, however it was typed.
+- **Public page for the carriers:** `/sms-terms` (on the main site, prerendered) shows
+  the opt-in wording, message types and how to stop. The privacy policy has a "Text
+  messages" section with the no-sharing clause. Both are what toll-free verification
+  reviewers check.
+- Code: `server/staff/sms.js` (`sendSms`, `textStaff`, message text, `toE164`), log in
+  `sms_log`, schema in `migrations/0003_sms.sql`.
+- Env (set all as **secrets**, per environment, never in `wrangler.toml`: the repo is public):
+  `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` (the toll-free number,
+  `+1888…`), and optionally `SMS_TEST_NUMBERS` (comma list; when set only those numbers
+  get texts, everyone else is logged as `test_mode`). Without the Twilio values nothing is
+  sent and each text is logged as `skipped`.
+- Twilio account: signed up with admin@desertpaddleboards.com. Business profile (Blue Wave
+  Experiences Inc, EIN) approved. Still to do: buy a toll-free number, then submit its
+  toll-free verification (opt-in URL `https://desertpaddleboards.com/sms-terms`).
+
 ### Phase 2 rules (assumptions until Sarah says otherwise)
 - One locked pay per person per shift, typed by Sarah at confirm (covers the trailer if they
   drive). Staff never see pay on open shifts.
@@ -191,8 +217,8 @@ and paste the link into a browser signed in to that account).
 
 1. ✅ Databases created (3 Nov 2026), ids in `wrangler.toml`:
    `dpb-staff` (production, WNAM) and `dpb-staff-preview` (WEUR).
-2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post) to **preview only** so
-   far. Apply it to production before merging. For new migrations:
+2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post) and `0003` (texts)
+   to **preview only** so far. Apply it to production before merging. For new migrations:
    ```bash
    pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
    pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main

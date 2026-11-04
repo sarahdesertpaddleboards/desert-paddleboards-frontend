@@ -14,6 +14,8 @@ pages_build_output_dir = "dist"
 # Secrets (set per environment in the Pages dashboard or `wrangler pages secret put`):
 #   RESEND_API_KEY                — sends login links + confirmations
 #   STAFF_BOOTSTRAP_ADMIN_EMAILS  — comma list; these emails become admins on first login
+#   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM — shift texts (see docs/staff-tool.md)
+#   SMS_TEST_NUMBERS              — optional; when set, only these numbers get texts
 # Vars: STAFF_EMAIL_FROM, STAFF_EMAIL_REPLY_TO (see [vars]).
 #
 # Databases live in the Desert Paddleboards Cloudflare account

@@ -129,7 +129,7 @@ export default function StaffPeople() {
                     ) : null}
                     <p className="truncate text-sm text-muted-foreground">
                       {p.email}
-                      {p.phone ? ` · ${p.phone}` : ""}
+                      {p.phone ? ` · ${p.phone}${p.smsOptIn ? " (texts on)" : ""}` : ""}
                       {p.payoutMethod ? ` · ${PAYOUT_METHOD_LABELS[p.payoutMethod]}${p.payoutHandle ? ` ${p.payoutHandle}` : ""}` : ""}
                     </p>
                   </div>

@@ -11,7 +11,9 @@ export default function StaffLogin() {
   const { staff, loading } = useStaff();
   const navigate = useNavigate();
   const [params] = useSearchParams();
+  const [mode, setMode] = useState<"email" | "phone">("email");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState(""); // honeypot
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
@@ -28,16 +30,18 @@ export default function StaffLogin() {
     setError(null);
     setBusy(true);
     try {
-      const res = await staffApi.requestLink(email);
+      const res = await staffApi.requestLink(mode === "phone" ? { phone } : { email });
       setSent(true);
       setDevLink(res.devLink ?? null);
     } catch (err) {
       setError(
         err instanceof ApiError && err.code === "email_not_configured"
           ? "Email sending isn't switched on yet. Ask Nick."
-          : err instanceof ApiError && err.message
-            ? err.message
-            : "Something went wrong. Please try again.",
+          : err instanceof ApiError && err.code === "sms_not_configured"
+            ? "Texting isn't switched on yet. Use your email for now."
+            : err instanceof ApiError && err.message
+              ? err.message
+              : "Something went wrong. Please try again.",
       );
     } finally {
       setBusy(false);
@@ -50,43 +54,69 @@ export default function StaffLogin() {
         <CardHeader>
           <CardTitle className="text-2xl text-brand-dark">Staff login</CardTitle>
           <CardDescription>
-            No passwords. Enter your email and we'll send you a one-time link that logs you in.
+            No passwords. Enter your email or mobile number and we'll send you a one-time link that logs you in.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {sent ? (
             <div className="space-y-3">
               <p className="rounded-lg bg-brand/10 p-4 text-sm">
-                If <strong>{email}</strong> is on the staff list, a login link is on its way. It works once and
-                expires in 20 minutes — check spam if it's not there in a minute.
+                {mode === "phone" ? (
+                  <>
+                    If <strong>{phone}</strong> is the number on your staff profile, a login link is on its way by text. It
+                    works once and expires in 20 minutes.
+                  </>
+                ) : (
+                  <>
+                    If <strong>{email}</strong> is on the staff list, a login link is on its way. It works once and
+                    expires in 20 minutes — check spam if it's not there in a minute.
+                  </>
+                )}
               </p>
               {devLink ? (
                 <p className="rounded-lg border border-dashed border-amber-400 bg-amber-50 p-3 text-xs">
-                  <strong>Local dev:</strong> email is off, so here's your link:{" "}
+                  <strong>Local dev:</strong> {mode === "phone" ? "texting" : "email"} is off, so here's your link:{" "}
                   <a className="break-all text-brand underline" href={devLink}>
                     {devLink}
                   </a>
                 </p>
               ) : null}
               <Button variant="ghost" size="sm" onClick={() => setSent(false)}>
-                Use a different email
+                {mode === "phone" ? "Use a different number" : "Use a different email"}
               </Button>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  inputMode="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                />
-              </div>
+              {mode === "email" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Mobile number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(480) 555-0123"
+                  />
+                  <p className="text-xs text-muted-foreground">The number on your staff profile. Msg & data rates may apply.</p>
+                </div>
+              )}
               <input
                 type="text"
                 name="company"
@@ -98,8 +128,20 @@ export default function StaffLogin() {
                 aria-hidden="true"
               />
               {error ? <p className="text-sm text-destructive">{error}</p> : null}
-              <Button type="submit" className="w-full" disabled={busy || !email}>
-                {busy ? "Sending…" : "Email me a login link"}
+              <Button type="submit" className="w-full" disabled={busy || (mode === "email" ? !email : !phone)}>
+                {busy ? "Sending…" : mode === "phone" ? "Text me a login link" : "Email me a login link"}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="w-full"
+                onClick={() => {
+                  setMode(mode === "email" ? "phone" : "email");
+                  setError(null);
+                }}
+              >
+                {mode === "email" ? "Text me a link instead" : "Email me a link instead"}
               </Button>
               <p className="text-xs text-muted-foreground">
                 New here? You need an invite from Sarah first — ask her to add you.

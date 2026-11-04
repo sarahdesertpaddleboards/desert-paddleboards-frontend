@@ -33,6 +33,8 @@ export interface Staff {
   profileComplete: boolean;
   /** What they can do (they tick these on their profile). */
   skills: Skill[];
+  /** They ticked "Text me shift updates" (only they can turn it on). */
+  smsOptIn: boolean;
   /** Admin-only field, present on roster responses. */
   notes?: string | null;
 }
@@ -125,12 +127,16 @@ export interface MarkPaidResult {
   paidCount: number;
   totalCents: number;
   emailed: number;
+  /** How many people also got a text (they opted in). */
+  texted: number;
   emailErrors: { name: string; error: string }[];
   localMode: boolean;
 }
 
 type ConfirmResult = ShiftDetail & {
   emailed: boolean;
+  /** They opted in to texts and the confirmation text went out. */
+  texted?: boolean;
   emailError?: string;
   localMode?: boolean;
   /** They hadn't logged in yet, so the email doubled as their invite. */
@@ -216,10 +222,10 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 
 export const staffApi = {
   me: () => call<{ staff: Staff }>("GET", "/me"),
-  updateMe: (patch: Partial<Pick<Staff, "name" | "phone" | "payoutMethod" | "payoutHandle" | "skills">>) =>
-    call<{ staff: Staff }>("PATCH", "/me", patch),
-  requestLink: (email: string) =>
-    call<{ ok: true; devLink?: string }>("POST", "/auth/request-link", { email }),
+  updateMe: (patch: Partial<Pick<Staff, "name" | "phone" | "payoutMethod" | "payoutHandle" | "skills" | "smsOptIn">>) =>
+    call<{ staff: Staff; texted?: boolean }>("PATCH", "/me", patch),
+  requestLink: (to: { email: string } | { phone: string }) =>
+    call<{ ok: true; devLink?: string }>("POST", "/auth/request-link", to),
   verify: (token: string) => call<{ ok: true; staff: Staff; next: string }>("POST", "/auth/verify", { token }),
   logout: () => call<{ ok: true }>("POST", "/auth/logout"),
 

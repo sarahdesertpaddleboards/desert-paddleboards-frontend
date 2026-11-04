@@ -79,5 +79,6 @@ export function describePaid(res: MarkPaidResult, notify: boolean): string {
   if (res.emailErrors.length) {
     return `${what} The email to ${res.emailErrors.map((e) => e.name).join(", ")} failed, so let them know directly.`;
   }
-  return `${what} ${res.emailed === 1 ? "They've" : "Everyone's"} been emailed.`;
+  const texts = res.texted ? ` ${res.texted === 1 && res.emailed === 1 ? "And texted." : `${res.texted} also got a text.`}` : "";
+  return `${what} ${res.emailed === 1 ? "They've" : "Everyone's"} been emailed.${texts}`;
 }

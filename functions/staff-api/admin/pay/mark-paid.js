@@ -1,13 +1,15 @@
 /**
  * POST /staff-api/admin/pay/mark-paid  { applicationIds: [...], note?, notify? }
  * Record that Sarah has sent the pay for one or more confirmed shifts. With
- * notify (the default) each person gets one email listing what was paid.
+ * notify (the default) each person gets one email listing what was paid, and
+ * a text if they opted in to texts.
  * Nothing moves money: this is a ledger entry.
  */
 import { requireAdmin } from "../../../../server/staff/auth.js";
 import { isLocalMode, paymentSentEmail, sendEmail } from "../../../../server/staff/email.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../../../server/staff/http.js";
 import { LEDGER_SELECT } from "../../../../server/staff/pay.js";
+import { paymentSentText, textStaff } from "../../../../server/staff/sms.js";
 
 export async function onRequestPost(context) {
   const admin = requireAdmin(context);
@@ -45,14 +47,28 @@ export async function onRequestPost(context) {
 
   const totalCents = rows.reduce((sum, r) => sum + (r.pay_cents ?? 0), 0);
   let emailed = 0;
+  let texted = 0;
   const emailErrors = [];
-  if (notify && !isLocalMode(env)) {
-    const byPerson = new Map();
-    for (const r of rows) {
-      if (!byPerson.has(r.staff_id)) byPerson.set(r.staff_id, []);
-      byPerson.get(r.staff_id).push(r);
+  const byPerson = new Map();
+  for (const r of rows) {
+    if (!byPerson.has(r.staff_id)) byPerson.set(r.staff_id, []);
+    byPerson.get(r.staff_id).push(r);
+  }
+  const url = `${new URL(request.url).origin}/staff/earnings`;
+  if (notify) {
+    const staffIds = [...byPerson.keys()];
+    const { results: people } = await db
+      .prepare("SELECT id, phone, sms_opt_in FROM staff WHERE id IN (SELECT value FROM json_each(?1))")
+      .bind(JSON.stringify(staffIds))
+      .all();
+    for (const person of people) {
+      const items = byPerson.get(person.id);
+      const totalForPerson = items.reduce((sum, r) => sum + (r.pay_cents ?? 0), 0);
+      const sms = await textStaff(env, db, person, "paid", paymentSentText({ totalCents: totalForPerson, count: items.length, url }));
+      if (sms.ok) texted += 1;
     }
-    const url = `${new URL(request.url).origin}/staff/earnings`;
+  }
+  if (notify && !isLocalMode(env)) {
     for (const [staffId, items] of byPerson) {
       const first = items[0];
       const mail = paymentSentEmail({
@@ -71,5 +87,5 @@ export async function onRequestPost(context) {
     }
   }
 
-  return json(200, { paidCount: rows.length, totalCents, emailed, emailErrors, localMode: isLocalMode(env) });
+  return json(200, { paidCount: rows.length, totalCents, emailed, texted, emailErrors, localMode: isLocalMode(env) });
 }

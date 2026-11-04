@@ -99,7 +99,7 @@ export default function AdminShiftDetail() {
         res.localMode
           ? `${what} Local dev: no email sent.${res.devLink ? ` Invite link: ${res.devLink}` : ""}`
           : res.emailed
-            ? `${what} ${res.invited ? "They've been emailed the shift and a link to set up their profile." : "Confirmation email sent."}`
+            ? `${what} ${res.invited ? "They've been emailed the shift and a link to set up their profile." : res.texted ? "Confirmation emailed and texted." : "Confirmation email sent."}`
             : `${what} But the email failed (${res.emailError || "unknown error"}). Let them know directly.`,
       );
       ok = true;

@@ -5,7 +5,8 @@
  * for an applicant, as a direct assignment, or for someone not on the team yet
  * (by email): they're added to the roster and get one email with the shift and
  * a link to set up their profile. Sarah types the pay for this person on this
- * shift (it varies by person and event); if they're also driving the trailer,
+ * shift (it varies by person and event). Anyone who opted in to texts also
+ * gets the confirmation by text; if they're also driving the trailer,
  * that one amount covers it. Pay can't be changed once confirmed: remove them
  * and confirm again.
  */
@@ -13,6 +14,7 @@ import { createLoginToken, requireAdmin } from "../../../../../server/staff/auth
 import { assignedInviteEmail, isLocalMode, sendEmail, shiftConfirmedEmail } from "../../../../../server/staff/email.js";
 import { HttpError, cleanText, json, newId, normalizeEmail, nowIso, readJson } from "../../../../../server/staff/http.js";
 import { ROLE_LABELS, readRole } from "../../../../../server/staff/roles.js";
+import { shiftConfirmedText, textStaff } from "../../../../../server/staff/sms.js";
 import { getEventWithCounts, loadEventDetail, parsePayCents, toPublicEvent } from "../../../../../server/staff/shifts.js";
 
 async function findOrInvite(db, body, admin) {
@@ -116,9 +118,17 @@ export async function onRequestPost(context) {
     emailError = result.ok ? undefined : result.error;
   }
 
+  // Text too, for people who opted in (new invitees haven't yet).
+  let texted = false;
+  if (!token) {
+    const sms = await textStaff(env, db, person, "confirmation", shiftConfirmedText({ ...details, url: `${origin}/staff` }));
+    texted = sms.ok;
+  }
+
   return json(200, {
     ...(await loadEventDetail(db, event.id)),
     emailed,
+    texted,
     emailError,
     invited: Boolean(token),
     addedToTeam: created,
