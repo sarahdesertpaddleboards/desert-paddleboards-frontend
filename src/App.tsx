@@ -17,6 +17,7 @@ import WitchesRegatta from "./pages/WitchesRegatta";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
 import Privacy from "./pages/Privacy";
+import SmsTerms from "./pages/SmsTerms";
 import Terms from "./pages/Terms";
 import BlogIndex from "./pages/blog/index";
 import BlogPost from "./pages/blog/[slug]";
@@ -54,6 +55,7 @@ export const routes: RouteRecord[] = [
       { path: "shop", element: <Shop /> },
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
+      { path: "sms-terms", element: <SmsTerms /> },
       { path: "blog", element: <BlogIndex /> },
       {
         path: "blog/:slug",
