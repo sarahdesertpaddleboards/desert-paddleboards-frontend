@@ -24,6 +24,7 @@ import BlogPost from "./pages/blog/[slug]";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import GuideThankYou from "./pages/GuideThankYou";
 import CustomBoards from "./pages/CustomBoards";
 import Airstream from "./pages/Airstream";
 import Admin from "./pages/Admin";
@@ -88,6 +89,7 @@ export const routes: RouteRecord[] = [
       { path: "admin-login", element: <AdminLogin /> },
       { path: "admin/login", element: <AdminLogin /> },
       { path: "success", element: <CheckoutSuccess /> },
+      { path: "guides/black-canyon/thank-you", element: <GuideThankYou /> },
 
       { path: "*", element: <NotFound /> },
     ],
