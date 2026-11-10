@@ -31,7 +31,7 @@ function VideoCard({ video }: { video: Video }) {
           >
             <img
               src={thumb}
-              alt=""
+              alt={`Video still: ${video.title}`}
               loading="lazy"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />

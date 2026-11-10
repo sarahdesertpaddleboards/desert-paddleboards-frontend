@@ -11,6 +11,12 @@ import {
   cityClassDestination,
 } from "@/lib/directions";
 import { locationContent } from "@/data/location-content";
+import {
+  locationSeoFor,
+  nearbySoundBaths,
+  seoTitle,
+  venueImageAlt,
+} from "@/data/location-seo";
 import FareHarborButton from "@/components/FareHarborButton";
 import VolunteerSignup from "@/components/VolunteerSignup";
 import Seo from "@/components/Seo";
@@ -21,7 +27,7 @@ import upcoming from "@/data/upcoming.generated.json";
 import { fmtDateHeader, fmtTime, useUpcomingSessions } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
-import { SITE_URL, business } from "@/data/site";
+import { SITE_URL } from "@/data/site";
 
 const CITY_FALLBACK_IMAGE = "/floating-boards-sunset.jpg";
 
@@ -79,7 +85,7 @@ export default function LocationDetail() {
         state: city!.state,
         image: city!.image || CITY_FALLBACK_IMAGE,
         blurb:
-          city!.note ?? `A floating soundbath at ${city!.venue} in ${city!.city}.`,
+          city!.note ?? `A floating sound bath at ${city!.venue} in ${city!.city}.`,
         isCity: true,
         address: city!.address,
         isFree: Boolean(city!.isFree),
@@ -133,6 +139,11 @@ export default function LocationDetail() {
 
   const longDescription = locationContent[view.slug];
 
+  // Title / H1 / meta description / intro — curated per page in
+  // src/data/location-seo.ts, with a unique templated fallback for new venues.
+  const seo = locationSeoFor(view);
+  const nearby = nearbySoundBaths(view.slug);
+
   // Structured data (Event markup) — from the build-time FareHarbor feed for
   // venues, or the static city-class dates for city classes.
   const fhEvents = exp
@@ -169,7 +180,7 @@ export default function LocationDetail() {
             },
           },
           image: [absoluteImage(view.image)],
-          organizer: { "@type": "Organization", name: business.name, url: SITE_URL },
+          organizer: { "@id": `${SITE_URL}/#organization` },
           offers: {
             "@type": "Offer",
             url: s.bookingUrl ?? cityEventOfferUrl,
@@ -186,28 +197,23 @@ export default function LocationDetail() {
   const structuredData = graph([
     breadcrumbLd([
       { name: "Home", path: "/" },
-      { name: "Floating Sessions", path: "/locations" },
-      { name: view.title, path: `/locations/${view.slug}` },
+      { name: "Floating Sound Bath Locations", path: "/locations" },
+      { name: seo.h1, path: `/locations/${view.slug}` },
     ]),
     ...fhEvents,
     ...cityEvents,
   ]);
 
-  // SEO title: lead with service + venue + city; append brand only if it fits.
-  const baseTitle = `${view.title}${view.venue ? ` — ${view.venue}` : ""}, ${view.city}`;
-  const seoTitle =
-    baseTitle.length <= 40 ? `${baseTitle} | Desert Paddleboards` : baseTitle;
-
   return (
     <main>
-      <Seo title={seoTitle} description={view.blurb} image={view.image} />
+      <Seo title={seoTitle(seo.title)} description={seo.description} image={view.image} />
       <JsonLd data={structuredData} />
 
       {/* Hero */}
       <div className="relative h-[42vh] min-h-[320px] w-full overflow-hidden bg-muted">
         <img
           src={view.image}
-          alt={`${view.title}${view.venue ? ` at ${view.venue}` : ""}, ${view.city}`}
+          alt={venueImageAlt(view.title, view.venue, view.city)}
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/35" />
@@ -219,7 +225,7 @@ export default function LocationDetail() {
               </p>
             ) : null}
             <h1 className="max-w-3xl text-balance text-4xl font-bold leading-tight md:text-5xl">
-              {view.title}
+              {seo.h1}
             </h1>
             <p className="mt-2 text-lg font-medium text-white/95">
               {view.venue ? `${view.venue} · ` : ""}
@@ -236,6 +242,10 @@ export default function LocationDetail() {
               &larr; All experiences
             </span>
           </Link>
+
+          {seo.intro ? (
+            <p className="text-lg leading-relaxed text-foreground">{seo.intro}</p>
+          ) : null}
 
           {longDescription ? (
             <div className="prose prose-slate max-w-none prose-headings:font-bold prose-strong:text-foreground prose-li:marker:text-brand prose-p:text-muted-foreground prose-li:text-muted-foreground">
@@ -348,6 +358,31 @@ export default function LocationDetail() {
               <VolunteerSignup />
             </>
           ) : null}
+
+          {/* Internal links: the closest other floating sound baths + the FAQ. */}
+          <nav aria-label="Nearby floating sound baths" className="space-y-3 border-t border-border pt-6">
+            <h2 className="text-xl font-bold">More floating sound baths near {view.city}</h2>
+            <ul className="space-y-2">
+              {nearby.map((n) => (
+                <li key={n.slug}>
+                  <Link
+                    to={`/locations/${n.slug}`}
+                    className="font-medium text-brand hover:text-brand-dark hover:underline"
+                  >
+                    {n.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  to="/faq"
+                  className="font-medium text-brand hover:text-brand-dark hover:underline"
+                >
+                  Floating sound bath FAQ: what to wear, bring and expect
+                </Link>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         {/* Booking card + "Getting there" */}

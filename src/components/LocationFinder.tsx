@@ -10,13 +10,14 @@ import type { UpcomingSession } from "@/lib/experiencesApi";
 import { useUpcomingSessions } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
 import { appendUtms } from "@/lib/utm";
+import { venueImageAlt } from "@/data/location-seo";
 import {
   directionsUrl,
   hasRoutableLocation,
   venueDestination,
   cityClassDestination,
 } from "@/lib/directions";
-// Homepage hero — real twilight floating soundbath at the JW Marriott: a
+// Homepage hero — real twilight floating sound bath at the JW Marriott: a
 // candlelit resort pool with guests floating on mats and crystal sound bowls
 // in the foreground (self-hosted in /public).
 const heroImage = "/marriott-night-soundbath.jpg";
@@ -432,25 +433,31 @@ export default function LocationFinder({
   return (
     <>
       {/* Compact hero with built-in search */}
-      <section className="relative h-[360px] min-h-[320px] w-full overflow-hidden">
+      {/* min-height (not a fixed height) so the longer intro copy can't clip on phones */}
+      <section className="relative min-h-[360px] w-full overflow-hidden">
         <img
           src={heroImage}
-          alt="Sunset floating soundbath at a resort pool — guests floating on the water as a musician plays crystal bowls and a gong"
+          alt="Guests floating on the water during a twilight floating sound bath at JW Marriott Desert Ridge in Phoenix, with crystal singing bowls and a gong by the pool"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/45 to-brand-dark/15" />
-        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
+        <div className="relative z-10 mx-auto flex min-h-[360px] max-w-6xl flex-col justify-center px-4 py-10">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/90">
-            Floating soundbaths · water wellness · Arizona
+            Floating sound bath · sound healing · Arizona
           </p>
           {/* Fluid size keeps it on ONE line across every screen width (scales
               with the viewport, capped at 3rem so it never wraps or overflows). */}
           <h1 className="mt-2 whitespace-nowrap text-[clamp(1.25rem,6.5vw,3rem)] italic leading-[1.05] text-white">
-            Life is better on the water.
+            Arizona&apos;s Floating Sound Bath
           </h1>
+          <p className="mt-2 text-lg italic text-white/90">
+            Life is better on the water.
+          </p>
           <p className="mt-3 max-w-xl text-base text-white/90">
-            The Floating Nap™ — a floating soundbath with live music on the water.
-            Find one near you and book online.
+            The Floating Nap™ is a floating sound bath with live sound bath
+            musicians, at resort, rooftop and city pools across Phoenix,
+            Scottsdale, Mesa and Tempe. It&apos;s one of the most unique things to
+            do in Arizona. Find one near you and book online.
           </p>
           <form onSubmit={handleSearch} className="mt-5 flex max-w-md gap-2">
             <input
@@ -597,7 +604,7 @@ function VenueCard({
       <Link to={`/locations/${exp.slug}`}>
         <img
           src={exp.image}
-          alt={`${exp.title}, ${exp.city}`}
+          alt={venueImageAlt(exp.title, exp.venue, exp.city)}
           loading="lazy"
           className="h-24 w-24 flex-shrink-0 cursor-pointer rounded-xl object-cover sm:h-28 sm:w-28"
         />
@@ -648,7 +655,7 @@ function VenueCard({
   );
 }
 
-// Generic soundbath image for city-class cards (they have no per-venue photo).
+// Generic sound bath image for city-class cards (they have no per-venue photo).
 const CITY_CARD_IMAGE = "/floating-boards-sunset.jpg";
 
 /** A city-run class in the finder list — books through the city, not FareHarbor. */
@@ -668,7 +675,7 @@ function CityVenueCard({
       <Link to={`/locations/${c.slug}`}>
         <img
           src={c.image || CITY_CARD_IMAGE}
-          alt={`${c.title}, ${c.city}`}
+          alt={venueImageAlt(c.title, c.venue, c.city)}
           loading="lazy"
           className="h-24 w-24 flex-shrink-0 cursor-pointer rounded-xl object-cover sm:h-28 sm:w-28"
         />

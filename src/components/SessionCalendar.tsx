@@ -129,7 +129,7 @@ const SLOT_PROMO = {
   itemId: 171055,
   until: "2026-08-09T02:00:00-07:00", // through Saturday night
   eyebrow: "This Saturday",
-  title: "Floating Soundbath at Kino Aquatic Center",
+  title: "Floating Sound Bath at Kino Aquatic Center",
   body: "Saturday, Aug 8 at 7:30 PM in Mesa — float under the summer night sky while live sound carries you. Spots are open, and evening on the water is the coolest place in town.",
   learnMoreHref: "/locations/floating-soundbath-kino-aquatics-mesa",
 };
@@ -331,7 +331,7 @@ export default function SessionCalendar({
             <>
               <h3 className="text-lg font-bold">Don't see a date that works?</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                We host private floating soundbaths for bachelorette parties, corporate
+                We host private floating sound baths for bachelorette parties, corporate
                 wellness days, birthdays and team events — at your venue or ours. Tell us
                 what you have in mind and we'll build it around your group.
               </p>

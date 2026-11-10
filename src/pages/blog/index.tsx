@@ -9,7 +9,7 @@ export default function BlogIndex() {
     <main className="container py-16">
       <Seo
         title="Blog — Desert Paddleboards"
-        description="Wellness, floating soundbaths and Arizona paddleboarding adventures — tips, guides and stories from Desert Paddleboards."
+        description="Wellness, floating sound baths and Arizona paddleboarding adventures — tips, guides and stories from Desert Paddleboards."
       />
       <JsonLd
         data={breadcrumbLd([
@@ -26,7 +26,7 @@ export default function BlogIndex() {
           Wellness, water & adventures
         </h1>
         <p className="text-lg text-muted-foreground">
-          Tips, guides and stories from the water — floating soundbaths, Arizona
+          Tips, guides and stories from the water — floating sound baths, Arizona
           paddleboarding, and living life better on the water.
         </p>
       </header>

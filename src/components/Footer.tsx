@@ -21,7 +21,7 @@ export default function Footer() {
               />
             </h3>
             <p className="text-sm text-muted-foreground">
-              Floating soundbaths, paddleboarding and community events across Arizona.
+              Floating sound baths, paddleboarding and community events across Arizona.
             </p>
             <div className="flex gap-4">
               <a

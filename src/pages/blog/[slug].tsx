@@ -91,13 +91,13 @@ export default function BlogPostPage() {
       <div className="mt-12 rounded-2xl bg-brand/10 p-6 text-center">
         <p className="text-lg font-semibold">Ready to get on the water?</p>
         <p className="mt-1 text-muted-foreground">
-          Find a floating soundbath near you, join a community paddle, or pick up a
+          Find a floating sound bath near you, join a community paddle, or pick up a
           board from the shop.
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
           <Link to="/locations">
             <span className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
-              Find a soundbath
+              Find a sound bath
             </span>
           </Link>
           <Link to="/community-events">

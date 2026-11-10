@@ -11,7 +11,7 @@ import { breadcrumbLd, graph } from "@/lib/jsonld";
  * on social: the Witches Regatta, the Santa Paddle, city pool soundbaths.
  *
  * Not to be confused with /community-partners, the unlinked pitch to HOAs and
- * 55+ communities that book a private soundbath for their residents.
+ * 55+ communities that book a private sound bath for their residents.
  */
 
 const heroImage = "/images/blog/witches-regatta-on-water.jpg";
@@ -36,8 +36,8 @@ const traditions = [
   {
     icon: Waves,
     when: "Year-round · city pools",
-    title: "Soundbaths at your city pool",
-    body: "Floating soundbaths run with local Parks & Recreation departments, booked straight through your city.",
+    title: "Sound Baths at your city pool",
+    body: "Floating sound baths run with local Parks & Recreation departments, booked straight through your city.",
     href: "/calendar",
     cta: "Find a date near you",
   },
@@ -63,7 +63,7 @@ export default function CommunityEvents() {
     <main>
       <Seo
         title="Community Paddle Events in Phoenix | Witches Regatta"
-        description="Community paddle events across Arizona: the Witches Regatta on Tempe Town Lake, the Santa Paddle, city pool soundbaths and private Black Canyon group trips."
+        description="Community paddle events across Arizona: the Witches Regatta on Tempe Town Lake, the Santa Paddle, city pool sound baths and private Black Canyon group trips."
         image={heroImage}
       />
       <JsonLd data={structuredData} />
@@ -188,7 +188,7 @@ export default function CommunityEvents() {
         </section>
 
         <p className="text-center text-sm text-muted-foreground">
-          Want a floating soundbath just for your group?{" "}
+          Want a floating sound bath just for your group?{" "}
           <Link to="/private-events" className="font-medium text-primary hover:underline">
             Plan a private event →
           </Link>

@@ -138,6 +138,10 @@ A floating sound bath combines the serene environment of water with the therapeu
 
 Resorts in Scottsdale are always looking for innovative and unique experiences to attract corporate clients. Offering floating sound baths as part of corporate packages can elevate a resort's wellness offerings and set it apart from competitors. Corporate groups are increasingly prioritizing wellness and mindfulness experiences, and this is a fresh way to cater to those needs.
 
+**Try One in Scottsdale First**
+
+Want to float before you pitch it to the team? Join a public class at [Grand Hyatt Scottsdale](/locations/floating-soundbath-grand-hyatt-scottsdale), [Westin Kierland Resort & Spa](/locations/floating-soundbath-at-westin-kierland-resort-spa-scottsdale) or [Hotel Adeline](/locations/floating-soundbath-hotel-adeline-scottsdale), or browse every date on the [floating sound bath calendar](/calendar). Planning something just for your team? See [private floating sound bath events](/private-events).
+
 **Conclusion**
 
 Floating sound baths offer an innovative, relaxing, and highly effective way to enhance any corporate event in Scottsdale, Arizona. By embracing this growing wellness trend, resorts and event planners can provide corporate clients with a truly memorable experience that fosters connection, relaxation, and rejuvenation — bringing companies together, one sound wave at a time.`,
@@ -179,6 +183,10 @@ Whether you prefer the controlled environment of a pool or the open, natural set
 - **Corporate Events:** Foster team unity and reduce workplace stress with a rejuvenating group experience.
 - **Private Celebrations:** Celebrate special occasions with a unique and memorable activity that promotes well-being and togetherness.
 - **Wellness Retreats:** Enhance your wellness retreats with a session that leaves participants feeling refreshed and revitalized.
+
+### Where to Float in Mesa
+
+Ready to try one? Our public floating sound baths in Mesa run at [Kino Aquatic Center](/locations/floating-soundbath-kino-aquatics-mesa), the TikTok-famous [sunset floating sound bath at Skyline Pool](/locations/sunset-floating-soundbath-skyline-pool-mesa), the [Mulberry community pool](/locations/mulberry-community-floating-soundbath-mesa) and pop-up nights at [Revel Surf Park](/locations/floating-soundbath-revel-surf-park). Every upcoming date is on the [floating sound bath calendar](/calendar), and new dates are added all the time.
 
 Embrace the serene bliss of a floating sound bath and discover the profound benefits of sound therapy in the most tranquil of settings.`,
   },

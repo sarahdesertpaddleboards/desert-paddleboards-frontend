@@ -4,7 +4,7 @@
  * built files means the sitemap always matches what shipped — no hardcoded
  * route list to drift out of sync.
  */
-import { readdirSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative } from "node:path";
 
@@ -17,6 +17,7 @@ const EXCLUDE = [
   /^admin(\/|$)/,
   /^admin-login$/,
   /^success$/,
+  /^guides\/.*thank-you$/,
   /^404$/,
   /^mockups(\/|$)/, // temporary design mockups, never index
   /^membership$/, // not currently offered — noindexed
@@ -39,9 +40,15 @@ function toRoute(htmlPath) {
   return `/${rel}`;
 }
 
+// A page that tells crawlers not to index it (<Seo noindex />) never belongs
+// in the sitemap, even if nobody remembered to add it to EXCLUDE.
+const isNoindex = (htmlPath) =>
+  /<meta[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(readFileSync(htmlPath, "utf8"));
+
 const routes = [
   ...new Set(
     walk(DIST)
+      .filter((f) => !isNoindex(f))
       .map(toRoute)
       .filter((r) => !EXCLUDE.some((re) => re.test(r.replace(/^\//, "")))),
   ),
@@ -63,7 +70,7 @@ ${urls}
 
 writeFileSync(join(DIST, "sitemap.xml"), sitemap);
 
-const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\nDisallow: /success\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\nDisallow: /success\nDisallow: /guides/black-canyon/thank-you\nDisallow: /downloads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 writeFileSync(join(DIST, "robots.txt"), robots);
 
 console.log(`[sitemap] wrote ${routes.length} urls to dist/sitemap.xml + robots.txt`);

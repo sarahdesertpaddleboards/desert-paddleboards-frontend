@@ -2,24 +2,31 @@ import { SITE_URL, business } from "@/data/site";
 import { fareHarborBookUrl, type Experience } from "@/data/locations";
 import type { UpcomingSession } from "@/lib/experiencesApi";
 
-const postalAddress = {
-  "@type": "PostalAddress",
-  addressLocality: business.address.locality,
-  addressRegion: business.address.region,
-  addressCountry: business.address.country,
-};
+const ORG_ID = `${SITE_URL}/#organization`;
 
-/** Organization — site-wide identity. */
+/**
+ * The business — one LocalBusiness node (a HealthAndBeautyBusiness subtype),
+ * referenced by @id from every other node. It's a mobile business, so it has
+ * `areaServed` and deliberately NO `address`/`geo` (the office stays private).
+ */
 export function organizationLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": `${SITE_URL}/#organization`,
+    "@type": "HealthAndBeautyBusiness",
+    "@id": ORG_ID,
     name: business.name,
+    description: business.description,
     url: SITE_URL,
     logo: business.logo,
+    image: business.logo,
     email: business.email,
     telephone: business.telephone,
+    priceRange: business.priceRange,
+    areaServed: [
+      ...business.areaServed.map((name) => ({ "@type": "City", name })),
+      { "@type": "State", name: "Arizona" },
+    ],
+    knowsAbout: ["Floating sound bath", "Sound bath", "Sound healing", "Paddleboard yoga"],
     sameAs: business.sameAs,
   };
 }
@@ -32,34 +39,7 @@ export function webSiteLd() {
     "@id": `${SITE_URL}/#website`,
     url: SITE_URL,
     name: business.name,
-    publisher: { "@id": `${SITE_URL}/#organization` },
-  };
-}
-
-/** LocalBusiness — richer local entity for the homepage. */
-export function localBusinessLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "HealthAndBeautyBusiness",
-    "@id": `${SITE_URL}/#localbusiness`,
-    name: business.name,
-    description: business.description,
-    url: SITE_URL,
-    image: business.logo,
-    telephone: business.telephone,
-    email: business.email,
-    priceRange: business.priceRange,
-    address: postalAddress,
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: business.geo.lat,
-      longitude: business.geo.lng,
-    },
-    areaServed: business.areaServed.map((name) => ({
-      "@type": "City",
-      name,
-    })),
-    sameAs: business.sameAs,
+    publisher: { "@id": ORG_ID },
   };
 }
 
@@ -88,8 +68,12 @@ function placeLd(exp: Experience) {
     name: exp.venue || exp.title,
     address: {
       "@type": "PostalAddress",
+      // Full street line — Google needs it to place the event in local
+      // "things to do" results.
+      ...(exp.street ? { streetAddress: exp.street } : {}),
       addressLocality: exp.city,
       addressRegion: exp.state,
+      ...(exp.postalCode ? { postalCode: exp.postalCode } : {}),
       addressCountry: "US",
     },
     geo: {
@@ -100,7 +84,7 @@ function placeLd(exp: Experience) {
   };
 }
 
-/** A single dated Event (floating soundbath session). */
+/** A single dated Event (floating sound bath session). */
 export function eventLd(exp: Experience, session: UpcomingSession) {
   return {
     "@context": "https://schema.org",
@@ -113,11 +97,7 @@ export function eventLd(exp: Experience, session: UpcomingSession) {
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: placeLd(exp),
     image: [exp.image],
-    organizer: {
-      "@type": "Organization",
-      name: business.name,
-      url: SITE_URL,
-    },
+    organizer: { "@id": ORG_ID },
     offers: {
       "@type": "Offer",
       url: fareHarborBookUrl(exp.itemId),
@@ -144,7 +124,25 @@ export function faqPageLd(items: { question: string; answer: string }[]) {
   };
 }
 
-/** Wrap multiple LD nodes in a single @graph for one <script> tag. */
+/**
+ * Wrap a page's LD nodes in a single @graph for one <script> tag. The
+ * site-wide business + WebSite nodes are always included, so every page ships
+ * exactly one graph. A page node with the same @id (e.g. the About page's
+ * richer business node) is merged into the site node instead of duplicated.
+ */
 export function graph(nodes: object[]) {
-  return { "@context": "https://schema.org", "@graph": nodes };
+  const out: Record<string, unknown>[] = [];
+  const byId = new Map<string, Record<string, unknown>>();
+  for (const n of [organizationLd(), webSiteLd(), ...nodes]) {
+    const { "@context": _ctx, ...node } = n as Record<string, unknown>;
+    const id = typeof node["@id"] === "string" ? node["@id"] : undefined;
+    const existing = id ? byId.get(id) : undefined;
+    if (existing) {
+      Object.assign(existing, node);
+      continue;
+    }
+    if (id) byId.set(id, node);
+    out.push(node);
+  }
+  return { "@context": "https://schema.org", "@graph": out };
 }

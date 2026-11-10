@@ -1,7 +1,7 @@
 {
   "cityClasses": [
     {
-      "title": "Lazy River Floating Soundbath",
+      "title": "Lazy River Floating Sound Bath",
       "slug": "lazy-river-floating-soundbath-queen-creek",
       "venue": "Queen Creek Recreation Pool",
       "city": "Queen Creek",
@@ -10,7 +10,7 @@
       "bookingUrl": "https://secure.rec1.com/AZ/queen-creek-az/catalog",
       "bookingLabel": "Register with Queen Creek",
       "image": "/queen-creek-lazy-river.jpg",
-      "note": "Floated in the resort-style lazy river — the current is switched off during the soundbath, so you drift on calm, still water. Booked through the Town of Queen Creek (search \"swimming\" activities).",
+      "note": "Floated in the resort-style lazy river — the current is switched off during the sound bath, so you drift on calm, still water. Booked through the Town of Queen Creek (search \"swimming\" activities).",
       "sessions": [
         {
           "date": "2026-11-06",
@@ -21,7 +21,7 @@
       "id": "queen-creek-friday-floats"
     },
     {
-      "title": "Sedona Floating Soundbath",
+      "title": "Sedona Floating Sound Bath",
       "slug": "floating-soundbath-sedona",
       "venue": "Sedona Community Pool",
       "city": "Sedona",
@@ -52,7 +52,7 @@
       "id": "sedona-soundbath"
     },
     {
-      "title": "Avondale Floating Soundbath",
+      "title": "Avondale Floating Sound Bath",
       "slug": "floating-soundbath-avondale",
       "venue": "City of Avondale",
       "city": "Avondale",
