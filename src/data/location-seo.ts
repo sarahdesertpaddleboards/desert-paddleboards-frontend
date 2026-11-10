@@ -216,12 +216,12 @@ export const LOCATION_SEO: Record<string, LocationSeo> = {
       "The Wigwam is one of the West Valley's historic resorts, and its LeMonds Spa pool is a quiet, old-school-glam home for a floating sound bath. It's a handy one for West Valley locals tired of driving to Scottsdale for nice things, and for resort guests who want an evening that's actually relaxing.",
   },
   "floating-soundbath-pebblecreek-goodyear": {
-    title: "Indoor Floating Sound Bath at PebbleCreek, Goodyear",
-    h1: "Indoor Floating Sound Bath at PebbleCreek",
+    title: "Floating Sound Bath at PebbleCreek, Goodyear",
+    h1: "Community Floating Sound Bath at PebbleCreek",
     description:
-      "Indoor floating sound bath at PebbleCreek in Goodyear. A warm indoor pool, great acoustics and live sound bath music, offered on winter dates only.",
+      "Community floating sound bath at PebbleCreek in Goodyear. Float on the water with guided breathwork and live sound bath music. No experience needed.",
     intro:
-      "PebbleCreek's indoor pool in Goodyear is our warm-water winter spot, so you can float comfortably even when Arizona remembers it has a winter. The acoustics carry every gong and chime around the room. Ideal for West Valley locals, friends and first-timers. Check back for new dates each season.",
+      "PebbleCreek brings the floating sound bath to Goodyear, so West Valley locals can skip the cross-Valley drive and go straight to the floating part. Expect guided breathwork, live singing bowls and gongs, and a floating water bed (okay, it's a paddleboard, but we're sticking with water bed). Great for neighbors, friends and first-timers. Check back for new dates.",
   },
   "floating-soundbath-avondale": {
     title: "Floating Sound Bath in Avondale, Arizona",
@@ -283,13 +283,13 @@ export const LOCATION_SEO: Record<string, LocationSeo> = {
     intro:
       "No board, no problem. This bundle gets you an inflatable paddleboard rental plus a Witches Regatta t-shirt, so you can join the coven on Tempe Town Lake in style. Spots are limited, and you'll still need a $10 City of Tempe boat permit for the rental board.",
   },
-  "santa-paddle-ho-ho-holiday-fun-tempe": {
-    title: "Santa Paddle Holiday Paddleboard Event, Tempe Town Lake",
+  "santa-paddle-tempe-town-lake": {
+    title: "Santa Paddle: Free Holiday Paddle on Tempe Town Lake",
     h1: "Santa Paddle on Tempe Town Lake",
     description:
-      "The Santa Paddle: a festive holiday paddleboard outing on Tempe Town Lake, leaving from Tempe Town Lake Marina. Wear your Santa hat and paddle into the season.",
+      "The Santa Paddle: our free holiday paddleboard and kayak meetup on Tempe Town Lake. Costumes encouraged, dogs in antlers welcome. Bring your own board.",
     intro:
-      "Every holiday season we pull on Santa hats and take paddleboards out on Tempe Town Lake. It's a festive, slightly ridiculous and very fun way to kick off the holidays with friends, family or your favorite elf. Check back for new dates.",
+      "Santas, elves, reindeer and the occasional dog in antlers take over Tempe Town Lake for our free holiday paddle. Bring your own board or kayak, put on your silliest costume, and meet us on the hill by the boat marina. It's festive, slightly ridiculous and the best kind of holiday tradition.",
   },
 };
 

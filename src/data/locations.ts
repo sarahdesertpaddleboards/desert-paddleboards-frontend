@@ -362,15 +362,6 @@ const LOCATION_OVERLAYS: Overlay[] = [
     blurb:
       "A resort floating sound bath at Hilton Scottsdale Resort & Villas — drift on the water while live sound bath musicians play.",
   },
-  {
-    itemId: 146502,
-    slug: "santa-paddle-ho-ho-holiday-fun-tempe",
-    title: "Santa Paddle",
-    venue: "Tempe Town Lake Marina",
-    kind: "class",
-    blurb:
-      "The Santa Paddle — a festive holiday paddleboard outing on Tempe Town Lake. Santa hats strongly encouraged.",
-  },
 ];
 
 // ---------------------------------------------------------------------------

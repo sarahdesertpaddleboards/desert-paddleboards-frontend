@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T13:15:26.523Z",
+  "generatedAt": "2026-11-10T15:08:11.766Z",
   "items": [
     {
       "itemId": 146393,
@@ -306,14 +306,14 @@
       "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
       "isUnlisted": false,
       "isRetail": false,
-      "venue": "Tuscany Falls Sport & Aquatic Center",
+      "venue": "Tuscany Falls Indoor Pool",
       "city": "Goodyear",
       "state": "AZ",
-      "street": "16150 West Clubhouse Drive",
+      "street": "16150 W. Clubhouse Dr, Goodyear, AZ 85395",
       "postalCode": "85395",
-      "googlePlaceId": "ChIJuSV-luxHK4cRVTz6ysse0Tg",
-      "lat": 33.481368,
-      "lng": -112.40702,
+      "googlePlaceId": "ChIJ95OviexHK4cR3sXWLKWyaiY",
+      "lat": 33.48125,
+      "lng": -112.408138,
       "image": "https://cdn.filestackcontent.com/iOFnI3FJS0R91fcqstvQ"
     },
     {

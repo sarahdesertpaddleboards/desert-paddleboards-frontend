@@ -10,11 +10,11 @@
 /terms-and-conditions         /terms            301
 /private%2Fcommunity-events   /private-events   301
 /private/community-events     /private-events   301
+/locations/santa-paddle-ho-ho-holiday-fun-tempe /santa-paddle 301
 
 # --- Folded into homepage sections ------------------------------------------
 /reviews                      /                 301
 /gallery                      /                 301
-/contact                      /                 301
 
 # --- Consolidated content (Phase 2 targets) ---------------------------------
 /colorado-river-paddle        /adventures       301
