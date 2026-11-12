@@ -355,6 +355,17 @@ const LOCATION_OVERLAYS: Overlay[] = [
       "A resort floating sound bath at Hilton Phoenix Resort at the Peak — float on the water with live sound at the foot of Piestewa Peak.",
   },
   {
+    // Private in FareHarbor as of Nov 11, 2026 — it only surfaces once the item
+    // is made public there (until then it isn't in the catalog and is skipped).
+    itemId: 770167,
+    slug: "floating-sound-bath-spa-camelback-inn-scottsdale",
+    title: "Resort Floating Sound Bath",
+    venue: "The Spa at Camelback Inn",
+    city: "Scottsdale",
+    blurb:
+      "A resort floating sound bath at The Spa at Camelback Inn in Scottsdale — float on the water while live sound bath musicians play.",
+  },
+  {
     itemId: 762628,
     slug: "hilton-villas-scottsdale-floating-sound-bath-scottsdale",
     title: "Resort Floating Sound Bath",

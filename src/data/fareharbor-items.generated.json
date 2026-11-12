@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T15:08:11.766Z",
+  "generatedAt": "2026-11-12T08:50:55.156Z",
   "items": [
     {
       "itemId": 146393,
@@ -303,7 +303,7 @@
     },
     {
       "itemId": 692276,
-      "name": "PebbleCreek Golf Resort Floating Soundbath - GOODYEAR",
+      "name": "PebbleCreek Indoor Floating Soundbath - GOODYEAR",
       "isUnlisted": false,
       "isRetail": false,
       "venue": "Tuscany Falls Indoor Pool",
@@ -465,6 +465,21 @@
       "lat": 33.53055,
       "lng": -111.924291,
       "image": "https://cdn.filestackcontent.com/9K4RJNY4TIig981WkzfI"
+    },
+    {
+      "itemId": 770167,
+      "name": "The Spa at Camelback Inn",
+      "isUnlisted": false,
+      "isRetail": false,
+      "venue": "The Spa at Camelback Inn",
+      "city": "Scottsdale",
+      "state": "AZ",
+      "street": "5402 East Lincoln Drive",
+      "postalCode": "85253",
+      "googlePlaceId": "ChIJmTc8U6MMK4cRv_tgS-FyJGE",
+      "lat": 33.532976,
+      "lng": -111.964141,
+      "image": "https://cdn.filestackcontent.com/j7CMXv39S5Ongq82KQ8q"
     },
     {
       "itemId": 648798,

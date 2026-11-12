@@ -95,6 +95,14 @@ export const LOCATION_SEO: Record<string, LocationSeo> = {
     intro:
       "Hotel Solaya is a stylish stay a few minutes from Old Town Scottsdale, and its pool is a lovely, low-key setting for a floating sound bath. Float, breathe and let the live sound do its thing, then wander into Old Town for dinner. A great pick for couples, girls' nights and Scottsdale visitors.",
   },
+  "floating-sound-bath-spa-camelback-inn-scottsdale": {
+    title: "Floating Sound Bath at The Spa at Camelback Inn, Scottsdale",
+    h1: "Resort Floating Sound Bath at The Spa at Camelback Inn",
+    description:
+      "Floating sound bath at The Spa at Camelback Inn in Scottsdale. Float in the spa pool under Camelback Mountain while live sound bath musicians play.",
+    intro:
+      "The Spa at Camelback Inn is one of Scottsdale's classic resort spas, tucked right in the heart of town with Camelback Mountain looking on. Float in the spa pool on a floating water bed (okay, it's a paddleboard, but we're sticking with water bed) while live musicians fill the evening with sound healing. Made for spa lovers, couples and anyone who'd like a resort night without booking a room.",
+  },
   "hilton-villas-scottsdale-floating-sound-bath-scottsdale": {
     title: "Floating Sound Bath at Hilton Scottsdale Resort & Villas",
     h1: "Resort Floating Sound Bath at Hilton Scottsdale Resort & Villas",
