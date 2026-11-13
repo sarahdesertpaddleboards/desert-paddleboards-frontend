@@ -398,11 +398,35 @@ const LOCATION_OVERLAYS: Overlay[] = [
  * gets its Event markup, just without a price — so when a price changes in
  * FareHarbor, change it here too.
  */
+// Tiers per Sarah, Nov 2026: resorts $75 (Wigwam $80); rooftop pools, hotels
+// and Revel Surf Park $50; city pools vary $35–50, so $40 unless the exact
+// price is known. Community pools (Mulberry, PebbleCreek, Superstition
+// Shadows) aren't priced yet.
 const TICKET_PRICES_USD: Record<number, number> = {
-  578969: 75, // JW Marriott Desert Ridge — "Resort sessions ($75)", /faq
-  642745: 75, // Westin Kierland — "Resort sessions ($75)", /faq
-  626146: 75, // Aji Spa at Sheraton Grand — "Resort sessions ($75)", /faq
+  // Resorts
+  714583: 75, // Arizona Grand Resort
+  578969: 75, // JW Marriott Desert Ridge
+  626146: 75, // Aji Spa at Sheraton Grand
+  712901: 75, // Grand Hyatt Scottsdale
+  642745: 75, // Westin Kierland
+  762421: 75, // Hilton Phoenix Resort at the Peak
+  770167: 75, // The Spa at Camelback Inn
+  762628: 75, // Hilton Scottsdale Resort & Villas
+  636156: 80, // LeMonds Spa at the Wigwam
+  // Rooftop pools
+  709135: 50, // Canopy by Hilton, Tempe
+  698585: 50, // Skysill Rooftop, Westin Tempe
+  708584: 50, // Omni Tempe
+  // Hotels + Revel
+  722096: 50, // Hotel Solaya
+  725981: 50, // Hotel Adeline
+  728366: 50, // DoubleTree by Hilton, Gilbert
+  612512: 50, // Revel Surf Park
+  // City pools
   171055: 35, // Kino Aquatics — "$35 includes Floating Board", FareHarbor description
+  627535: 40, // Skyline Pool, Mesa (midpoint)
+  578505: 40, // Kiwanis Recreation Center, Tempe (midpoint)
+  146434: 40, // Mesa Aquatics Complex lazy river class (midpoint)
 };
 
 function slugify(s: string): string {
