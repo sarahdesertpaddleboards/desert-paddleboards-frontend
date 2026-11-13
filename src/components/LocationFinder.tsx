@@ -645,6 +645,7 @@ function VenueCard({
           <DirectionsButton dest={venueDestination(exp)} />
           <FareHarborButton
             itemId={exp.itemId}
+            placement="finder"
             className="cursor-pointer rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
           >
             Book
@@ -725,6 +726,7 @@ function CityVenueCard({
           {c.fareharborItemId ? (
             <FareHarborButton
               itemId={c.fareharborItemId}
+              placement="finder"
               className="cursor-pointer rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
             >
               Book

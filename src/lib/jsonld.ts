@@ -1,6 +1,7 @@
 import { SITE_URL, business } from "@/data/site";
-import { fareHarborBookUrl, type Experience } from "@/data/locations";
+import { experiences, fareHarborBookUrl, type Experience } from "@/data/locations";
 import type { UpcomingSession } from "@/lib/experiencesApi";
+import upcoming from "@/data/upcoming.generated.json";
 
 const ORG_ID = `${SITE_URL}/#organization`;
 
@@ -91,21 +92,46 @@ export function eventLd(exp: Experience, session: UpcomingSession) {
     "@type": "Event",
     name: `${exp.title}${exp.venue ? ` at ${exp.venue}` : ""} — ${exp.city}`,
     description: exp.blurb,
+    url: `${SITE_URL}/locations/${exp.slug}`,
     startDate: session.startAt,
     endDate: session.endAt,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: placeLd(exp),
-    image: [exp.image],
+    image: [exp.image.startsWith("http") ? exp.image : `${SITE_URL}${exp.image}`],
     organizer: { "@id": ORG_ID },
     offers: {
       "@type": "Offer",
+      // Untagged on purpose: clicks on this URL come from Google, not from our
+      // pages, so the site's utm_source would misattribute them.
       url: fareHarborBookUrl(exp.itemId),
+      ...(typeof exp.price === "number"
+        ? { price: exp.price.toFixed(2), priceCurrency: "USD" }
+        : {}),
       availability: session.isSoldOut
         ? "https://schema.org/SoldOut"
         : "https://schema.org/InStock",
     },
   };
+}
+
+/**
+ * Event nodes for upcoming FareHarbor sessions, soonest first — optionally
+ * just one venue's. Built from upcoming.generated.json, which
+ * scripts/generate-seo-data.mjs fills from FareHarbor's item-calendar API on
+ * every build, so the markup tracks the live schedule as of the last deploy.
+ * Sessions for items that aren't a listed venue (no page to describe them)
+ * are skipped.
+ */
+export function fareHarborEventsLd({ itemId, limit }: { itemId?: number; limit?: number } = {}) {
+  const byId = new Map(experiences.map((e) => [e.itemId, e]));
+  const now = Date.now();
+  return (upcoming.sessions as UpcomingSession[])
+    .filter((s) => (itemId === undefined || s.itemId === itemId) && Date.parse(s.startAt) > now)
+    .filter((s) => byId.has(s.itemId))
+    .sort((a, b) => a.startAt.localeCompare(b.startAt))
+    .slice(0, limit)
+    .map((s) => eventLd(byId.get(s.itemId)!, s));
 }
 
 /** FAQPage — enables rich Q&A results in search. */

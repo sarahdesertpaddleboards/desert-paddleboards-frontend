@@ -2,7 +2,7 @@ import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import SessionCalendar from "@/components/SessionCalendar";
 import UpcomingSessions from "@/components/UpcomingSessions";
-import { breadcrumbLd, graph } from "@/lib/jsonld";
+import { breadcrumbLd, fareHarborEventsLd, graph } from "@/lib/jsonld";
 
 /**
  * /calendar — the full upcoming-sessions schedule, merging live FareHarbor
@@ -14,6 +14,9 @@ export default function Calendar() {
       { name: "Home", path: "/" },
       { name: "Calendar", path: "/calendar" },
     ]),
+    // Every upcoming FareHarbor session, as of this build. Capped so a venue
+    // with a weekly class can't bloat the page.
+    ...fareHarborEventsLd({ limit: 60 }),
   ]);
 
   return (

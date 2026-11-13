@@ -30,10 +30,17 @@ import catalogJson from "./fareharbor-items.generated.json";
 
 export const FAREHARBOR_SHORTNAME = "desertpaddleboards";
 
-/** Lightframe booking URL for a FareHarbor item. */
+/**
+ * Lightframe booking URL for a FareHarbor item — untagged. Links rendered on
+ * the page wrap it in fareHarborUrl() (src/lib/utm.ts) to add UTMs.
+ */
 export function fareHarborBookUrl(itemId: number): string {
   return `https://fareharbor.com/embeds/book/${FAREHARBOR_SHORTNAME}/items/${itemId}/?full-items=yes`;
 }
+
+/** FareHarbor gift-certificate item + its purchase flow. */
+export const GIFT_CERTIFICATE_ITEM_ID = 573676;
+export const GIFT_CERTIFICATE_URL = `${fareHarborBookUrl(GIFT_CERTIFICATE_ITEM_ID)}&flow=173629`;
 
 export type ExperienceKind = "soundbath" | "class" | "membership" | "private";
 
@@ -66,6 +73,8 @@ export interface Experience {
   featured?: boolean;
   /** True when this venue has no editorial overlay yet (auto-surfaced from FareHarbor). */
   needsCuration?: boolean;
+  /** Per-person ticket price in USD, for Event JSON-LD offers (see TICKET_PRICES_USD). */
+  price?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -378,6 +387,24 @@ const LOCATION_OVERLAYS: Overlay[] = [
 // Merge
 // ---------------------------------------------------------------------------
 
+/**
+ * Per-person ticket price (USD) by FareHarbor item id — feeds `offers.price`
+ * in the Event JSON-LD on /calendar and /locations/*.
+ *
+ * Lives here because FareHarbor's public API doesn't expose prices: every
+ * rate field in the item, calendar and availability responses comes back
+ * null. Dates, times and sold-out status still come live from the API at
+ * build; only the price is hand-kept. A venue missing from this map still
+ * gets its Event markup, just without a price — so when a price changes in
+ * FareHarbor, change it here too.
+ */
+const TICKET_PRICES_USD: Record<number, number> = {
+  578969: 75, // JW Marriott Desert Ridge — "Resort sessions ($75)", /faq
+  642745: 75, // Westin Kierland — "Resort sessions ($75)", /faq
+  626146: 75, // Aji Spa at Sheraton Grand — "Resort sessions ($75)", /faq
+  171055: 35, // Kino Aquatics — "$35 includes Floating Board", FareHarbor description
+};
+
 function slugify(s: string): string {
   return s
     .toLowerCase()
@@ -426,6 +453,7 @@ function toExperience(cat: CatalogItem, o?: Overlay): Experience {
     image: o?.image || cat.image,
     featured: o?.featured,
     needsCuration: o ? undefined : true,
+    price: TICKET_PRICES_USD[cat.itemId],
   };
 }
 

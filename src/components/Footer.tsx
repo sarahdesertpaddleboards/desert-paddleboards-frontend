@@ -81,7 +81,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/gift" className="text-muted-foreground hover:text-primary transition-colors">
                   Gift Certificates
                 </Link>
               </li>

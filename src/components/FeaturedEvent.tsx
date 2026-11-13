@@ -59,6 +59,7 @@ export default function FeaturedEvent({ className = "" }: { className?: string }
               {c.fareharborItemId ? (
                 <FareHarborButton
                   itemId={c.fareharborItemId}
+                  placement="featured_event"
                   className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                 >
                   Book your spot

@@ -20,13 +20,12 @@ import {
 import FareHarborButton from "@/components/FareHarborButton";
 import VolunteerSignup from "@/components/VolunteerSignup";
 import Seo from "@/components/Seo";
+import NotFound from "@/pages/NotFound";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbLd, eventLd, graph } from "@/lib/jsonld";
-import type { UpcomingSession } from "@/lib/experiencesApi";
-import upcoming from "@/data/upcoming.generated.json";
+import { breadcrumbLd, fareHarborEventsLd, graph } from "@/lib/jsonld";
 import { fmtDateHeader, fmtTime, useUpcomingSessions } from "@/lib/sessions";
 import { trackEvent } from "@/lib/analytics";
-import { appendUtms } from "@/lib/utm";
+import { appendUtms, markdownUrlTransform } from "@/lib/utm";
 import { SITE_URL } from "@/data/site";
 
 const CITY_FALLBACK_IMAGE = "/floating-boards-sunset.jpg";
@@ -42,21 +41,9 @@ export default function LocationDetail() {
   const city = exp ? undefined : getCityClassBySlug(slug);
   const upcomingSessions = useUpcomingSessions();
 
-  if (!exp && !city) {
-    return (
-      <main className="container py-24 text-center">
-        <h1 className="text-2xl font-bold">Experience not found</h1>
-        <p className="mt-2 text-muted-foreground">
-          We couldn&apos;t find that experience.
-        </p>
-        <Link to="/locations">
-          <span className="mt-6 inline-block cursor-pointer font-semibold text-brand hover:text-brand-dark">
-            &larr; Back to all experiences
-          </span>
-        </Link>
-      </main>
-    );
-  }
+  // Unknown slug — no pre-rendered page exists, so Cloudflare served 404.html
+  // (with a 404 status). Render the same page so hydration matches it.
+  if (!exp && !city) return <NotFound />;
 
   // Normalised view model so one template renders both FareHarbor venues and
   // city-run classes.
@@ -146,12 +133,7 @@ export default function LocationDetail() {
 
   // Structured data (Event markup) — from the build-time FareHarbor feed for
   // venues, or the static city-class dates for city classes.
-  const fhEvents = exp
-    ? (upcoming.sessions as UpcomingSession[])
-        .filter((s) => s.itemId === exp.itemId)
-        .slice(0, 6)
-        .map((s) => eventLd(exp, s))
-    : [];
+  const fhEvents = exp ? fareHarborEventsLd({ itemId: exp.itemId, limit: 6 }) : [];
   const cityEventOfferUrl = view.isCity
     ? (view.bookingUrl ?? (fhItemId ? fareHarborBookUrl(fhItemId) : SITE_URL))
     : SITE_URL;
@@ -249,7 +231,7 @@ export default function LocationDetail() {
 
           {longDescription ? (
             <div className="prose prose-slate max-w-none prose-headings:font-bold prose-strong:text-foreground prose-li:marker:text-brand prose-p:text-muted-foreground prose-li:text-muted-foreground">
-              <ReactMarkdown>{longDescription}</ReactMarkdown>
+              <ReactMarkdown urlTransform={markdownUrlTransform(`/locations/${view.slug}`)}>{longDescription}</ReactMarkdown>
             </div>
           ) : (
             <p className="text-lg leading-relaxed text-muted-foreground">

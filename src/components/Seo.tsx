@@ -24,6 +24,11 @@ interface SeoProps {
   type?: "website" | "article";
   /** Keep this page out of search results (unlisted / preview pages). */
   noindex?: boolean;
+  /**
+   * Emit canonical + og:url. Off for the 404 page, which is served at every
+   * unknown URL and has no address of its own to point at.
+   */
+  canonical?: boolean;
 }
 
 function absoluteImage(image?: string): string {
@@ -38,6 +43,7 @@ export default function Seo({
   image,
   type = "website",
   noindex = false,
+  canonical = true,
 }: SeoProps) {
   const { pathname } = useLocation();
   const path = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
@@ -49,12 +55,12 @@ export default function Seo({
       <title>{title}</title>
       <meta name="description" content={description} />
       {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
-      <link rel="canonical" href={url} />
+      {canonical ? <link rel="canonical" href={url} /> : null}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={img} />
-      <meta property="og:url" content={url} />
+      {canonical ? <meta property="og:url" content={url} /> : null}
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={img} />

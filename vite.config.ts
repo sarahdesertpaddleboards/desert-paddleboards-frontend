@@ -22,9 +22,16 @@ export default defineConfig({
   // Admin + checkout-success are client-only app routes.
   ssgOptions: {
     includedRoutes(paths: string[]) {
-      return paths.filter(
-        (path) => !path.startsWith("/admin") && path !== "/success",
-      );
+      return [
+        ...paths.filter(
+          (path) => !path.startsWith("/admin") && path !== "/success",
+        ),
+        // Rendered by the catch-all route into dist/404.html. Cloudflare Pages
+        // serves that file with a real 404 status for any URL without its own
+        // .html — without it, Pages falls back to SPA mode and answers every
+        // unknown URL with the homepage and a 200.
+        "/404",
+      ];
     },
   },
 });

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { ANALYTICS_ENABLED, initAnalytics, trackPageView } from "@/lib/analytics";
-import { persistUtms } from "@/lib/utm";
+import { forwardVisitorUtms, persistUtms } from "@/lib/utm";
 
 /**
  * Mounts the configured analytics (Google Analytics 4 and/or the Meta Pixel)
@@ -13,6 +13,7 @@ export default function Analytics() {
 
   useEffect(() => {
     persistUtms();
+    forwardVisitorUtms();
     initAnalytics();
   }, []);
 

@@ -16,6 +16,7 @@ import SantaPaddle from "./pages/SantaPaddle";
 import WitchesRegatta from "./pages/WitchesRegatta";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
+import Gift from "./pages/Gift";
 import Privacy from "./pages/Privacy";
 import SmsTerms from "./pages/SmsTerms";
 import Terms from "./pages/Terms";
@@ -54,6 +55,7 @@ export const routes: RouteRecord[] = [
       },
       { path: "membership", element: <Membership /> },
       { path: "shop", element: <Shop /> },
+      { path: "gift", element: <Gift /> },
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
       { path: "sms-terms", element: <SmsTerms /> },

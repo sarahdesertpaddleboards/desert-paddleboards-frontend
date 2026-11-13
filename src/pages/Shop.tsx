@@ -6,6 +6,8 @@ import { SITE_URL } from "@/data/site";
 import { products, formatPrice, type Product } from "@/data/shop";
 import { trackEvent } from "@/lib/analytics";
 import { useFareHarborEmbed } from "@/components/FareHarborButton";
+import { GIFT_CERTIFICATE_URL } from "@/data/locations";
+import { fareHarborUrl } from "@/lib/utm";
 
 const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
@@ -98,7 +100,7 @@ export default function Shop() {
           Purchased securely through FareHarbor.
         </p>
         <a
-          href="https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629"
+          href={fareHarborUrl(GIFT_CERTIFICATE_URL, { page: "/shop", placement: "gift_section" })}
           // pointerdown/Enter, not onClick — FareHarbor's autolightframe script
           // swallows the click (see FareHarborButton).
           onPointerDown={(e) => {
