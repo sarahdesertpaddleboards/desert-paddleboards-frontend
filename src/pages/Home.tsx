@@ -30,55 +30,17 @@ export default function Home() {
         image="/marriott-night-soundbath.jpg"
       />
       <JsonLd data={graph([faqPageLd(HOME_FAQ)])} />
-      {/* Calendar sits above the map/list finder (date-first entry point) */}
+      {/* Booking first: hero search → calendar → map/list finder. The
+          explainer copy for search engines sits further down the page. */}
       <LocationFinder
         afterHero={
-          <>
-            {/* What is it? — short explainer + links to the main city pages */}
-            <section className="border-b border-border">
-              <div className="mx-auto max-w-3xl px-4 py-12 text-center">
-                <h2 className="text-2xl font-bold md:text-3xl">
-                  What is a floating sound bath?
-                </h2>
-                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                  A sound bath is a deep-rest meditation where live instruments
-                  (crystal singing bowls, gongs, chimes, flutes) wash over you. A
-                  floating sound bath does all of that on the water: you lie back on
-                  a floating water bed (okay, it&apos;s a paddleboard, but we&apos;re
-                  sticking with water bed) while the sound healing gently rocks you
-                  into The Floating Nap™. It&apos;s a community night of relaxing
-                  together, with a touch of resort luxury, created by founder Sarah
-                  Williams after 25+ years in fitness and wellness.
-                </p>
-                <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-brand">
-                  Find yours
-                </p>
-                <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2">
-                  {CITY_LINKS.map((c) => (
-                    <li key={c.to}>
-                      <Link
-                        to={c.to}
-                        className="font-medium text-primary underline-offset-4 hover:underline"
-                      >
-                        {c.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  Classes run year-round and new dates are added all the time.{" "}
-                  <Link to="/locations" className="font-medium text-primary hover:underline">
-                    See every floating sound bath location
-                  </Link>
-                </p>
-              </div>
-            </section>
+          <div id="upcoming" className="scroll-mt-20">
             <SessionCalendar
               heading="Find a session by date"
               showAllHref="/calendar"
               className="py-12"
             />
-          </>
+          </div>
         }
       />
 
@@ -106,6 +68,46 @@ export default function Home() {
 
       {/* Google reviews — real text, baked in at build time */}
       <GoogleReviews max={3} heading="Loved across Arizona" />
+
+      {/* What is it? — short explainer + links to the main city pages */}
+      <section className="border-t border-border bg-card">
+        <div className="mx-auto max-w-3xl px-4 py-12 text-center">
+          <h2 className="text-2xl font-bold md:text-3xl">
+            What is a floating sound bath?
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+            A sound bath is a deep-rest meditation where live instruments
+            (crystal singing bowls, gongs, chimes, flutes) wash over you. A
+            floating sound bath does all of that on the water: you lie back on
+            a floating water bed (okay, it&apos;s a paddleboard, but we&apos;re
+            sticking with water bed) while the sound healing gently rocks you
+            into The Floating Nap™. It&apos;s a community night of relaxing
+            together, with a touch of resort luxury, created by founder Sarah
+            Williams after 25+ years in fitness and wellness.
+          </p>
+          <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-brand">
+            Find yours
+          </p>
+          <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2">
+            {CITY_LINKS.map((c) => (
+              <li key={c.to}>
+                <Link
+                  to={c.to}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  {c.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Classes run year-round and new dates are added all the time.{" "}
+            <Link to="/locations" className="font-medium text-primary hover:underline">
+              See every floating sound bath location
+            </Link>
+          </p>
+        </div>
+      </section>
 
       {/* Quick FAQ (also emitted as FAQPage JSON-LD above); full list on /faq */}
       <section className="border-t border-border">

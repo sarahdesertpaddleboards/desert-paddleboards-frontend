@@ -453,11 +453,11 @@ export default function LocationFinder({
           <p className="mt-2 text-lg italic text-white/90">
             Life is better on the water.
           </p>
+          {/* One sentence only: the full explainer lives lower on the homepage,
+              so the search box and dates stay near the top. */}
           <p className="mt-3 max-w-xl text-base text-white/90">
-            The Floating Nap™ is a floating sound bath with live sound bath
-            musicians, at resort, rooftop and city pools across Phoenix,
-            Scottsdale, Mesa and Tempe. It&apos;s one of the most unique things to
-            do in Arizona. Find one near you and book online.
+            Float under the sky while live musicians play, at resort, rooftop
+            and city pools across Phoenix, Scottsdale, Mesa and Tempe.
           </p>
           <form onSubmit={handleSearch} className="mt-5 flex max-w-md gap-2">
             <input
@@ -474,6 +474,12 @@ export default function LocationFinder({
               Find near me
             </button>
           </form>
+          <a
+            href="#upcoming"
+            className="mt-3 inline-flex w-fit text-sm font-semibold text-white underline-offset-4 hover:underline"
+          >
+            Or see upcoming dates ↓
+          </a>
           {originLabel ? (
             <p className="mt-2 text-xs text-white/85">
               Showing distance from{" "}
