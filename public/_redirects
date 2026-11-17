@@ -27,6 +27,14 @@
 # --- Blog (GoDaddy used /blog/f/<slug>; new site uses /blog/<slug>) ----------
 /blog/f/*                     /blog/:splat      301
 
+# --- Retired venues ---------------------------------------------------------
+# A venue removed via EXCLUDED_ITEM_IDS in src/data/locations.ts stops building
+# its page, so an indexed URL would start 404ing. Send it to the venue index to
+# keep the ranking signal.
+# IMPORTANT: if a venue here is ever restored in locations.ts, DELETE its line
+# below — otherwise the rebuilt page is unreachable behind this redirect.
+/locations/floating-soundbath-at-westin-kierland-resort-spa-scottsdale /locations 301
+
 # --- Retired ----------------------------------------------------------------
 /sarah-for-us-senate          /                 301
 /m/*                          /                 301

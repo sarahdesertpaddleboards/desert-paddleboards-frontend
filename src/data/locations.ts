@@ -115,6 +115,9 @@ const FORCE_LOCATION_IDS = new Set<number>([626146, 746500]);
 const EXCLUDED_ITEM_IDS = new Set<number>([
   655636, // SwimHaus (Gilbert) — nothing scheduled in the near future (Shellie, Aug 2026)
   146502, // Santa Paddle — an annual event, featured via city-classes.json + /santa-paddle
+  642745, // Westin Kierland Resort & Spa — pulled Nov 2026 (Sarah). Its Dec 3
+  //         date was already gone from FareHarbor; Nov 19 was the last one.
+  //         Sarah is cancelling that date in FareHarbor so it stops booking.
   // (Arizona Grand Resort & Spa, 714583, was hidden Jun 2026 but is running
   //  again as of Jul 2026 — restored.)
 ]);
