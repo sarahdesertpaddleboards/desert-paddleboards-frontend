@@ -16,6 +16,11 @@ export function isLocalMode(env) {
   return env.STAFF_ENV === "local" && !env.RESEND_API_KEY;
 }
 
+/** Made-up demo addresses (…@demo.invalid). The .invalid domain can never receive mail. */
+export function isDemoAddress(email) {
+  return /\.invalid$/i.test(String(email ?? "").trim());
+}
+
 async function logEmail(db, entry) {
   try {
     await db
@@ -44,6 +49,12 @@ async function logEmail(db, entry) {
  * mail outage can't break the request that triggered it.
  */
 export async function sendEmail(env, db, { to, subject, html, text, kind, staffId }) {
+  // Sample people for demos (scripts/staff-demo) use the reserved .invalid
+  // domain: act as if sent so the demo reads normally, but never send.
+  if (isDemoAddress(to)) {
+    await logEmail(db, { to, subject, kind, staffId, status: "skipped", error: "demo_address" });
+    return { ok: true, skipped: true };
+  }
   if (!env.RESEND_API_KEY) {
     await logEmail(db, { to, subject, kind, staffId, status: "skipped", error: "RESEND_API_KEY not set" });
     return { ok: false, skipped: true, error: "not_configured" };

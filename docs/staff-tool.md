@@ -244,6 +244,23 @@ Do **not** merge `staff` into `main` until the production secrets are set with
 Resend: desertpaddleboards.com is verified and sends from sarah@. Test emails land in
 Gmail's Primary inbox. The admin roster page is `/staff/admin/people`.
 
+## Demo data (preview only)
+
+`scripts/staff-demo/seed.sql` loads five made-up staff, applicants on the next real
+soundbath and fitness shifts, and three past "Private Floating Soundbath" shifts (two
+owed, one paid) so Schedule, People and Payroll look lived-in for a walkthrough.
+`scripts/staff-demo/reset.sql` removes it all, plus any live demo staffer whose email
+contains `+demo@`. Seed is safe to re-run.
+
+```bash
+pnpm cf d1 execute dpb-staff-preview --remote --env preview --file scripts/staff-demo/seed.sql
+pnpm cf d1 execute dpb-staff-preview --remote --env preview --file scripts/staff-demo/reset.sql
+```
+
+Sample people use `@demo.invalid` emails and fictional 555-01xx numbers. `sendEmail` and
+`sendSms` treat those as sent but never send them (logged as `skipped` /
+`demo_address` / `demo_number`), so confirming or paying them in a demo reads normally.
+
 ## Data notes
 - Payout details are a method (Venmo / Zelle / Cash App / PayPal / check / other)
   plus a free-text handle. The UI tells people never to enter bank or card numbers.

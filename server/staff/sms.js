@@ -81,6 +81,12 @@ export async function sendSms(env, db, { to, body, kind, staffId }) {
     await logSms(db, { to: String(to ?? ""), body, kind, staffId, status: "skipped", error: "no_valid_phone" });
     return { ok: false, skipped: true, error: "no_valid_phone" };
   }
+  // Demo people (scripts/staff-demo) have fictional 555-01xx numbers: act as
+  // if sent, never send.
+  if (/^\+1\d{3}55501\d{2}$/.test(phone)) {
+    await logSms(db, { to: phone, body, kind, staffId, status: "skipped", error: "demo_number" });
+    return { ok: true, skipped: true };
+  }
   if (!smsConfigured(env)) {
     if (env.STAFF_ENV === "local") console.log(`[staff-api] LOCAL text to ${phone}: ${body}`);
     await logSms(db, { to: phone, body, kind, staffId, status: "skipped", error: "twilio_not_configured" });
