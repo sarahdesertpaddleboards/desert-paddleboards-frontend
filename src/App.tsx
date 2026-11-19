@@ -19,6 +19,7 @@ import Shop from "./pages/Shop";
 import Gift from "./pages/Gift";
 import Privacy from "./pages/Privacy";
 import SmsTerms from "./pages/SmsTerms";
+import StaffPlaceholder from "./pages/StaffPlaceholder";
 import Terms from "./pages/Terms";
 import BlogIndex from "./pages/blog/index";
 import BlogPost from "./pages/blog/[slug]";
@@ -73,6 +74,9 @@ export const routes: RouteRecord[] = [
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
       { path: "sms-terms", element: <SmsTerms /> },
+      // Stand-in until the staff tool (branch `staff`) is merged; it replaces these.
+      { path: "staff", element: <StaffPlaceholder /> },
+      { path: "staff/earnings", element: <StaffPlaceholder /> },
       { path: "blog", element: <BlogIndex /> },
       {
         path: "blog/:slug",
