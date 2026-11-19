@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import Seo from "@/components/Seo";
+import { markdownUrlTransform } from "@/lib/utm";
+import NotFound from "@/pages/NotFound";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbLd, graph } from "@/lib/jsonld";
 import { SITE_URL, business } from "@/data/site";
@@ -18,18 +20,8 @@ export default function BlogPostPage() {
   const params = useParams();
   const post = getPostBySlug(params.slug ?? "");
 
-  if (!post) {
-    return (
-      <main className="container py-24 text-center">
-        <h1 className="text-2xl font-bold">Post not found</h1>
-        <Link to="/blog">
-          <span className="mt-6 inline-block cursor-pointer font-semibold text-brand hover:text-brand-dark">
-            &larr; Back to the blog
-          </span>
-        </Link>
-      </main>
-    );
-  }
+  // Unknown slug — served from 404.html; render the same page.
+  if (!post) return <NotFound />;
 
   const structuredData = graph([
     breadcrumbLd([
@@ -85,19 +77,19 @@ export default function BlogPostPage() {
       ) : null}
 
       <div className="prose prose-slate mt-8 max-w-none prose-headings:font-bold prose-strong:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-li:marker:text-brand prose-a:text-brand">
-        <ReactMarkdown>{stripLeadingImage(post.body)}</ReactMarkdown>
+        <ReactMarkdown urlTransform={markdownUrlTransform(`/blog/${post.slug}`)}>{stripLeadingImage(post.body)}</ReactMarkdown>
       </div>
 
       <div className="mt-12 rounded-2xl bg-brand/10 p-6 text-center">
         <p className="text-lg font-semibold">Ready to get on the water?</p>
         <p className="mt-1 text-muted-foreground">
-          Find a floating soundbath near you, join a community paddle, or pick up a
+          Find a floating sound bath near you, join a community paddle, or pick up a
           board from the shop.
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
           <Link to="/locations">
             <span className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
-              Find a soundbath
+              Find a sound bath
             </span>
           </Link>
           <Link to="/community-events">

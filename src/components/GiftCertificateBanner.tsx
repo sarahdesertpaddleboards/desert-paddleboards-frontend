@@ -1,10 +1,9 @@
 import { Gift } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useFareHarborEmbed } from "@/components/FareHarborButton";
+import { GIFT_CERTIFICATE_URL } from "@/data/locations";
 import { trackEvent } from "@/lib/analytics";
-import { appendUtms } from "@/lib/utm";
-
-export const GIFT_CERTIFICATE_URL =
-  "https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629";
+import { fareHarborUrl } from "@/lib/utm";
 
 /**
  * Slim site-wide announcement bar above the header — makes gift certificates
@@ -13,6 +12,7 @@ export const GIFT_CERTIFICATE_URL =
  */
 export default function GiftCertificateBanner() {
   useFareHarborEmbed();
+  const { pathname } = useLocation();
 
   // Track on pointerdown/Enter, not onClick — FareHarbor's autolightframe
   // script swallows the click (see FareHarborButton).
@@ -20,7 +20,7 @@ export default function GiftCertificateBanner() {
 
   return (
     <a
-      href={appendUtms(GIFT_CERTIFICATE_URL)}
+      href={fareHarborUrl(GIFT_CERTIFICATE_URL, { page: pathname, placement: "top_banner" })}
       onPointerDown={(e) => {
         if (e.button === 0) track();
       }}

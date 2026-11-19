@@ -1,5 +1,5 @@
 /**
- * CITY-RUN CLASSES — soundbath / water-fitness sessions that book through the
+ * CITY-RUN CLASSES — sound bath / water-fitness sessions that book through the
  * cities' OWN registration systems (Queen Creek, Sedona, Avondale), NOT
  * FareHarbor. Merged with the live FareHarbor sessions in the homepage /
  * calendar "Upcoming Sessions" view (src/components/UpcomingSessions.tsx).

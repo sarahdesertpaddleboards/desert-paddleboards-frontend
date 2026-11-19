@@ -116,14 +116,14 @@ export default function Rentals() {
           <Truck className="h-10 w-10 mx-auto mb-4 text-primary" />
           <h2 className="text-2xl md:text-3xl font-bold mb-4">More ways to get on the water</h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Join a community paddle, or find a floating soundbath near you.
+            Join a community paddle, or find a floating sound bath near you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
               <Link to="/community-events">Community events</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link to="/locations">Floating soundbaths</Link>
+              <Link to="/locations">Floating sound baths</Link>
             </Button>
           </div>
         </div>

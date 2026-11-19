@@ -28,7 +28,10 @@ const ITEMS_OUT = join(__dirname, "../src/data/fareharbor-items.generated.json")
 const UPCOMING_OUT = join(__dirname, "../src/data/upcoming.generated.json");
 
 const SHORTNAME = "desertpaddleboards";
-const MONTHS_AHEAD = 2;
+// Match the live feed's ~6-month window (MAX_MONTHS_AHEAD in
+// functions/experiences/upcoming.js), so the prerendered pages already list
+// every scheduled date instead of only the next ~3 months.
+const MONTHS_AHEAD = 5;
 
 // Items that are fixed-location venues but lack lat/lng in FareHarbor's
 // primary_location (so the coords heuristic alone would miss them). Aji Spa's

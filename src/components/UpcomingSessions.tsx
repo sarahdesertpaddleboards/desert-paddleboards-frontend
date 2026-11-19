@@ -115,6 +115,7 @@ export default function UpcomingSessions({
                   {s.source === "fareharbor" ? (
                     <FareHarborButton
                       itemId={s.itemId!}
+                      placement="session_list"
                       className="inline-flex flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                     >
                       Book

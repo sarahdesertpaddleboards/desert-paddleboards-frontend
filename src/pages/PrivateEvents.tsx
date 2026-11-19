@@ -26,20 +26,20 @@ export default function PrivateEvents() {
     {
       "@context": "https://schema.org",
       "@type": "Service",
-      name: "Private Floating Soundbath Events",
+      name: "Private Floating Sound Bath Events",
       serviceType: "Private event",
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
       description:
-        "Private floating soundbath events for bachelorette parties, corporate wellness, retreats, gym member-appreciation days and group celebrations across Arizona.",
+        "Private floating sound bath events for bachelorette parties, corporate wellness, retreats, gym member-appreciation days and group celebrations across Arizona.",
     },
   ]);
 
   return (
     <div className="min-h-screen">
       <Seo
-        title="Private Events — Bachelorette &amp; Corporate Wellness"
-        description="Private floating soundbath events across Arizona — bachelorette parties, corporate offsites, retreats and celebrations. We bring the boards, musicians and team."
+        title="Private Floating Sound Bath Parties &amp; Corporate Events"
+        description="Private floating sound bath events at your pool: bachelorette parties, corporate offsites, retreats and celebrations. We bring the boards, musicians and team."
         image="/private-events/phx-country-club-soundbath.jpg"
       />
       <JsonLd data={structuredData} />
@@ -49,14 +49,14 @@ export default function PrivateEvents() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30 z-10" />
         <img
           src="/private-events/phx-country-club-soundbath.jpg"
-          alt="Floating soundbath at sunset by the pool at Phoenix Country Club"
+          alt="Floating sound bath at sunset by the pool at Phoenix Country Club"
           loading="eager"
           fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 container text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Private Events
+            Private Floating Sound Bath Events
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
             Unique floating experiences for bachelorettes, corporate wellness, and special celebrations
@@ -102,7 +102,7 @@ export default function PrivateEvents() {
             Why this works for corporate groups
           </h2>
           <p className="mt-3 text-muted-foreground">
-            A floating soundbath does what a catered lunch or an escape room can&rsquo;t:
+            A floating sound bath does what a catered lunch or an escape room can&rsquo;t:
             it actually lowers stress. Teams leave calmer than they arrived, and they
             remember it. It works for every fitness level, nobody has to be good at
             anything, and it photographs beautifully for your internal comms.
@@ -111,7 +111,7 @@ export default function PrivateEvents() {
             to="/blog/floating-sound-baths-the-ultimate-corporate-wellness-event"
             className="mt-4 inline-flex text-sm font-semibold text-primary hover:underline"
           >
-            Read: floating soundbaths as a corporate wellness event &rarr;
+            Read: floating sound baths as a corporate wellness event &rarr;
           </Link>
         </div>
       </section>
@@ -122,7 +122,7 @@ export default function PrivateEvents() {
           <div className="md:order-2">
             <img
               src="/private-events/bachelorette-party.jpg"
-              alt="A bachelorette group floating on paddleboards at a backyard-pool soundbath"
+              alt="A bachelorette group floating on paddleboards at a backyard-pool sound bath"
               loading="lazy"
               className="w-full rounded-2xl object-cover shadow-sm"
             />
@@ -149,7 +149,7 @@ export default function PrivateEvents() {
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <img
             src="/private-events/lifetime-fitness-soundbath.jpg"
-            alt="A floating soundbath member-appreciation event at Lifetime Fitness"
+            alt="A floating sound bath member-appreciation event at Lifetime Fitness"
             loading="lazy"
             className="w-full rounded-2xl object-cover shadow-sm"
           />
@@ -162,7 +162,7 @@ export default function PrivateEvents() {
             </h2>
             <p className="text-lg text-muted-foreground">
               Give your members something they won&apos;t find in a typical fitness
-              class. A floating soundbath is a unique way to celebrate milestones, or
+              class. A floating sound bath is a unique way to celebrate milestones, or
               create a memorable member appreciation event. We can bring everything and
               run the entire experience — or simply drop off the boards for your own
               instructors.
@@ -177,7 +177,7 @@ export default function PrivateEvents() {
           <div className="md:order-2">
             <img
               src="/private-events/optima-team-event.jpg"
-              alt="A floating soundbath team event at Optima"
+              alt="A floating sound bath team event at Optima"
               loading="lazy"
               className="w-full rounded-2xl object-cover shadow-sm"
             />
@@ -191,7 +191,7 @@ export default function PrivateEvents() {
             </h2>
             <p className="text-lg text-muted-foreground">
               Treat your team to an experience that&apos;s nothing like the usual
-              offsite. Floating soundbaths offer a relaxing, memorable way to bring
+              offsite. Floating sound baths offer a relaxing, memorable way to bring
               your team together. We take care of the setup, equipment, and experience
               so your group can simply show up and enjoy.
             </p>
@@ -225,13 +225,13 @@ export default function PrivateEvents() {
         </div>
       </section>
 
-      {/* Retreats & Workshops feature — real twilight backyard-pool soundbath */}
+      {/* Retreats & Workshops feature — real twilight backyard-pool sound bath */}
       <section className="py-16">
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <div className="md:order-2">
             <img
               src="/private-events/backyard-retreat.jpg"
-              alt="A twilight candlelit floating soundbath in a backyard pool"
+              alt="A twilight candlelit floating sound bath in a backyard pool"
               loading="lazy"
               className="max-h-[520px] w-full rounded-2xl object-cover shadow-sm"
             />
@@ -245,7 +245,7 @@ export default function PrivateEvents() {
             </h2>
             <p className="text-lg text-muted-foreground">
               A magical addition to wellness retreats, yoga teacher trainings and
-              mindfulness workshops — like this candlelit twilight soundbath under the
+              mindfulness workshops — like this candlelit twilight sound bath under the
               stars. We create an unforgettable, restorative experience your
               participants will be talking about long after.
             </p>
@@ -258,7 +258,7 @@ export default function PrivateEvents() {
         <div className="container grid items-center gap-8 md:grid-cols-2">
           <img
             src="/venues/jw-marriott.jpg"
-            alt="A corporate group floating soundbath at the JW Marriott"
+            alt="A corporate group floating sound bath at the JW Marriott"
             loading="lazy"
             className="w-full rounded-2xl object-cover shadow-sm"
           />
@@ -270,7 +270,7 @@ export default function PrivateEvents() {
               Corporate Wellness
             </h2>
             <p className="text-lg text-muted-foreground">
-              Boost team morale and melt away stress with a group soundbath or
+              Boost team morale and melt away stress with a group sound bath or
               floating yoga session — like this event we hosted at the JW Marriott.
               It's a memorable way to invest in your team's wellbeing, and we handle
               everything from setup to sound.
@@ -309,7 +309,7 @@ export default function PrivateEvents() {
       <section className="bg-primary text-primary-foreground py-16">
         <div className="container max-w-3xl text-center">
           <blockquote className="text-2xl md:text-3xl italic mb-6">
-            "Desert Paddleboards made our bachelorette party absolutely unforgettable! The floating soundbath was the perfect way to relax and bond before the big day."
+            "Desert Paddleboards made our bachelorette party absolutely unforgettable! The floating sound bath was the perfect way to relax and bond before the big day."
           </blockquote>
           <p className="text-lg opacity-90">— Jessica M., Scottsdale</p>
         </div>
@@ -321,7 +321,7 @@ export default function PrivateEvents() {
           <Building2 className="mx-auto mb-3 h-7 w-7 text-primary" />
           <h2 className="text-xl font-bold">HOAs, 55+ and assisted-living communities</h2>
           <p className="mt-2 text-muted-foreground">
-            We also bring the floating soundbath to residential communities, with
+            We also bring the floating sound bath to residential communities, with
             the boards, live musicians and in-water team all included. If you'd
             like to set one up for your residents, get in touch.
           </p>

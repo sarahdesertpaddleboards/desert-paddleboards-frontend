@@ -2,46 +2,26 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
+import { Link } from "react-router-dom";
 import { faqPageLd } from "@/lib/jsonld";
+import { SOUND_BATH_FAQ, type FaqItem } from "@/data/sound-bath-faq";
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+type FAQItem = FaqItem;
 
 const faqData: { category: string; items: FAQItem[] }[] = [
   {
-    category: "About Floating Soundbaths",
+    category: "About Floating Sound Baths",
     items: [
+      ...SOUND_BATH_FAQ,
       {
-        question: "What is a floating soundbath?",
-        answer: "A floating soundbath is a unique wellness experience that combines the meditative practice of sound healing with the gentle support of floating on a paddleboard in water. You'll lie comfortably on a stable paddleboard while being immersed in the healing vibrations of live instruments like crystal singing bowls, gongs, chimes, and flutes. The water amplifies the sound vibrations, creating a deeply relaxing and transformative experience."
+        question: "What are the benefits of a floating sound bath?",
+        answer: "Floating sound baths offer numerous benefits including deep relaxation, stress reduction, improved sleep quality, enhanced mental clarity, relief from anxiety and tension, and a profound sense of peace. The combination of sound healing and gentle floating creates a unique sensory experience that many describe as deeply restorative and transformative."
       },
-      {
-        question: "Do I need any experience with meditation or yoga?",
-        answer: "No experience is necessary! Our floating soundbaths are designed for everyone, from complete beginners to experienced meditators. The paddleboards are extremely stable, and you'll be lying down the entire time. Our instructors provide all the guidance you need to feel comfortable and relaxed."
-      },
-      {
-        question: "What are the benefits of a floating soundbath?",
-        answer: "Floating soundbaths offer numerous benefits including deep relaxation, stress reduction, improved sleep quality, enhanced mental clarity, relief from anxiety and tension, and a profound sense of peace. The combination of sound healing and gentle floating creates a unique sensory experience that many describe as deeply restorative and transformative."
-      },
-      {
-        question: "How is this different from a regular soundbath?",
-        answer: "The water element adds a unique dimension to the experience. Sound vibrations travel through water more effectively than air, so you'll feel the healing frequencies throughout your entire body. The gentle rocking motion of the water enhances relaxation, and the outdoor or pool setting creates a special ambiance that's different from indoor studio experiences."
-      }
     ]
   },
   {
     category: "What to Bring & Wear",
     items: [
-      {
-        question: "What should I wear? Do I have to wear a swimsuit?",
-        answer: "Wear whatever makes you feel comfortable! A swimsuit is totally optional — quick-drying workout clothes (like yoga or athletic wear) work just as well, and plenty of our guests wear exactly that. On the stable paddleboards it's mostly just your feet and hands near the water, so many people stay almost completely dry; and if you'd rather not get wet at all, that's absolutely fine and easy to do. If you do prefer a swimsuit, we recommend a one-piece or athletic swimwear you can relax in for 60-90 minutes. Bring a cover-up or comfortable clothes for afterward, and a light layer or towel for warmth on evening sessions."
-      },
-      {
-        question: "What should I bring?",
-        answer: "Bring a towel, water bottle, and any personal items you need. We provide the paddleboards, life vests (if desired), and all sound healing instruments. Sunscreen is recommended for daytime classes. You may want to bring a small dry bag for valuables, though we recommend leaving jewelry and electronics at home or in your car."
-      },
       {
         question: "Can I bring my phone or camera?",
         answer: "We ask that you leave phones and cameras off the paddleboard during the experience to maintain the meditative atmosphere and prevent water damage. However, we often take group photos before or after class that we share on social media. You're welcome to take photos during the social time before class begins."
@@ -56,16 +36,12 @@ const faqData: { category: string; items: FAQItem[] }[] = [
     category: "Experience & Safety",
     items: [
       {
-        question: "Do I need to know how to swim?",
-        answer: "While basic swimming ability is recommended, it's not required. The paddleboards are very stable, and you'll be in a controlled pool or calm water environment. Life vests are available upon request for anyone who wants extra security. Our instructors are trained in water safety and are always present."
-      },
-      {
         question: "What if I fall off the paddleboard?",
         answer: "The paddleboards we use are extremely stable and designed for lying down, so falling off is very rare. If it does happen, the water is shallow enough to stand in most locations, and our instructors are always nearby to assist. Many participants find the boards more stable than they expected!"
       },
       {
         question: "Is this suitable for pregnant women?",
-        answer: "Floating soundbaths can be wonderfully relaxing during pregnancy, but we recommend consulting with your healthcare provider first. The gentle nature of the experience and the supportive water environment can be beneficial, but every pregnancy is different. Please let us know in advance so we can provide any needed accommodations."
+        answer: "Floating sound baths can be wonderfully relaxing during pregnancy, but we recommend consulting with your healthcare provider first. The gentle nature of the experience and the supportive water environment can be beneficial, but every pregnancy is different. Please let us know in advance so we can provide any needed accommodations."
       },
       {
         question: "Are there age restrictions?",
@@ -73,7 +49,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
       },
       {
         question: "What if I have physical limitations or injuries?",
-        answer: "Floating soundbaths are gentle and accessible for most people. The water provides natural support, making it easier on joints and muscles than floor-based classes. However, please inform us of any physical limitations, recent surgeries, or health concerns when booking so we can ensure your safety and comfort."
+        answer: "Floating sound baths are gentle and accessible for most people. The water provides natural support, making it easier on joints and muscles than floor-based classes. However, please inform us of any physical limitations, recent surgeries, or health concerns when booking so we can ensure your safety and comfort."
       },
       {
         question: "It's an evening session in the Arizona heat — will I get overheated?",
@@ -101,12 +77,8 @@ const faqData: { category: string; items: FAQItem[] }[] = [
         answer: "Yes! Gift certificates are available in any amount and make wonderful gifts for birthdays, holidays, or anyone seeking relaxation and unique experiences. You can purchase them through our Shop page, and they can be used toward any of our sessions or private events."
       },
       {
-        question: "Do you offer private events or group bookings?",
-        answer: "Absolutely! We love hosting private floating soundbaths for bachelorette parties, corporate wellness events, birthday celebrations, and retreats. Private events can be customized to your group's needs and preferences. Visit our Private Events page or contact us directly for pricing and availability."
-      },
-      {
         question: "What's the difference between resort and public pool sessions?",
-        answer: "Resort sessions ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering beautiful settings and a premium experience. Resort spa and pool amenities are not included with your ticket, though some resorts offer sound bath guests special pricing (for example, at JW Marriott Desert Ridge you can get a $50 Revive Spa day pass or 20% off spa services when you mention the sound bath while booking). Public pool sessions ($40) are held at community aquatic centers, providing the same high-quality soundbath experience at a more accessible price point."
+        answer: "Resort sessions ($75) are held at premium locations like JW Marriott Desert Ridge, Westin Kierland, and Aji Spa, offering beautiful settings and a premium experience. Resort spa and pool amenities are not included with your ticket, though some resorts offer sound bath guests special pricing (for example, at JW Marriott Desert Ridge you can get a $50 Revive Spa day pass or 20% off spa services when you mention the sound bath while booking). Public pool sessions ($40) are held at community aquatic centers, providing the same high-quality sound bath experience at a more accessible price point."
       }
     ]
   },
@@ -123,7 +95,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
       },
       {
         question: "What happens during the session?",
-        answer: "After a brief welcome and safety overview, you'll get on your paddleboard and find a comfortable lying position. The soundbath typically lasts 45-60 minutes, during which you'll float peacefully while immersed in healing sounds. Afterward, there's time for gentle reawakening, sharing (optional), and connecting with other participants."
+        answer: "After a brief welcome and safety overview, you'll get on your paddleboard and find a comfortable lying position. The session runs about 55 minutes (guided meditation, then live sound, then gentle floating yoga stretches), and you'll float peacefully the whole time. Afterward, there's time for gentle reawakening, sharing (optional), and connecting with other participants."
       },
       {
         question: "Can I eat before class?",
@@ -133,7 +105,7 @@ const faqData: { category: string; items: FAQItem[] }[] = [
   }
 ];
 
-function FAQAccordion({ question, answer }: FAQItem) {
+function FAQAccordion({ question, answer, link }: FAQItem) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -149,11 +121,16 @@ function FAQAccordion({ question, answer }: FAQItem) {
           }`}
         />
       </button>
-      {isOpen && (
-        <div className="px-6 pb-4 text-muted-foreground leading-relaxed">
-          {answer}
-        </div>
-      )}
+      {/* Always rendered (just hidden when closed) so answers are in the
+          prerendered HTML for search engines and AI answers. */}
+      <div hidden={!isOpen} className="px-6 pb-4 text-muted-foreground leading-relaxed">
+        {answer}
+        {link ? (
+          <Link to={link.href} className="mt-2 block font-medium text-primary hover:underline">
+            {link.label} →
+          </Link>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -162,8 +139,8 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Floating Soundbath FAQ — Booking &amp; What to Expect"
-        description="Answers about floating soundbaths, paddleboard yoga, booking, what to bring, accessibility and what to expect at a Desert Paddleboards event."
+        title="Floating Sound Bath FAQ | What to Expect | Desert Paddleboards"
+        description="What is a floating sound bath? What to wear, what if it's chilly, how long it lasts, and whether you need to swim. Answers before your first float."
         image="/venues/doubletree.jpg"
       />
       <JsonLd data={faqPageLd(faqData.flatMap((section) => section.items))} />
@@ -171,10 +148,11 @@ export default function FAQ() {
       <section className="bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">
           <h1 className="text-balance text-4xl md:text-5xl font-bold text-center mb-6">
-            Frequently Asked Questions
+            Floating Sound Bath FAQ
           </h1>
           <p className="text-xl text-center text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know about floating soundbaths, booking, and what to expect
+            Everything you need to know before your first floating sound bath:
+            what to wear, what to bring, and what actually happens on the water
           </p>
         </div>
       </section>

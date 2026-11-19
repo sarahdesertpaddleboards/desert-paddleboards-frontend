@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import JsonLd from "@/components/JsonLd";
+import { graph } from "@/lib/jsonld";
 
 /**
  * Public page describing the staff shift-text program. Phone carriers (and
@@ -14,6 +16,7 @@ export default function SmsTerms() {
         title="Staff Text Messages | Desert Paddleboards"
         description="How Desert Paddleboards staff opt in to shift texts, what messages they receive, and how to stop them at any time."
       />
+      <JsonLd data={graph([])} />
       <h1 className="text-4xl font-bold leading-tight">Staff text messages</h1>
       <div className="prose prose-slate mt-6 max-w-none prose-headings:font-bold prose-strong:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-li:marker:text-brand">
         <p>

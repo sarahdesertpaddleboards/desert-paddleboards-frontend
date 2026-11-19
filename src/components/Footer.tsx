@@ -21,7 +21,7 @@ export default function Footer() {
               />
             </h3>
             <p className="text-sm text-muted-foreground">
-              Floating soundbaths, paddleboarding and community events across Arizona.
+              Floating sound baths, paddleboarding and community events across Arizona.
             </p>
             <div className="flex gap-4">
               <a
@@ -81,7 +81,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/gift" className="text-muted-foreground hover:text-primary transition-colors">
                   Gift Certificates
                 </Link>
               </li>

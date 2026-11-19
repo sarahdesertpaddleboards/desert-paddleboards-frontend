@@ -12,12 +12,12 @@ import { SITE_URL } from "@/data/site";
  * /about ("Our Story") — the business's story, from Sarah's own telling
  * (recorded with Nick, Oct 2026). Written for answer engines as well as
  * people: an answer-first summary, a dated timeline, and a short FAQ that
- * also ships as FAQPage JSON-LD. General "what is a floating soundbath"
+ * also ships as FAQPage JSON-LD. General "what is a floating sound bath"
  * questions live on /faq — keep these company-specific so they don't overlap.
  */
 
 const summary =
-  "Desert Paddleboards is an Arizona water-wellness company founded by Sarah Williams in 2011. It started with paddleboard outings on the Salt River and is now best known for the Floating Nap™: a floating soundbath with live musicians, held in resort, city and backyard pools and on lakes across Arizona.";
+  "Desert Paddleboards is an Arizona water-wellness company founded by Sarah Williams in 2011. It started with paddleboard outings on the Salt River and is now best known for the Floating Nap™: a floating sound bath with live musicians, held in resort, city and backyard pools and on lakes across Arizona.";
 
 const facts = [
   { icon: Calendar, title: "Since 2011", description: "Paddleboarding the desert before it was cool" },
@@ -81,15 +81,15 @@ const faqs = [
   {
     question: "What is the Floating Nap™?",
     answer:
-      "The Floating Nap™ is Desert Paddleboards' floating soundbath: you lie on a floating board on the water, wrapped in a blanket with a lavender eye mask, while live musicians take you through a meditative sound journey. It launched in 2022 and sold out in 20 minutes.",
+      "The Floating Nap™ is Desert Paddleboards' floating sound bath: you lie on a floating board on the water, wrapped in a blanket with a lavender eye mask, while live musicians take you through a meditative sound journey. It launched in 2022 and sold out in 20 minutes.",
   },
   {
-    question: "Where do Desert Paddleboards floating soundbaths take place?",
+    question: "Where do Desert Paddleboards floating sound baths take place?",
     answer:
       "At resort and hotel pools, city pools and private backyard pools across Arizona, and on lakes and rivers, where boards are anchored in place. See the current venues on the Floating Sessions page.",
   },
   {
-    question: "What makes Desert Paddleboards different from other floating soundbaths?",
+    question: "What makes Desert Paddleboards different from other floating sound baths?",
     answer:
       "We design our own branded, high-end floating boards that don't sink when you lie on them, every session has live musicians, and we can make almost any body of water work. No fitness level or swimming skills are needed.",
   },
@@ -105,7 +105,7 @@ export default function About() {
     <div className="min-h-screen">
       <Seo
         title="Our Story | Desert Paddleboards, Arizona Since 2011"
-        description="How Desert Paddleboards went from five paddleboards on the Salt River in 2011 to the Floating Nap™, Arizona's sold-out floating soundbath with live musicians."
+        description="How Desert Paddleboards went from five paddleboards on the Salt River in 2011 to the Floating Nap™, Arizona's sold-out floating sound bath with live musicians."
         image="/about-sarah-class.webp"
       />
       <JsonLd
@@ -155,7 +155,7 @@ export default function About() {
             The original. Still the best.
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto">
-            Paddleboarding the desert since 2011. Floating soundbaths since 2022.
+            Paddleboarding the desert since 2011. Floating sound baths since 2022.
           </p>
         </div>
       </section>

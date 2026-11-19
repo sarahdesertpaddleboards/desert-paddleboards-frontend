@@ -28,7 +28,7 @@ export default function SocialFollow({ className = "" }: { className?: string })
           Join the community
         </p>
         <h2 className="mt-3 text-balance text-3xl font-bold md:text-4xl">
-          Follow the floating soundbath journey
+          Follow the floating sound bath journey
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-balance text-white/90">
           Sunsets, live music on the water, behind-the-scenes and the latest

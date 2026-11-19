@@ -9,9 +9,7 @@ import EmailSignupBanner from "./components/EmailSignupBanner";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Analytics from "./components/Analytics";
-import JsonLd from "./components/JsonLd";
 import ScrollToTop from "./components/ScrollToTop";
-import { graph, organizationLd, webSiteLd } from "./lib/jsonld";
 
 const queryClient = new QueryClient();
 
@@ -28,14 +26,15 @@ export default function Layout() {
             {/* Default head — pages override title/description via their own <Head> */}
             <Head>
               <title>
-                Desert Paddleboards — Floating Soundbaths &amp; Wellness in Arizona
+                Desert Paddleboards — Floating Sound Baths &amp; Wellness in Arizona
               </title>
               <meta
                 name="description"
-                content="Floating soundbaths, paddleboard yoga and wellness experiences across Arizona. Find a session near you and book online."
+                content="Floating sound baths (or soundbaths, if you prefer), paddleboard yoga and water wellness across Arizona. Find a session near you and book online."
               />
             </Head>
-            <JsonLd data={graph([organizationLd(), webSiteLd()])} />
+            {/* JSON-LD is per page (each page's <JsonLd> includes the
+                site-wide business + WebSite nodes), so there's one @graph. */}
             <ScrollToTop />
             <Toaster />
             <Analytics />

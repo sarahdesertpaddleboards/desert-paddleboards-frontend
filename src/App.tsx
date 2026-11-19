@@ -16,6 +16,7 @@ import SantaPaddle from "./pages/SantaPaddle";
 import WitchesRegatta from "./pages/WitchesRegatta";
 import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
+import Gift from "./pages/Gift";
 import Privacy from "./pages/Privacy";
 import SmsTerms from "./pages/SmsTerms";
 import Terms from "./pages/Terms";
@@ -24,6 +25,7 @@ import BlogPost from "./pages/blog/[slug]";
 import LocationsIndex from "./pages/locations/index";
 import LocationDetail from "./pages/locations/[slug]";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import GuideThankYou from "./pages/GuideThankYou";
 import CustomBoards from "./pages/CustomBoards";
 import Airstream from "./pages/Airstream";
 import Admin from "./pages/Admin";
@@ -67,6 +69,7 @@ export const routes: RouteRecord[] = [
       },
       { path: "membership", element: <Membership /> },
       { path: "shop", element: <Shop /> },
+      { path: "gift", element: <Gift /> },
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
       { path: "sms-terms", element: <SmsTerms /> },
@@ -102,6 +105,7 @@ export const routes: RouteRecord[] = [
       { path: "admin-login", element: <AdminLogin /> },
       { path: "admin/login", element: <AdminLogin /> },
       { path: "success", element: <CheckoutSuccess /> },
+      { path: "guides/black-canyon/thank-you", element: <GuideThankYou /> },
 
       { path: "*", element: <NotFound /> },
     ],

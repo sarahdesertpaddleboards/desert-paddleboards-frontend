@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import FareHarborButton from "@/components/FareHarborButton";
 import { cityClasses, nextCitySessionIso } from "@/data/city-classes";
 import { fmtDateHeader, fmtTime } from "@/lib/sessions";
+import { venueImageAlt } from "@/data/location-seo";
 
 const FALLBACK_IMAGE = "/floating-boards-sunset.jpg";
 
@@ -33,7 +34,7 @@ export default function FeaturedEvent({ className = "" }: { className?: string }
           <Link to={`/locations/${c.slug}`} className="block">
             <img
               src={c.image || FALLBACK_IMAGE}
-              alt={c.title}
+              alt={venueImageAlt(c.title, c.venue, c.city)}
               loading="lazy"
               className="h-56 w-full cursor-pointer object-cover md:h-full"
             />
@@ -58,6 +59,7 @@ export default function FeaturedEvent({ className = "" }: { className?: string }
               {c.fareharborItemId ? (
                 <FareHarborButton
                   itemId={c.fareharborItemId}
+                  placement="featured_event"
                   className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                 >
                   Book your spot

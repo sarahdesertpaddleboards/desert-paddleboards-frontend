@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Gift } from "lucide-react";
 import { useFareHarborEmbed } from "@/components/FareHarborButton";
-import GiftCertificateBanner, { GIFT_CERTIFICATE_URL } from "@/components/GiftCertificateBanner";
+import GiftCertificateBanner from "@/components/GiftCertificateBanner";
+import { GIFT_CERTIFICATE_URL } from "@/data/locations";
 import { trackEvent } from "@/lib/analytics";
-import { appendUtms } from "@/lib/utm";
+import { fareHarborUrl } from "@/lib/utm";
 import { DELIVERABLE_EMAIL_PATTERN, isDeliverableEmail } from "@/lib/web3forms";
 
 /**
@@ -25,6 +27,7 @@ type Status = "idle" | "sending" | "done" | "error";
  */
 export default function EmailSignupBanner() {
   useFareHarborEmbed();
+  const { pathname } = useLocation();
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
@@ -109,7 +112,7 @@ export default function EmailSignupBanner() {
         )}
 
         <a
-          href={appendUtms(GIFT_CERTIFICATE_URL)}
+          href={fareHarborUrl(GIFT_CERTIFICATE_URL, { page: pathname, placement: "top_banner" })}
           onPointerDown={(e) => {
             if (e.button === 0) trackGift();
           }}

@@ -9,7 +9,7 @@
  *    can't give us cleanly: SEO slug, clean title, evergreen blurb, the
  *    `kind`, and `featured`. Overlay values win over catalog values.
  *  - `experiences` is the merge of the two, filtered to fixed-location
- *    soundbath/class venues. A NEW fixed-location venue added in FareHarbor
+ *    sound bath/class venues. A NEW fixed-location venue added in FareHarbor
  *    appears on the site automatically (with a derived title/blurb) even
  *    before anyone writes an overlay for it — see AUTO-SURFACED below.
  *
@@ -30,10 +30,17 @@ import catalogJson from "./fareharbor-items.generated.json";
 
 export const FAREHARBOR_SHORTNAME = "desertpaddleboards";
 
-/** Lightframe booking URL for a FareHarbor item. */
+/**
+ * Lightframe booking URL for a FareHarbor item — untagged. Links rendered on
+ * the page wrap it in fareHarborUrl() (src/lib/utm.ts) to add UTMs.
+ */
 export function fareHarborBookUrl(itemId: number): string {
   return `https://fareharbor.com/embeds/book/${FAREHARBOR_SHORTNAME}/items/${itemId}/?full-items=yes`;
 }
+
+/** FareHarbor gift-certificate item + its purchase flow. */
+export const GIFT_CERTIFICATE_ITEM_ID = 573676;
+export const GIFT_CERTIFICATE_URL = `${fareHarborBookUrl(GIFT_CERTIFICATE_ITEM_ID)}&flow=173629`;
 
 export type ExperienceKind = "soundbath" | "class" | "membership" | "private";
 
@@ -52,6 +59,10 @@ export interface Experience {
   lng: number;
   /** Full street address (from the catalog), for "Get directions". "" if none. */
   address: string;
+  /** Street line only (e.g. "848 North Horne"), for Event schema. "" if none. */
+  street: string;
+  /** ZIP code, for Event schema. "" if none. */
+  postalCode: string;
   /** Google Place ID (from the catalog) — pinpoints the venue in Maps. "" if none. */
   placeId: string;
   kind: ExperienceKind;
@@ -62,6 +73,8 @@ export interface Experience {
   featured?: boolean;
   /** True when this venue has no editorial overlay yet (auto-surfaced from FareHarbor). */
   needsCuration?: boolean;
+  /** Per-person ticket price in USD, for Event JSON-LD offers (see TICKET_PRICES_USD). */
+  price?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -102,6 +115,9 @@ const FORCE_LOCATION_IDS = new Set<number>([626146, 746500]);
 const EXCLUDED_ITEM_IDS = new Set<number>([
   655636, // SwimHaus (Gilbert) — nothing scheduled in the near future (Shellie, Aug 2026)
   146502, // Santa Paddle — an annual event, featured via city-classes.json + /santa-paddle
+  642745, // Westin Kierland Resort & Spa — pulled Nov 2026 (Sarah). Its Dec 3
+  //         date was already gone from FareHarbor; Nov 19 was the last one.
+  //         Sarah is cancelling that date in FareHarbor so it stops booking.
   // (Arizona Grand Resort & Spa, 714583, was hidden Jun 2026 but is running
   //  again as of Jul 2026 — restored.)
 ]);
@@ -148,7 +164,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
     venue: "Mulberry Community",
     city: "Mesa",
     // FareHarbor has no location set on this item, so it would never surface.
-    // Coords borrowed from the Mulberry soundbath item (648798) — same pool.
+    // Coords borrowed from the Mulberry sound bath item (648798) — same pool.
     lat: 33.368099,
     lng: -111.605824,
     kind: "class",
@@ -158,15 +174,15 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 714583,
     slug: "resort-floating-soundbath-arizona-grand-phoenix",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "Arizona Grand Resort",
     blurb:
-      "A resort floating soundbath at the Arizona Grand in Phoenix — drift on the water while live sound carries you.",
+      "A resort floating sound bath at the Arizona Grand in Phoenix — drift on the water while live sound carries you.",
   },
   {
     itemId: 709135,
     slug: "floating-soundbath-canopy-hilton-tempe",
-    title: "Rooftop Floating Soundbath",
+    title: "Rooftop Floating Sound Bath",
     venue: "Canopy by Hilton",
     blurb:
       "Float weightlessly on the water as live sound washes over you, high above the city on the Canopy by Hilton rooftop pool in Tempe.",
@@ -176,7 +192,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 627535,
     slug: "sunset-floating-soundbath-skyline-pool-mesa",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Skyline Pool",
     blurb:
       "The Floating Nap™ — as seen on TikTok. A sunset soundbath on the water at Skyline Pool in Mesa.",
@@ -186,7 +202,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 725981,
     slug: "floating-soundbath-hotel-adeline-scottsdale",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Hotel Adeline",
     blurb:
       "A floating meditation set to live music at Hotel Adeline in Scottsdale — drift, breathe, and let go.",
@@ -195,7 +211,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 728366,
     slug: "floating-soundbath-doubletree-gilbert",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "DoubleTree by Hilton",
     blurb:
       "Unwind on the water with a floating meditation and live music at the DoubleTree by Hilton in Gilbert.",
@@ -204,117 +220,117 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 578969,
     slug: "floating-soundbath-jw-marriott-desert-ridge-phoenix",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "JW Marriott Desert Ridge — Revive Spa",
     blurb:
-      "A spa-day soundbath at the Revive Spa pool, JW Marriott Desert Ridge in Phoenix. Float, restore, and reset.",
+      "A spa-day sound bath at the Revive Spa pool, JW Marriott Desert Ridge in Phoenix. Float, restore, and reset.",
     image: "/venues/jw-marriott.jpg",
   },
   {
     itemId: 626146,
     slug: "floating-soundbath-aji-spa-sheraton-grand-chandler",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "Aji Spa — Sheraton Grand at Wild Horse Pass",
     city: "Chandler",
     // FareHarbor has no coords for Aji; set manually (Wild Horse Pass).
     lat: 33.266258,
     lng: -111.9930353,
     blurb:
-      "A serene floating soundbath at Aji Spa, Sheraton Grand at Wild Horse Pass — desert calm on the water.",
+      "A serene floating sound bath at Aji Spa, Sheraton Grand at Wild Horse Pass — desert calm on the water.",
     image: "/venues/aji-spa.jpg",
   },
   {
     itemId: 636156,
     slug: "floating-soundbath-lemonds-spa-wigwam-litchfield-park",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "LeMonds Spa — The Wigwam",
     blurb:
-      "A floating soundbath at the historic Wigwam resort's LeMonds Spa in Litchfield Park.",
+      "A floating sound bath at the historic Wigwam resort's LeMonds Spa in Litchfield Park.",
     image: "/venues/wigwam.jpg",
   },
   {
     itemId: 344396,
     slug: "superstition-shadows-floating-soundbath-apache-junction",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Superstition Shadows",
     blurb:
-      "Float beneath the Superstition Mountains as the desert light fades — a soundbath in Apache Junction.",
+      "Float beneath the Superstition Mountains as the desert light fades — a sound bath in Apache Junction.",
     image: "/venues/superstition.jpg",
   },
   {
     itemId: 648798,
     slug: "mulberry-community-floating-soundbath-mesa",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Mulberry Community",
     blurb:
-      "A community floating soundbath at Mulberry in Mesa — now open to the public.",
+      "A community floating sound bath at Mulberry in Mesa — now open to the public.",
     image: "/venues/mulberry.jpg",
   },
   {
     itemId: 712901,
     slug: "floating-soundbath-grand-hyatt-scottsdale",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "Grand Hyatt Scottsdale",
     blurb:
-      "A floating soundbath with live music at the Grand Hyatt Scottsdale — sink into the water and let the desert evening settle.",
+      "A floating sound bath with live music at the Grand Hyatt Scottsdale — sink into the water and let the desert evening settle.",
   },
   {
     itemId: 698585,
     slug: "rooftop-floating-soundbath-skysill-westin-tempe",
-    title: "Rooftop Floating Soundbath",
+    title: "Rooftop Floating Sound Bath",
     venue: "Skysill Rooftop Lounge — The Westin Tempe",
     blurb:
-      "A rooftop floating soundbath at the Skysill Lounge atop The Westin Tempe — live music and city skyline above the water.",
+      "A rooftop floating sound bath at the Skysill Lounge atop The Westin Tempe — live music and city skyline above the water.",
   },
   {
     itemId: 708584,
     slug: "rooftop-floating-soundbath-omni-tempe",
-    title: "Rooftop Floating Soundbath",
+    title: "Rooftop Floating Sound Bath",
     venue: "Omni Tempe Hotel",
     blurb:
-      "A rooftop floating soundbath at the Omni Tempe Hotel — float beneath the open sky as live sound washes over you.",
+      "A rooftop floating sound bath at the Omni Tempe Hotel — float beneath the open sky as live sound washes over you.",
   },
   {
     itemId: 171055,
     slug: "floating-soundbath-kino-aquatics-mesa",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Kino Aquatic Center",
     blurb:
-      "A floating soundbath at the Kino Aquatic Center in Mesa — weightless on the water while live sound surrounds you.",
+      "A floating sound bath at the Kino Aquatic Center in Mesa — weightless on the water while live sound surrounds you.",
   },
   {
     itemId: 612512,
     slug: "floating-soundbath-revel-surf-park",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Revel Surf Park",
     blurb:
-      "A floating soundbath on the still water at Revel Surf Park — a one-of-a-kind setting for live sound and deep rest.",
+      "A floating sound bath on the still water at Revel Surf Park — a one-of-a-kind setting for live sound and deep rest.",
   },
   {
     itemId: 655636,
     slug: "indoor-floating-soundbath-swimhaus-gilbert",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "SwimHaus Swim School",
     blurb:
-      "An indoor floating soundbath at SwimHaus in Gilbert — climate-controlled calm on the water, any time of year.",
+      "An indoor floating sound bath at SwimHaus in Gilbert — climate-controlled calm on the water, any time of year.",
   },
   {
     itemId: 578505,
     slug: "indoor-floating-soundbath-kiwanis-tempe",
-    title: "Indoor Floating Soundbath",
+    title: "Indoor Floating Sound Bath",
     venue: "Kiwanis Recreation Center",
     city: "Tempe",
     blurb:
-      "An indoor floating soundbath at the Kiwanis Recreation Center in Tempe — climate-controlled calm on the water, any time of year.",
+      "An indoor floating sound bath at the Kiwanis Recreation Center in Tempe — climate-controlled calm on the water, any time of year.",
     image: "https://cdn.filestackcontent.com/Xt429UiQLy2eDICcGtFn",
   },
   {
     itemId: 692276,
     slug: "floating-soundbath-pebblecreek-goodyear",
-    title: "Community Floating Soundbath",
+    title: "Community Floating Sound Bath",
     venue: "PebbleCreek",
     blurb:
-      "A floating soundbath at PebbleCreek in Goodyear — float, breathe, and let live sound carry you.",
+      "A floating sound bath at PebbleCreek in Goodyear — float, breathe, and let live sound carry you.",
   },
   {
     itemId: 146434,
@@ -329,7 +345,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 642745,
     slug: "floating-soundbath-at-westin-kierland-resort-spa-scottsdale",
-    title: "Resort Floating Soundbath",
+    title: "Resort Floating Sound Bath",
     venue: "Westin Kierland Resort & Spa",
     blurb:
       "Float weightlessly on the water as live sound washes over you at the Westin Kierland Resort & Spa pool in Scottsdale.",
@@ -337,16 +353,84 @@ const LOCATION_OVERLAYS: Overlay[] = [
   {
     itemId: 722096,
     slug: "hotel-solaya-floating-soundbath-scottsdale",
-    title: "Floating Soundbath",
+    title: "Floating Sound Bath",
     venue: "Hotel Solaya",
     blurb:
-      "A floating soundbath on the water at Hotel Solaya in Scottsdale — drift, breathe, and let the live sound carry you into deep rest.",
+      "A floating sound bath on the water at Hotel Solaya in Scottsdale — drift, breathe, and let the live sound carry you into deep rest.",
+  },
+  {
+    itemId: 762421,
+    slug: "hilton-phoenix-resort-at-the-peak-phoenix",
+    title: "Resort Floating Sound Bath",
+    venue: "Hilton Phoenix Resort at the Peak",
+    blurb:
+      "A resort floating sound bath at Hilton Phoenix Resort at the Peak — float on the water with live sound at the foot of Piestewa Peak.",
+  },
+  {
+    // The Spa at the JW Marriott Scottsdale Camelback Inn Resort & Spa.
+    itemId: 770167,
+    slug: "floating-sound-bath-spa-camelback-inn-scottsdale",
+    title: "Resort Floating Sound Bath",
+    venue: "The Spa at Camelback Inn",
+    city: "Scottsdale",
+    blurb:
+      "A resort floating sound bath at The Spa at JW Marriott Camelback Inn in Scottsdale — float on the water while live sound bath musicians play.",
+  },
+  {
+    itemId: 762628,
+    slug: "hilton-villas-scottsdale-floating-sound-bath-scottsdale",
+    title: "Resort Floating Sound Bath",
+    venue: "Hilton Scottsdale Resort & Villas",
+    blurb:
+      "A resort floating sound bath at Hilton Scottsdale Resort & Villas — drift on the water while live sound bath musicians play.",
   },
 ];
 
 // ---------------------------------------------------------------------------
 // Merge
 // ---------------------------------------------------------------------------
+
+/**
+ * Per-person ticket price (USD) by FareHarbor item id — feeds `offers.price`
+ * in the Event JSON-LD on /calendar and /locations/*.
+ *
+ * Lives here because FareHarbor's public API doesn't expose prices: every
+ * rate field in the item, calendar and availability responses comes back
+ * null. Dates, times and sold-out status still come live from the API at
+ * build; only the price is hand-kept. A venue missing from this map still
+ * gets its Event markup, just without a price — so when a price changes in
+ * FareHarbor, change it here too.
+ */
+// Tiers per Sarah, Nov 2026: resorts $75 (Wigwam $80); rooftop pools, hotels
+// and Revel Surf Park $50; city pools vary $35–50, so $40 unless the exact
+// price is known. Community pools (Mulberry, PebbleCreek, Superstition
+// Shadows) aren't priced yet.
+const TICKET_PRICES_USD: Record<number, number> = {
+  // Resorts
+  714583: 75, // Arizona Grand Resort
+  578969: 75, // JW Marriott Desert Ridge
+  626146: 75, // Aji Spa at Sheraton Grand
+  712901: 75, // Grand Hyatt Scottsdale
+  642745: 75, // Westin Kierland
+  762421: 75, // Hilton Phoenix Resort at the Peak
+  770167: 75, // The Spa at Camelback Inn
+  762628: 75, // Hilton Scottsdale Resort & Villas
+  636156: 80, // LeMonds Spa at the Wigwam
+  // Rooftop pools
+  709135: 50, // Canopy by Hilton, Tempe
+  698585: 50, // Skysill Rooftop, Westin Tempe
+  708584: 50, // Omni Tempe
+  // Hotels + Revel
+  722096: 50, // Hotel Solaya
+  725981: 50, // Hotel Adeline
+  728366: 50, // DoubleTree by Hilton, Gilbert
+  612512: 50, // Revel Surf Park
+  // City pools
+  171055: 35, // Kino Aquatics — "$35 includes Floating Board", FareHarbor description
+  627535: 40, // Skyline Pool, Mesa (midpoint)
+  578505: 40, // Kiwanis Recreation Center, Tempe (midpoint)
+  146434: 40, // Mesa Aquatics Complex lazy river class (midpoint)
+};
 
 function slugify(s: string): string {
   return s
@@ -368,8 +452,11 @@ function toExperience(cat: CatalogItem, o?: Overlay): Experience {
   const venue = o?.venue ?? cat.venue;
   const city = o?.city ?? cat.city;
   // Full address for "Get directions" — only when FareHarbor gives us a street.
-  const address = cat.street
-    ? [cat.street, city, [cat.state, cat.postalCode].filter(Boolean).join(" ")]
+  // Some FareHarbor items pack the whole address into the street field
+  // ("16150 W. Clubhouse Dr, Goodyear, AZ 85395") — keep just the street line.
+  const street = (cat.street ?? "").split(",")[0].trim();
+  const address = street
+    ? [street, city, [cat.state, cat.postalCode].filter(Boolean).join(" ")]
         .filter(Boolean)
         .join(", ")
     : "";
@@ -383,14 +470,17 @@ function toExperience(cat: CatalogItem, o?: Overlay): Experience {
     lat: o?.lat ?? cat.lat ?? 0,
     lng: o?.lng ?? cat.lng ?? 0,
     address,
+    street,
+    postalCode: cat.postalCode ?? "",
     placeId: cat.googlePlaceId ?? "",
     kind: o?.kind ?? "soundbath",
     blurb:
       o?.blurb ??
-      `A floating soundbath${venue ? ` at ${venue}` : ""}${city ? ` in ${city}` : ""}.`,
+      `A floating sound bath${venue ? ` at ${venue}` : ""}${city ? ` in ${city}` : ""}.`,
     image: o?.image || cat.image,
     featured: o?.featured,
     needsCuration: o ? undefined : true,
+    price: TICKET_PRICES_USD[cat.itemId],
   };
 }
 
@@ -450,6 +540,8 @@ export const membership: Experience = {
   lat: 33.4484,
   lng: -112.074,
   address: "",
+  street: "",
+  postalCode: "",
   placeId: "",
   kind: "membership",
   blurb:
@@ -460,7 +552,7 @@ export const membership: Experience = {
 };
 
 /**
- * The "Private Floating Soundbath Experience" (bring-it-to-your-pool). Lives
+ * The "Private Floating Sound Bath Experience" (bring-it-to-your-pool). Lives
  * on the /private-events page, not in /locations. Exposed for its Book button.
  */
 export const PRIVATE_SOUNDBATH_ITEM_ID = 161553;

@@ -6,12 +6,14 @@ import { SITE_URL } from "@/data/site";
 import { products, formatPrice, type Product } from "@/data/shop";
 import { trackEvent } from "@/lib/analytics";
 import { useFareHarborEmbed } from "@/components/FareHarborButton";
+import { GIFT_CERTIFICATE_URL } from "@/data/locations";
+import { fareHarborUrl } from "@/lib/utm";
 
 const SECTIONS: { kind: Product["kind"]; title: string; blurb: string }[] = [
   {
     kind: "physical",
     title: "Boards & gear",
-    blurb: "The board we float on at every soundbath, new or gently used, and the tote to carry your stuff to the water.",
+    blurb: "The board we float on at every sound bath, new or gently used, and the tote to carry your stuff to the water.",
   },
   {
     kind: "digital",
@@ -49,7 +51,7 @@ export default function Shop() {
     <>
       <Seo
         title="Shop Paddleboards, Totes &amp; Custom Boards | Desert Paddleboards"
-        description="Buy the floating board we use at every soundbath, new or used, plus our beach tote. Or put your own logo on a custom-printed board, with matching bandanas."
+        description="Buy the floating board we use at every sound bath, new or used, plus our beach tote. Or put your own logo on a custom-printed board, with matching bandanas."
         image="/floating-meditation-board.jpg"
       />
     <main className="container py-16">
@@ -94,11 +96,11 @@ export default function Shop() {
         <h2 className="mt-2 text-2xl font-bold">Give the gift of floating</h2>
         <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
           A Desert Paddleboards gift certificate is the perfect present — redeemable
-          toward any floating soundbath, water-fitness class, rental or outing.
+          toward any floating sound bath, water-fitness class, rental or outing.
           Purchased securely through FareHarbor.
         </p>
         <a
-          href="https://fareharbor.com/embeds/book/desertpaddleboards/items/573676/?full-items=yes&flow=173629"
+          href={fareHarborUrl(GIFT_CERTIFICATE_URL, { page: "/shop", placement: "gift_section" })}
           // pointerdown/Enter, not onClick — FareHarbor's autolightframe script
           // swallows the click (see FareHarborButton).
           onPointerDown={(e) => {

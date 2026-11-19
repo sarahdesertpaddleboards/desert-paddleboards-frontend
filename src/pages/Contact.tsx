@@ -101,18 +101,18 @@ export default function Contact() {
   return (
     <main>
       <Seo
-        title="Contact Us | Desert Paddleboards"
-        description="Get in touch with Desert Paddleboards — questions about floating soundbaths, water-fitness classes, rentals, adventures, coaching or private events in Arizona."
+        title="Contact Desert Paddleboards | Floating Sound Bath Arizona"
+        description="Questions about a floating sound bath, a private event or a class? Call or text 602.456.0884 or send us a note, and we'll reply within 24 hours."
         image="/venues/skyline-pool.jpg"
       />
       <JsonLd data={structuredData} />
 
       <section className="bg-muted/40 py-16">
         <div className="container max-w-3xl text-center">
-          <h1 className="text-4xl font-bold md:text-5xl">Get in touch</h1>
+          <h1 className="text-4xl font-bold md:text-5xl">Contact Desert Paddleboards</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Questions about a class, a rental, a private event, or anything else?
-            Send us a note and we&apos;ll reply within 24 hours.
+            Questions about a floating sound bath, a rental, a private event, or
+            anything else? Send us a note and we&apos;ll reply within 24 hours.
           </p>
         </div>
       </section>

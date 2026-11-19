@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { membership } from "@/data/locations";
 import Seo from "@/components/Seo";
+import JsonLd from "@/components/JsonLd";
+import { graph } from "@/lib/jsonld";
 import FareHarborButton from "@/components/FareHarborButton";
 import GoogleReviews from "@/components/GoogleReviews";
 
@@ -13,6 +15,7 @@ export default function Membership() {
         description={membership.blurb}
         image="/hero-pool-soundbath.webp"
       />
+      <JsonLd data={graph([])} />
 
       <div className="relative h-[40vh] min-h-[300px] w-full overflow-hidden bg-muted">
         <img

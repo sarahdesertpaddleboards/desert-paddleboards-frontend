@@ -1,0 +1,10 @@
+{
+  "book": "/calendar?utm_source=instagram&utm_medium=bio&utm_campaign=book",
+  "rentals": "/rentals?utm_source=instagram&utm_medium=bio&utm_campaign=rentals",
+  "shop": "/shop?utm_source=instagram&utm_medium=bio&utm_campaign=shop",
+  "membership": "/membership?utm_source=instagram&utm_medium=bio&utm_campaign=membership",
+  "private": "/private-events?utm_source=instagram&utm_medium=bio&utm_campaign=private",
+  "events": "/community-events?utm_source=instagram&utm_medium=bio&utm_campaign=events",
+  "coaching": "/coaching?utm_source=instagram&utm_medium=bio&utm_campaign=coaching",
+  "boards": "/custom-boards?utm_source=instagram&utm_medium=bio&utm_campaign=boards"
+}

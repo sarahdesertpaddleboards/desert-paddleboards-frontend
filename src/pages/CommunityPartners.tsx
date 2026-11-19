@@ -31,7 +31,7 @@ const perfectFor = [
   {
     icon: Briefcase,
     title: "Corporate wellness & member appreciation",
-    body: "Gyms, resorts and workplaces use a floating soundbath as an unforgettable member-appreciation or team-wellness event.",
+    body: "Gyms, resorts and workplaces use a floating sound bath as an unforgettable member-appreciation or team-wellness event.",
   },
 ];
 
@@ -67,20 +67,20 @@ export default function CommunityPartners() {
     {
       "@context": "https://schema.org",
       "@type": "Service",
-      name: "Community & Senior-Living Floating Soundbath Events",
+      name: "Community & Senior-Living Floating Sound Bath Events",
       serviceType: "Community wellness event",
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
       description:
-        "Turnkey floating soundbath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona.",
+        "Turnkey floating sound bath events for HOAs, 55+ senior communities, corporate wellness and member-appreciation days across Arizona.",
     },
   ]);
 
   return (
     <main>
       <Seo
-        title="Floating Soundbath Events for HOAs &amp; 55+ Communities"
-        description="Turnkey floating soundbath events for HOAs, 55+ communities and corporate wellness across Arizona. We bring the boards, musicians and team — you pick the date."
+        title="Floating Sound Bath Events for HOAs &amp; 55+ Communities"
+        description="Turnkey floating sound bath events for HOAs, 55+ communities and corporate wellness across Arizona. We bring the boards, musicians and team — you pick the date."
         image="/venues/mulberry.jpg"
       />
       <JsonLd data={structuredData} />
@@ -89,7 +89,7 @@ export default function CommunityPartners() {
       <div className="relative h-[44vh] min-h-[340px] w-full overflow-hidden bg-muted">
         <img
           src={heroImage}
-          alt="Community floating soundbath event at a pool in Arizona"
+          alt="Community floating sound bath event at a pool in Arizona"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-brand-dark/55" />
@@ -99,7 +99,7 @@ export default function CommunityPartners() {
               For HOAs · 55+ communities · workplaces
             </p>
             <h1 className="mt-2 max-w-3xl text-balance text-4xl italic leading-tight md:text-5xl">
-              Bring the floating soundbath to your community
+              Bring the floating sound bath to your community
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">
               We bring the boards, the live musicians and the whole team. You

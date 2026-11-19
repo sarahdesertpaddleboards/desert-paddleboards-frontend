@@ -8,6 +8,7 @@ import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import GoogleReviews from "@/components/GoogleReviews";
 import { breadcrumbLd } from "@/lib/jsonld";
+import { locationSeoFor, venueImageAlt } from "@/data/location-seo";
 
 const CITY_FALLBACK_IMAGE = "/floating-boards-sunset.jpg";
 
@@ -27,6 +28,8 @@ interface VenueCard {
   key: string;
   slug: string;
   title: string;
+  /** Unique per-venue heading (the location page's H1). */
+  heading: string;
   venue: string;
   city: string;
   image: string;
@@ -72,21 +75,23 @@ export default function LocationsIndex() {
       key: e.slug,
       slug: e.slug,
       title: e.title,
+      heading: locationSeoFor(e).h1,
       venue: e.venue,
       city: e.city,
       image: e.image,
       next: nextByItem.get(e.itemId),
     }));
 
-    // City-run soundbaths (Avondale, Queen Creek, Sedona). Featured events that
+    // City-run sound baths (Avondale, Queen Creek, Sedona). Featured events that
     // book through FareHarbor (Witches Regatta, Salt River) have a
-    // fareharborItemId and live under Events/Adventures — not this soundbath grid.
+    // fareharborItemId and live under Events/Adventures — not this sound bath grid.
     const fromCity: VenueCard[] = cityClasses
       .filter((c) => typeof c.fareharborItemId !== "number")
       .map((c) => ({
         key: c.id,
         slug: c.slug,
         title: c.title,
+        heading: locationSeoFor({ ...c, blurb: c.note ?? "" }).h1,
         venue: c.venue,
         city: c.city,
         image: c.image || CITY_FALLBACK_IMAGE,
@@ -121,13 +126,13 @@ export default function LocationsIndex() {
   return (
     <main className="container py-16">
       <Seo
-        title="Floating Soundbath Locations Across Arizona"
-        description="Browse floating soundbath experiences across the Valley — Phoenix, Mesa, Scottsdale, Tempe, Gilbert and more. See locations on the map and book online."
+        title="Floating Sound Bath Locations in Phoenix, Scottsdale & Mesa"
+        description="Every floating sound bath location in Arizona: resort, rooftop and city pools in Phoenix, Scottsdale, Mesa, Tempe, Chandler, Gilbert and Sedona."
       />
       <JsonLd
         data={breadcrumbLd([
           { name: "Home", path: "/" },
-          { name: "Floating Sessions", path: "/locations" },
+          { name: "Floating Sound Bath Locations", path: "/locations" },
         ])}
       />
 
@@ -136,12 +141,13 @@ export default function LocationsIndex() {
           Experiences
         </p>
         <h1 className="text-balance text-4xl font-bold leading-tight">
-          Floating soundbaths across Arizona
+          Floating Sound Baths Across Arizona
         </h1>
         <p className="text-lg text-muted-foreground">
-          Float weightlessly on the water as live sound and music wash over you.
-          Sorted by what&apos;s coming up next — choose a location to see dates and
-          book.
+          Resort pools, rooftop pools, city pools and one very relaxed lazy river:
+          pick your floating sound bath and let live sound healing do the rest.
+          Sorted by what&apos;s coming up next. Choose a location to see dates and
+          book, and check back for new dates.
         </p>
       </header>
 
@@ -152,13 +158,13 @@ export default function LocationsIndex() {
               <div className="aspect-[4/3] overflow-hidden bg-muted">
                 <img
                   src={v.image}
-                  alt={`${v.title}${v.venue ? ` at ${v.venue}` : ""}, ${v.city}`}
+                  alt={venueImageAlt(v.title, v.venue, v.city)}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="flex flex-1 flex-col space-y-1 p-5">
-                <h2 className="text-lg font-bold leading-snug">{v.title}</h2>
+                <h2 className="text-lg font-bold leading-snug">{v.heading}</h2>
                 <p className="text-sm font-medium text-muted-foreground">
                   {v.venue ? `${v.venue} · ` : ""}
                   {v.city}

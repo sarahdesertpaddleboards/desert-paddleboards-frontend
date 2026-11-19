@@ -82,7 +82,7 @@ const whoFor = [
   {
     icon: GraduationCap,
     title: "Aspiring instructors & entrepreneurs",
-    body: "Everything you need to start your own floating soundbath or paddleboard-yoga classes — boards and the know-how to run them.",
+    body: "Everything you need to start your own floating sound bath or paddleboard-yoga classes — boards and the know-how to run them.",
   },
 ];
 
@@ -201,7 +201,7 @@ export default function CustomBoards() {
       provider: { "@type": "Organization", name: business.name, url: SITE_URL },
       areaServed: "United States",
       description:
-        "Custom-designed, branded paddleboards and floating mats for businesses, studios, resorts and aspiring instructors — plus help launching your own floating soundbath or paddleboard-yoga experience.",
+        "Custom-designed, branded paddleboards and floating mats for businesses, studios, resorts and aspiring instructors — plus help launching your own floating sound bath or paddleboard-yoga experience.",
     },
   ]);
 
@@ -211,8 +211,8 @@ export default function CustomBoards() {
   return (
     <main>
       <Seo
-        title="Custom Floating Soundbath Boards &amp; Branded Paddleboards"
-        description="We design and produce custom floating soundbath boards and branded paddleboards for studios, resorts and businesses — your logo on the water, in any quantity."
+        title="Custom Floating Sound Bath Boards &amp; Branded Paddleboards"
+        description="We design and produce custom floating sound bath boards and branded paddleboards for studios, resorts and businesses — your logo on the water, in any quantity."
         image={heroImage}
       />
       <JsonLd data={structuredData} />
@@ -234,7 +234,7 @@ export default function CustomBoards() {
               Custom &amp; branded boards
             </h1>
             <p className="mt-3 max-w-2xl text-base text-white/90">
-              Did you know we design and manufacture our own floating soundbath
+              Did you know we design and manufacture our own floating sound bath
               boards and paddleboards? Order in bulk, put your brand on the
               water — and we'll help you get started.
             </p>
@@ -255,10 +255,10 @@ export default function CustomBoards() {
             Design &amp; manufacturing
           </p>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Beyond running floating soundbaths across Arizona, we design and
+            Beyond running floating sound baths across Arizona, we design and
             build custom boards — so you can put your brand on the water, outfit
             your studio or resort with a signature fleet, or launch your very own
-            floating soundbath or paddleboard-yoga business. Boards and brains,
+            floating sound bath or paddleboard-yoga business. Boards and brains,
             done with you.
           </p>
           <dl className="grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
@@ -358,7 +358,7 @@ export default function CustomBoards() {
               <h2 className="text-2xl italic">Start your own floating business</h2>
             </div>
             <p className="leading-relaxed text-muted-foreground">
-              The floating soundbath and paddleboard-yoga wave is just getting
+              The floating sound bath and paddleboard-yoga wave is just getting
               started. We'll design your boards <em>and</em> help you launch —
               training, a simple playbook, and the know-how to run experiences
               your community will line up for.

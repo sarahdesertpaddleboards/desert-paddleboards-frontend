@@ -1,7 +1,8 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { fareHarborBookUrl } from "@/data/locations";
 import { trackEvent } from "@/lib/analytics";
-import { appendUtms } from "@/lib/utm";
+import { fareHarborUrl } from "@/lib/utm";
 
 /**
  * FareHarbor Lightframe.
@@ -29,6 +30,8 @@ interface FareHarborButtonProps {
   itemId: number;
   children?: React.ReactNode;
   className?: string;
+  /** utm_content — which booking link this is on the page (see fareHarborUrl). */
+  placement?: string;
 }
 
 const defaultClassName =
@@ -41,8 +44,10 @@ export default function FareHarborButton({
   itemId,
   children = "Check dates & book",
   className,
+  placement = "book_button",
 }: FareHarborButtonProps) {
   useFareHarborEmbed();
+  const { pathname } = useLocation();
 
   // NOTE: don't track on onClick. FareHarbor's autolightframe script registers a
   // CAPTURE-phase click listener on `document` and calls stopPropagation(), so
@@ -54,7 +59,7 @@ export default function FareHarborButton({
 
   return (
     <a
-      href={appendUtms(fareHarborBookUrl(itemId))}
+      href={fareHarborUrl(fareHarborBookUrl(itemId), { page: pathname, placement })}
       className={className ?? defaultClassName}
       onPointerDown={(e) => {
         if (e.button === 0) track(); // primary button / touch only

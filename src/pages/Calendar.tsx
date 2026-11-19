@@ -2,7 +2,7 @@ import Seo from "@/components/Seo";
 import JsonLd from "@/components/JsonLd";
 import SessionCalendar from "@/components/SessionCalendar";
 import UpcomingSessions from "@/components/UpcomingSessions";
-import { breadcrumbLd, graph } from "@/lib/jsonld";
+import { breadcrumbLd, fareHarborEventsLd, graph } from "@/lib/jsonld";
 
 /**
  * /calendar — the full upcoming-sessions schedule, merging live FareHarbor
@@ -14,20 +14,23 @@ export default function Calendar() {
       { name: "Home", path: "/" },
       { name: "Calendar", path: "/calendar" },
     ]),
+    // Every upcoming FareHarbor session, as of this build. Capped so a venue
+    // with a weekly class can't bloat the page.
+    ...fareHarborEventsLd({ limit: 60 }),
   ]);
 
   return (
     <main className="py-16">
       <Seo
-        title="Floating Soundbath & Class Calendar | Desert Paddleboards"
-        description="Every upcoming floating soundbath and water-wellness class across Arizona — book online, or register for city-run classes in Queen Creek, Sedona & Avondale."
+        title="Floating Sound Bath Calendar | Phoenix & Scottsdale Classes"
+        description="Every upcoming floating sound bath in Phoenix, Scottsdale, Mesa, Tempe and beyond, plus water-wellness classes. New dates are added all the time."
       />
       <JsonLd data={structuredData} />
 
       <div className="mx-auto mb-10 max-w-4xl px-4 text-center">
-        <h1 className="text-4xl font-bold md:text-5xl">Upcoming Sessions</h1>
+        <h1 className="text-4xl font-bold md:text-5xl">Floating Sound Bath Calendar</h1>
         <p className="mx-auto mt-3 max-w-2xl text-lg text-muted-foreground">
-          Every upcoming floating soundbath and class in one place. Book online
+          Every upcoming floating sound bath and class in one place. Book online
           sessions instantly; city-run classes (Queen Creek, Sedona, Avondale)
           register through the city's own page.
         </p>
