@@ -24,6 +24,7 @@ export default function StaffProfile() {
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!staff) return;
@@ -40,6 +41,7 @@ export default function StaffProfile() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setPhoneError(null);
     setSaved(false);
     setNotice(null);
     setBusy(true);
@@ -57,7 +59,14 @@ export default function StaffProfile() {
       if (res.texted) setNotice("Texts are on. We've sent a welcome text to your phone.");
       if (welcome && res.staff.profileComplete) navigate("/staff", { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError && err.message ? err.message : "Couldn't save. Please try again.");
+      const message = err instanceof ApiError && err.message ? err.message : "Couldn't save. Please try again.";
+      if (err instanceof ApiError && err.code === "invalid_phone") {
+        // Show it under the phone box, not at the bottom where it looks like it's about payment details.
+        setPhoneError(message);
+        document.getElementById("phone")?.focus();
+      } else {
+        setError(message);
+      }
     } finally {
       setBusy(false);
     }
@@ -94,8 +103,18 @@ export default function StaffProfile() {
                 inputMode="tel"
                 placeholder="(480) 555-0123"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                aria-invalid={phoneError ? true : undefined}
+                aria-describedby={phoneError ? "phone-error" : undefined}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  setPhoneError(null);
+                }}
               />
+              {phoneError ? (
+                <p id="phone-error" className="text-sm text-destructive">
+                  {phoneError}
+                </p>
+              ) : null}
               <label className="flex items-start gap-2.5 rounded-lg border border-border p-3 text-sm">
                 <input
                   id="smsOptIn"

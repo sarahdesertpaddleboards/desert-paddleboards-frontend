@@ -7,6 +7,7 @@ import { requireAdmin, toPublicStaff } from "../../../../server/staff/auth.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../../../server/staff/http.js";
 import { PAYOUT_METHODS } from "../../../../server/staff/invite.js";
 import { parseSkills } from "../../../../server/staff/roles.js";
+import { PHONE_HELP, readPhone } from "../../../../server/staff/sms.js";
 
 export async function onRequestPatch(context) {
   const admin = requireAdmin(context);
@@ -23,7 +24,11 @@ export async function onRequestPatch(context) {
     if (!name) throw new HttpError(400, "name_required", "Name can't be empty.");
     updates.name = name;
   }
-  if (body.phone !== undefined) updates.phone = cleanText(body.phone, 30);
+  if (body.phone !== undefined) {
+    const phone = readPhone(cleanText(body.phone, 40));
+    if (phone === null) throw new HttpError(400, "invalid_phone", PHONE_HELP);
+    updates.phone = phone || null;
+  }
   if (body.payoutMethod !== undefined) {
     const m = body.payoutMethod ? String(body.payoutMethod) : null;
     if (m && !PAYOUT_METHODS.includes(m)) throw new HttpError(400, "invalid_payout_method");

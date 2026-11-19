@@ -10,7 +10,7 @@ import { requireStaff, toPublicStaff } from "../../server/staff/auth.js";
 import { HttpError, cleanText, json, nowIso, readJson } from "../../server/staff/http.js";
 import { PAYOUT_METHODS } from "../../server/staff/invite.js";
 import { parseSkills } from "../../server/staff/roles.js";
-import { sendSms, toE164, welcomeText } from "../../server/staff/sms.js";
+import { PHONE_HELP, readPhone, sendSms, toE164, welcomeText } from "../../server/staff/sms.js";
 
 export async function onRequestGet(context) {
   const staff = requireStaff(context);
@@ -23,14 +23,13 @@ export async function onRequestPatch(context) {
   const body = await readJson(context.request);
 
   const name = cleanText(body.name, 80);
-  const phone = cleanText(body.phone, 30);
+  const typedPhone = readPhone(cleanText(body.phone, 40));
   const payoutMethod = body.payoutMethod == null || body.payoutMethod === "" ? null : String(body.payoutMethod);
   const payoutHandle = cleanText(body.payoutHandle, 120);
 
   if (body.name !== undefined && !name) throw new HttpError(400, "name_required", "Please enter your name.");
-  if (phone && !/^[+\d][\d\s().-]{6,}$/.test(phone)) {
-    throw new HttpError(400, "invalid_phone", "That phone number doesn't look right.");
-  }
+  if (typedPhone === null) throw new HttpError(400, "invalid_phone", PHONE_HELP);
+  const phone = typedPhone || null;
   if (payoutMethod && !PAYOUT_METHODS.includes(payoutMethod)) {
     throw new HttpError(400, "invalid_payout_method", "Pick a payment method from the list.");
   }
