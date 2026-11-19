@@ -150,7 +150,7 @@ export function inviteEmail({ name, url, invitedBy }) {
   };
 }
 
-const ROLE_NAMES = { lead: "Event team leader", teacher: "Teacher", artist: "Artist", general: "General staff" };
+const ROLE_NAMES = { lead: "Event lead", teacher: "Teacher", artist: "Artist", general: "Event staff" };
 
 /** The shift facts both confirmation emails share, as HTML + text. */
 function shiftDetails({ event, payCents, role, trailer }) {

@@ -138,7 +138,7 @@ export async function textStaff(env, db, staff, kind, body) {
 // Message text. Plain ASCII (no emoji or curly quotes) keeps each text to as
 // few 160-character segments as possible. Every message starts with the brand.
 
-const ROLE_NAMES = { lead: "team leader", teacher: "teacher", artist: "artist", general: "crew" };
+const ROLE_NAMES = { lead: "event lead", teacher: "teacher", artist: "artist", general: "event staff" };
 
 function shortWhen(startAt) {
   const d = new Date(startAt);

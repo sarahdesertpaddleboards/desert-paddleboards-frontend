@@ -234,7 +234,7 @@ export const staffApi = {
       "GET",
       "/shifts",
     ),
-  apply: (id: string, input: { role: Role; trailer?: boolean; note?: string }) =>
+  apply: (id: string, input: { role: Role; note?: string }) =>
     call<{ application: Application }>("POST", `/shifts/${id}/apply`, input),
   withdraw: (id: string) => call<{ application: Application }>("POST", `/shifts/${id}/withdraw`),
 

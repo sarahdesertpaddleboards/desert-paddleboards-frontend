@@ -18,7 +18,7 @@ import {
 import MarkPaidControl from "../../components/MarkPaidControl";
 import ShiftForm, { shiftInputFrom, shiftValuesFrom, type ShiftFormValues } from "../../components/ShiftForm";
 import { dayLabel, describePaid, errMessage, money, shortDay, timeRange, venueLine } from "../../format";
-import { ROLE_LABELS, SKILL_LABELS, applicationRoleLabel } from "../../roles";
+import { ROLE_LABELS, SKILL_LABELS, SKILL_SHORT, applicationRoleLabel } from "../../roles";
 import { useStaff } from "../../StaffContext";
 import { ShiftBadges } from "./Shifts";
 
@@ -307,7 +307,7 @@ export default function AdminShiftDetail() {
           <CardDescription>
             {event.isFull
               ? "The shift is full. Edit it to add more spots."
-              : "Pick the role, type what you'll pay them, then confirm. They get an email from you with the details."}
+              : "Staff put their name down as event staff (or artist / teacher). You pick who leads and who tows the trailer: choose the role, tick + trailer if they're towing, type the pay, then confirm. They get an email from you with the details."}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -389,6 +389,9 @@ function Person({ row, showRole, wants }: { row: Row; showRole?: boolean; wants?
         )}
         {p.payoutMethod ? ` · ${PAYOUT_METHOD_LABELS[p.payoutMethod]}${p.payoutHandle ? ` ${p.payoutHandle}` : ""}` : ""}
       </p>
+      {wants && p.skills.length ? (
+        <p className="text-xs text-brand-dark">Can do: {p.skills.map((k) => SKILL_LABELS[k]).join(" · ")}</p>
+      ) : null}
       {row.staffNote ? <p className="mt-1 italic">"{row.staffNote}"</p> : null}
     </div>
   );
@@ -532,7 +535,7 @@ function AssignCard({
           {people.map((p) => (
             <option key={p.id} value={p.id}>
               {p.name || p.email}
-              {p.skills.length ? ` (${p.skills.map((k) => SKILL_LABELS[k].split(" ")[0].toLowerCase()).join(", ")})` : ""}
+              {p.skills.length ? ` (${p.skills.map((k) => SKILL_SHORT[k]).join(", ")})` : ""}
               {p.status === "invited" ? " (invited)" : ""}
             </option>
           ))}

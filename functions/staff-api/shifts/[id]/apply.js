@@ -1,13 +1,15 @@
 /**
- * POST /staff-api/shifts/:id/apply  { role, trailer?, note? }
- * Put your name down for a shift in one role, optionally also offering to drive
- * the trailer. Needs a complete profile (Sarah has to be able to pay you).
+ * POST /staff-api/shifts/:id/apply  { role, note? }
+ * Put your name down for a shift as event staff, artist or teacher. Event staff
+ * covers the lead and general spots: Sarah picks the lead and the trailer
+ * driver when she confirms (see APPLY_ROLES). Needs a complete profile (Sarah
+ * has to be able to pay you).
  * Re-applying after withdrawing is fine (and can change role); a shift Sarah
  * has turned you down for, or a role that's full, isn't open to you.
  */
 import { isProfileComplete, requireStaff } from "../../../../server/staff/auth.js";
 import { HttpError, cleanText, json, newId, nowIso, readJson } from "../../../../server/staff/http.js";
-import { ROLE_LABELS } from "../../../../server/staff/roles.js";
+import { APPLY_ROLES, ROLE_LABELS, openSpotsFor, shiftTakesApplyRole } from "../../../../server/staff/roles.js";
 import { getEventWithCounts, toPublicApplication, toPublicEvent } from "../../../../server/staff/shifts.js";
 
 export async function onRequestPost(context) {
@@ -37,16 +39,18 @@ export async function onRequestPost(context) {
   if (event.status !== "open") throw new HttpError(409, "not_open", "This shift isn't taking names any more.");
   if (event.isPast) throw new HttpError(409, "past", "This shift has already started.");
 
-  // Role: the one asked for, or the only open one.
-  const open = event.roles.filter((r) => r.confirmed < r.needed);
-  let role = body.role ? String(body.role) : open.length === 1 ? open[0].role : null;
-  const slot = event.roles.find((r) => r.role === role);
-  if (!slot) throw new HttpError(400, "role_required", "Pick the role you'd like to work.");
-  if (slot.confirmed >= slot.needed) {
+  // Role: the one asked for, or the only one with room. "lead" from an older
+  // page means event staff; the trailer is Sarah's call at confirm.
+  const choices = APPLY_ROLES.filter((r) => shiftTakesApplyRole(event.roles, r) && openSpotsFor(event.roles, r) > 0);
+  let role = body.role ? String(body.role) : choices.length === 1 ? choices[0] : null;
+  if (role === "lead") role = "general";
+  if (!APPLY_ROLES.includes(role) || !shiftTakesApplyRole(event.roles, role)) {
+    throw new HttpError(400, "role_required", "Pick the role you'd like to work.");
+  }
+  if (openSpotsFor(event.roles, role) === 0) {
     throw new HttpError(409, "role_full", `${ROLE_LABELS[role]} is already filled on this shift.`);
   }
-  const trailer = body.trailer ? 1 : 0;
-  if (trailer && !event.trailerOpen) throw new HttpError(409, "trailer_full", "The trailer is already covered for this shift.");
+  const trailer = 0;
 
   const now = nowIso();
   if (existing) {

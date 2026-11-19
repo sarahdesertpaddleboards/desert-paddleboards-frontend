@@ -67,10 +67,11 @@ UPDATE applications
 
 -- Upcoming: applicants on real calendar shifts ------------------------------
 -- The next soundbath (2+ days out): three people applied, nobody confirmed yet.
+-- Staff apply as event staff or artist; Sarah picks the lead + trailer at confirm.
 INSERT INTO applications (id, event_id, staff_id, status, role, trailer, staff_note)
 SELECT v.column1, ev.id, v.column2, 'applied', v.column3, v.column4, v.column5
 FROM (VALUES
-  ('demo_app_up_maya',   'demo_stf_maya',   'lead',    1, 'Happy to bring the trailer.'),
+  ('demo_app_up_maya',   'demo_stf_maya',   'general', 0, 'Happy to lead, and I can bring the trailer.'),
   ('demo_app_up_jordan', 'demo_stf_jordan', 'artist',  0, NULL),
   ('demo_app_up_ben',    'demo_stf_ben',    'general', 0, 'Can get there by 4:30 to set up.')) v,
 (SELECT id FROM events

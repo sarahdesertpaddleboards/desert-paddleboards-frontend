@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { staffApi, type Application, type Role, type Shift, type Skill } from "../api";
 import { summarizeEarnings, type MyShift } from "../earnings";
 import { dayLabel, errMessage, money, timeRange, venueLine } from "../format";
-import { ROLE_LABELS, ROLE_SHORT, applicationRoleLabel } from "../roles";
+import { ROLE_LABELS, ROLE_SHORT, applicationRoleLabel, applyChoices, skillMatches } from "../roles";
 import { useStaff } from "../StaffContext";
 
 type OpenShift = Shift & { my: Application | null };
@@ -217,28 +217,20 @@ function MyStatus({ application, event }: { application: Application; event: Shi
   return <Badge className="bg-amber-100 text-amber-900 hover:bg-amber-100">Applied · waiting on Sarah</Badge>;
 }
 
-/** Open spots by role ("Artist · 1 open"), highlighting the ones you can do. */
+/** Open spots staff can put their name down for ("Event staff · 2 open"), highlighting the ones they can do. */
 function OpenRoles({ shift, skills }: { shift: Shift; skills: Skill[] }) {
-  const open = shift.roles.filter((r) => r.confirmed < r.needed);
-  if (!open.length && !shift.trailerOpen) return null;
+  const choices = applyChoices(shift);
+  if (!choices.length) return null;
   return (
     <div className="flex flex-wrap gap-1.5 pt-0.5">
-      {open.map((r) => {
-        const mine = skills.includes(r.role);
+      {choices.map((c) => {
+        const mine = skillMatches(c.role, skills);
         return (
-          <Badge key={r.role} variant={mine ? "default" : "outline"} className={mine ? "bg-brand text-white hover:bg-brand" : "text-muted-foreground"}>
-            {ROLE_SHORT[r.role]} · {r.needed - r.confirmed} open
+          <Badge key={c.role} variant={mine ? "default" : "outline"} className={mine ? "bg-brand text-white hover:bg-brand" : "text-muted-foreground"}>
+            {ROLE_SHORT[c.role]} · {c.open} open
           </Badge>
         );
       })}
-      {shift.trailerOpen ? (
-        <Badge
-          variant={skills.includes("trailer") ? "default" : "outline"}
-          className={skills.includes("trailer") ? "bg-brand text-white hover:bg-brand" : "text-muted-foreground"}
-        >
-          Trailer driver needed
-        </Badge>
-      ) : null}
     </div>
   );
 }
@@ -256,13 +248,13 @@ function ApplyButton({
   disabled: boolean;
   onDone: () => Promise<void>;
 }) {
-  const open = shift.roles.filter((r) => r.confirmed < r.needed);
-  // Start on the role they asked for last time, else one they can do, else the first open one.
+  const choices = applyChoices(shift);
+  // Start on what they asked for last time, else one they can do, else the first one.
+  const previousRole = previous?.role === "lead" ? "general" : previous?.role;
   const start =
-    open.find((r) => r.role === previous?.role)?.role ?? open.find((r) => skills.includes(r.role))?.role ?? open[0]?.role;
+    choices.find((c) => c.role === previousRole)?.role ?? choices.find((c) => skillMatches(c.role, skills))?.role ?? choices[0]?.role;
   const [step, setStep] = useState<"idle" | "form" | "busy">("idle");
   const [role, setRole] = useState<Role | undefined>(start);
-  const [trailer, setTrailer] = useState(false);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -271,7 +263,7 @@ function ApplyButton({
     setStep("busy");
     setError(null);
     try {
-      await staffApi.apply(shift.id, { role, trailer, note: note.trim() || undefined });
+      await staffApi.apply(shift.id, { role, note: note.trim() || undefined });
       await onDone();
     } catch (err) {
       setError(errMessage(err, "Couldn't apply. Try again."));
@@ -283,11 +275,8 @@ function ApplyButton({
     return (
       <Button
         size="sm"
-        disabled={disabled || !open.length}
-        onClick={() => {
-          setTrailer(Boolean(shift.trailerOpen && skills.includes("trailer")));
-          setStep("form");
-        }}
+        disabled={disabled || !choices.length}
+        onClick={() => setStep("form")}
         title={disabled ? "Finish your profile first" : undefined}
       >
         I can work this
@@ -296,16 +285,16 @@ function ApplyButton({
   }
   return (
     <div className="w-full space-y-2 sm:w-64">
-      {open.length > 1 ? (
+      {choices.length > 1 ? (
         <select
           aria-label="Role"
           className="border-input h-9 w-full rounded-md border bg-white px-3 text-sm shadow-xs"
           value={role ?? ""}
           onChange={(e) => setRole(e.target.value as Role)}
         >
-          {open.map((r) => (
-            <option key={r.role} value={r.role}>
-              {ROLE_LABELS[r.role]}
+          {choices.map((c) => (
+            <option key={c.role} value={c.role}>
+              {ROLE_LABELS[c.role]}
             </option>
           ))}
         </select>
@@ -314,11 +303,8 @@ function ApplyButton({
           As <span className="font-medium">{ROLE_LABELS[role].toLowerCase()}</span>
         </p>
       ) : null}
-      {shift.trailerOpen ? (
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" className="size-4 accent-[#1f3a4d]" checked={trailer} onChange={(e) => setTrailer(e.target.checked)} />
-          I can also drive the trailer
-        </label>
+      {role === "general" ? (
+        <p className="text-xs text-muted-foreground">Sarah picks the event lead and trailer driver from the skills on your profile.</p>
       ) : null}
       <Input
         placeholder="Note for Sarah (optional)"

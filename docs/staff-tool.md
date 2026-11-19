@@ -115,8 +115,13 @@ Shifts carry `roles: [{role, needed, confirmed, applied}]`, `trailerNeeded`, `tr
 UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
 
 ### Roles and trailer
-- Roles: event team leader, teacher (yoga/pilates/aerobics), artist (sound bowls/music),
-  general staff. Each shift needs N per role. `events.staff_needed` = sum of roles.
+- Roles: event lead, teacher (yoga/pilates/aerobics), artist (sound bowls/music),
+  event staff (`general`). Each shift needs N per role. `events.staff_needed` = sum of roles.
+- **Staff only choose Event staff, Artist or Teacher** when they put their name down
+  (`APPLY_ROLES`). Event staff covers the lead and general spots, and nobody offers the
+  trailer when applying: Sarah picks the event lead and the trailer driver when she confirms,
+  using the skills on their profile (shown as "Can do: …" on each applicant). Older
+  applications for `lead` are treated as event staff.
 - **No preset pay anywhere** (Sarah, 3 Nov 2026: pay varies per person and per event). Templates,
   shifts and the schedule carry no pay; Sarah types each person's pay in the confirm box, and it
   only exists from then on (locked, emailed, on payroll). The `pay_cents` column on
@@ -124,8 +129,9 @@ UI: `/staff/admin/templates`; Schedule shows the sync bar and "Sync now".
   `applications.trailer_pay_cents` are unused leftovers.
 - Trailer driver is an **add-on** tick on one person's role (the driver always works the event
   too). Sarah's one pay amount covers it; the email says "(including the trailer)".
-- Staff tick skills on their profile (the 4 roles + trailer). Matching open roles are
-  highlighted and pre-selected when applying; Sarah sees skills on People and in "Add someone".
+- Staff tick skills on their profile (the 4 roles + trailer). Matching choices are
+  highlighted and pre-selected when applying (a lead skill counts as event staff); Sarah sees
+  skills on People, on each applicant and in "Add someone".
 - One person, one role per shift.
 
 ### Calendar auto-posting

@@ -13,11 +13,37 @@ export const ROLES = ["lead", "teacher", "artist", "general"];
 export const SKILLS = [...ROLES, "trailer"];
 
 export const ROLE_LABELS = {
-  lead: "Event team leader",
+  lead: "Event lead",
   teacher: "Teacher",
   artist: "Artist",
-  general: "General staff",
+  general: "Event staff",
 };
+
+/**
+ * What staff can pick when they put their name down. "Event staff" covers both
+ * the lead and the general spots: Sarah decides who leads (and who tows the
+ * trailer) when she confirms, using the skills on their profile. Artists and
+ * teachers are specialists, so they apply for those spots directly.
+ * Keep in step with src/staff/roles.ts.
+ */
+export const APPLY_ROLES = ["general", "artist", "teacher"];
+
+/** Shift roles an application in this role can be confirmed into. */
+export function applyPool(applyRole) {
+  return applyRole === "general" ? ["lead", "general"] : [applyRole];
+}
+
+/** Does the shift have any spot this application role could fill? */
+export function shiftTakesApplyRole(roles, applyRole) {
+  return roles.some((r) => applyPool(applyRole).includes(r.role));
+}
+
+/** Unfilled spots this application role could fill. */
+export function openSpotsFor(roles, applyRole) {
+  return roles
+    .filter((r) => applyPool(applyRole).includes(r.role))
+    .reduce((t, r) => t + Math.max(0, r.needed - r.confirmed), 0);
+}
 
 const roleOrder = (r) => ROLES.indexOf(r);
 
