@@ -7,6 +7,7 @@
  * surface the link directly. Never enable that outside local dev.
  */
 import { newId } from "./http.js";
+import { googleCalendarUrl } from "./calendar.js";
 import { formatMoney, formatWhen } from "./shifts.js";
 
 const BRAND_NAVY = "#1f3a4d";
@@ -48,7 +49,7 @@ async function logEmail(db, entry) {
  * Send one email. Resolves to { ok, skipped?, error? } — never throws, so a
  * mail outage can't break the request that triggered it.
  */
-export async function sendEmail(env, db, { to, subject, html, text, kind, staffId }) {
+export async function sendEmail(env, db, { to, subject, html, text, kind, staffId, attachments }) {
   // Sample people for demos (scripts/staff-demo) use the reserved .invalid
   // domain: act as if sent so the demo reads normally, but never send.
   if (isDemoAddress(to)) {
@@ -73,6 +74,7 @@ export async function sendEmail(env, db, { to, subject, html, text, kind, staffI
         subject,
         html,
         text,
+        attachments: attachments?.length ? attachments : undefined,
       }),
     });
     const body = await res.json().catch(() => ({}));
@@ -153,9 +155,10 @@ export function inviteEmail({ name, url, invitedBy }) {
 const ROLE_NAMES = { lead: "Event lead", teacher: "Teacher", artist: "Artist", general: "Event staff" };
 
 /** The shift facts both confirmation emails share, as HTML + text. */
-function shiftDetails({ event, payCents, role, trailer }) {
+function shiftDetails({ event, payCents, role, trailer, calendar }) {
   const when = formatWhen(event.start_at, event.end_at);
   const where = [event.venue, event.city].filter(Boolean).join(", ");
+  const address = event.address || event.venue_address || null;
   const pay = formatMoney(payCents);
   const roleLine = role ? `${ROLE_NAMES[role] || role}${trailer ? " + trailer driver" : ""}` : null;
   const payLine = trailer ? `${pay} (including the trailer)` : pay;
@@ -173,13 +176,20 @@ function shiftDetails({ event, payCents, role, trailer }) {
   return {
     pay,
     html: `<table style="border-collapse:collapse;font-size:16px;margin:8px 0 0;">
-        ${row("Shift", event.title)}${row("Role", roleLine)}${row("When", when)}${row("Where", where)}${row("Pay", payLine)}
-      </table>${notes}${trailerNote}`,
+        ${row("Shift", event.title)}${row("Role", roleLine)}${row("When", when)}${row("Where", where)}${row("Address", address)}${row("Pay", payLine)}
+      </table>${notes}${trailerNote}${calendarLink(calendar)}`,
     text:
-      `Shift: ${event.title}\n${roleLine ? `Role: ${roleLine}\n` : ""}When: ${when}\n${where ? `Where: ${where}\n` : ""}Pay: ${payLine}\n` +
+      `Shift: ${event.title}\n${roleLine ? `Role: ${roleLine}\n` : ""}When: ${when}\n${where ? `Where: ${where}\n` : ""}${address ? `Address: ${address}\n` : ""}Pay: ${payLine}\n` +
       `${event.notes ? `\n${event.notes}\n` : ""}` +
-      `${trailer ? "\nYou're also driving the trailer: picking up the boards, towing them to the event and back.\n" : ""}`,
+      `${trailer ? "\nYou're also driving the trailer: picking up the boards, towing them to the event and back.\n" : ""}` +
+      `${calendar ? `\nAdd it to your calendar: ${googleCalendarUrl(calendar)} (or open the attached shift.ics)\n` : ""}`,
   };
+}
+
+/** "Add to calendar" line for confirmation emails (the .ics is attached too). */
+function calendarLink(calendar) {
+  if (!calendar) return "";
+  return `<p style="margin:16px 0 0;font-size:14px;">📅 <a href="${escapeHtml(googleCalendarUrl(calendar))}" style="color:${BRAND_TEAL};">Add to Google Calendar</a> · or open the attached <strong>shift.ics</strong> for Apple or Outlook.</p>`;
 }
 
 function shortDateOf(event) {
@@ -192,11 +202,11 @@ function shortDateOf(event) {
 }
 
 /** "You're confirmed" — sent from Sarah when she puts someone on a shift. Pay is locked in. */
-export function shiftConfirmedEmail({ name, event, payCents, role, trailer, url, confirmedBy }) {
+export function shiftConfirmedEmail({ name, event, payCents, role, trailer, url, confirmedBy, calendar }) {
   const by = confirmedBy ? confirmedBy.split(" ")[0] : "Sarah";
   const first = name ? name.split(" ")[0] : null;
   const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
-  const d = shiftDetails({ event, payCents, role, trailer });
+  const d = shiftDetails({ event, payCents, role, trailer, calendar });
   return {
     subject: `You're confirmed: ${event.title}, ${shortDateOf(event)}`,
     html: layout({
@@ -219,11 +229,11 @@ export function shiftConfirmedEmail({ name, event, payCents, role, trailer, url,
  * email. The button is their 14-day invite link; after a quick profile they
  * see the shift under "Your upcoming shifts".
  */
-export function assignedInviteEmail({ name, event, payCents, role, trailer, url, invitedBy }) {
+export function assignedInviteEmail({ name, event, payCents, role, trailer, url, invitedBy, calendar }) {
   const first = name ? name.split(" ")[0] : null;
   const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
   const by = invitedBy ? escapeHtml(invitedBy.split(" ")[0]) : "Sarah";
-  const d = shiftDetails({ event, payCents, role, trailer });
+  const d = shiftDetails({ event, payCents, role, trailer, calendar });
   return {
     subject: `You're on the team: ${event.title}, ${shortDateOf(event)}`,
     html: layout({
@@ -281,5 +291,58 @@ export function paymentSentEmail({ name, items, note, payoutMethod, payoutHandle
       items.map((i) => `- ${day(i.startAt)}: ${i.title}, ${formatMoney(i.payCents)}`).join("\n") +
       `${items.length > 1 ? `\nTotal: ${total}` : ""}\n${note ? `\nNote from Sarah: ${note}\n` : ""}` +
       `\nSee your earnings: ${url}\n\nSomething not right, or it hasn't arrived in a couple of days? Reply to this email.`,
+  };
+}
+
+/** Sarah took someone off a shift they were confirmed for (she can choose not to send this). */
+export function removedFromShiftEmail({ name, event, url }) {
+  const first = name ? name.split(" ")[0] : null;
+  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+  const when = formatWhen(event.start_at, event.end_at);
+  const where = [event.venue, event.city].filter(Boolean).join(", ");
+  return {
+    subject: `Change: you're no longer on ${event.title}, ${shortDateOf(event)}`,
+    html: layout({
+      heading: "Shift change",
+      bodyHtml: `<p>${hi}</p><p>Sarah has taken you off this shift, so you don't need to come:</p>
+        <p style="margin:12px 0;padding:12px 14px;background:#f4f6f7;border-radius:10px;"><strong>${escapeHtml(event.title)}</strong><br>${escapeHtml(when)}${where ? `<br>${escapeHtml(where)}` : ""}</p>
+        <p>If that's a surprise, reply to this email or text Sarah.</p>`,
+      buttonLabel: "View my shifts",
+      buttonUrl: url,
+    }),
+    text: `${first ? `Hi ${first},` : "Hi,"}\n\nSarah has taken you off this shift, so you don't need to come:\n\n${event.title}\n${when}${where ? `\n${where}` : ""}\n\nIf that's a surprise, reply to this email or text Sarah.\n\nYour shifts: ${url}`,
+  };
+}
+
+/**
+ * Day-before reminder. Everyone confirmed gets the when/where/notes; the
+ * person in charge (event lead, or the artist if there's no lead) also gets
+ * the venue's private contact.
+ */
+export function shiftReminderEmail({ name, event, role, trailer, inCharge, contact, url, calendar }) {
+  const first = name ? name.split(" ")[0] : null;
+  const hi = first ? `Hi ${escapeHtml(first)},` : "Hi,";
+  const d = shiftDetails({ event, payCents: null, role, trailer, calendar });
+  const html = d.html.replace(/<tr><td[^>]*>Pay<\/td>.*?<\/tr>/, "");
+  const text = d.text.replace(/^Pay: .*\n/m, "");
+  const contactLine = [contact?.contactName, contact?.contactPhone].filter(Boolean).join(", ");
+  const leadHtml = inCharge
+    ? `<p style="margin:16px 0 0;padding:12px 14px;background:#fff7e6;border-radius:10px;"><strong>You're in charge of this one.</strong>${
+        contactLine ? ` On-site contact: <strong>${escapeHtml(contactLine)}</strong>. Please keep this number to yourself.` : " Sarah will share the on-site contact if there is one."
+      }</p>`
+    : "";
+  const leadText = inCharge
+    ? `\nYou're in charge of this one.${contactLine ? ` On-site contact: ${contactLine}. Please keep this number to yourself.` : ""}\n`
+    : "";
+  return {
+    subject: `Reminder: ${event.title}, ${shortDateOf(event)}`,
+    html: layout({
+      heading: "Your shift is coming up",
+      bodyHtml: `<p>${hi}</p><p>A reminder that you're working this shift:</p>${html}${leadHtml}`,
+      buttonLabel: "View my shifts",
+      buttonUrl: url,
+      footnote: "Can't make it? Text Sarah right away so she can find cover.",
+    }),
+    text: `${first ? `Hi ${first},` : "Hi,"}\n\nA reminder that you're working this shift:\n\n${text}${leadText}\nYour shifts: ${url}\n\nCan't make it? Text Sarah right away so she can find cover.`,
   };
 }

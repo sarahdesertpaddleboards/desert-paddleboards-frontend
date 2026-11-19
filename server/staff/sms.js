@@ -17,38 +17,12 @@
  * ("unsubscribed") turns their opt-in off here too.
  */
 import { newId, nowIso } from "./http.js";
+import { toE164 } from "./phone.js";
 import { formatMoney } from "./shifts.js";
 
 export const SMS_BRAND = "Desert Paddleboards";
 
-/** US-first phone normalising: "(602) 456-0884" → "+16024560884"; null if unusable. */
-export function toE164(raw) {
-  if (raw == null) return null;
-  const s = String(raw).trim();
-  const digits = s.replace(/\D/g, "");
-  if (s.startsWith("+")) return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : null;
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
-  return null;
-}
-
-/**
- * Read a phone number someone typed, in any everyday format: "(480) 555-0123",
- * "480.555.0123", "+1 480 555 0123", phone autofill with odd dashes or spaces.
- * Returns a tidy display form ("(480) 555-0123" for US numbers, else +E.164),
- * "" for blank, or null if it isn't a usable number.
- */
-export function readPhone(raw) {
-  const s = String(raw ?? "").trim();
-  if (!s) return "";
-  if (/[a-z]/i.test(s)) return null;
-  const e164 = toE164(s);
-  if (!e164) return null;
-  const us = /^\+1(\d{3})(\d{3})(\d{4})$/.exec(e164);
-  return us ? `(${us[1]}) ${us[2]}-${us[3]}` : e164;
-}
-
-export const PHONE_HELP = "That mobile number doesn't look right. Type the 10 digits, like (480) 555-0123.";
+export { PHONE_HELP, readPhone, toE164 } from "./phone.js";
 
 export function smsConfigured(env) {
   return Boolean(env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN && env.TWILIO_FROM);
@@ -185,4 +159,18 @@ export function shiftConfirmedText({ event, payCents, role, trailer, url }) {
 
 export function paymentSentText({ totalCents, count, url }) {
   return `${SMS_BRAND}: Sarah has sent ${formatMoney(totalCents)} for ${count} shift${count === 1 ? "" : "s"}. See it here: ${url}`;
+}
+
+/** Day-before reminder. The person in charge also gets the private on-site contact. */
+export function shiftReminderText({ event, role, trailer, inCharge, contact, address, url }) {
+  const roleName = ROLE_NAMES[role] || "crew";
+  const where = event.venue ? ` at ${event.venue}` : "";
+  const addr = address ? ` Address: ${address}.` : "";
+  const contactLine = [contact?.contactName, contact?.contactPhone].filter(Boolean).join(" ");
+  const lead = inCharge ? ` You're in charge.${contactLine ? ` On-site contact: ${contactLine} (please keep private).` : ""}` : "";
+  return `${SMS_BRAND}: Reminder, ${event.title}${where}, ${shortWhen(event.start_at)} as ${roleName}${trailer ? " + trailer" : ""}.${addr}${lead} Details: ${url}`;
+}
+
+export function removedFromShiftText({ event, url }) {
+  return `${SMS_BRAND}: Change - Sarah has taken you off ${event.title}, ${shortWhen(event.start_at)}. You don't need to come. Questions? Text Sarah. ${url}`;
 }

@@ -14,7 +14,8 @@ the public session calendar, but is fully separate from the marketing site.
 | 3 | Money: payroll (owed by person, mark paid + email, paid history, CSV), staff earnings | **Live on the preview** (3 Nov 2026; payment email tested end to end) |
 | 3b | Roles + trailer add-on, calendar auto-posting with staffing templates, staff skills, assign someone new by email | **Live on the preview** (3 Nov 2026; sync posted 23 shifts; invite-by-assign email tested) |
 | 3c | Texts alongside email (Twilio): opt-in on profile, confirmation + pay texts, login by text, public `/sms-terms` page | **Code on the preview** (4 Nov 2026); nothing sends until the Twilio secrets are set and the toll-free number is verified |
-| 4 | Reminders the day before, calendar (.ics) attachments, remove the dead `/admin` pages, archive the old backend repo | todo |
+| 3d | From Sarah's walkthrough (19 Nov 2026): venue directory + private on-site contacts, day-before reminders (lead gets the contact), "taken off the shift" email, add-to-calendar, bulk add people, role explanations, getting-started steps, soundbath template = lead + artist | **Live on the preview** (19 Nov 2026); scheduled reminders need `STAFF_CRON_SECRET` |
+| 4 | Change/cancel notices for time changes, remove the dead `/admin` pages, archive the old backend repo | todo |
 
 ## Architecture
 
@@ -183,6 +184,41 @@ Most staff check their phone, not email, so the key emails also go out as texts.
   Experiences Inc, EIN) approved. Still to do: buy a toll-free number, then submit its
   toll-free verification (opt-in URL `https://desertpaddleboards.com/sms-terms`).
 
+### Venues and private contacts (phase 3d)
+- **Venues** (`/staff/admin/venues`, table `venues`): name (matches `events.venue`
+  case-insensitively), address, on-site contact name + phone, private notes. "Import a list"
+  takes rows pasted from a spreadsheet (venue, address, contact, phone, notes); existing
+  venues are updated with non-blank cells. The page lists schedule venues with no entry yet.
+- A shift can override address / contact (`events.address`, `contact_name`, `contact_phone`),
+  e.g. private events. **Address is shown to staff; the contact never is**: only admins see it
+  (shift page "On-site contact · private") and the person in charge gets it in the reminder.
+  Shift notes are visible to every applicant, so client phone numbers go in the contact fields.
+
+### Day-before reminders
+- Everyone confirmed on a shift starting within 24 hours gets one reminder (email + text if
+  opted in): when, where, address, notes (`applications.reminded_at`). Confirmed later = sent
+  on the next run. Re-confirming clears it.
+- **Person in charge** gets the private contact: the confirmed event lead(s); with no lead, the
+  only person if it's one, else the first-confirmed artist, else the first-confirmed person
+  (`personInCharge` in `server/staff/reminders.js`).
+- Triggered by `.github/workflows/staff-reminders.yml` every 30 min (runs from `main`; hits the
+  preview and the live site) with `Authorization: Bearer $STAFF_CRON_SECRET`, plus lazily
+  (every ≥10 min) when anyone opens the staff area. Admins can POST `/staff-api/cron/reminders`.
+- Setup: one random value as GitHub secret `STAFF_CRON_SECRET` and Pages secret
+  `STAFF_CRON_SECRET` (`--env preview` and `--env production`).
+
+### Other phase 3d behaviour
+- Declined applicants are never notified (Sarah: they know they may not be picked). Taking a
+  **confirmed** person off an upcoming shift emails/texts them unless Sarah unticks "Let them know".
+- Confirmation emails carry "Add to Google Calendar" and an attached `shift.ics`; confirmed
+  shifts on the staff home have Google / Apple-Outlook links (`src/staff/calendar.ts`).
+- People → "Add a list of people": paste name, email, mobile (any order); added as invited,
+  no emails unless "Send invite emails now" is ticked.
+- Profile skills have "What's expected?" notes (`ROLE_GUIDE` in `src/staff/roles.ts`; event
+  lead from Sarah's Event Manager Playbook, the rest are drafts for Sarah to edit).
+- New staff see "Getting started": 1 finish profile, 2 put your name down.
+- Floating soundbath template = 1 event lead (tows the trailer) + 1 artist (migration 0004).
+
 ### Phase 2 rules (assumptions until Sarah says otherwise)
 - One locked pay per person per shift, typed by Sarah at confirm (covers the trailer if they
   drive). Staff never see pay on open shifts.
@@ -223,8 +259,8 @@ and paste the link into a browser signed in to that account).
 
 1. ✅ Databases created (3 Nov 2026), ids in `wrangler.toml`:
    `dpb-staff` (production, WNAM) and `dpb-staff-preview` (WEUR).
-2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post) and `0003` (texts)
-   to **preview only** so far. Apply it to production before merging. For new migrations:
+2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post), `0003` (texts) and
+   `0004` (venues/reminders) to **preview only** so far. Apply it to production before merging. For new migrations:
    ```bash
    pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
    pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main

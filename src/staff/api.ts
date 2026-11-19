@@ -60,6 +60,8 @@ export interface Shift {
   /** Admin responses only: the session has left the public calendar. */
   offCalendar?: boolean;
   notes: string | null;
+  /** Where to go: the shift's own address, else the venue directory's. */
+  address: string | null;
   status: "open" | "filled" | "completed" | "cancelled";
   confirmedCount: number;
   appliedCount: number;
@@ -89,9 +91,39 @@ export interface Application {
   updatedAt: string;
 }
 
+/** Admin-only: where to go and the PRIVATE on-site contact for a shift. */
+export interface ShiftContact {
+  address: string | null;
+  contactName: string | null;
+  contactPhone: string | null;
+  venueId: string | null;
+  /** Where each value came from: set on this shift, or the venue list. */
+  from: { address: "shift" | "venue" | null; contact: "shift" | "venue" | null };
+  /** What's set on the shift itself (blank = use the venue's). */
+  own: { address: string | null; contactName: string | null; contactPhone: string | null };
+}
+
 export interface ShiftDetail {
   event: Shift;
+  contact: ShiftContact;
   applications: (Application & { staff: Staff })[];
+}
+
+export interface Venue {
+  id: string;
+  name: string;
+  address: string | null;
+  contactName: string | null;
+  contactPhone: string | null;
+  notes: string | null;
+  shiftCount?: number;
+  updatedAt: string;
+}
+
+export type VenueInput = Partial<Pick<Venue, "name" | "address" | "contactName" | "contactPhone" | "notes">>;
+
+export interface ImportResult {
+  skipped: { line: number; reason: string }[];
 }
 
 export interface ShiftInput {
@@ -103,6 +135,9 @@ export interface ShiftInput {
   roles?: { role: Role; needed: number }[];
   trailerNeeded?: number;
   notes?: string | null;
+  address?: string | null;
+  contactName?: string | null;
+  contactPhone?: string | null;
   status?: "open" | "completed" | "cancelled";
   source?: "manual" | "fareharbor" | "city";
   fareharborItemId?: number | null;
@@ -256,7 +291,12 @@ export const staffApi = {
     updateEvent: (id: string, patch: ShiftInput) => call<ShiftDetail>("PATCH", `/admin/events/${id}`, patch),
     deleteEvent: (id: string) => call<{ ok: true }>("DELETE", `/admin/events/${id}`),
     confirm: (id: string, input: ConfirmInput) => call<ConfirmResult>("POST", `/admin/events/${id}/confirm`, input),
-    decline: (id: string, staffId: string) => call<ShiftDetail>("POST", `/admin/events/${id}/decline`, { staffId }),
+    /** Decline an applicant, or take a confirmed person off (notify: tell them, default true). */
+    decline: (id: string, staffId: string, notify = true) =>
+      call<ShiftDetail & { notified?: boolean; emailed?: boolean; texted?: boolean }>("POST", `/admin/events/${id}/decline`, {
+        staffId,
+        notify,
+      }),
     payroll: (year?: number) => call<Payroll>("GET", `/admin/pay${year ? `?year=${year}` : ""}`),
     markPaid: (input: { applicationIds: string[]; note?: string; notify: boolean }) =>
       call<MarkPaidResult>("POST", "/admin/pay/mark-paid", input),
@@ -268,6 +308,18 @@ export const staffApi = {
     syncState: () => call<{ state: SyncState | null; windowDays: number }>("GET", "/admin/sync"),
     syncNow: () => call<{ state: SyncState; windowDays: number }>("POST", "/admin/sync"),
     undoPaid: (applicationId: string) => call<{ ok: true }>("POST", "/admin/pay/undo", { applicationId }),
+    venues: () => call<{ venues: Venue[]; missing: { name: string; shiftCount: number }[] }>("GET", "/admin/venues"),
+    createVenue: (input: VenueInput) => call<{ venue: Venue }>("POST", "/admin/venues", input),
+    updateVenue: (id: string, input: VenueInput) => call<{ venue: Venue }>("PATCH", `/admin/venues/${id}`, input),
+    deleteVenue: (id: string) => call<{ ok: true }>("DELETE", `/admin/venues/${id}`),
+    importVenues: (text: string) =>
+      call<ImportResult & { created: number; updated: number }>("POST", "/admin/venues/import", { text }),
+    importStaff: (text: string, sendInvites: boolean) =>
+      call<ImportResult & { added: string[]; updated: string[]; unchanged: string[]; invited: string[] }>(
+        "POST",
+        "/admin/staff/import",
+        { text, sendInvites },
+      ),
   },
 };
 

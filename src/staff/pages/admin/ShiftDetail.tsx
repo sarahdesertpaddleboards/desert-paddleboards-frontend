@@ -150,10 +150,11 @@ export default function AdminShiftDetail() {
         </CardHeader>
         <CardContent className="space-y-4">
           {event.notes && !editing ? <p className="rounded-lg bg-[#f4f6f7] p-3 text-sm">{event.notes}</p> : null}
+          {!editing ? <ContactBox contact={detail.contact} confirmed={confirmed} /> : null}
           {editing ? (
             <ShiftForm
               templates={templates}
-              initial={shiftValuesFrom(event)}
+              initial={shiftValuesFrom({ ...event, own: detail.contact.own })}
               submitLabel="Save changes"
               busy={busy}
               error={error}
@@ -276,19 +277,23 @@ export default function AdminShiftDetail() {
                           }}
                         />
                       ) : null}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-destructive"
+                      <RemoveControl
+                        who={a.staff.name || a.staff.email}
+                        canNotify={!event.isPast && event.status !== "cancelled"}
                         disabled={busy}
-                        onClick={() => {
-                          if (window.confirm(`Take ${a.staff.name || a.staff.email} off this shift? They aren't emailed.`)) {
-                            void run(() => staffApi.admin.decline(event.id, a.staffId), "Removed from the shift.");
-                          }
-                        }}
-                      >
-                        Remove
-                      </Button>
+                        onRemove={(notify) =>
+                          run(async () => {
+                            const res = await staffApi.admin.decline(event.id, a.staffId, notify);
+                            const who = a.staff.name || a.staff.email;
+                            setNotice(
+                              res.notified
+                                ? `${who} is off the shift and has been told${res.texted ? " by email and text" : " by email"}.`
+                                : `${who} is off the shift.${notify ? " The email didn't go out, so let them know directly." : " They haven't been told."}`,
+                            );
+                            return res;
+                          })
+                        }
+                      />
                       </>
                     )}
                   </div>
@@ -569,5 +574,94 @@ function AssignCard({
         />
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * Where to go and the PRIVATE on-site contact. Staff see the address; the
+ * contact only reaches whoever's in charge, in the day-before reminder.
+ */
+function ContactBox({ contact, confirmed }: { contact: ShiftDetail["contact"]; confirmed: Row[] }) {
+  const lead = confirmed.find((a) => a.role === "lead");
+  const inCharge =
+    lead ?? (confirmed.length === 1 ? confirmed[0] : confirmed.find((a) => a.role === "artist") ?? confirmed[0]);
+  const source = (from: "shift" | "venue" | null) => (from === "venue" ? " (from the venue list)" : "");
+  const hasContact = contact.contactName || contact.contactPhone;
+  return (
+    <div className="grid gap-3 rounded-lg border border-border p-3 text-sm sm:grid-cols-2">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Address{source(contact.from.address)}</p>
+        <p>{contact.address || <span className="text-muted-foreground">Not set. Add it here or in Venues.</span>}</p>
+      </div>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">On-site contact · private{source(contact.from.contact)}</p>
+        {hasContact ? (
+          <p>
+            {contact.contactName}
+            {contact.contactName && contact.contactPhone ? " · " : ""}
+            {contact.contactPhone ? (
+              <a className="text-brand hover:underline" href={`tel:${contact.contactPhone.replace(/[^\d+]/g, "")}`}>
+                {contact.contactPhone}
+              </a>
+            ) : null}
+          </p>
+        ) : (
+          <p className="text-muted-foreground">None. Add one with Edit details, or in Venues.</p>
+        )}
+        <p className="mt-1 text-xs text-muted-foreground">
+          {inCharge
+            ? `${inCharge.staff.name || inCharge.staff.email} gets this in their reminder the day before.`
+            : "Whoever's in charge (the event lead) gets this the day before."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** "Remove" for a confirmed person, with "let them know" (on by default). */
+function RemoveControl({
+  who,
+  canNotify,
+  disabled,
+  onRemove,
+}: {
+  who: string;
+  canNotify: boolean;
+  disabled: boolean;
+  onRemove: (notify: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [notify, setNotify] = useState(true);
+  if (!open) {
+    return (
+      <Button size="sm" variant="ghost" className="text-destructive" disabled={disabled} onClick={() => setOpen(true)}>
+        Remove
+      </Button>
+    );
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1.5">
+      <span className="text-sm">Take {who} off?</span>
+      {canNotify ? (
+        <label className="flex items-center gap-1.5 text-sm">
+          <input type="checkbox" className="size-4 accent-[#1f3a4d]" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
+          Let them know
+        </label>
+      ) : null}
+      <Button
+        size="sm"
+        variant="destructive"
+        disabled={disabled}
+        onClick={() => {
+          onRemove(canNotify && notify);
+          setOpen(false);
+        }}
+      >
+        Remove
+      </Button>
+      <Button size="sm" variant="ghost" disabled={disabled} onClick={() => setOpen(false)}>
+        Cancel
+      </Button>
+    </div>
   );
 }

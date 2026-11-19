@@ -22,6 +22,11 @@ export interface ShiftFormValues {
   roles: RoleRow[];
   trailer: boolean;
   notes: string;
+  /** Shown to staff. Blank = the venue list's address. */
+  address: string;
+  /** PRIVATE on-site contact (admins + the event lead's day-before reminder). Blank = the venue's. */
+  contactName: string;
+  contactPhone: string;
 }
 
 export function emptyShiftValues(): ShiftFormValues {
@@ -35,6 +40,9 @@ export function emptyShiftValues(): ShiftFormValues {
     roles: [{ role: "general", needed: "1" }],
     trailer: false,
     notes: "",
+    address: "",
+    contactName: "",
+    contactPhone: "",
   };
 }
 
@@ -48,6 +56,7 @@ export function shiftValuesFrom(s: {
   roles?: { role: Role; needed: number }[];
   trailerNeeded?: number;
   notes?: string | null;
+  own?: { address: string | null; contactName: string | null; contactPhone: string | null };
 }): ShiftFormValues {
   const start = toInputs(s.startAt);
   const end = toInputs(s.endAt);
@@ -63,6 +72,9 @@ export function shiftValuesFrom(s: {
       : emptyShiftValues().roles,
     trailer: (s.trailerNeeded ?? 0) > 0,
     notes: s.notes ?? "",
+    address: s.own?.address ?? "",
+    contactName: s.own?.contactName ?? "",
+    contactPhone: s.own?.contactPhone ?? "",
   };
 }
 
@@ -99,6 +111,9 @@ export function shiftInputFrom(v: ShiftFormValues): ShiftInput {
     roles: rolesInputFrom(v.roles),
     trailerNeeded: v.trailer ? 1 : 0,
     notes: v.notes.trim() || null,
+    address: v.address.trim() || null,
+    contactName: v.contactName.trim() || null,
+    contactPhone: v.contactPhone.trim() || null,
   };
 }
 
@@ -212,7 +227,7 @@ export default function ShiftForm({
   templates?: ShiftTemplate[];
 }) {
   const [v, setV] = useState<ShiftFormValues>(initial);
-  const set = (k: "title" | "date" | "start" | "end" | "venue" | "city" | "notes") =>
+  const set = (k: "title" | "date" | "start" | "end" | "venue" | "city" | "notes" | "address" | "contactName" | "contactPhone") =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setV((prev) => ({ ...prev, [k]: e.target.value }));
 
   return (
@@ -251,6 +266,11 @@ export default function ShiftForm({
           <Input id="sf-city" value={v.city} onChange={set("city")} />
         </div>
       </div>
+      <div className="space-y-2">
+        <Label htmlFor="sf-address">Address (optional)</Label>
+        <Input id="sf-address" value={v.address} onChange={set("address")} placeholder="Leave blank to use the venue list's address" />
+        <p className="text-xs text-muted-foreground">Staff see this. Add where to set up in the notes below.</p>
+      </div>
       {templates?.length ? (
         <div className="space-y-2">
           <Label htmlFor="sf-template">Staff it like…</Label>
@@ -282,7 +302,25 @@ export default function ShiftForm({
       <div className="space-y-2">
         <Label htmlFor="sf-notes">Notes for staff (optional)</Label>
         <Textarea id="sf-notes" rows={3} value={v.notes} onChange={set("notes")} placeholder="Arrive 45 minutes early to set up boards." />
+        <p className="text-xs text-muted-foreground">Everyone who can apply sees these. Put client phone numbers in the private contact below.</p>
       </div>
+      <fieldset className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4">
+        <legend className="px-1 text-sm font-semibold">On-site contact (private)</legend>
+        <p className="text-xs text-muted-foreground">
+          Only admins see this. The event lead gets it in their reminder the day before. Leave blank to use the contact from the
+          venue list.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label htmlFor="sf-contact-name">Contact name</Label>
+            <Input id="sf-contact-name" value={v.contactName} onChange={set("contactName")} placeholder="Mackenzie" />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="sf-contact-phone">Contact phone</Label>
+            <Input id="sf-contact-phone" type="tel" inputMode="tel" value={v.contactPhone} onChange={set("contactPhone")} placeholder="(281) 804-8074" />
+          </div>
+        </div>
+      </fieldset>
       <p className="text-xs text-muted-foreground">Times are Arizona time.</p>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <div className="flex gap-2">

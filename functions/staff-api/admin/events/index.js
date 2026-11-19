@@ -17,6 +17,7 @@ import {
   readEventInput,
   toPublicEvent,
 } from "../../../../server/staff/shifts.js";
+import { sendDueReminders } from "../../../../server/staff/reminders.js";
 import { syncCalendar } from "../../../../server/staff/sync.js";
 
 const CUTOFF = "datetime('now', '-3 hours')";
@@ -25,7 +26,10 @@ export async function onRequestGet(context) {
   requireAdmin(context);
   const db = context.env.STAFF_DB;
   const scope = new URL(context.request.url).searchParams.get("scope") === "past" ? "past" : "upcoming";
-  if (scope === "upcoming") context.waitUntil(syncCalendar(context.env, context.request));
+  if (scope === "upcoming") {
+    context.waitUntil(syncCalendar(context.env, context.request));
+    context.waitUntil(sendDueReminders(context.env, new URL(context.request.url).origin));
+  }
   const sql =
     scope === "past"
       ? `${EVENT_WITH_COUNTS} WHERE datetime(e.start_at) <= ${CUTOFF} ORDER BY e.start_at DESC LIMIT 200`
@@ -72,8 +76,8 @@ export async function onRequestPost(context) {
       .prepare(
         `INSERT INTO events (id, title, venue, city, start_at, end_at, source, fareharbor_item_id,
                              fareharbor_availability_pk, staff_needed, notes, created_by,
-                             trailer_needed, calendar_key)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)`,
+                             trailer_needed, calendar_key, address, contact_name, contact_phone)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17)`,
       )
       .bind(
         id,
@@ -90,6 +94,9 @@ export async function onRequestPost(context) {
         admin.id,
         fields.trailer_needed ?? 0,
         calendarKey,
+        fields.address ?? null,
+        fields.contact_name ?? null,
+        fields.contact_phone ?? null,
       ),
     ...insertRoleStatements(db, id, roles),
   ]);

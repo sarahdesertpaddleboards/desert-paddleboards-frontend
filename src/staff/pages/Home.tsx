@@ -8,6 +8,7 @@ import { staffApi, type Application, type Role, type Shift, type Skill } from ".
 import { summarizeEarnings, type MyShift } from "../earnings";
 import { dayLabel, errMessage, money, timeRange, venueLine } from "../format";
 import { ROLE_LABELS, ROLE_SHORT, applicationRoleLabel, applyChoices, skillMatches } from "../roles";
+import { downloadIcs, googleCalendarUrl } from "../calendar";
 import { useStaff } from "../StaffContext";
 
 type OpenShift = Shift & { my: Application | null };
@@ -55,20 +56,8 @@ export default function StaffHome() {
         </p>
       </div>
 
-      {!staff.profileComplete ? (
-        <Card className="border-brand/40 bg-brand/5">
-          <CardHeader>
-            <CardTitle className="text-lg">Finish your profile</CardTitle>
-            <CardDescription>
-              Add your name, phone and how you'd like to be paid. You need these before you can apply for shifts.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild>
-              <Link to="/staff/profile">Complete profile</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      {!staff.profileComplete || (staff.role !== "admin" && open && mine.length === 0) ? (
+        <GettingStarted profileDone={staff.profileComplete} applied={mine.length > 0} />
       ) : null}
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
@@ -85,7 +74,10 @@ export default function StaffHome() {
                 application.status === "applied" ? (
                   <WithdrawButton id={event.id} onDone={load} />
                 ) : application.status === "confirmed" && event.status !== "cancelled" ? (
-                  <span className="text-sm font-semibold text-brand-dark">{money(application.payCents)}</span>
+                  <div className="space-y-1 sm:text-right">
+                    <span className="text-sm font-semibold text-brand-dark">{money(application.payCents)}</span>
+                    <AddToCalendar shift={event} role={applicationRoleLabel(application)} />
+                  </div>
                 ) : null
               }
             />
@@ -202,6 +194,7 @@ function ShiftRow({
           {timeRange(shift.startAt, shift.endAt)}
           {venueLine(shift) ? ` · ${venueLine(shift)}` : ""}
         </p>
+        {shift.address ? <p className="text-xs text-muted-foreground">📍 {shift.address}</p> : null}
         {sub ? <p className="text-sm font-medium text-brand-dark">{sub}</p> : null}
         {roles}
         {shift.notes ? <p className="text-sm">{shift.notes}</p> : null}
@@ -351,5 +344,63 @@ function WithdrawButton({ id, onDone }: { id: string; onDone: () => Promise<void
       </Button>
       {error ? <p className="max-w-56 text-xs text-destructive">{error}</p> : null}
     </div>
+  );
+}
+
+/** Step 1, step 2 for new staff (Sarah: "do this first, do this second"). */
+function GettingStarted({ profileDone, applied }: { profileDone: boolean; applied: boolean }) {
+  const Step = ({ n, done, title, children }: { n: number; done: boolean; title: string; children: React.ReactNode }) => (
+    <li className="flex gap-3">
+      <span
+        className={`flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+          done ? "bg-brand text-white" : "border-2 border-brand text-brand"
+        }`}
+        aria-hidden
+      >
+        {done ? "✓" : n}
+      </span>
+      <div className="min-w-0 pt-0.5">
+        <p className={`font-medium ${done ? "text-muted-foreground line-through" : ""}`}>{title}</p>
+        {!done ? <div className="mt-1 text-sm text-muted-foreground">{children}</div> : null}
+      </div>
+    </li>
+  );
+  return (
+    <Card className="border-brand/40 bg-brand/5">
+      <CardHeader>
+        <CardTitle className="text-lg">Getting started</CardTitle>
+        <CardDescription>Two quick steps and you're on the team.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ol className="space-y-4">
+          <Step n={1} done={profileDone} title="Finish your profile">
+            <p>Your name, mobile, what you can do, and how you'd like to be paid.</p>
+            <Button asChild size="sm" className="mt-2">
+              <Link to="/staff/profile">Complete profile</Link>
+            </Button>
+          </Step>
+          <Step n={2} done={applied} title="Put your name down for shifts">
+            <p>
+              Tap <strong>I can work this</strong> on any open shift below. Sarah picks the team and you'll get a confirmation with
+              your pay.
+            </p>
+          </Step>
+        </ol>
+      </CardContent>
+    </Card>
+  );
+}
+
+function AddToCalendar({ shift, role }: { shift: Shift; role: string }) {
+  return (
+    <p className="text-xs">
+      <a className="text-brand hover:underline" href={googleCalendarUrl(shift, role)} target="_blank" rel="noreferrer">
+        + Google Calendar
+      </a>
+      <span className="text-muted-foreground"> · </span>
+      <button type="button" className="text-brand hover:underline" onClick={() => downloadIcs(shift, role)}>
+        Apple / Outlook
+      </button>
+    </p>
   );
 }

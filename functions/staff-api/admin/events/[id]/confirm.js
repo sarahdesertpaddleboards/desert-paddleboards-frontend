@@ -11,6 +11,7 @@
  * and confirm again.
  */
 import { createLoginToken, requireAdmin } from "../../../../../server/staff/auth.js";
+import { icsAttachment } from "../../../../../server/staff/calendar.js";
 import { assignedInviteEmail, isLocalMode, sendEmail, shiftConfirmedEmail } from "../../../../../server/staff/email.js";
 import { HttpError, cleanText, json, newId, normalizeEmail, nowIso, readJson } from "../../../../../server/staff/http.js";
 import { ROLE_LABELS, readRole } from "../../../../../server/staff/roles.js";
@@ -83,7 +84,7 @@ export async function onRequestPost(context) {
     await db
       .prepare(
         `UPDATE applications SET status = 'confirmed', role = ?1, trailer = ?2, pay_cents = ?3, trailer_pay_cents = NULL,
-                confirmed_at = ?4, confirmed_by = ?5, updated_at = ?4
+                confirmed_at = ?4, confirmed_by = ?5, reminded_at = NULL, updated_at = ?4
           WHERE id = ?6`,
       )
       .bind(role, trailer, payCents, now, admin.id, existing.id)
@@ -103,6 +104,13 @@ export async function onRequestPost(context) {
   const needsInvite = person.status === "invited";
   const token = needsInvite ? await createLoginToken(db, person.id, "invite") : null;
   const details = { name: person.name, event: row, payCents, role, trailer: Boolean(trailer) };
+  // "Add to calendar": Google link in the email + the .ics attached.
+  const calendar = {
+    event: row,
+    address: row.address || row.venue_address || null,
+    role: `${ROLE_LABELS[role]}${trailer ? " + trailer driver" : ""}`,
+    url: `${origin}/staff`,
+  };
   let emailed = false;
   let emailError;
   let devLink;
@@ -111,9 +119,15 @@ export async function onRequestPost(context) {
     console.log(`[staff-api] LOCAL confirmation for ${person.email}: ${event.title} as ${role} at ${payCents} cents${devLink ? ` — invite ${devLink}` : ""}`);
   } else {
     const mail = token
-      ? assignedInviteEmail({ ...details, url: `${origin}/staff/verify?token=${token}`, invitedBy: admin.name })
-      : shiftConfirmedEmail({ ...details, url: `${origin}/staff`, confirmedBy: admin.name });
-    const result = await sendEmail(env, db, { ...mail, to: person.email, kind: token ? "invite" : "confirmation", staffId: person.id });
+      ? assignedInviteEmail({ ...details, url: `${origin}/staff/verify?token=${token}`, invitedBy: admin.name, calendar })
+      : shiftConfirmedEmail({ ...details, url: `${origin}/staff`, confirmedBy: admin.name, calendar });
+    const result = await sendEmail(env, db, {
+      ...mail,
+      to: person.email,
+      kind: token ? "invite" : "confirmation",
+      staffId: person.id,
+      attachments: [icsAttachment(calendar)],
+    });
     emailed = result.ok;
     emailError = result.ok ? undefined : result.error;
   }

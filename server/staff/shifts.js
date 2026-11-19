@@ -8,7 +8,9 @@
  */
 import { toPublicStaff } from "./auth.js";
 import { HttpError, cleanText } from "./http.js";
+import { PHONE_HELP, readPhone } from "./phone.js";
 import { withRoles } from "./roles.js";
+import { contactForEvent } from "./venues.js";
 
 export const TZ = "America/Phoenix";
 const AZ_OFFSET_MIN = -7 * 60;
@@ -82,6 +84,15 @@ export function readEventInput(body, { partial = false } = {}) {
   if (has("venue")) out.venue = cleanText(body.venue, 120);
   if (has("city")) out.city = cleanText(body.city, 80);
   if (has("notes")) out.notes = cleanText(body.notes, 1000);
+  // Where to go (shown to staff) and the private contact (admins + the event
+  // lead's day-before reminder). Blank = use the venue directory's.
+  if (has("address")) out.address = cleanText(body.address, 200);
+  if (has("contactName")) out.contact_name = cleanText(body.contactName, 80);
+  if (has("contactPhone")) {
+    const phone = readPhone(cleanText(body.contactPhone, 40));
+    if (phone === null) throw new HttpError(400, "invalid_phone", PHONE_HELP.replace("mobile", "contact"));
+    out.contact_phone = phone || null;
+  }
   if (has("staffNeeded")) {
     const n = Number(body.staffNeeded);
     if (!Number.isInteger(n) || n < 1 || n > 50) {
@@ -129,6 +140,8 @@ export function toPublicEvent(row) {
     autoPosted: Boolean(row.auto_posted),
     offCalendar: Boolean(row.calendar_missing_at),
     notes: row.notes,
+    // Shown to staff: the shift's own address, else the venue directory's.
+    address: row.address || row.venue_address || null,
     status: row.status,
     confirmedCount: confirmed,
     appliedCount: row.applied_count ?? 0,
@@ -151,7 +164,8 @@ export const EVENT_WITH_COUNTS = `
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed') AS confirmed_count,
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'applied')   AS applied_count,
     (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.paid_at IS NULL) AS unpaid_count,
-    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.trailer = 1) AS trailer_confirmed
+    (SELECT COUNT(*) FROM applications a WHERE a.event_id = e.id AND a.status = 'confirmed' AND a.trailer = 1) AS trailer_confirmed,
+    (SELECT v.address FROM venues v WHERE v.name_key = lower(trim(e.venue))) AS venue_address
   FROM events e`;
 
 /** One event row with counts and roles attached (null if missing). */
@@ -200,8 +214,14 @@ export async function loadEventDetail(db, id) {
     )
     .bind(id)
     .all();
+  const contact = await contactForEvent(db, event);
   return {
     event: toPublicEvent(event),
+    // Admin-only: the private contact, and what's set on the shift itself (for editing).
+    contact: {
+      ...contact,
+      own: { address: event.address ?? null, contactName: event.contact_name ?? null, contactPhone: event.contact_phone ?? null },
+    },
     applications: results.map((r) => ({
       ...toPublicApplication(r),
       staff: toPublicStaff({ ...r, id: r.s_id, role: r.s_role, status: r.s_status }),

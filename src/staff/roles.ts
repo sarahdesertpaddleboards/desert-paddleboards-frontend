@@ -39,6 +39,45 @@ export const SKILL_HINTS: Record<Skill, string> = {
 };
 
 /**
+ * "What's expected" for each role, shown on the profile (tap to expand).
+ * Event lead is condensed from Sarah's Event Manager Playbook; the others are
+ * drafts for Sarah to edit.
+ */
+export const ROLE_GUIDE: Record<Skill, string[]> = {
+  lead: [
+    "You're in charge on the day: lead the team, look after the guests, and keep the event safe and on time.",
+    "Arrive first. Check the venue, plan where the boards, lane lines and musician go (think sunset, power, guest flow).",
+    "Count the boards and check each has 2 bungees and 2 carabiners. Text Shellie if supplies are low.",
+    "Set up check-in: roster, clipboard, bracelets, stickers, lavender eye masks. Kava only for guests who prepaid.",
+    "Do the sound check, then brief the team: who does what, guest entry, anyone with limited mobility.",
+    "During: watch guest safety, support the team, stay off your personal phone.",
+    "After: thank every guest, show the Google review QR code and the tip jar, pack everything neatly, report anything damaged, upload photos to the shared album, and do a 5-minute debrief.",
+    "Wear a Desert Paddleboards or Blue Wave polo and bring a swimsuit. You'll get the venue contact the day before.",
+  ],
+  teacher: [
+    "Lead the class (yoga, pilates or water fitness) for the full booked time.",
+    "Arrive early to check the space, the boards or mats, and the sound.",
+    "Keep it safe and welcoming for every level, and check in with the event lead before you start.",
+  ],
+  artist: [
+    "Create the soundbath: bring your instruments (bowls, drum, handpan…) and play for the agreed length.",
+    "Set up where the event lead shows you and do a sound check before guests arrive.",
+    "Check the shift notes for anything the client asked for (length, instruments, style).",
+    "If you're the only one working a shift, you're the event lead for it too.",
+  ],
+  general: [
+    "Help the event lead make it run smoothly: unload and inflate boards, set them out, welcome and check in guests.",
+    "Help guests on and off the boards; you may be in the water, so bring a swimsuit.",
+    "Wear a Desert Paddleboards or Blue Wave polo. At the end, help pack up neatly and dry.",
+  ],
+  trailer: [
+    "Pick up the trailer and boards, tow them to the event, and bring them back afterwards.",
+    "You need a valid driver's license and a vehicle that can tow. Allow extra time to get there early.",
+    "Usually the trailer driver is also the event lead or event staff on that shift.",
+  ],
+};
+
+/**
  * What staff pick when they put their name down (server: APPLY_ROLES in
  * server/staff/roles.js). Event staff covers the lead and general spots: Sarah
  * decides who leads, and who tows the trailer, when she confirms. Artists and

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { ApiError, PAYOUT_METHOD_LABELS, staffApi, type Staff } from "../api";
 import { SKILL_LABELS } from "../roles";
 import { useStaff } from "../StaffContext";
@@ -181,6 +182,7 @@ export default function StaffPeople() {
           )}
         </CardContent>
       </Card>
+      <ImportPeople onDone={load} />
     </div>
   );
 }
@@ -189,4 +191,71 @@ function StatusBadge({ status }: { status: Staff["status"] }) {
   if (status === "active") return <Badge className="bg-brand text-white hover:bg-brand">Active</Badge>;
   if (status === "invited") return <Badge variant="secondary">Invited</Badge>;
   return <Badge variant="outline" className="text-muted-foreground">Inactive</Badge>;
+}
+
+/**
+ * Paste a list (name, email, mobile: any order, one person per line) to add
+ * everyone at once. Nobody is emailed unless "Send invites now" is ticked, so
+ * Sarah can try it on one person first and invite the rest later.
+ */
+function ImportPeople({ onDone }: { onDone: (msg: string) => Promise<void> | void }) {
+  const [text, setText] = useState("");
+  const [sendInvites, setSendInvites] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Add a list of people</CardTitle>
+        <CardDescription>
+          Paste from your phone list or a spreadsheet, one person per line: name, email, mobile (any order). They're added as
+          invited. Nobody is emailed unless you tick the box, so you can invite them one by one later with "Resend invite".
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Textarea
+          rows={6}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={"Sonya Diaz, sonya@example.com, (480) 555-0123\nRad, rad@example.com, 480-555-0199"}
+          className="font-mono text-xs"
+        />
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" className="size-4 accent-[#1f3a4d]" checked={sendInvites} onChange={(e) => setSendInvites(e.target.checked)} />
+          Send invite emails now
+        </label>
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {done ? <p className="text-sm text-brand">{done}</p> : null}
+        <Button
+          disabled={busy || !text.trim()}
+          onClick={async () => {
+            setBusy(true);
+            setError(null);
+            setDone(null);
+            try {
+              const r = await staffApi.admin.importStaff(text, sendInvites);
+              setText("");
+              const parts = [
+                `${r.added.length} added`,
+                r.updated.length ? `${r.updated.length} updated` : null,
+                r.unchanged.length ? `${r.unchanged.length} already on the list` : null,
+                sendInvites ? `${r.invited.length} invited` : "no emails sent",
+              ].filter(Boolean);
+              const skipped = r.skipped.length ? ` Skipped: ${r.skipped.map((x) => `line ${x.line} (${x.reason})`).join(", ")}.` : "";
+              const msg = `Imported: ${parts.join(", ")}.${skipped}`;
+              setDone(msg);
+              await onDone(msg);
+            } catch (err) {
+              setError(err instanceof ApiError && err.message ? err.message : "Couldn't import that.");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {busy ? "Adding…" : "Add these people"}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }

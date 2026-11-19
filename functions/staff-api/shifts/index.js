@@ -11,6 +11,7 @@ import { requireStaff } from "../../../server/staff/auth.js";
 import { json } from "../../../server/staff/http.js";
 import { EVENT_WITH_COUNTS, toPublicApplication, toStaffEvent as forStaff } from "../../../server/staff/shifts.js";
 import { withRoles } from "../../../server/staff/roles.js";
+import { sendDueReminders } from "../../../server/staff/reminders.js";
 import { syncCalendar } from "../../../server/staff/sync.js";
 
 export async function onRequestGet(context) {
@@ -18,6 +19,8 @@ export async function onRequestGet(context) {
   const db = context.env.STAFF_DB;
   // Keep auto-posted calendar shifts current (throttled; runs after we reply).
   context.waitUntil(syncCalendar(context.env, context.request));
+  // Day-before reminders, as a fallback to the scheduled job (throttled).
+  context.waitUntil(sendDueReminders(context.env, new URL(context.request.url).origin));
 
   const [upcoming, apps, appEvents] = await Promise.all([
     db
