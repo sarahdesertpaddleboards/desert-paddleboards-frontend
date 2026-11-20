@@ -19,7 +19,28 @@ import { shiftReminderText, textStaff } from "./sms.js";
 import { contactForEvent } from "./venues.js";
 
 const STATE_KEY = "reminders";
+const PAUSE_KEY = "reminders_paused";
 const LAZY_EVERY_MIN = 10;
+
+/** Sarah can switch reminders off (Schedule page) while she's setting up. */
+export async function remindersPaused(db) {
+  const row = await db.prepare("SELECT value FROM staff_settings WHERE key = ?1").bind(PAUSE_KEY).first();
+  return row?.value === "1";
+}
+
+export async function setRemindersPaused(db, paused) {
+  await db
+    .prepare(
+      `INSERT INTO staff_settings (key, value, updated_at) VALUES (?1, ?2, ?3)
+       ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`,
+    )
+    .bind(PAUSE_KEY, paused ? "1" : "0", nowIso())
+    .run();
+}
+
+export async function reminderStatus(db) {
+  return { paused: await remindersPaused(db), lastRun: await lastRun(db) };
+}
 
 /** staff_id of whoever gets the private contact for one shift's confirmed people. */
 export function personInCharge(confirmed) {
@@ -58,6 +79,9 @@ async function saveRun(db, state) {
 export async function sendDueReminders(env, origin, { force = false } = {}) {
   const db = env.STAFF_DB;
   try {
+    // Paused: send nothing and mark nothing, so anyone whose shift is within
+    // 24 hours when reminders are switched back on gets theirs then.
+    if (await remindersPaused(db)) return { paused: true };
     const prev = await lastRun(db);
     if (!force && prev?.startedAt && Date.now() - Date.parse(prev.startedAt) < LAZY_EVERY_MIN * 60_000) return prev;
     const state = { startedAt: nowIso(), sent: 0, failed: 0 };

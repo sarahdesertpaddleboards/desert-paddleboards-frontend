@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { staffApi, type Shift, type SyncState } from "../../api";
+import { staffApi, type ReminderStatus, type Shift, type SyncState } from "../../api";
 import { errMessage, shortDay, timeRange, venueLine } from "../../format";
 import { ROLE_SHORT } from "../../roles";
 import { useStaff } from "../../StaffContext";
@@ -22,6 +22,28 @@ export default function AdminShifts() {
   const [sync, setSync] = useState<SyncState | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [reload, setReload] = useState(0);
+  const [reminders, setReminders] = useState<ReminderStatus | null>(null);
+  const [savingReminders, setSavingReminders] = useState(false);
+
+  useEffect(() => {
+    staffApi.admin
+      .reminders()
+      .then(setReminders)
+      .catch(() => setReminders(null));
+  }, []);
+
+  async function toggleReminders() {
+    if (!reminders) return;
+    setSavingReminders(true);
+    setError(null);
+    try {
+      setReminders(await staffApi.admin.setRemindersPaused(!reminders.paused));
+    } catch (err) {
+      setError(errMessage(err, "Couldn't change the reminders setting."));
+    } finally {
+      setSavingReminders(false);
+    }
+  }
 
   useEffect(() => {
     staffApi.admin
@@ -97,6 +119,24 @@ export default function AdminShifts() {
           {syncing ? "Checking…" : "Sync now"}
         </Button>
       </div>
+
+      {reminders ? (
+        <div
+          className={`flex flex-col gap-2 rounded-lg border px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between ${
+            reminders.paused ? "border-amber-300 bg-amber-50" : "border-border bg-white"
+          }`}
+        >
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">Day-before reminders are {reminders.paused ? "off" : "on"}.</span>{" "}
+            {reminders.paused
+              ? "No one gets a reminder email or text until you turn them on. Anyone working in the next 24 hours gets theirs as soon as you do."
+              : "Everyone confirmed gets an email (and a text if they opted in) the day before; the person in charge also gets the on-site contact."}
+          </p>
+          <Button size="sm" variant={reminders.paused ? "default" : "outline"} className="shrink-0" disabled={savingReminders} onClick={toggleReminders}>
+            {savingReminders ? "Saving…" : reminders.paused ? "Turn on" : "Turn off"}
+          </Button>
+        </div>
+      ) : null}
 
       <div className="inline-flex rounded-lg border border-border bg-white p-1 text-sm">
         {(["upcoming", "past"] as const).map((s) => (

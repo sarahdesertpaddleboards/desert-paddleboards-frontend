@@ -213,6 +213,12 @@ export interface TemplateInput {
   autoPost?: boolean;
 }
 
+/** Day-before reminders: switched off while Sarah sets up, and the last run. */
+export type ReminderStatus = {
+  paused: boolean;
+  lastRun: { startedAt?: string; finishedAt?: string; sent?: number; failed?: number } | null;
+};
+
 export interface SyncState {
   startedAt?: string;
   finishedAt?: string;
@@ -307,6 +313,8 @@ export const staffApi = {
     deleteTemplate: (id: string) => call<{ ok: true }>("DELETE", `/admin/templates/${id}`),
     syncState: () => call<{ state: SyncState | null; windowDays: number }>("GET", "/admin/sync"),
     syncNow: () => call<{ state: SyncState; windowDays: number }>("POST", "/admin/sync"),
+    reminders: () => call<ReminderStatus>("GET", "/admin/reminders"),
+    setRemindersPaused: (paused: boolean) => call<ReminderStatus>("POST", "/admin/reminders", { paused }),
     undoPaid: (applicationId: string) => call<{ ok: true }>("POST", "/admin/pay/undo", { applicationId }),
     venues: () => call<{ venues: Venue[]; missing: { name: string; shiftCount: number }[] }>("GET", "/admin/venues"),
     createVenue: (input: VenueInput) => call<{ venue: Venue }>("POST", "/admin/venues", input),
