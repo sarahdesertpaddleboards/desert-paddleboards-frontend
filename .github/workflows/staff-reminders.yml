@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         # Preview (the staff branch) while the tool is being tested; the live
-        # site once it's merged. A 404 there just means it isn't live yet.
+        # site once it's merged. A 404/405 there just means it isn't live yet.
         url:
           - https://staff.desert-paddleboards.pages.dev
           - https://desertpaddleboards.com
@@ -38,5 +38,5 @@ jobs:
           if [ -z "$SECRET" ]; then echo "STAFF_CRON_SECRET not set; skipping."; exit 0; fi
           code=$(curl -s -o out.json -w "%{http_code}" -X POST "$URL/staff-api/cron/reminders" -H "authorization: Bearer $SECRET")
           echo "$URL -> HTTP $code"; cat out.json; echo
-          if [ "$code" = "404" ]; then echo "Not live on this host yet."; exit 0; fi
+          if [ "$code" = "404" ] || [ "$code" = "405" ]; then echo "Not live on this host yet."; exit 0; fi
           [ "$code" = "200" ]
