@@ -10,7 +10,8 @@
  *     first-confirmed artist, else the first-confirmed person.
  * Someone confirmed later (still before the start) gets theirs on the next run.
  *
- * Triggered by a scheduled GitHub Action (POST /staff-api/cron/reminders) and,
+ * Triggered every 30 min by the dpb-staff-cron Worker (workers/staff-cron →
+ * POST /staff-api/cron/reminders) and,
  * as a fallback, lazily when anyone opens the staff area (throttled).
  */
 import { isLocalMode, sendEmail, shiftReminderEmail } from "./email.js";
