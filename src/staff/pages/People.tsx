@@ -218,7 +218,7 @@ function ImportPeople({ onDone }: { onDone: (msg: string) => Promise<void> | voi
           rows={6}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={"Sonya Diaz, sonya@example.com, (480) 555-0123\nRad, rad@example.com, 480-555-0199"}
+          placeholder={"Example:\nFull name, email@example.com, (480) 555-0123"}
           className="font-mono text-xs"
         />
         <label className="flex items-center gap-2 text-sm">

@@ -276,7 +276,7 @@ function ImportVenues({ onDone }: { onDone: (msg: string) => Promise<void> }) {
           rows={6}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={"Heritage Asante\t123 Clubhouse Dr, Surprise, AZ\tMackenzie\t(281) 804-8074\tIndoor, clubhouse"}
+          placeholder={"Example:\nVenue name\tAddress\tContact name\tContact phone\tNotes"}
           className="font-mono text-xs"
         />
         {error ? <p className="text-sm text-destructive">{error}</p> : null}

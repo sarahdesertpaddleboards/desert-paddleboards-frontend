@@ -240,7 +240,7 @@ export default function ShiftForm({
     >
       <div className="space-y-2">
         <Label htmlFor="sf-title">Title</Label>
-        <Input id="sf-title" required value={v.title} onChange={set("title")} placeholder="Floating Soundbath" />
+        <Input id="sf-title" required value={v.title} onChange={set("title")} placeholder="Type a title, e.g. Floating Soundbath" />
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
@@ -301,7 +301,7 @@ export default function ShiftForm({
       />
       <div className="space-y-2">
         <Label htmlFor="sf-notes">Notes for staff (optional)</Label>
-        <Textarea id="sf-notes" rows={3} value={v.notes} onChange={set("notes")} placeholder="Arrive 45 minutes early to set up boards." />
+        <Textarea id="sf-notes" rows={3} value={v.notes} onChange={set("notes")} placeholder="Type anything staff need to know" />
         <p className="text-xs text-muted-foreground">Everyone who can apply sees these. Put client phone numbers in the private contact below.</p>
       </div>
       <fieldset className="space-y-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4">
@@ -313,11 +313,11 @@ export default function ShiftForm({
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <Label htmlFor="sf-contact-name">Contact name</Label>
-            <Input id="sf-contact-name" value={v.contactName} onChange={set("contactName")} placeholder="Mackenzie" />
+            <Input id="sf-contact-name" value={v.contactName} onChange={set("contactName")} placeholder="Type their name" />
           </div>
           <div className="space-y-1">
             <Label htmlFor="sf-contact-phone">Contact phone</Label>
-            <Input id="sf-contact-phone" type="tel" inputMode="tel" value={v.contactPhone} onChange={set("contactPhone")} placeholder="(281) 804-8074" />
+            <Input id="sf-contact-phone" type="tel" inputMode="tel" value={v.contactPhone} onChange={set("contactPhone")} placeholder="Type their mobile" />
           </div>
         </div>
       </fieldset>

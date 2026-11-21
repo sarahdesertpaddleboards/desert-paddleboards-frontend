@@ -174,7 +174,7 @@ function TemplateCard({
                 <Label htmlFor={`${id}-kw`}>Keywords (comma separated)</Label>
                 <Input
                   id={`${id}-kw`}
-                  placeholder="soundbath, sound bath"
+                  placeholder="e.g. soundbath, sound bath"
                   value={d.keywords}
                   onChange={(e) => setD({ ...d, keywords: e.target.value })}
                 />
@@ -193,7 +193,7 @@ function TemplateCard({
             <Textarea
               id={`${id}-notes`}
               rows={2}
-              placeholder="Arrive 45 minutes early to set up boards."
+              placeholder="Type anything staff need to know"
               value={d.notes}
               onChange={(e) => setD({ ...d, notes: e.target.value })}
             />
