@@ -403,7 +403,7 @@ const LOCATION_OVERLAYS: Overlay[] = [
  */
 // Tiers per Sarah, Nov 2026: resorts $75 (Wigwam $80); rooftop pools, hotels
 // and Revel Surf Park $50; city pools vary $35–50, so $40 unless the exact
-// price is known. Community pools (Mulberry, PebbleCreek, Superstition
+// price is known (Kino and Skyline are $35). Community pools (Mulberry, PebbleCreek, Superstition
 // Shadows) aren't priced yet.
 const TICKET_PRICES_USD: Record<number, number> = {
   // Resorts
@@ -427,7 +427,7 @@ const TICKET_PRICES_USD: Record<number, number> = {
   612512: 50, // Revel Surf Park
   // City pools
   171055: 35, // Kino Aquatics — "$35 includes Floating Board", FareHarbor description
-  627535: 40, // Skyline Pool, Mesa (midpoint)
+  627535: 35, // Skyline Pool, Mesa — per Sarah, Nov 2026
   578505: 40, // Kiwanis Recreation Center, Tempe (midpoint)
   146434: 40, // Mesa Aquatics Complex lazy river class (midpoint)
 };
