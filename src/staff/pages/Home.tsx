@@ -70,6 +70,7 @@ export default function StaffHome() {
               shift={event}
               badge={<MyStatus application={application} event={event} />}
               sub={applicationRoleLabel(application)}
+              roles={<Team shift={event} meId={staff.id} />}
               action={
                 application.status === "applied" ? (
                   <WithdrawButton id={event.id} onDone={load} />
@@ -94,8 +95,13 @@ export default function StaffHome() {
           <ShiftRow
             key={s.id}
             shift={s}
-            badge={s.isFull ? <Badge variant="outline">Full</Badge> : null}
-            roles={<OpenRoles shift={s} skills={staff.skills} />}
+            badge={s.isFull ? <Badge variant="outline">Shifts filled</Badge> : null}
+            roles={
+              <>
+                <OpenRoles shift={s} skills={staff.skills} />
+                <Team shift={s} meId={staff.id} />
+              </>
+            }
             action={
               s.isFull ? null : (
                 <ApplyButton shift={s} skills={staff.skills} previous={s.my} disabled={!staff.profileComplete} onDone={load} />
@@ -225,6 +231,19 @@ function OpenRoles({ shift, skills }: { shift: Shift; skills: Skill[] }) {
         );
       })}
     </div>
+  );
+}
+
+/** Who's confirmed on a shift ("Team: Rad (Artist) · Trevor (Event staff + trailer)"), so staff know who they're working with. */
+function Team({ shift, meId }: { shift: Shift; meId: string }) {
+  if (!shift.team?.length) return null;
+  return (
+    <p className="text-sm">
+      <span className="text-muted-foreground">Team: </span>
+      {shift.team
+        .map((t) => `${t.staffId === meId ? "You" : t.name} (${ROLE_SHORT[t.role]}${t.trailer ? " + trailer" : ""})`)
+        .join(" · ")}
+    </p>
   );
 }
 

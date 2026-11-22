@@ -70,6 +70,15 @@ export interface Shift {
   isFull: boolean;
   isPast: boolean;
   createdAt: string;
+  /** Who's confirmed, by first name (staff shift lists only; empty elsewhere). */
+  team: TeamMember[];
+}
+
+export interface TeamMember {
+  staffId: string;
+  name: string;
+  role: Role;
+  trailer: boolean;
 }
 
 export type ApplicationStatus = "applied" | "confirmed" | "declined" | "withdrawn";
