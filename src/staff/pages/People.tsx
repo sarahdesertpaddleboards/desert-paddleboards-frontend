@@ -72,6 +72,24 @@ export default function StaffPeople() {
     }
   }
 
+  /** For when the email isn't arriving: Sarah texts this link to them herself. */
+  async function copySignInLink(p: Staff) {
+    setError(null);
+    setNotice(null);
+    try {
+      const { url } = await staffApi.admin.signInLink(p.id);
+      const who = p.name || p.email;
+      try {
+        await navigator.clipboard.writeText(url);
+        setNotice(`Sign-in link for ${who} copied. Text it to them — it works once and lasts 14 days: ${url}`);
+      } catch {
+        setNotice(`Sign-in link for ${who} (text it to them — it works once and lasts 14 days): ${url}`);
+      }
+    } catch (err) {
+      setError(err instanceof ApiError && err.message ? err.message : "Couldn't make a sign-in link.");
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -142,6 +160,11 @@ export default function StaffPeople() {
                         onClick={() => act(() => staffApi.admin.resendInvite(p.id), (r) => describeSend(r, p.email))}
                       >
                         Resend invite
+                      </Button>
+                    ) : null}
+                    {p.status !== "inactive" && p.id !== me.id ? (
+                      <Button size="sm" variant="outline" onClick={() => void copySignInLink(p)}>
+                        Copy sign-in link
                       </Button>
                     ) : null}
                     {p.id !== me.id ? (

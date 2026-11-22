@@ -299,6 +299,7 @@ export const staffApi = {
         "POST",
         `/admin/staff/${id}/resend-invite`,
       ),
+    signInLink: (id: string) => call<{ url: string }>("POST", `/admin/staff/${id}/sign-in-link`),
     listEvents: (scope: "upcoming" | "past") =>
       call<{ scope: string; events: Shift[] }>("GET", `/admin/events?scope=${scope}`),
     createEvent: (input: ShiftInput) => call<{ event: Shift }>("POST", "/admin/events", input),
