@@ -149,6 +149,8 @@ export function toPublicEvent(row) {
     isFull: confirmed >= row.staff_needed,
     isPast: Date.parse(row.start_at) < Date.now(),
     createdAt: row.created_at,
+    // Who's confirmed (first names + roles), when loaded with withTeams.
+    team: row.team ?? [],
   };
 }
 
@@ -173,6 +175,39 @@ export async function getEventWithCounts(db, id) {
   const row = await db.prepare(`${EVENT_WITH_COUNTS} WHERE e.id = ?1`).bind(id).first();
   if (row) await withRoles(db, [row]);
   return row;
+}
+
+/** "Trevor Schultz" → "Trevor"; "Nick (Sarah's tech assistant)" → "Nick". */
+function firstName(name) {
+  const first = String(name ?? "").trim().split(/\s+/)[0] ?? "";
+  return first ? first[0].toUpperCase() + first.slice(1) : "Teammate";
+}
+
+const TEAM_ORDER = "CASE a.role WHEN 'lead' THEN 0 WHEN 'teacher' THEN 1 WHEN 'artist' THEN 2 ELSE 3 END";
+
+/**
+ * Attach `team` to event rows (mutates and returns them): who's confirmed, by
+ * first name, role and whether they tow the trailer, so staff can see who
+ * they're working with. No pay or contact details.
+ */
+export async function withTeams(db, rows) {
+  if (!rows.length) return rows;
+  const { results } = await db
+    .prepare(
+      `SELECT a.event_id, a.staff_id, a.role, a.trailer, s.name
+         FROM applications a JOIN staff s ON s.id = a.staff_id
+        WHERE a.status = 'confirmed' AND a.event_id IN (SELECT value FROM json_each(?1))
+        ORDER BY ${TEAM_ORDER}, a.confirmed_at`,
+    )
+    .bind(JSON.stringify(rows.map((r) => r.id)))
+    .all();
+  const byEvent = new Map();
+  for (const r of results) {
+    if (!byEvent.has(r.event_id)) byEvent.set(r.event_id, []);
+    byEvent.get(r.event_id).push({ staffId: r.staff_id, name: firstName(r.name), role: r.role, trailer: Boolean(r.trailer) });
+  }
+  for (const r of rows) r.team = byEvent.get(r.id) ?? [];
+  return rows;
 }
 
 /** Many event rows (from EVENT_WITH_COUNTS) with roles attached. */

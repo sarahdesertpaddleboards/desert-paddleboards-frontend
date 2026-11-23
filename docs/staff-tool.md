@@ -43,11 +43,13 @@ the public session calendar, but is fully separate from the marketing site.
 - No passwords. `POST /staff-api/auth/request-link` emails a 20-minute, single-use
   link (`/staff/verify?token=…`). The verify page POSTs the token (so link-scanning
   mail filters can't consume it) and receives a 90-day HttpOnly cookie.
-- Only people already on the roster get a link; unknown emails get a silent OK.
+- Only people already on the roster get a link; an unknown email or number is told
+  it isn't on the staff list (a silent OK left staff waiting on links that never came).
   Max 5 links per person per hour.
 - Tokens and cookie secrets are stored **hashed** (SHA-256).
 - Invites are the same mechanism with a 14-day token. Admins invite from
-  `/staff/admin/people`.
+  `/staff/admin/people`. "Copy sign-in link" there mints the same 14-day link without
+  emailing it, for Sarah to text when someone's email isn't arriving.
 - `STAFF_BOOTSTRAP_ADMIN_EMAILS` (comma list) lets the first admins create
   themselves by simply requesting a login link. Set it to Sarah's and Nick's
   emails in each environment, then it can stay (it only matters when the email
@@ -63,6 +65,7 @@ the public session calendar, but is fully separate from the marketing site.
 | GET / POST | `/staff-api/admin/staff` (list / invite) | admin |
 | PATCH | `/staff-api/admin/staff/:id` (name, phone, payout, notes, role, status) | admin |
 | POST | `/staff-api/admin/staff/:id/resend-invite` | admin |
+| POST | `/staff-api/admin/staff/:id/sign-in-link` | admin |
 
 ### API (phase 2: shifts)
 | Method | Path | Who |

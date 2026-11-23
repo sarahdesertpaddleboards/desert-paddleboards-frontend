@@ -70,6 +70,15 @@ export interface Shift {
   isFull: boolean;
   isPast: boolean;
   createdAt: string;
+  /** Who's confirmed, by first name (staff shift lists only; empty elsewhere). */
+  team: TeamMember[];
+}
+
+export interface TeamMember {
+  staffId: string;
+  name: string;
+  role: Role;
+  trailer: boolean;
 }
 
 export type ApplicationStatus = "applied" | "confirmed" | "declined" | "withdrawn";
@@ -290,6 +299,7 @@ export const staffApi = {
         "POST",
         `/admin/staff/${id}/resend-invite`,
       ),
+    signInLink: (id: string) => call<{ url: string }>("POST", `/admin/staff/${id}/sign-in-link`),
     listEvents: (scope: "upcoming" | "past") =>
       call<{ scope: string; events: Shift[] }>("GET", `/admin/events?scope=${scope}`),
     createEvent: (input: ShiftInput) => call<{ event: Shift }>("POST", "/admin/events", input),

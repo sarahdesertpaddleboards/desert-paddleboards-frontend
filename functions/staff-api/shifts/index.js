@@ -3,13 +3,14 @@
  *   shifts: upcoming open shifts, each with `my` (their application, if any)
  *   mine:   every shift they've applied for or been confirmed on (past too),
  *           newest first, with the pay Sarah locked in and whether it's paid.
- * Staff never see other people's names or Sarah's suggested pay. Each shift
- * lists its roles with how many are needed/confirmed, and whether a trailer
- * driver is still needed.
+ * Each shift lists its roles with how many are needed/confirmed, whether a
+ * trailer driver is still needed, and its `team`: the first names and roles of
+ * who's confirmed, so staff know who they're working with. Staff never see
+ * anyone else's pay, contact details or pending applications.
  */
 import { requireStaff } from "../../../server/staff/auth.js";
 import { json } from "../../../server/staff/http.js";
-import { EVENT_WITH_COUNTS, toPublicApplication, toStaffEvent as forStaff } from "../../../server/staff/shifts.js";
+import { EVENT_WITH_COUNTS, toPublicApplication, toStaffEvent as forStaff, withTeams } from "../../../server/staff/shifts.js";
 import { withRoles } from "../../../server/staff/roles.js";
 import { sendDueReminders } from "../../../server/staff/reminders.js";
 import { syncCalendar } from "../../../server/staff/sync.js";
@@ -43,7 +44,8 @@ export async function onRequestGet(context) {
       .all(),
   ]);
 
-  await withRoles(db, [...upcoming.results, ...appEvents.results]);
+  const allEvents = [...upcoming.results, ...appEvents.results];
+  await Promise.all([withRoles(db, allEvents), withTeams(db, allEvents)]);
   const myByEvent = new Map(apps.results.map((a) => [a.event_id, toPublicApplication(a)]));
   const eventById = new Map(appEvents.results.map((e) => [e.id, forStaff(e)]));
 

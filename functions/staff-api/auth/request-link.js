@@ -1,9 +1,11 @@
 /**
  * POST /staff-api/auth/request-link  { email } | { phone }
  *
- * Emails (or, given a phone number, texts) a one-time login link. Always answers { ok: true } for a well-formed
- * email so the form can't be used to discover who is on staff. Only existing
- * staff (or bootstrap admins) ever receive a link.
+ * Emails (or, given a phone number, texts) a one-time login link. Only existing
+ * staff (or bootstrap admins) ever receive a link. An address or number that
+ * isn't on the staff list gets a plain "not on the list" answer: staff kept
+ * typing a second email and waiting for a link that was never coming, which
+ * cost more than hiding who is on a small staff list.
  */
 import { createLoginToken, toPublicStaff } from "../../../server/staff/auth.js";
 import { isLocalMode, loginLinkEmail, sendEmail } from "../../../server/staff/email.js";
@@ -20,8 +22,7 @@ async function requestByPhone(env, request, db, rawPhone) {
   const phone = toE164(rawPhone);
   if (!phone) return json(400, { error: "invalid_phone", message: "Please enter a valid US mobile number." });
   const staff = await findByPhone(db, phone);
-  // Unknown number: pretend success, send nothing.
-  if (!staff) return json(200, { ok: true });
+  if (!staff) return notOnList("number");
   const token = await createLoginToken(db, staff.id, "login");
   if (!token) return json(200, { ok: true });
   const url = `${new URL(request.url).origin}/staff/verify?token=${token}`;
@@ -34,6 +35,13 @@ async function requestByPhone(env, request, db, rawPhone) {
     return json(503, { error: "sms_not_configured", message: "Texting isn't set up yet. Use your email instead." });
   }
   return json(200, { ok: true });
+}
+
+function notOnList(what) {
+  return json(404, {
+    error: "not_on_staff_list",
+    message: `That ${what} isn't on the staff list. Try the ${what} you gave Sarah, or ask her to text you a sign-in link.`,
+  });
 }
 
 function bootstrapAdmins(env) {
@@ -68,8 +76,7 @@ export async function onRequestPost(context) {
     staff = await db.prepare("SELECT * FROM staff WHERE id = ?1").bind(id).first();
   }
 
-  // Unknown or deactivated: pretend success, send nothing.
-  if (!staff || staff.status === "inactive") return json(200, { ok: true });
+  if (!staff || staff.status === "inactive") return notOnList("email");
 
   const token = await createLoginToken(db, staff.id, "login");
   if (!token) return json(200, { ok: true }); // rate-limited; silently drop

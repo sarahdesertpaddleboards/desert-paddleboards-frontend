@@ -63,13 +63,13 @@ export default function StaffLogin() {
               <p className="rounded-lg bg-brand/10 p-4 text-sm">
                 {mode === "phone" ? (
                   <>
-                    If <strong>{phone}</strong> is the number on your staff profile, a login link is on its way by text. It
-                    works once and expires in 20 minutes.
+                    A login link is on its way by text to <strong>{phone}</strong>. It works once and expires in 20
+                    minutes.
                   </>
                 ) : (
                   <>
-                    If <strong>{email}</strong> is on the staff list, a login link is on its way. It works once and
-                    expires in 20 minutes — check spam if it's not there in a minute.
+                    A login link is on its way to <strong>{email}</strong>. It works once and expires in 20 minutes —
+                    check spam and promotions if it's not there in a minute.
                   </>
                 )}
               </p>
@@ -144,7 +144,7 @@ export default function StaffLogin() {
                 {mode === "email" ? "Text me a link instead" : "Email me a link instead"}
               </Button>
               <p className="text-xs text-muted-foreground">
-                New here? You need an invite from Sarah first — ask her to add you.
+                Use the email Sarah has for you. New here? You need an invite from Sarah first — ask her to add you.
               </p>
             </form>
           )}
