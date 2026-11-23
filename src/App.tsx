@@ -19,7 +19,6 @@ import Shop from "./pages/Shop";
 import Gift from "./pages/Gift";
 import Privacy from "./pages/Privacy";
 import SmsTerms from "./pages/SmsTerms";
-import StaffPlaceholder from "./pages/StaffPlaceholder";
 import Terms from "./pages/Terms";
 import BlogIndex from "./pages/blog/index";
 import BlogPost from "./pages/blog/[slug]";
@@ -32,6 +31,21 @@ import Airstream from "./pages/Airstream";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
+
+import StaffLayout from "./staff/StaffLayout";
+import StaffHome from "./staff/pages/Home";
+import StaffLogin from "./staff/pages/Login";
+import StaffVerify from "./staff/pages/Verify";
+import StaffProfile from "./staff/pages/Profile";
+import StaffPeople from "./staff/pages/People";
+import StaffNotFound from "./staff/pages/NotFound";
+import StaffAdminShifts from "./staff/pages/admin/Shifts";
+import StaffAdminShiftNew from "./staff/pages/admin/ShiftNew";
+import StaffAdminShiftDetail from "./staff/pages/admin/ShiftDetail";
+import StaffAdminPayroll from "./staff/pages/admin/Payroll";
+import StaffAdminTemplates from "./staff/pages/admin/Templates";
+import StaffAdminVenues from "./staff/pages/admin/Venues";
+import StaffEarnings from "./staff/pages/Earnings";
 
 import { experiences } from "./data/locations";
 import { cityClassDetailSlugs } from "./data/city-classes";
@@ -60,9 +74,6 @@ export const routes: RouteRecord[] = [
       { path: "privacy", element: <Privacy /> },
       { path: "terms", element: <Terms /> },
       { path: "sms-terms", element: <SmsTerms /> },
-      // Stand-in until the staff tool (branch `staff`) is merged; it replaces these.
-      { path: "staff", element: <StaffPlaceholder /> },
-      { path: "staff/earnings", element: <StaffPlaceholder /> },
       { path: "blog", element: <BlogIndex /> },
       {
         path: "blog/:slug",
@@ -105,6 +116,29 @@ export const routes: RouteRecord[] = [
   // Moving to its own website; until then it lives here, NOT a child of
   // <Layout> and not linked from anywhere on the main site.
   { path: "/airstream", element: <Airstream /> },
+
+  // Staff scheduling tool (ConnectTeam replacement). Own shell, noindex,
+  // client-rendered against /staff-api (Cloudflare Pages Functions + D1).
+  // Pre-rendered only as empty shells so Pages can serve the routes directly.
+  {
+    path: "/staff",
+    element: <StaffLayout />,
+    children: [
+      { index: true, element: <StaffHome /> },
+      { path: "login", element: <StaffLogin /> },
+      { path: "verify", element: <StaffVerify /> },
+      { path: "profile", element: <StaffProfile /> },
+      { path: "earnings", element: <StaffEarnings /> },
+      { path: "admin/people", element: <StaffPeople /> },
+      { path: "admin/payroll", element: <StaffAdminPayroll /> },
+      { path: "admin/templates", element: <StaffAdminTemplates /> },
+      { path: "admin/venues", element: <StaffAdminVenues /> },
+      { path: "admin/shifts", element: <StaffAdminShifts /> },
+      { path: "admin/shifts/new", element: <StaffAdminShiftNew /> },
+      { path: "admin/shift", element: <StaffAdminShiftDetail /> }, // ?id=… (static path: Pages serves prerendered shells only)
+      { path: "*", element: <StaffNotFound /> },
+    ],
+  },
 ];
 
 export default routes;

@@ -16,6 +16,7 @@ const SITE_URL = "https://desertpaddleboards.com";
 const EXCLUDE = [
   /^admin(\/|$)/,
   /^admin-login$/,
+  /^staff(\/|$)/, // staff scheduling tool — private, noindexed
   /^success$/,
   /^guides\/.*thank-you$/,
   /^404$/,
@@ -70,7 +71,7 @@ ${urls}
 
 writeFileSync(join(DIST, "sitemap.xml"), sitemap);
 
-const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\nDisallow: /success\nDisallow: /guides/black-canyon/thank-you\nDisallow: /downloads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+const robots = `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin-login\nDisallow: /staff\nDisallow: /success\nDisallow: /guides/black-canyon/thank-you\nDisallow: /downloads/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 writeFileSync(join(DIST, "robots.txt"), robots);
 
 console.log(`[sitemap] wrote ${routes.length} urls to dist/sitemap.xml + robots.txt`);

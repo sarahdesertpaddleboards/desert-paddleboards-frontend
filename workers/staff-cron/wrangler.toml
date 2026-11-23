@@ -1,0 +1,19 @@
+# Timer for the staff tool's day-before reminders. Cloudflare Pages has no cron,
+# so this tiny Worker wakes every 30 minutes and asks each staff site to send
+# whatever reminders are due. See index.js.
+#
+# Deploy (from the repo root):  pnpm cf deploy -c workers/staff-cron/wrangler.toml
+# Watch it run:                 pnpm cf tail dpb-staff-cron
+name = "dpb-staff-cron"
+main = "index.js"
+compatibility_date = "2026-06-01"
+workers_dev = false
+
+[triggers]
+crons = ["7,37 * * * *"]
+
+# Same databases as the Pages project (wrangler.toml at the repo root).
+[[d1_databases]]
+binding = "PROD_DB"
+database_name = "dpb-staff"
+database_id = "7801177c-5e8f-4679-b0dd-319df6027cfe"

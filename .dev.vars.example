@@ -1,0 +1,7 @@
+# Local secrets for `wrangler pages dev` (copy to .dev.vars — gitignored).
+# Local mode: when RESEND_API_KEY is empty AND STAFF_ENV=local, login links are
+# returned in the API response (shown on the login page) instead of emailed.
+STAFF_ENV=local
+RESEND_API_KEY=
+# Comma-separated emails that become admins the first time they request a login link.
+STAFF_BOOTSTRAP_ADMIN_EMAILS=you@example.com

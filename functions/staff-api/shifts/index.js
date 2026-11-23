@@ -1,0 +1,57 @@
+/**
+ * GET /staff-api/shifts — what a staff member sees on their home page:
+ *   shifts: upcoming open shifts, each with `my` (their application, if any)
+ *   mine:   every shift they've applied for or been confirmed on (past too),
+ *           newest first, with the pay Sarah locked in and whether it's paid.
+ * Staff never see other people's names or Sarah's suggested pay. Each shift
+ * lists its roles with how many are needed/confirmed, and whether a trailer
+ * driver is still needed.
+ */
+import { requireStaff } from "../../../server/staff/auth.js";
+import { json } from "../../../server/staff/http.js";
+import { EVENT_WITH_COUNTS, toPublicApplication, toStaffEvent as forStaff } from "../../../server/staff/shifts.js";
+import { withRoles } from "../../../server/staff/roles.js";
+import { sendDueReminders } from "../../../server/staff/reminders.js";
+import { syncCalendar } from "../../../server/staff/sync.js";
+
+export async function onRequestGet(context) {
+  const me = requireStaff(context);
+  const db = context.env.STAFF_DB;
+  // Keep auto-posted calendar shifts current (throttled; runs after we reply).
+  context.waitUntil(syncCalendar(context.env, context.request));
+  // Day-before reminders, as a fallback to the scheduled job (throttled).
+  context.waitUntil(sendDueReminders(context.env, new URL(context.request.url).origin));
+
+  const [upcoming, apps, appEvents] = await Promise.all([
+    db
+      .prepare(
+        `${EVENT_WITH_COUNTS}
+          WHERE e.status = 'open' AND datetime(e.start_at) > datetime('now')
+          ORDER BY e.start_at LIMIT 500`,
+      )
+      .all(),
+    db
+      .prepare("SELECT * FROM applications WHERE staff_id = ?1 AND status != 'withdrawn'")
+      .bind(me.id)
+      .all(),
+    db
+      .prepare(
+        `${EVENT_WITH_COUNTS}
+          WHERE e.id IN (SELECT event_id FROM applications WHERE staff_id = ?1 AND status != 'withdrawn')`,
+      )
+      .bind(me.id)
+      .all(),
+  ]);
+
+  await withRoles(db, [...upcoming.results, ...appEvents.results]);
+  const myByEvent = new Map(apps.results.map((a) => [a.event_id, toPublicApplication(a)]));
+  const eventById = new Map(appEvents.results.map((e) => [e.id, forStaff(e)]));
+
+  const shifts = upcoming.results.map((e) => ({ ...forStaff(e), my: myByEvent.get(e.id) ?? null }));
+  const mine = apps.results
+    .filter((a) => eventById.has(a.event_id))
+    .map((a) => ({ application: toPublicApplication(a), event: eventById.get(a.event_id) }))
+    .sort((x, y) => y.event.startAt.localeCompare(x.event.startAt));
+
+  return json(200, { shifts, mine });
+}
