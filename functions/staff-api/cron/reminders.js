@@ -7,8 +7,8 @@
  * sends it as `Authorization: Bearer <token>`. A token older than 10 minutes
  * is refused, so there's no long-lived secret to set or leak.
  *
- * Also accepted: Bearer <STAFF_CRON_SECRET> (the older GitHub Action, if that
- * Pages secret is set), or a logged-in admin.
+ * Also accepted: Bearer <STAFF_CRON_SECRET> (if that Pages secret is set), or
+ * a logged-in admin.
  */
 import { HttpError, json } from "../../../server/staff/http.js";
 import { sendDueReminders } from "../../../server/staff/reminders.js";

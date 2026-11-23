@@ -7,12 +7,13 @@
  * and sends that. The site accepts a token only if it matches and is under 10
  * minutes old.
  *
- * Production stays quiet until the staff tool is merged to main (the call
- * gets a 404/405 there, or the table doesn't exist yet).
+ * Reminder emails link to whichever address is called, so this calls the
+ * main domain.
  */
 const SITES = [
-  { name: "preview", db: "PREVIEW_DB", url: "https://staff.desert-paddleboards.pages.dev" },
-  { name: "production", db: "PROD_DB", url: "https://desert-paddleboards.pages.dev" },
+  // The old preview copy (staff.desert-paddleboards.pages.dev, dpb-staff-preview)
+  // was retired at go-live, 23 Nov 2026; nudging it would double-send.
+  { name: "production", db: "PROD_DB", url: "https://desertpaddleboards.com" },
 ];
 
 function randomToken() {

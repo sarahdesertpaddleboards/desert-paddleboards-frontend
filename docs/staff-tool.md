@@ -201,11 +201,12 @@ Most staff check their phone, not email, so the key emails also go out as texts.
 - **Person in charge** gets the private contact: the confirmed event lead(s); with no lead, the
   only person if it's one, else the first-confirmed artist, else the first-confirmed person
   (`personInCharge` in `server/staff/reminders.js`).
-- Triggered by `.github/workflows/staff-reminders.yml` every 30 min (runs from `main`; hits the
-  preview and the live site) with `Authorization: Bearer $STAFF_CRON_SECRET`, plus lazily
-  (every ≥10 min) when anyone opens the staff area. Admins can POST `/staff-api/cron/reminders`.
-- Setup: one random value as GitHub secret `STAFF_CRON_SECRET` and Pages secret
-  `STAFF_CRON_SECRET` (`--env preview` and `--env production`).
+- Triggered every 30 min by the `dpb-staff-cron` Cloudflare Worker (`workers/staff-cron`,
+  deploy with `pnpm cf deploy -c workers/staff-cron/wrangler.toml`), plus lazily (every ≥10
+  min) when anyone opens the staff area. The Worker shares the D1 database: it writes a
+  random token to `staff_settings.cron_token` and calls `/staff-api/cron/reminders` with it
+  (accepted for 10 min), so no shared secret. Admins can also POST that endpoint.
+- Sarah can pause them on the Schedule page (`staff_settings.reminders_paused`).
 
 ### Other phase 3d behaviour
 - Declined applicants are never notified (Sarah: they know they may not be picked). Taking a
@@ -248,6 +249,11 @@ Reset the local database: delete `.wrangler/state/v3/d1` and re-run `pnpm staff:
 
 ## Environments and deploy
 
+**Live since 23 Nov 2026 at `https://desertpaddleboards.com/staff`** (production, `dpb-staff`).
+The preview's data was copied across then; `staff.desert-paddleboards.pages.dev/staff` now
+redirects to the live address (`functions/staff/_middleware.js`) and `dpb-staff-preview`
+is a test copy with reminders paused. Per-deploy preview URLs still work for testing.
+
 The `staff` branch deploys as a **Pages preview** (GitHub Actions, see
 `.github/workflows/deploy.yml`) at `https://staff.desert-paddleboards.pages.dev`,
 using the `[env.preview]` section of `wrangler.toml`. `main` is production.
@@ -260,13 +266,13 @@ and paste the link into a browser signed in to that account).
 1. ✅ Databases created (3 Nov 2026), ids in `wrangler.toml`:
    `dpb-staff` (production, WNAM) and `dpb-staff-preview` (WEUR).
 2. ✅ Schema applied: `0001` to both; `0002` (roles/templates/auto-post), `0003` (texts) and
-   `0004` (venues/reminders) to **preview only** so far. Apply it to production before merging. For new migrations:
+   `0004` (venues/reminders) to both (production on 23 Nov 2026). For new migrations:
    ```bash
    pnpm cf d1 migrations apply dpb-staff-preview --remote --env preview
    pnpm cf d1 migrations apply dpb-staff --remote      # before merging to main
    ```
-3. ✅ Preview secrets set (3 Nov 2026). Production still needs them (`--env production`)
-   before merging to `main`:
+3. ✅ Preview secrets set (3 Nov 2026); production `RESEND_API_KEY` set 23 Nov 2026
+   (`--env production`). Twilio values go to production once the number is approved:
    ```bash
    pnpm cf pages secret put STAFF_BOOTSTRAP_ADMIN_EMAILS --project-name desert-paddleboards --env preview
    pnpm cf pages secret put RESEND_API_KEY --project-name desert-paddleboards --env preview
